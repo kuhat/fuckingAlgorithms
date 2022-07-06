@@ -5,6 +5,14 @@ import java.util.*;
 public class Note3_Arrays {
 
     // LeetCode 243: shortestDistance
+
+    /**
+     * 给定一个单词列表和两个单词 word1 和 word2，返回列表中这两个单词之间的最短距离。
+     * @param strings
+     * @param s
+     * @param m
+     * @return
+     */
     // [abcd, abc, ssss, abcd, ssss, wwww]
     public static int shortDistance(String[] strings, String s, String m) {
         int res = strings.length;
@@ -26,15 +34,14 @@ public class Note3_Arrays {
     // LeetCode 252 Meeting Rooms:
 
     /**
-     * Given an array of meeting time intercals consisting of start and end times [[s1, e1], [s2, e2, ...]] (si < ei), determine if a person could attend all meetings.
+     * Given an array of meeting time intervals consisting of start and end times [[s1, e1], [s2, e2, ...]] (si < ei),
+     * determine if a person could attend all meetings.
      * <p>
      * For example: Given [[0, 30], [5, 10], [15, 20]], return false.
      * <p>
      * + 按start 排序
      * <p>
      * + 解题技巧： 前一个区间 end & 后一个区间  start
-     *
-     * @param args
      */
 
     public class Interval {
@@ -67,7 +74,7 @@ public class Note3_Arrays {
      * <p>
      * output: 2
      *
-     * @param args
+     * @param intervals
      */
 
     public int minMeetingRooms(Interval[] intervals) {
@@ -160,12 +167,12 @@ public class Note3_Arrays {
         int right = nums.length - 1;  //控制1出现的最开始的位置
         int index = 0;
         while (index <= right) {
-            if (nums[index] == 0) {
-                swap(nums, index++, left++);
-            } else if (nums[index] == 1) {
+            if (nums[index] == 0) {  // 如果遇到index的位置是0，将left和index交换，0要排在前面
+                swap(nums, index++, left++);  // 再把index和left指针向后移动
+            } else if (nums[index] == 1) {  // 如果index的位置是1，直接将index向后移动
                 index++;
             } else {
-                swap(nums, index, right--);
+                swap(nums, index, right--);  // 如果index的位置是2，将right和index交换，2要排在后面，再将右指针向前移动
             }
         }
     }
@@ -193,15 +200,14 @@ public class Note3_Arrays {
         if (nums == null || nums.length == 0) {
             return;
         }
-        int start = 0;
+        int start = 0;  // 用start来记录不是0的位置
         for (int i = 0; i < nums.length; i++) {
-            if (nums[i] != 0) {
+            if (nums[i] != 0) {  // 如果i的位置不是0，就直接让start的位置等于i的值，然后i再++
                 nums[start++] = nums[i];
             }
         }
-
         while (start < nums.length) {
-            nums[start++] = 0;
+            nums[start++] = 0;  // 最后让start后的位置全等于0
         }
     }
 
@@ -219,7 +225,7 @@ public class Note3_Arrays {
     //LeetCode287: Find Duplicate Numbers
 
     /**
-     * Given an array of integers nums containing n + 1 integers where each integer is in the range [1, n] inclusive.
+     * Given an array of integer nums containing n + 1 integers where each integer is in the range [1, n] inclusive.
      * <p>
      * There is only one repeated number in nums, return this repeated number.
      * <p>
@@ -228,7 +234,7 @@ public class Note3_Arrays {
      * Input: nums = [1,3,4,2,2]
      * Output: 2
      *
-     * @param args
+     * @param nums
      */
 
     // 二分法
@@ -295,6 +301,8 @@ public class Note3_Arrays {
      * Input: nums = [1,2,3,4,5]
      * Output: true
      * Explanation: Any triplet where i < j < k is valid.
+     *
+     * nums = [3, 2, 3, 1, 4, 3]
      *
      * @param nums
      */
@@ -445,6 +453,17 @@ public class Note3_Arrays {
      * <p>
      * Test cases are designed so that the answer will fit in a 32-bit integer.
      *
+     * Input: nums = [1,2,3]
+     * Output: 2
+     * Explanation:
+     * Only two moves are needed (remember each move increments or decrements one element):
+     * [1,2,3]  =>  [2,2,3]  =>  [2,2,2]
+     *
+     *
+     * Input: nums = [1,10,2,9]
+     * [1, 2, 9 ,10]
+     * Output: 16
+     *
      * @param nums
      */
 
@@ -483,7 +502,7 @@ public class Note3_Arrays {
      * Input: s = "loveleetcode"
      * Output: 2
      *
-     * @param args
+     * @param s
      */
 
     public static int firstUniqueChar(String s) {
@@ -527,8 +546,7 @@ public class Note3_Arrays {
             count[ch - 'a']++;  // 计算magazine里面需要的字母个数
         }
         for (char ch : ransomNote.toCharArray()) {
-            if (count[ch - 'a'] == 0)
-                return false;  // 如果magazine里面的字母个数不够用返回 false
+            if (count[ch - 'a'] == 0) return false;  // 如果magazine里面的字母个数不够用返回 false
             count[ch - 'a']--;
         }
         return true;
@@ -561,8 +579,7 @@ public class Note3_Arrays {
             fmap[t1 - 'a']--;
         }
         // if there is any value that is not zero then return false immediately
-        for (int val : fmap)
-            if (val != 0) return false;
+        for (int val : fmap) if (val != 0) return false;
         // return true if it safely came out of the loop
         return true;
     }
@@ -589,22 +606,21 @@ public class Note3_Arrays {
      * Output: 6
      * Explanation: There are six substrings ("z", "a", "b", "za", "ab", and "zab") of p in s.
      *
-     * @param args
+     * @param p
      */
 
     public static int findSubStringInWrapAround(String p) {
-        int[] count = new int[26];
+        int[] count = new int[26];  // 用一个26位的数组来记录当前index的最大循环子串
         int curMax = 0;
         for (int i = 0; i < p.length(); i++) {
             if (i > 0 && (p.charAt(i) - p.charAt(i - 1) == 1) || (p.charAt(i - 1) - p.charAt(i) == 25)) {
-                curMax++;
+                curMax++;  // 如果相邻的两个字母的ascii码相差了1（挨着的）或者25（za这种）就将curMax++
             } else {
                 curMax = 1;
             }
-            count[p.charAt(i) - 'a'] = Math.max(curMax, count[p.charAt(i) - 'a']);
+            count[p.charAt(i) - 'a'] = Math.max(curMax, count[p.charAt(i) - 'a']);  // 记录当时的最大值
         }
-        int res = 0;
-        ;
+        int res = 0;  // 循环最大值map数组，加上每一位的值就是答案
         for (int num : count) {
             res += num;
         }
