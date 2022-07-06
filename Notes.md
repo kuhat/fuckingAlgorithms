@@ -1059,4 +1059,302 @@ for (int i = 0; i < num.length; i ++) {
      }
      ```
 
+     *查看LeetCode 81 和  LeetCode 33*
+  
++ 数组中的二分查找
+
+  1. **Search**, **Find** 等字眼，涉及“查”， 必定二分查找
+
+  2. 子数组题型：LeetCode 300 (出现次数多)
+
+  3. 一维  -> 二维，二维查找***最优解***必定是二分法
+
+     ```java
+     // Leetcode 74 Search Matrix
      
+         /**
+          * Write an efficient algorithm that searches for a value target in an m x n integer matrix matrix.
+          * This matrix has the following properties:
+          * <p>
+          * Integers in each row are sorted from left to right.
+          * The first integer of each row is greater than the last integer of the previous row.
+          * <p>
+          * Input: matrix = [[1,3,5,7],[10,11,16,20],[23,30,34,60]], target = 3
+          * Output: true
+          * <p>
+          * Input: matrix = [[1,3,5,7],[10,11,16,20],[23,30,34,60]], target = 13
+          * Output: false
+          */
+         class SearchMatrix74 {
+             public boolean searchMatrix(int[][] matrix, int target) {
+                 int row = matrix.length;
+                 int col = matrix[0].length;
+                 int start = 0;
+                 int end = row * col - 1;
+     
+                 while (start <= end) {
+                     int mid = (end - start) / 2 + start;
+                     int value = matrix[mid / col][mid % col];  // 当前这个值处于二维数组中的哪里（背下来）
+                     if (value == target) {
+                         return true;
+                     } else if (value < target) {
+                         start = mid + 1;
+                     } else {
+                         end = mid - 1;
+                     }
+                 }
+                 return false;
+             }
+         }
+     ```
+
+
+## 5. Linked List
+
+1. 链表单独操作
+
+2. 和各种数据结构结合
+
+3. ArrayList **VS** LinkedList
+
+### 5.1 常考题型 1 —— 基本操作
+
+1. 有无头节点: 头节点变动的时候一定会有`dummy` 节点
+2. 循环逻辑：不会去写`for`循环，一般用`while`. 
+3. 结束条件
+
+```java
+// LeetCode 24:
+ /**
+     *
+     * Given a linked list, swap every two adjacent nodes and return its head. You must solve the problem without
+     * modifying the values in the list's nodes (i.e., only nodes themselves may be changed.)
+     *
+     *Input: head = [1,2,3,4]
+     * Output: [2,1,4,3]
+     *
+     *Input: head = []
+     * Output: []
+     *
+     */
+
+    class Solution24 {
+        public ListNode swapPairs(ListNode head) {
+            if (head == null || head.next == null) return head;
+            ListNode dummy = new ListNode(0);  // 头节点变了，要用dummy
+            dummy.next = head;    // dummy ->  2 -> 1 -> 4 -> 3
+            ListNode l1 = dummy;  // dummy ->  1 -> 2 -> 3 -> 4
+            ListNode l2 = head;   //   ^       ^
+                                  //   l1      l2                               //  l1 l2
+            while (l2 != null && l2.next != null) {                             //   _______
+                ListNode nextStart = l2.next.next;                              //  |       |
+                l1.next = l2.next;  // 将dummy的下一个节点设为l2的下一个 画图画出来就理解了 d  1 -> 2 -> 3
+                l2.next.next = l2;  // 将l2的下一个接在dummy后面
+                l2.next = nextStart;
+                l1 = l2;
+                l2 = l2.next;
+            }
+            return dummy.next;
+        }
+    }
+```
+
+LeetCode 238: Odd Even LinkedList:
+
+Given the `head` of a singly linked list, group all the nodes with odd indices together followed by the nodes with even indices, and return *the reordered list*.
+
+The **first** node is considered **odd**, and the **second** node is **even**, and so on.
+
+Note that the relative order inside both the even and odd groups should remain as it was in the input.
+
+You must solve the problem in `O(1)` extra space complexity and `O(n)` time complexity.
+
+```java
+class Solution {
+    public ListNode oddEvenList(ListNode head) {
+         if (head == null || head.next == null) return head;
+            ListNode odd = head;
+            ListNode even = head.next;
+            ListNode evenHead = even;
+            while (even != null && even.next != null) {
+                odd.next = odd.next.next;
+                even.next = even.next.next;
+                odd = odd.next;
+                even = even.next;
+            }
+            odd.next = evenHead;
+            return head;
+    }
+}
+```
+
+### 5.1 翻转
+
++ LeetCode 206：
+	 Given the head of a singly linked list, reverse the list, and return the reversed list.
+
+
+  ```java
+  class Solution206 {  // 背下来
+          public ListNode reverseList(ListNode head) {
+              if (head == null || head.next == null) return head;
+              ListNode pre = null;
+              while (head != null) {
+                  ListNode temp = head.next;
+                  head.next = pre;
+                  pre = head;
+                  head = temp;
+              }
+              return pre;
+          }
+      }
+  ```
+
++ LeetCode: 92: Reverse LinkedList II
+
+  Given the head of a singly linked list and two integers left and right where `left <= right`, reverse the nodes of the list from position left to position right, and return the reversed list.
+  
+  ```
+  Input: head = [1,2,3,4,5], left = 2, right = 4
+  Output: [1,4,3,2,5]
+  ```
+  
+  ```
+  Input: head = [5], left = 1, right = 1
+  Output: [5]
+  ```
+  
+  Sol:
+  
+  ```java
+  class Solution {
+      public ListNode reverseBetween(ListNode head, int m, int n) {
+           ListNode dummy = new ListNode(0);
+              dummy.next = head;
+              ListNode pre = dummy;
+              ListNode cur = dummy.next;
+              
+              for (int i = 1; i < m; i++) {
+                  cur = cur.next;
+                  pre = pre.next;
+              }
+              for (int i = 0; i < n - m; i++) {
+                  ListNode temp = cur.next;
+                  cur.next = temp.next;
+                  temp.next = pre.next;
+                  pre.next = temp;
+              }
+              return dummy.next;
+      }
+  }
+  ```
+
+### 5.2 环
+
++ LeetCode 141: Linked List Cycle
+
+  Given a Linked List, determine if it has a cycle in it.
+
+  ```java
+   // 快慢指针解决
+      public boolean hasCycle(ListNode head) {
+          if (head == null) return false;
+          // 快慢两个指针 
+          // 如果有环，快指针和慢指针一定会相遇
+          ListNode slow = head, fast = head;
+          while (fast != null && fast.next != null) {
+              slow = slow.next;
+              fast = fast.next.next;
+              if (slow == fast) return true;
+          }
+          return false;
+      }
+  ```
+
++ LeetCode 142: Linked List Cycle II
+
+  Given the `head` of a linked list, return *the node where the cycle begins. If there is no cycle, return* `null`.
+
+  There is a cycle in a linked list if there is some node in the list that can be reached again by continuously following the `next` pointer. Internally, `pos` is used to denote the index of the node that tail's `next` pointer is connected to (**0-indexed**). It is `-1` if there is no cycle. **Note that** `pos` **is not passed as a parameter**.
+
+  **Do not modify** the linked list.
+
+  ```
+  Input: head = [3,2,0,-4], pos = 1
+  Output: tail connects to node index 1
+  Explanation: There is a cycle in the linked list, where tail connects to the second node.
+  ```
+
+  ```
+  Input: head = [1,2], pos = 0
+  Output: tail connects to node index 0
+  Explanation: There is a cycle in the linked list, where tail connects to the first node.
+  ```
+
+  Sol:
+
+  通过快慢指针可以判断一个链表是否有环。如果有环，那么**快指** 
+
+  **针走过的路径就是图中a+b+c+b**，**慢指针走过的路径就是图中a+b**，因为在相同的时 间内，快指针走过的路径是慢指针的2倍，所以这里有`a+b+c+b=2* (a+b)`，整理得到 `a=c`，也就是说图中a的路径长度和c的路径长度是一样的。 
+
+  ![LinkedListCycle](C:\zwh\Documents\myBlog\LinkedListCycle.png)
+
+  在相遇的时候再使用两个指针，一个从链表起始点开始，一个从相遇点开始，每次他们 都走一步，直到再次相遇，那么这个相遇点就是环的入口。
+
+  ```java
+  public class Solution {
+      public ListNode detectCycle(ListNode head) {
+           if (head == null || head.next == null) return null;
+              ListNode slow = head;
+              ListNode fast = head;
+  
+              while (fast != null && fast.next != null) {
+                  slow = slow.next;
+                  fast = fast.next.next;
+                  if (fast == slow) {
+                      ListNode slow2 = head;
+                      while (slow != slow2) {
+                          slow = slow.next;  // 第二个指针从源头开始走直到和慢指针相遇
+                          slow2 = slow2.next;
+                      }
+                      return slow;
+                  }
+              }
+              return null;
+      }
+  }
+  ```
+
+
+### 5.5 删除
+
++ LeetCode 237: Delete Node in a Linked List
+
+  Write a function to **delete a node** in a singly-linked list. You will **not** be given access to the `head` of the list, instead you will be given access to **the node to be deleted** directly.
+
+  It is **guaranteed** that the node to be deleted is **not a tail node** in the list.
+
+  ```
+  Input: head = [4,5,1,9], node = 5
+  Output: [4,1,9]
+  Explanation: You are given the second node with value 5, the linked list should become 4 -> 1 -> 9 after calling your function.
+  ```
+
+  ```
+  Input: head = [4,5,1,9], node = 1
+  Output: [4,5,9]
+  Explanation: You are given the third node with value 1, the linked list should become 4 -> 5 -> 9 after calling your function.
+  ```
+
+  Sol:
+
+  ```java
+  class Solution {
+      public void deleteNode(ListNode node) {
+          
+      }
+  }
+  ```
+
+  
+
