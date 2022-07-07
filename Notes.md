@@ -1351,6 +1351,32 @@ class Solution {
   ```java
   class Solution {
       public void deleteNode(ListNode node) {
+            if (node == null) return;
+              node.val = node.next.val;
+              node.next = node.next.next;
+      }
+  }
+  ```
+
++ LeetCode 83: Remove Duplicates from Sorted List
+
+  Given the `head` of a sorted linked list, *delete all duplicates such that each element appears only once*. Return *the linked list **sorted** as well*.
+
+  ```
+  Input: head = [1,1,2]
+  Output: [1,2]
+  ```
+
+  ```
+  Input: head = [1,1,2,3,3]
+  Output: [1,2,3]
+  ```
+
+  Sol:
+
+  ```java
+  class Solution {
+      public ListNode deleteDuplicates(ListNode head) {
           
       }
   }

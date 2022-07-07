@@ -316,6 +316,21 @@ public class Note5_LinkedList {
             }
             return dummy.next;
         }
+
+        // 还可以换种思路，因为交换链表的结点需要不停的断开和连接，比较麻烦。所以我们还 可以不交换链表的节点，
+        // 直接交换链表节点的值即可，这样就非常简单了
+        public ListNode swapInPairs2(ListNode head) {
+            int first;
+            ListNode temp = head;
+            while (temp != null && temp.next != null) {
+                first = temp.val;
+                temp.val = temp.next.val;
+                temp.next.val = first;
+                temp = temp.next.next;
+            }
+            return head;
+        }
+
     }
 
     // leetCode 328:
@@ -358,21 +373,42 @@ public class Note5_LinkedList {
 
     /**
      * Given the head of a singly linked list, reverse the list, and return the reversed list.
-     *
-     * @param args
      */
 
     class Solution206 {
         public ListNode reverseList(ListNode head) {
             if (head == null || head.next == null) return head;
             ListNode pre = null;
-            while (head != null) {
+            while (head != null) {         // 这段代码背下来
                 ListNode temp = head.next;
                 head.next = pre;
                 pre = head;
                 head = temp;
             }
             return pre;
+        }
+
+        // 最简单的一种方 式就是使用栈，因为栈是先进后出的。实现原理就是把链表节点一个个入栈，
+        // 当全部入栈完之后再一个个出栈，出栈的时候在把出栈的结点串成一个新的链表。
+        public ListNode reverseListStack(ListNode head) {
+            Stack<ListNode> stack = new Stack<>();
+            // 把链表节点全部放到栈当中
+            while( head != null) {
+                stack.push(head);
+                head = head.next;
+            }
+            if (stack.isEmpty()) return null;
+            ListNode node = stack.pop();
+            ListNode dummuy = node;
+            // 将栈中的节点全部出栈，然后重新连成一个新的链表
+            while(!stack.isEmpty()) {
+                ListNode tempNode = stack.pop();
+                node.next = tempNode;
+                node = node.next;
+            }
+            // 最后一个节点就是翻转前的头节点，一定要让他的next==null
+            node.next = null;
+            return dummuy;
         }
     }
 
@@ -424,8 +460,6 @@ public class Note5_LinkedList {
      * is connected to (0-indexed). It is -1 if there is no cycle. Note that pos is not passed as a parameter.
      * <p>
      * Do not modify the linked list.
-     *
-     * @param args
      */
     //通过快慢指针可以判断一个链表是否有环。如果有环，那么快指 针走过的路径就是图中a+b+c+b，慢指针走过的路径就是图中a+b，
     // 因为在相同的时 间内，快指针走过的路径是慢指针的2倍，所以这里有a+b+c+b=2* (a+b)，整理得到 a=c，也就是说图中a的路径长
@@ -454,16 +488,28 @@ public class Note5_LinkedList {
             }
             return null;
         }
+
+        // 通过set解决
+        public ListNode detectCycle2(ListNode head) {
+            Set<ListNode> set = new HashSet<>();
+            while (head != null) {
+                // 如果重复出现说明有环
+                if (!set.add(head)) return head;  // set的add方法表示往集合中添加元素，添加的时候如果没有重复的就会返回true，
+                head = head.next;                 // 如果有重复的就会 返回false。
+            }
+            return null;
+        }
+
     }
 
     // LeetCode 237: Delete Node in a Linked List
+
     /**
-     *
-     *Write a function to delete a node in a singly-linked list. You will not be given access
+     * Write a function to delete a node in a singly-linked list. You will not be given access
      * to the head of the list, instead you will be given access to the node to be deleted directly.
-     *
+     * <p>
      * It is guaranteed that the node to be deleted is not a tail node in the list.
-     *
+     * <p>
      * Input: head = [4,5,1,9], node = 5
      * Output: [4,1,9]
      * Explanation: You are given the second node with value 5, the linked list should
@@ -482,10 +528,10 @@ public class Note5_LinkedList {
     /**
      * Given the head of a sorted linked list, delete all duplicates such that each element appears only once.
      * Return the linked list sorted as well.
-     *
-     *Input: head = [1,1,2]
+     * <p>
+     * Input: head = [1,1,2]
      * Output: [1,2]
-     *
+     * <p>
      * Input: head = [1,1,2,3,3]
      * Output: [1,2,3]
      */
@@ -524,10 +570,10 @@ public class Note5_LinkedList {
     /**
      * Given the head of a sorted linked list, delete all nodes that have duplicate numbers,
      * leaving only distinct numbers from the original list. Return the linked list sorted as well.
-     *
+     * <p>
      * Input: head = [1,2,3,3,4,4,5]
      * Output: [1,2,5]
-     *
+     * <p>
      * Input: head = [1,1,1,2,3]
      * Output: [2,3]
      */
@@ -538,7 +584,7 @@ public class Note5_LinkedList {
             dummy.next = head;
             ListNode pre = dummy;
             while (pre.next != null && pre.next.next != null) {
-                if (pre.next.val == pre.next.next.val){
+                if (pre.next.val == pre.next.next.val) {
                     int sameNum = pre.next.val;
                     while (pre.next != null && pre.next.val == sameNum) {
                         pre.next = pre.next.next;
@@ -551,6 +597,269 @@ public class Note5_LinkedList {
         }
     }
 
+
+    // leetcode21: Merge two sorted lists
+
+    /**
+     * You are given the heads of two sorted linked lists list1 and list2.
+     * <p>
+     * Merge the two lists in a one sorted list. The list should be made by
+     * splicing together the nodes of the first two lists.
+     * <p>
+     * Return the head of the merged linked list.
+     * <p>
+     * Input: list1 = [1,2,4], list2 = [1,3,4]
+     * Output: [1,1,2,3,4,4]
+     */
+
+    //，我们只需要遍历每个链表的头，比较一下哪个小就把哪个链表的头拿出来放到新的链表中，一直这样循环，
+    // 直到有一个链表为空，然后我们再把另一个不为空的链表挂到新的链表中。
+    class Solution21 {
+        public ListNode mergeTwoLists(ListNode list1, ListNode list2) {
+            ListNode dummy = new ListNode(0);
+            ListNode cur = dummy;
+            while (list1 != null && list2 != null) {
+                if (list1.val < list2.val) {
+                    cur.next = new ListNode(list1.val);
+                    list1 = list1.next;
+                } else {
+                    cur.next = new ListNode(list2.val);
+                    list2 = list2.next;
+                }
+                cur = cur.next;
+            }
+            if (list1 != null) {
+                cur.next = list1;
+            } else {
+                cur.next = list2;
+            }
+            return dummy.next;
+        }
+
+        public ListNode mergeTwoSortedListsRecur(ListNode l1, ListNode l2) {
+            if (l1 == null) return l2;
+            if (l2 == null) return l1;
+            if (l1.val < l2.val) {
+                l1.next = mergeTwoSortedListsRecur(l1.next, l2);
+                return l1;
+            } else {
+                l2.next = mergeTwoSortedListsRecur(l1, l2.next);
+                return l2;
+            }
+        }
+    }
+
+    // LeetCode 234: Palindrome Linked List
+
+    /**
+     * Given the head of a singly linked list, return true if it is a palindrome.
+     * <p>
+     * Input: head = [1,2,2,1]
+     * Output: true
+     * <p>
+     * Input: head = [1,2]
+     * Output: false
+     */
+    class Solution234 {
+        public boolean isPalindrome(ListNode head) {
+            if (head == null || head.next == null) return true;
+            ListNode middle = findMiddle(head);  // 第一步找中点
+            middle.next = reverse(middle.next);  // 第二步翻转
+            ListNode p = head;
+            ListNode q = middle.next;
+            while (p != null && q != null) {  // 第三步找对应
+                if (p.val != q.val) {
+                    return false;
+                }
+                p = p.next;
+                q = q.next;
+            }
+            return true;
+        }
+
+        public ListNode findMiddle(ListNode head) {
+            ListNode slow = head;
+            ListNode fast = head.next;
+            while (fast != null && fast.next != null) {
+                slow = slow.next;
+                fast = fast.next.next;
+            }
+            return slow;
+        }
+
+        public ListNode reverse(ListNode head) {
+            ListNode pre = null;
+            while (head != null) {
+                ListNode temp = head.next;
+                head.next = pre;
+                pre = head;
+                head = temp;
+            }
+            return pre;
+        }
+
+        // 解法2：用栈
+
+        /*
+         * 栈是先进后出的一种数据结构，这里还可以使用栈先把链表的节点全部存放到栈中，后再一个个出栈，
+         * 这样就相当于链表从后往前访问了，通过这种方式也能解决
+         */
+        public boolean isPalindromeStack(ListNode head){
+            ListNode temp = head;
+            Stack<Integer> stack = new Stack<>();
+            // 把链表节点的值放在栈中
+            while (temp != null) {
+                stack.push(temp.val);
+                temp = temp.next;
+            }
+            //然后再出栈
+            while (head != null) {
+                if (head.val != stack.pop()) {
+                    return false;
+                }
+                head = head.next;
+            }
+            return true;
+        }
+
+        // 这里相当于链表从前往后全部都比较了一遍，其实我们只需要拿链表的后半部分和前半 部分比较即可，没必要全部比较，所以这里可以优化一下
+        public boolean isPaliendrome2(ListNode head) {
+            if (head == null) return true;
+            ListNode temp = head;
+            Stack<Integer> stack = new Stack<>();
+            // 链表的长度
+            int len = 0;
+            // 把链表节点的值放在栈中
+            while (temp != null) {
+                stack.push(temp.val);
+                temp = temp.next;
+                len ++;
+            }
+            // len长度除以2
+            len >>= 1;
+            while (len-- >= 0) {
+                if (head.val != stack.pop()) return false;
+                head = head.next;
+            }
+            return true;
+        }
+    }
+
+    // LeetCode 86: Partition List
+
+    /**
+     * Given the head of a linked list and a value x, partition it such that all nodes less than x come before
+     * nodes greater than or equal to x.
+     *
+     * You should preserve the original relative order of the nodes in each of the two partitions.
+     *
+     *Input: head = [1,4,3,2,5,2], x = 3
+     * Output: [1,2,2,4,3,5]
+     *
+     * Input: head = [2,1], x = 2
+     * Output: [1,2]
+     */
+
+    class Solution86{
+        public ListNode partition(ListNode head, int x) {
+            //小链表的头
+            ListNode smallHead = new ListNode(0);
+            //大链表的头
+            ListNode bigHead = new ListNode(0);
+            //小链表的尾
+            ListNode smallTail = smallHead;
+            //大链表的尾
+            ListNode bigTail = bigHead;
+            //遍历head链表
+            while (head != null) {
+                if (head.val < x) {
+                    //如果当前节点的值小于x，则把当前节点挂到小链表的后面
+                    smallTail = smallTail.next = head;
+                } else {//否则挂到大链表的后面
+                    bigTail = bigTail.next = head;
+                }
+                //继续循环下一个结点
+                head = head.next;
+            }
+            //最后再把大小链表拼接在一块即可。
+            smallTail.next = bigHead.next;
+            bigTail.next = null;
+            return smallHead.next;
+        }
+    }
+
+    // 剑指offer 52：找出两个链表的第一个公共节点
+
+    /**
+     * 输入两个链表，找出它们的第一个公共节点
+     *
+     * intersectVal=8 ,listA = [4,1,8,4,5], listB=[5,0,1,8,4,5],
+     * skipA = 2 , skipB = 3 输出：Reference of the node with value=8
+     */
+    /*
+    判断两个链表是否相交 ，如果相交就返回他们的相交的交点，如果不相交就返回null。
+    做这题最容易想到的一种解决方式就是先把第一个链表的节点全部存放到集合set中，然后遍历第二个链表的每一个节点，判断在集合set中是否存在,
+    如果存在就直接返回这个 存在的结点。如果遍历完了，在集合set中还没找到，说明他们没有相交，直接返回null即可，
+     */
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        // 创建集合set
+        Set<ListNode> set = new HashSet<>();
+        // 先把链表A的节点全部存入set中
+        while (headA != null) {
+            set.add(headA);
+            headA = headA.next;
+        }
+        // 然后访问链表B的节点，判断集合中是否包含链表B的节点，如果包含就直接返回
+        while (headB != null) {
+            if (set.contains(headB)) return headB;
+            headB = headB.next;
+        }
+        //如果集合set不包含链表B的任何一个结点，说明他们没有交点，直接返回null
+        return null;
+    }
+
+    // LeetCode 19: Remove Nth Node from end of List
+
+    /**
+     * Given the head of a linked list, remove the nth node from the end of the list and return its head.
+     *
+     * Input: head = [1,2,3,4,5], n = 2
+     * Output: [1,2,3,5]
+     *
+     * Input: head = [1,2], n = 1
+     * Output: [1]
+     */
+
+    class Solution19 {
+        /**
+         * 这题让删除链表的倒数第n个节点，首先最容易想到的就是先求出链表的长度length，
+         * 然后就可以找到要删除链表的前一个结点，让他的前一个结点指向要删除结点的下一个 结点即可，
+         * @param head
+         * @param n
+         * @return ListNode
+         */
+        public ListNode removeNthFromEnd(ListNode head, int n) {
+            ListNode pre = head;
+            int last = length(head) - n;
+            if (last == 0) return head.next;
+            // 这里首先要找到要删除链表的前一个节点
+            for (int i = 0; i < last - 1; i++) {
+                pre = pre.next;
+            }
+            // 然后让前一个节点的next指向要删除节点的next
+            pre.next = pre.next.next;
+            return head;
+        }
+
+        private int length(ListNode head) {
+            int len = 0;
+            while(head != null) {
+                len ++;
+                head = head.next;
+            }
+            return len;
+        }
+    }
 
     public static void main(String[] args) {
 
