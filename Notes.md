@@ -1377,10 +1377,185 @@ class Solution {
   ```java
   class Solution {
       public ListNode deleteDuplicates(ListNode head) {
-          
+          if (head == null || head.next == null) return head;
+              ListNode cur = head;
+              while (cur.next != null) {
+                  if (cur.next.val == cur.val) { //如果当前节点的值和下一个节点的值相同，就把下一个节点值给删除
+                      cur.next = cur.next.next;
+                  } else {  //否则cur就往后移一步
+                      cur = cur.next;
+                  }
+              }
+              return head; 
       }
   }
   ```
+  
+
+## 6. Random
+
+### 6.1 等概率抽取法
+
+问题：如何等概率地从n个数中随机抽取m个数？
+
++ 缺点1：m接近n, 出现重复的次数增多
++ 缺点2：n必须知道
+
+已有`x`个数，随机生成`x+1`个数的概率：
+
+1次生成该数的概率：`1-x/n`
+
+2次生成该数的概率：`(x/n) * (1 - x/n)`
+
+......
+
+n 次生成该数的概率：`(x/n)^(n - 1) * (1 - x/n)`.
+
+### 6.2 LeetCode中的等概率抽取法
+
+```java
+Random rmd = new Random();
+int random = md.nextInx(bound);
+```
+
++ LeetCode 398: Random Pick Index
+
+  Given an integer array `nums` with possible **duplicates**, randomly output the index of a given `target` number. You can assume that the given target number must exist in the array.
+
+  Implement the `Solution` class:
+
+  - `Solution(int[] nums)` Initializes the object with the array `nums`.
+  - `int pick(int target)` Picks a random index `i` from `nums` where `nums[i] == target`. If there are multiple valid i's, then each index should have an equal probability of returning.
+
+  ```java
+  Input
+  ["Solution", "pick", "pick", "pick"]
+  [[[1, 2, 3, 3, 3]], [3], [1], [3]]
+  Output
+  [null, 4, 0, 2]
+  Explanation:
+  Solution solution = new Solution([1, 2, 3, 3, 3]);
+  solution.pick(3); // It should return either index 2, 3, or 4 randomly. Each index should have equal probability of returning.
+  solution.pick(1); // It should return 0. Since in the array only nums[0] is equal to 1.
+  solution.pick(3); // It should return either index 2, 3, or 4 randomly. Each index should have equal probability of returning.
+  ```
+
+  Solution:
+
+  ```java
+  class Solution398 {
+   int[] nums;
+          Random random;
+  
+          public Solution398(int[] nums) {
+              this.nums = nums;
+              this.random = new Random();
+          }
+  
+          public int pick(int target) {
+              List<Integer> list = new ArrayList<>();
+              for (int i = 0; i < nums.length; i++) {
+                  if (nums[i] == target) {
+                      list.add(i);
+                  }
+              }
+              return list.get(random.nextInt(list.size()));
+          }
+  }
+  
+  /**
+   * Your Solution object will be instantiated and called as such:
+   * Solution obj = new Solution(nums);
+   * int param_1 = obj.pick(target);
+   */
+  ```
+
++ LeetCode 380: 
+
+  Implement the `RandomizedSet` class:
+
+  - `RandomizedSet()` Initializes the `RandomizedSet` object.
+  - `bool insert(int val)` Inserts an item `val` into the set if not present. Returns `true` if the item was not present, `false` otherwise.
+  - `bool remove(int val)` Removes an item `val` from the set if present. Returns `true` if the item was present, `false` otherwise.
+  - `int getRandom()` Returns a random element from the current set of elements (it's guaranteed that at least one element exists when this method is called). Each element must have the **same probability** of being returned.
+
+  You must implement the functions of the class such that each function works in **average** `O(1)` time complexity.
+
+  ```java
+  Input
+  ["RandomizedSet", "insert", "remove", "insert", "getRandom", "remove", "insert", "getRandom"]
+  [[], [1], [2], [2], [], [1], [2], []]
+  Output
+  [null, true, false, true, 2, true, false, 2]
+  
+  Explanation
+  RandomizedSet randomizedSet = new RandomizedSet();
+  randomizedSet.insert(1); // Inserts 1 to the set. Returns true as 1 was inserted successfully.
+  randomizedSet.remove(2); // Returns false as 2 does not exist in the set.
+  randomizedSet.insert(2); // Inserts 2 to the set, returns true. Set now contains [1,2].
+  randomizedSet.getRandom(); // getRandom() should return either 1 or 2 randomly.
+  randomizedSet.remove(1); // Removes 1 from the set, returns true. Set now contains [2].
+  randomizedSet.insert(2); // 2 was already in the set, so return false.
+  randomizedSet.getRandom(); // Since 2 is the only number in the set, getRandom() will always return 2.
+  ```
+
+  Solution:
+
+  ```java
+  class RandomizedSet {
+  
+          Random rmd;
+          ArrayList<Integer> list;
+          HashMap<Integer, Integer> map;
+  
+          public RandomizedSet() {
+              this.rmd = new Random();
+              this.map = new HashMap<>();  // 将arrayList的index存入 map, 形成index 和数字的键值对
+              this.list = new ArrayList<>();
+          }
+  
+          public boolean insert(int val) {
+              if (map.containsKey(val)) return false;
+              map.put(val, list.size());
+              list.add(val);
+              return true;
+          }
+  
+          public boolean remove(int val) {
+              if (!map.containsKey(val)) return false;
+              int index = map.remove(val);
+              int lastVal = list.remove(list.size() - 1);  //删除最后一个元素
+              if (index != list.size()) {
+                  list.set(index, lastVal);
+                  map.put(lastVal, index);
+              }
+              return true;
+          }
+  
+          public int getRandom() {
+              return list.get(rmd.nextInt(list.size()));
+          }
+  }
+  
+  /**
+   * Your RandomizedSet object will be instantiated and called as such:
+   * RandomizedSet obj = new RandomizedSet();
+   * boolean param_1 = obj.insert(val);
+   * boolean param_2 = obj.remove(val);
+   * int param_3 = obj.getRandom();
+   */
+  ```
+
++ 蓄水池抽样
+
+  从`n`个元素中随机抽取m个元素，但个数无法事先确定
 
   
 
+  再实际应用中，往往会遇到很大数据流的情况，因此我们无法先保存整个数据流再从中选取，二十期望有一种将数据流遍历一遍就得到所选取的元素，并且保证得到的元素是随机的算法。
+
+  + 从n 个对象中选择一个对象，但是再次之前你是不知道n的值
+
+    解法：总是选择第一个对象，以1/2的概率选择第二个，以1/3的概率选择第三个.......以1/m的概率选择第m个对象。
+
+  

@@ -861,6 +861,73 @@ public class Note5_LinkedList {
         }
     }
 
+    // LeetCode 1019: Next greater Node in a Linked List
+
+    /**
+     *
+     *You are given the head of a linked list with n nodes.
+     *
+     * For each node in the list, find the value of the next greater node. That is, for each node, find the value of
+     * the first node that is next to it and has a strictly larger value than it.
+     *
+     * Return an integer array answer where answer[i] is the value of the next greater node of the ith node (1-indexed).
+     * If the ith node does not have a next greater node, set answer[i] = 0.
+     *
+     * Input: head = [2,1,5]
+     * Output: [5,5,0]
+     *
+     * Input: head = [2,7,4,3,5]
+     * Output: [7,0,5,5,0]
+     */
+
+    class Solution1019{
+
+        // 用栈解决，参考739
+        public int[] nextLargerNodes(ListNode head) {
+            List<Integer> list = new ArrayList<>();
+            // 将元素存到List中
+            while(head != null) {
+                list.add(head.val);
+                head = head.next;
+            }
+           Stack<Integer> stack = new Stack<>();
+            int[] res = new int[list.size()];
+            for (int i = 0; i < list.size(); i++) {
+                while(!stack.isEmpty() && list.get(stack.peek()) < list.get(i)) {
+                    //如果栈顶元素对应的值小于当前值，说明栈顶元素遇到了比他小的
+                    int index = stack.pop();
+                    res[index] = list.get(i);
+                }
+                stack.push(i);
+            }
+            return res;
+        }
+
+        // 不将Linked List转化为ArrayList
+        /*
+        我们 只需要使用一个栈来存储链表中每个节点在list中的位置即可，并且栈中元素在集合list中对应的值从栈底到栈顶是递减的
+         */
+        public int[] nextLargerNodesStack(ListNode head) {
+            List<Integer> list = new ArrayList<>();
+            Stack<Integer> stack = new Stack<>();
+            for (ListNode node = head; node != null; node = node.next) {
+                while(!stack.isEmpty() && node.val > list.get(stack.peek())) {
+                    list.set(stack.pop(), node.val);
+                }
+                stack.push(list.size());
+                list.add(node.val);
+            }
+            for (Integer i : stack) {
+                list.set(i, 0);
+            }
+            int[] res = new int[list.size()];
+            for (int i = 0; i < res.length; i++) {
+                res[i] = list.get(i);
+            }
+            return res;
+        }
+    }
+
     public static void main(String[] args) {
 
     }
