@@ -2,7 +2,7 @@ package com.company.Notes;
 
 import java.util.*;
 
-public class Note10_Strings {
+public class Note8_Strings {
 
     // 680: Valid Palindrome ii
 
@@ -299,6 +299,7 @@ public class Note10_Strings {
      */
 
     public static boolean isAnagram(String s, String t) {
+
         if (s.length() != t.length()) return false; // anagrams always have equal length
 
         // make an array to store frequency of characters (total 26 characters in the alphabet)
@@ -598,25 +599,25 @@ public class Note10_Strings {
     }
 
     // LeetCode 3:
+
     /**
-     *
      * Given a string s, find the length of the longest substring without repeating characters.
-     *
+     * <p>
      * Input: s = "abcabcbb"
      * Output: 3
      * Explanation: The answer is "abc", with the length of 3.
-     *
+     * <p>
      * Input: s = "bbbbb"
      * Output: 1
      * Explanation: The answer is "b", with the length of 1.
-     *
+     * <p>
      * Input: s = "pwwkew"
      * Output: 3
      * Explanation: The answer is "wke", with the length of 3.
      * Notice that the answer must be a substring, "pwke" is a subsequence and not a substring.
      */
 
-    class lengthOfLongestSubstring{
+    class lengthOfLongestSubstring {
 
         /*
         滑动窗口
@@ -628,14 +629,14 @@ public class Note10_Strings {
             HashSet<Character> set;
             int res = 1;
             int count;
-            for (int i = 1; i < s.length(); i ++) {
+            for (int i = 1; i < s.length(); i++) {
                 set = new HashSet<>();  // 用set来判断重复元素
                 count = 1;
                 int left = i - 1;  // left指针指到i之前
                 set.add(s.charAt(i));
                 while (left >= 0 && !set.contains(s.charAt(left))) {  // 如果set里有了当前的左指针的字母，跳过
                     set.add(s.charAt(left--));
-                    count ++;
+                    count++;
                 }
                 res = Math.max(res, count);
             }
@@ -643,4 +644,75 @@ public class Note10_Strings {
         }
     }
 
+    // LeetCode5：longest palindrome
+
+    /**
+     * Given a string s, return the longest palindromic substring in s.
+     * <p>
+     * Input: s = "babad"
+     * Output: "bab"
+     * Explanation: "aba" is also a valid answer.
+     * <p>
+     * Input: s = "cbbd"
+     * Output: "bb"
+     */
+    class Solution5 {
+        public String longestPalindrome(String s) {
+            String res = "";
+            for (int l = 0; l < s.length(); l++) {
+                for (int i = l; i < s.length(); i++) {
+                    if (s.charAt(l) != s.charAt(i)) continue;
+                    String tmp = s.substring(l, i + 1);
+                    int n = tmp.length(), flag = 1;
+                    for (int j = 0; j < n / 2; j++) {
+                        if (tmp.charAt(j) != tmp.charAt(n - 1 - j)) {
+                            flag = 0;
+                            break;
+                        }
+                    }
+                    if (flag == 1) res = tmp.length() > res.length() ? tmp : res;
+                }
+                if (res.length() > s.length() - l) return res;
+            }
+            return res;
+        }
+
+        // DP
+        public static String longestPalindromeDP(String s) {
+            //边界条件判断
+            if (s.length() < 2) return s;
+            //start表示最长回文串开始的位置，
+            //maxLen表示最长回文串的长度
+            int start = 0, maxLen = 1;
+            int length = s.length();
+            boolean[][] dp = new boolean[length][length];
+            for (int right = 1; right < length; right++) {
+                for (int left = 0; left < right; left++) {
+                    //如果两种字符不相同，肯定不能构成回文子串
+                    if (s.charAt(left) != s.charAt(right)) continue;
+
+                    //下面是s.charAt(left)和s.charAt(right)两个
+                    //字符相同情况下的判断
+                    //如果只有一个字符，肯定是回文子串
+                    if (right == left) {
+                        dp[left][right] = true;
+                    } else if (right - left <= 2) {
+                        //类似于"aa"和"aba"，也是回文子串
+                        dp[left][right] = true;
+                    } else {
+                        //类似于"a******a"，要判断他是否是回文子串，只需要
+                        //判断"******"是否是回文子串即可
+                        dp[left][right] = dp[left + 1][right - 1];
+                    }
+                    //如果字符串从left到right是回文子串，只需要保存最长的即可
+                    if (dp[left][right] && right - left + 1 > maxLen) {
+                        maxLen = right - left + 1;
+                        start = left;
+                    }
+                }
+            }
+            //截取最长的回文子串
+            return s.substring(start, start + maxLen);
+        }
+    }
 }

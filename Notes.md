@@ -1552,10 +1552,339 @@ int random = md.nextInx(bound);
 
   
 
-  再实际应用中，往往会遇到很大数据流的情况，因此我们无法先保存整个数据流再从中选取，二十期望有一种将数据流遍历一遍就得到所选取的元素，并且保证得到的元素是随机的算法。
+  再实际应用中，往往会遇到很大数据流的情况，因此我们无法先保存整个数据流再从中选取，而是期望有一种将数据流遍历一遍就得到所选取的元素，并且保证得到的元素是随机的算法。
 
-  + 从n 个对象中选择一个对象，但是再次之前你是不知道n的值
+  + 从n 个对象中选择一个对象，但是在此之前你是不知道n的值
 
     解法：总是选择第一个对象，以1/2的概率选择第二个，以1/3的概率选择第三个.......以1/m的概率选择第m个对象。
+    
+  + 从n个元素中随机抽取m个元素：
+  
+    解法：前m个元素放入蓄水池，当到第k个（K > m ）时，按照 m/k的概率选中，以均等的概率去替换蓄水池中的先前被选中的任一元素。
+  
+    优点：不需要用数据结构去存储
+  
+    用法：数据流（stream）
+  
+    例子：给一个数据流（stream），等概率取m个数
+  
+    ```java
+    public int[] reservairSampling(int[] stream, int k) {
+    	Random rmd = new Random();
+    	int[] res = new int[k];
+    	
+    	for(int i = 0; i < k; i ++) {
+    		res[i] = stream[i];
+    	}
+    	
+    	for(int i = k; i < stream.length; i++) {
+    		int random = rmd.nextInt(i + 1);
+    		if (random < k) {  // 以 k/i 的概率交换
+            res[random] = stream[i];
+    		}
+    	}
+    	return res;
+    }
+    ```
+
+## 7. Stack
+
+### 7.1 题型1：平衡符号
+
++ Parentheses "{}[]()".
+
++ 单独题型，非常典型
+
+  ```java
+  // LeetCode 20: Valid Parentheses
+      /**
+       * Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.
+       *
+       * An input string is valid if:
+       *
+       * 1.Open brackets must be closed by the same type of brackets.
+       * 2.Open brackets must be closed in the correct order.
+       *
+       * Input: s = "()"
+       * Output: true
+       *
+       * Input: s = "()[]{}"
+       * Output: true
+       *
+       * Input: s = "(]"
+       * Output: false
+       */
+  
+      class Solution20 {
+          public boolean isValid(String s) {
+              if (s == null || s.length() == 0) return true;
+              Stack<Character> stack = new Stack<>();
+              for(Character ch: s.toCharArray()) {
+                  if (ch == '(') stack.push(')');
+                  else if (ch == '[') stack.push(']');
+                  else if (ch == '{') stack.push('}');
+                  else {
+                      if (stack.isEmpty() || stack.pop() != ch) return false;
+                  }
+              }
+              return stack.isEmpty();
+          }
+      }
+  ```
+
+### 7.2 压栈匹配
+
+1. 前后顺序相关联
+
+2. 有特殊字符“[]....” 或字母代表特殊意义
+
+3. 小模板：
+
+   ```java
+   while / For(){
+   	if()
+   	else if ()
+   	else if ()
+   	else{}
+   }
+   ```
+
+   
+
+   LeetCode 394： Decode String
+
+   Given an encoded string, return its decoded string.
+
+   The encoding rule is: `k[encoded_string]`, where the `encoded_string` inside the square brackets is being repeated exactly `k` times. Note that `k` is guaranteed to be a positive integer.
+
+   You may assume that the input string is always valid; there are no extra white spaces, square brackets are well-formed, etc. Furthermore, you may assume that the original data does not contain any digits and that digits are only for those repeat numbers, `k`. For example, there will not be input like `3a` or `2[4]`.
+
+   The test cases are generated so that the length of the output will never exceed `105`.
+
+   ```
+   Input: s = "3[a]2[bc]"
+   Output: "aaabcbc"
+   
+   Input: s = "3[a2[c]]"
+   Output: "accaccacc"
+   ```
+
+   Solution:
+
+   ```java
+   class Solution394{
+           public String decodeString(String s) {
+               if (s == null || s.length() == 0) {
+                   return s;
+               }
+               Stack<Integer> numStack = new Stack<>();
+               Stack<String> resStack = new Stack<>();
+               String res = "";
+               int idx = 0;
+               while (idx < s.length()){
+                   if (Character.isDigit(s.charAt(idx))){
+                       int num = 0;
+                       while (Character.isDigit(s.charAt(idx))) {
+                           num = num * 10 + s.charAt(idx) - '0';
+                           idx++;
+                       }
+                       numStack.push(num);
+                   } else if (s.charAt(idx) == '[') {
+                       resStack.push(res);
+                       res = "";
+                       idx++;
+                   } else if (s.charAt(idx) == ']') {
+                       StringBuilder temp = new StringBuilder(resStack.pop());
+                       int time = numStack.pop();
+                       for (int i = 0; i < time; i++) {
+                           temp.append(res);
+                       }
+                       res = temp.toString();
+                       idx++;
+                   } else {
+                       res += s.charAt(idx++);
+                   }
+   
+               }
+               return res;
+           }
+       }
+   ```
+
+### 7.3 表达式计算
+
+1. 正常计算：`a + b * c`.
+
+2. 逆波兰式表达法（后缀表达式）：`abc * +`.
+
+   LeetCode  224: Basic Calculator
+
+   Given a string `s` representing a valid expression, implement a basic calculator to evaluate it, and return *the result of the evaluation*.
+
+   **Note:** You are **not** allowed to use any built-in function which evaluates strings as mathematical expressions, such as `eval()`.
+
+   ```
+   Input: s = "1 + 1"
+   Output: 2
+   
+   Input: s = " 2-1 + 2 "
+   Output: 3
+   ```
+
+   Solution:
+
+   ```java
+   class Solution {
+       public int calculate(String s) {
+             Stack<Integer> stack = new Stack<>();
+               int sign = 1;
+               int res = 0;
+               for (int i = 0; i < s.length(); i++) {
+                   if (Character.isDigit(s.charAt(i))) {
+                       int num = s.charAt(i) - '0';
+                       while (i + 1 < s.length() && Character.isDigit(s.charAt(i + 1))) {
+                           num = num * 10 + s.charAt(i + 1) - '0';
+                           i ++;
+                       }
+                       res += num * sign;
+                   } else if (s.charAt(i) == '+') {
+                       sign = 1;
+                   } else if (s.charAt(i) == '-') {
+                       sign = -1;
+                   } else if (s.charAt(i) == '(') {  // 遇到（，push所有算过的值放入stack，符号位也放进去
+                       stack.push(res);
+                       stack.push(sign);
+                       res = 0;
+                       sign = 1;
+                   } else if (s.charAt(i) ==')') {
+                       res = res * stack.pop() + stack.pop();
+                   }
+               }
+               return res;
+       }
+   }
+   ```
+
+   LeetCode 150: （后缀表达式）Evaluate Reverse Polish Notation
+
+   valuate the value of an arithmetic expression in [Reverse Polish Notation](http://en.wikipedia.org/wiki/Reverse_Polish_notation).
+
+   Valid operators are `+`, `-`, `*`, and `/`. Each operand may be an integer or another expression.
+
+   **Note** that division between two integers should truncate toward zero.
+
+   It is guaranteed that the given RPN expression is always valid. That means the expression would always evaluate to a result, and there will not be any division by zero operation.
+
+   ```
+   Input: tokens = ["2","1","+","3","*"]
+   Output: 9
+   Explanation: ((2 + 1) * 3) = 9
+   
+   Input: tokens = ["4","13","5","/","+"]
+   Output: 6
+   Explanation: (4 + (13 / 5)) = 6
+   ```
+
+   Solution:
+
+   ```java
+   class Solution {
+       public int evalRPN(String[] tokens) {
+           Stack<Integer> stack = new Stack<>();
+               for (String s : tokens) {
+                   if (s.equals("+")) {
+                       stack.push(stack.pop() + stack.pop());
+                   } else if (s.equals("-")) {
+                       int b = stack.pop();
+                       int a = stack.pop();
+                       stack.push(a - b);
+                   } else if (s.equals("*")) {
+                       stack.push(stack.pop() * stack.pop());
+                   } else if (s.equals("/")) {
+                       int b = stack.pop();
+                       int a = stack.pop();
+                       stack.push(a / b);
+                   } else {  // 当前的是数字
+                       stack.push(Integer.parseInt(s));
+                   }
+               }
+               return stack.pop();
+       }
+   }
+   ```
+
+
+### 7.4 迭代极值
+
++ 最近比较后，求最优解
++ 与动态规划不同点：单独拿出来也可以
+
+    LeetCode 42: Trapping rain water
+
+    Given `n` non-negative integers representing an elevation map where the width of each bar is `1`, compute how much water it can trap after raining.
+
+    ![TrappingRainWater](https://assets.leetcode.com/uploads/2018/10/22/rainwatertrap.png)
+
+    ```
+    Input: height = [0,1,0,2,1,0,1,3,2,1,2,1]
+    Output: 6
+    Explanation: The above elevation map (black section) is represented by array [0,1,0,2,1,0,1,3,2,1,2,1]. In this case, 6 units of rain water (blue section) are being trapped.
+    ```
+
+    LeetCode 84: Largest Rectangle in Histogram
+
+    Given an array of integers `heights` representing the histogram's bar height where the width of each bar is `1`, return *the area of the largest rectangle in the histogram*.
+    
+    ![84](https://assets.leetcode.com/uploads/2021/01/04/histogram.jpg)
+
+	```
+	Input: heights = [2,1,5,6,2,3]
+	Output: 10
+	Explanation: The above is a histogram where width of each bar is 1.
+	The largest rectangle is shown in the red area, which has an area = 10 units.
+	```
+	Solution:
+	
+	```java
+	class Solution {
+	    public int largestRectangleArea(int[] heights) {
+	            if (heights == null || heights.length == 0) return 0;
+	                Stack<Integer> stack = new Stack<>();
+	                int res = 0;
+	                for (int i = 0; i <= heights.length; i ++) {
+	                    int hi = i == heights.length ? 0 : heights[i];
+	                    while (!stack.isEmpty() && hi < heights[stack.peek()]) {
+	                        int height = heights[stack.pop()];
+	                        int start = stack.isEmpty() ? -1 : stack.peek();
+	                        int area = height * (i - start - 1);
+	                        res = Math.max(res, area);
+	                    }
+	                    stack.push(i);
+	                }
+	                return res;
+	    }
+	}
+	```
+	
+	小模板：
+	
+	```java
+	Stack<OBJ> stack = new Stack<>();
+	for / while () {
+		for / while (isEmpty() && 条件) {
+			内部操作（取Math.min/max, push/pop）
+		}
+		内部操作 push/pop
+	}
+	```
+	
+	
+
+
+​    
+
+​    
+
+​    
 
   
