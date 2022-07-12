@@ -1,8 +1,6 @@
 package com.company.Notes;
 
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Stack;
+import java.util.*;
 
 public class Note7_Stack {
 
@@ -500,10 +498,174 @@ public class Note7_Stack {
                 }
             return res;
             }
+        }
+    }
 
+    // LeetCode 496: Next Great Element 1
+
+    /**
+     *The next greater element of some element x in an array is the first greater element that is to the right of x
+     * in the same array.
+     *
+     * You are given two distinct 0-indexed integer arrays nums1 and nums2, where nums1 is a subset of nums2.
+     *
+     * For each 0 <= i < nums1.length, find the index j such that nums1[i] == nums2[j] and determine the next greater
+     * element of nums2[j] in nums2. If there is no next greater element, then the answer for this query is -1.
+     *
+     * Return an array ans of length nums1.length such that ans[i] is the next greater element as described above.
+     *
+     * Input: nums1 = [4,1,2], nums2 = [1,3,4,2]
+     * Output: [-1,3,-1]
+     * Explanation: The next greater element for each value of nums1 is as follows:
+     * - 4 is underlined in nums2 = [1,3,4,2]. There is no next greater element, so the answer is -1.
+     * - 1 is underlined in nums2 = [1,3,4,2]. The next greater element is 3.
+     * - 2 is underlined in nums2 = [1,3,4,2]. There is no next greater element, so the answer is -1.
+     */
+// 6
+    class Solution496{
+        public int[] nextGreaterElement(int[] nums1, int[] nums2){
+            Stack<Integer> stack = new Stack<>();   // 单调栈，从栈顶到栈底是递增的
+            Map<Integer, Integer> map = new HashMap<>();  // map的key是数组中元素的值， value是这个值遇到的右边比它大的数
+            for (int num : nums2) {
+                // 如果栈顶元素小于num,说明栈顶元素遇到了右边第一个比它大的值，然后栈顶元素出栈，记录这个值
+                if (!stack.isEmpty() && stack.peek() < num) map.put(stack.pop(), num);
+                stack.push(num);
+            }
+            int[] res = new int[nums1.length];
+            for (int i = 0; i < nums1.length; i ++) {  //  遍历nums1中的值，然后在map中查找，如果没有找到，说明没有遇到右边比它大的值，默认给-1
+                res[i] = map.getOrDefault(nums1[i], -1);
+            }
+            return res;
+        }
+    }
+
+    // LeetCode 946: Validate Stack Sequences
+
+    /**
+     * Given two integer arrays pushed and popped each with distinct values, return true if this could have been the
+     * result of a sequence of push and pop operations on an initially empty stack, or false otherwise.
+     *
+     * Input: pushed = [1,2,3,4,5], popped = [4,5,3,2,1]
+     * Output: true
+     * Explanation: We might do the following sequence:
+     * push(1), push(2), push(3), push(4),
+     * pop() -> 4,
+     * push(5),
+     * pop() -> 5, pop() -> 3, pop() -> 2, pop() -> 1
+     *
+     * Input: pushed = [1,2,3,4,5], popped = [4,3,5,1,2]
+     * Output: false
+     * Explanation: 1 cannot be popped before 2.
+     *
+     */
+    /*
+    我们可以把数组pushed中的元素一个个入栈，每入栈一个元素就要拿栈 顶元素和popped中的第一个元素比较，看是否一样，如果一样，就出栈，然后再拿新
+    的栈顶元素和popped中第2个元素比较……。如果栈顶元素不等于popped中的第一个 元素，那么数组pushed中的元素就继续入栈，入栈之后再和popped中的
+    第一个元素 比较……。 最后再判断栈是否为空，如果为空，说明pushed数组通过一系列的出栈和入栈能得到 popped数组，直接返回true。否则就表示没法
+    得到popped数组，直接返回false。
+     */
+    class Solution946{
+        public boolean validateStackSequences(int[] pushed, int[] popped) {
+            Stack<Integer> stack = new Stack<>();
+            // 记录poped数组访问到哪一个元素了
+            int index = 0;
+            for (int num: pushed) {
+                stack.push(num);
+                while (!stack.isEmpty() && stack.peek() == popped[index++]) stack.pop();
+            }
+            return stack.isEmpty();
+        }
+    }
+
+    // LeetCode 155: minStack
+
+    /**
+     *
+     * Design a stack that supports push, pop, top, and retrieving the minimum element in constant time.
+     *
+     * Implement the MinStack class:
+     *
+     *      MinStack() initializes the stack object.
+     *      void push(int val) pushes the element val onto the stack.
+     *      void pop() removes the element on the top of the stack.
+     *      int top() gets the top element of the stack.
+     *      int getMin() retrieves the minimum element in the stack.
+     * You must implement a solution with O(1) time complexity for each function.
+     *
+     */
+    class MinStack {
+        private Stack<Integer> stack;
+        private Stack<Integer> minStack;  // 两个stack来存储
+        public MinStack() {
+            stack = new Stack<>();
+            minStack = new Stack<>();
+        }
+
+        public void push(int val) {
+            stack.push(val);
+            if (!minStack.isEmpty()) {
+                int min = minStack.peek();
+                if (val <= min) minStack.push(val);
+            } else {
+                minStack.push(val);
+            }
+        }
+
+        public void pop() {
+            int x = stack.pop();
+            if (!minStack.isEmpty()) {
+                if (x == minStack.peek()) minStack.pop();
+            }
+        }
+
+        public int top() {
+            return stack.peek();
+        }
+
+        public int getMin() {
+            return minStack.peek();
+        }
+    }
+
+    class minStack2{  // 用一个栈解决
+        private Stack<Integer> stack;
+        private int min;
+        public minStack2() {
+            stack = new Stack<>();
+            min = Integer.MAX_VALUE;
+        }
+
+        public void push(int x) {
+            if (x <= min) {
+                stack.push(min);
+                min = x;
+            }
+            stack.push(x);
+        }
+
+        public void pop(){
+            if (stack.pop() == min) min = stack.pop();  // 如果stack的顶部元素正好是min值，就pop两次，第二次让min等于pop出的值
+        }
+
+        public int top() {
+            return stack.peek();
+        }
+
+        public int getMin() {
+            return min;
         }
 
     }
+
+    /**
+     * Your MinStack object will be instantiated and called as such:
+     * MinStack obj = new MinStack();
+     * obj.push(val);
+     * obj.pop();
+     * int param_3 = obj.top();
+     * int param_4 = obj.getMin();
+     */
+
 
     public static void main(String[] args) {
         System.out.println(String.valueOf("3"));

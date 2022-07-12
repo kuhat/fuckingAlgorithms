@@ -378,9 +378,9 @@ for (char c : digit.toCharArray()){
 
 
 
-## 2. 数学题
+# 2. 数学题
 
-### 2.1  越界
+## 2.1  越界
 
 + LeetCode 7：Reverse Number
 
@@ -401,7 +401,7 @@ while (x != 0){
 return (int)res;
 ```
 
-### 2.2   比较处理
+## 2.2   比较处理
 
 ```Java
 System.out.println(Integer.MAX_VALUE + 2);
@@ -422,7 +422,7 @@ while (x != 0){
 return res;
 ```
 
-### 2.3  进位
+## 2.3  进位
 
 从个位相加，最后进位，开辟新空间
 
@@ -454,7 +454,7 @@ public static int[] plusOne(int[] digits){
 }
 ```
 
-### 2.4  符号，字母
+## 2.4  符号，字母
 
 + 符号：***sign***单独提取，最后处理
 
@@ -494,7 +494,7 @@ public static int[] plusOne(int[] digits){
   
   ```
 
-### 2.5 开方
+## 2.5 开方
 
 Given a **positive** integer *num*, write a function which returns True if *num* is a perfect square else False.
 
@@ -550,13 +550,13 @@ public static boolean isPerfectSquare2(int num){
 }
 ```
 
-## 3. 数组
+# 3. 数组
 
-### 3.1 双指针
+## 3.1 双指针
 
 数组问题大多数都可以用双指针解决
 
-#### 3.1.1 模板一：单向双指针
+### 3.1.1 模板一：单向双指针
 
 ```java
 Object result; // 返回结果 int List String
@@ -960,7 +960,7 @@ for (int i = 0; i < num.length; i ++) {
   
 
 
-## 4. 二分查找
+# 4. 二分查找
 
 + 数组 “增删改查“的最优解
 
@@ -1109,7 +1109,7 @@ for (int i = 0; i < num.length; i ++) {
      ```
 
 
-## 5. Linked List
+# 5. Linked List
 
 1. 链表单独操作
 
@@ -1188,7 +1188,7 @@ class Solution {
 }
 ```
 
-### 5.1 翻转
+## 5.1 翻转
 
 + LeetCode 206：
 	 Given the head of a singly linked list, reverse the list, and return the reversed list.
@@ -1249,7 +1249,7 @@ class Solution {
   }
   ```
 
-### 5.2 环
+## 5.2 环
 
 + LeetCode 141: Linked List Cycle
 
@@ -1326,7 +1326,7 @@ class Solution {
   ```
 
 
-### 5.5 删除
+## 5.5 删除
 
 + LeetCode 237: Delete Node in a Linked List
 
@@ -1392,9 +1392,9 @@ class Solution {
   ```
   
 
-## 6. Random
+# 6. Random
 
-### 6.1 等概率抽取法
+## 6.1 等概率抽取法
 
 问题：如何等概率地从n个数中随机抽取m个数？
 
@@ -1411,7 +1411,7 @@ class Solution {
 
 n 次生成该数的概率：`(x/n)^(n - 1) * (1 - x/n)`.
 
-### 6.2 LeetCode中的等概率抽取法
+## 6.2 LeetCode中的等概率抽取法
 
 ```java
 Random rmd = new Random();
@@ -1587,9 +1587,9 @@ int random = md.nextInx(bound);
     }
     ```
 
-## 7. Stack
+# 7. Stack
 
-### 7.1 题型1：平衡符号
+## 7.1 题型1：平衡符号
 
 + Parentheses "{}[]()".
 
@@ -1632,7 +1632,7 @@ int random = md.nextInx(bound);
       }
   ```
 
-### 7.2 压栈匹配
+## 7.2 压栈匹配
 
 1. 前后顺序相关联
 
@@ -1711,7 +1711,7 @@ int random = md.nextInx(bound);
        }
    ```
 
-### 7.3 表达式计算
+## 7.3 表达式计算
 
 1. 正常计算：`a + b * c`.
 
@@ -1814,7 +1814,7 @@ int random = md.nextInx(bound);
    ```
 
 
-### 7.4 迭代极值
+## 7.4 迭代极值
 
 + 最近比较后，求最优解
 + 与动态规划不同点：单独拿出来也可以
@@ -1880,11 +1880,559 @@ int random = md.nextInx(bound);
 	
 	
 
-
 ​    
 
-​    
+# 8. String
 
-​    
+## 8.1 String 基本函数
+
+1. Length()
+2. equals()
+3. subString()
+4. indexOf()
+5. lastIndexOf()
+6. startsWith()
+7. toCharArray()
+8. charAt()
+9. split()
+10. trim()
+
+字符串四重奏：
+
+1. SubString
+2. Palindrome
+3. Parentheses
+4. Subsequence
+
+## 8.2 函数的时间复杂度
+
+1. subString(): 时间复杂度：O(n)
+
+2. indexOf() / lasdtIndexOf(): 时间复杂度：O(n * m) where n is length of the text and m is a length of them.
+
+3. startWith(): o(n)
+
+   + LeetCode28: Implement strStr()
+
+     Given two strings `needle` and `haystack`, return the index of the first occurrence of `needle` in `haystack`, or `-1` if `needle` is not part of `haystack`.
+
+     **Clarification:**
+
+     What should we return when `needle` is an empty string? This is a great question to ask during an interview.
+
+     For the purpose of this problem, we will return 0 when `needle` is an empty string. This is consistent to C's [strstr()](http://www.cplusplus.com/reference/cstring/strstr/) and Java's [indexOf()](https://docs.oracle.com/javase/7/docs/api/java/lang/String.html#indexOf(java.lang.String)).
+
+     ```
+     Input: haystack = "hello", needle = "ll"
+     Output: 2
+     ```
+
+     ```
+     Input: haystack = "aaaaa", needle = "bba"
+     Output: -1
+     ```
+
+     Solution:
+
+     ```java
+      class Solution28 {
+             public int strStr(String haystack, String needle) {
+                 if (needle == null || needle.length() == 0) return 0;
+                 for (int i = 0; i < haystack.length(); i++) {
+                     if (i + needle.length() > haystack.length()) break;
+                     for (int j = 0; j < needle.length(); j++) {
+                         if (haystack.charAt(i + j) != needle.charAt(j)) break;
+                         if (j == needle.length() - 1) return i;
+                     }
+                 }
+                 return -1;
+             }
+     }
+     ```
+
+   + LeetCode 14: Longest Common prefix
+
+     Write a function to find the longest common prefix string amongst an array of strings.
+
+     If there is no common prefix, return an empty string `""`.
+
+     ```
+     Input: strs = ["flower","flow","flight"]
+     Output: "fl"
+     ```
+
+     Solution:
+
+     ```java
+     class Solution14{
+             public String longestCommonPrefix(String[] strs) {
+                 if (strs == null || strs.length == 0) return "";
+                 for (int i = 0; i < strs[0].length(); i ++) {  // 将第一个单词的字母拿出来一个接着一个遍历
+                     char c = strs[0].charAt(i);
+                     for (int j = 1; j < strs.length; j++) {  // 将接着的字符串的相应位置的字母拿去和第一个字母的对应位置比较
+                         if (i == strs[j].length() || strs[j].charAt(i) != c ) {
+                             return strs[0].substring(0, i);
+                         }
+                     }
+                 }
+                 return strs[0];  // 如果第一个单词遍历完了，直接输出第一个单词
+             }
+         }
+     ```
+
+## 8.3 正则表达式
+
+用来检索和替换字符串中的内容
+
++ +：匹配前面的子表达式一次或多次（大于等于1次）。例如，“zo+”能匹配“zo” 以及“zoo”, 但不能匹配"z".
+
++ ?：匹配前面的子表达式0次或者一次。例如"do(es)?"可以匹配"do" 或者"does".
+
++ 常用正则表达式：
+
+  + `String str = s.split(" ");`  分隔单个空格
+
+  + `String str = s.split("\\s+");`  分隔多个空格
+
+  + `String str = s.split("\\.");`   分隔`.`正则表达式中`.`代表任意字符，这时需要\\\来
+
+  + `String str = s.split(",");`   分隔`,`
+
+  + `String str = s.split("/+");` 分隔 `/`
+
+    + LeetCode 165: Compare Version numbers
+
+      Given two version numbers, `version1` and `version2`, compare them.
+
+      
+
+      Version numbers consist of **one or more revisions** joined by a dot `'.'`. Each revision consists of **digits** and may contain leading **zeros**. Every revision contains **at least one character**. Revisions are **0-indexed from left to right**, with the leftmost revision being revision 0, the next revision being revision 1, and so on. For example `2.5.33` and `0.1` are valid version numbers.
+
+      To compare version numbers, compare their revisions in **left-to-right order**. Revisions are compared using their **integer value ignoring any leading zeros**. This means that revisions `1` and `001` are considered **equal**. If a version number does not specify a revision at an index, then **treat the revision as `0`**. For example, version `1.0` is less than version `1.1` because their revision 0s are the same, but their revision 1s are `0` and `1` respectively, and `0 < 1`.
+
+      *Return the following:*
+
+      - If `version1 < version2`, return `-1`.
+      - If `version1 > version2`, return `1`.
+      - Otherwise, return `0`.
+
+      ```
+      Input: version1 = "1.01", version2 = "1.001"
+      Output: 0
+      Explanation: Ignoring leading zeroes, both "01" and "001" represent the same integer "1".
+      ```
+
+      ```
+      Input: version1 = "1.0", version2 = "1.0.0"
+      Output: 0
+      Explanation: version1 does not specify revision 2, which means it is treated as "0".
+      ```
+
+      Solution:
+
+      ```java
+      class Solution {
+          public int compareVersion(String version1, String version2) {
+                String[] v1 = version1.split("\\.");
+                  String[] v2 = version2.split("\\.");
+                  for (int i = 0; i < Math.max(v2.length, v1.length); i ++) {
+                      int num1 = i < v1.length ? Integer.parseInt(v1[i]) : 0;
+                      int num2 = i < v2.length ? Integer.parseInt(v2[i]) : 0;
+                      if (num1 < num2) return -1;
+                      else if (num1 > num2) return 1;
+                  }
+                  return 0;
+          }
+      }
+      ```
+
+      
+
+## 8.4 转义字符 & 通配符
+
++ 转义字符：所有的ASCII 码都可以用`\`加数字（一般是8进制数字）来表示。而C中定义了一些字母前加`“\”`来表示常见的那些不能显示的ASCII的字符，如 `\0, \t, \n ` 等，就是转义字符，以为后面的字符，都不是它本来的ASCII字符意思了。字符串中一个`\`·会自动识别为转义字符，如果要表示`\`本省，需要写成`\\`
++ 通配符 (wildcard): 代替一个或者多个真正字符 （星号`*` 和 问号`?`）
+
+    ## 8.5 String Vs. StringBuilder Vs. StringBuffer
+
++ leetCode 168: Excel Sheet Column Title
+
+  Given an integer `columnNumber`, return *its corresponding column title as it appears in an Excel sheet*.
+
+  For example:
+
+  ```
+  A -> 1
+  B -> 2
+  C -> 3
+  ...
+  Z -> 26
+  AA -> 27
+  AB -> 28 
+  ...
+  Input: columnNumber = 1
+  Output: "A"
+  Input: columnNumber = 28
+  Output: "AB"
+  ```
+
+  Solution:
+
+  ```java
+   class Solution168{
+          public String convertToTitle(int columnNumber) {
+              StringBuilder sb = new StringBuilder();
+              while (columnNumber > 0) {
+                  columnNumber--;
+                  sb.append((char)('A' + columnNumber % 26));
+                  columnNumber /= 26;
+              }
+              return sb.reverse().toString();
+          }
+      }
+  ```
+
++ String: 字符串常量，对象一经创建后该对象不可更改
++ 对String对象的任何改变都不影响到原对象，相关的任何change操作都会产生新的对象
++ StringBuilder：对象是变量，可以更改
++ StringBuilder是线程不安全的，而StringBuffer是线程安全的
++ StringBuffer很多方法可以带有synchronized关键字
+
+## 8.6 常考题型1：Anagram
+
+相同字母异序词
+
+做法：count sort
+
+小模板：
+
+```java
+int[] count = new int[26];
+for(int i = 0; i < s.length(); i ++) {
+	count[s.charAt(i) - 'a'] ++;
+}3
+```
+
+LeetCode 242: Valid Anagram
+
+Given two strings `s` and `t`, return `true` *if* `t` *is an anagram of* `s`*, and* `false` *otherwise*.
+
+An **Anagram** is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once.
+
+Input: s = "anagram", t = "nagaram"
+Output: true
+
+```java
+	 public boolean isAnagram(String s, String t) {
+       if(s.length()!=t.length()) return false; // anagrams always have equal length
+    // make an array to store frequency of characters (total 26 characters in the alphabet)
+    int[] fmap = new int[26];     
+    
+    // loop through the strings because now they have equal length and store the frequency of characters of string s as positive 
+	// and frequency of string t characters as negative and if they are anagrams 
+	// then frequencies should cancel out each other and should be zero at every index.
+    for(int i = 0; i<s.length(); i++){
+        char c1 = s.charAt(i);
+        char t1 = t.charAt(i);
+        fmap[c1 - 'a']++;
+        fmap[t1 - 'a']--;
+    }
+    // if there is any value that is not zero then return false immediately
+    for(int val: fmap)
+        if(val!=0) return false;
+    
+    // return true if it safely came out of the loop
+    return true;       
+}
+```
+
+## 8.7  常考题型SubString
+
++ Sliding window
+
+  模板：
+
+  ```java
+  for(int i = 0; i < s.length(); i++) {
+  	while(){
+  		j++;
+  	}
+  }
+  ```
 
   
+
++ 双指针，一前一后
+
+  LeetCode 76: minimum window subString
+
+  Given two strings `s` and `t` of lengths `m` and `n` respectively, return *the **minimum window substring** of* `s` *such that every character in* `t` *(**including duplicates**) is included in the window. If there is no such substring**, return the empty string* `""`*.*
+
+  The testcases will be generated such that the answer is **unique**.
+
+  A **substring** is a contiguous sequence of characters within the string.
+
+  ```
+  Input: s = "ADOBECODEBANC", t = "ABC"
+  Output: "BANC"
+  Explanation: The minimum window substring "BANC" includes 'A', 'B', and 'C' from string t.
+  ```
+
+  Solution:
+
+  ```java
+   // 用数组来记录每个字母出现的次数
+      public String minWindow1(String s, String t) {
+          int[] map = new int[128];
+          for (char c : t.toCharArray()) {
+              map[c]++;  // 记录字符串t中每个字符的数量
+          }
+          int count = t.length();
+          int left = 0;  // 窗口左边界
+          int right = 0;  // 窗口右边界
+          int minWindowLen = Integer.MAX_VALUE;  // 覆盖t的最小长度
+          int strStart = 0;  // 覆盖字符串t的开始位置
+          while (right < s.length()) {
+              if (map[s.charAt(right++)]-- > 0) count--;  // 如果找到一个在t中的字符，count减一
+              while (count == 0) {  // 如果全部覆盖
+                  if (right - left < minWindowLen) {  // 如果有更小的窗口就更新窗口
+                      minWindowLen = right - left;
+                      strStart = left;
+                  }
+                  if (map[s.charAt(left++)]++ == 0) {  // 移除最左的元素，左指针向右走
+                      count++;
+                  }
+              }
+          }
+          if (minWindowLen != Integer.MAX_VALUE) {
+              return s.substring(strStart, strStart + minWindowLen);
+          }
+          return "";
+      }
+      /*
+      总结：滑动窗口类型的题也是最常见的，一般会有两个指针，分别指向窗口的左边界和右边界，
+      如果窗口不满足条件我们就移动右边界来扩大窗口，如果满足条件我们可以移动左边界来
+      缩小窗口，确定这个更小的窗口是否还满足条件……
+       */
+  ```
+
+## 8.8 常考题型3 - Parentheses
+
++ 求单一结果：Stack
+
++ 求多个结果：Backtracking + Recusion
+
+  LeetCode 32: Longest Valid Parentheses
+
+  Given a string containing just the characters `'('` and `')'`, find the length of the longest valid (well-formed) parentheses substring.
+
+  ```
+  Input: s = "(()"
+  Output: 2
+  Explanation: The longest valid parentheses substring is "()".
+  ```
+
+  ```
+  Input: s = ")()())"
+  Output: 4
+  Explanation: The longest valid parentheses substring is "()()".
+  ```
+  
+  Solution:
+  
+  ```java
+   class Solution32 {
+          public int longestValidParentheses(String s) {
+              Stack<Integer> stack = new Stack<>();
+              int res = 0, j = -1;
+              for (int i = 0; i < s.length(); i++) {
+                  if (s.charAt(i) == '(') stack.push(i);
+                  else{  
+                      if (stack.isEmpty()) j = i;  // 一开始就遇到（
+                      else {
+                          stack.pop();
+                          if (stack.isEmpty()) res = Math.max(res, i - j);
+                          else res = Math.max(res, i - stack.peek());
+                      }
+                  }
+              }
+              return res;
+          }
+      }
+  ```
+
+## 8.9 常考题型：Palindrome
+
++ 求单一结果String：正常for循环
+
++ 求单一结果个数：动态规划
+
++ 求多个结果：Backtracking + Recursion
+
++ 模板：
+
+  ```java
+  private boolean isPalindrome(String s) {
+  	int left = 0;
+  	int right = s.length() - 1;
+  	whiile(left < right) {
+  		if(s.charAt(left) != s.charAt(right)) {
+  			return false;
+  		}
+  	left ++;
+  	right --;
+  	}
+  	return true;
+  }
+  ```
+
+## 8.10 常考题型5：SubSequence
+
++ 以单一数位结果：动态规划
+
++ 最难的题型之一
+
++ # [392\. Is Subsequence](https://leetcode.com/problems/is-subsequence/submissions/)
+
+  ## Description
+
+  Difficulty: **Easy**  
+
+  Related Topics: [Two Pointers](https://leetcode.com/tag/two-pointers/), [String](https://leetcode.com/tag/string/), [Dynamic Programming](https://leetcode.com/tag/dynamic-programming/)
+
+
+  Given two strings `s` and `t`, return `true` _if_ `s` _is a **subsequence** of_ `t`_, or_ `false` _otherwise_.
+
+  A **subsequence** of a string is a new string that is formed from the original string by deleting some (can be none) of the characters without disturbing the relative positions of the remaining characters. (i.e., `"ace"` is a subsequence of `"<u>a</u>b<u>c</u>d<u>e</u>"` while `"aec"` is not).
+
+  **Example 1:**
+
+  ```
+  Input: s = "abc", t = "ahbgdc"
+  Output: true
+  ```
+
+  **Example 2:**
+
+  ```
+  Input: s = "axc", t = "ahbgdc"
+  Output: false
+  ```
+
+  **Constraints:**
+
+  *   `0 <= s.length <= 100`
+  *   0 <= t.length <= 10<sup>4</sup>
+  *   `s` and `t` consist only of lowercase English letters.
+
+  **Follow up:** Suppose there are lots of incoming `s`, say s<sub>1</sub>, s<sub>2</sub>, ..., s<sub>k</sub> where k >= 10<sup>9</sup>, and you want to check one by one to see if `t` has its subsequence. In this scenario, how would you change your code?
+
+  ## Solution
+
+  Language: **Java**
+
+  ```java
+  class Solution {
+      public boolean isSubsequence(String s, String t) {
+                      if (s == null || s.length() == 0) return true;
+              int i = 0, j = 0;
+              while (i < s.length() && j < t.length()) {
+                  if (s.charAt(i) == t.charAt(j)) i++;
+                  j++;
+              }
+              return i == s.length();
+      }
+  }
+  ```
+
+## 8.11 常考题型6：实现题
+
++ 从最简单到最难
++ 最常考：边界条件
+
+
+
+# 11. 回溯法
+
+## 11.1 二叉树的遍历
+
++ 三种遍历方式
+
+  1. 前序遍历（根节点开始），顺序是**根节点** -> 左子树 -> 右子树
+
+     ```java
+     public void preOrder(TreeNode node) {
+     	if ("终止条件") // 必须要有
+     		return;
+     	逻辑处理  // 不是必须的
+     	递归调用  // 必须要有
+     }
+     ```
+
+     **终止条件**是node等于空，**逻辑处理**这块直接打印当前节点的值即可，**递归调用**是先打印左子树在打印右子树:
+
+     ```java
+     public void preOrder(TreeNode node) {
+     	if (node == null) return;
+     	System.out.println(node.val + "");
+     	preOrder(node.left);
+     	preOrder(node.right);
+     }
+     ```
+
+  2. 中序遍历 （根节点再中间），左子树 -> **根节点** -> 右子树
+
+     ```java
+     public void inOrder(TreeNode node) {
+     	if (node == null) return;
+     	inOrder(node.left);
+     	System.out.println(node.val);
+     	inOrder(node.right);
+     }
+     ```
+
+  3. 后序遍历（根节点再最后），左子树 -> 右子树 -> **根节点**
+
+     ```java
+     public void postOrder(TreeNode tree) {
+     	if (tree == null) return;
+     	postOrder(tree.left);
+     	postOrder(tree.right);
+     	Syste.out.println(tree.val);
+     }
+     ```
+
+     
+
++ 模板
+
+  ```java
+  private void backTrack("原始函数") {
+  	// 终止条件
+      if ("终止条件") {
+          // 一些逻辑，（可有可无，视情况而定）
+          return;
+      }
+      for (int i = "for 循环开始的参数"; i < "for循环借宿的参数"; i++) {
+          // 一些逻辑操作（可有可无）
+          
+          // 做出选择
+          
+          // 递归
+          backtrack("新的参数");
+          // 一些逻辑操作（可有可无，视情况而定）
+          
+          // 撤销选择
+      }
+  }
+  ```
+
+  + 为什么要最后一步撤销选择：
+
+    递归分为递和归两部分，递就是往下传递，归就是往回走。递归你从什么地方调用最终还会回到什么地方去，我们来画个简单的图看一下
+
+    ![递归](https://mmbiz.qpic.cn/mmbiz_png/PGmTibd8KQBEPUibuD2icIj0YTAfagvF110FIEMic6s7zfagYiczv1Bzia6CNicg32Iv3TkxgZGd3hvbChSQ91XFxcTXw/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1)
+	
+	  
+	
+	  这是一棵非常简单的3叉树，假如要对他进行DFS遍历，当沿着1→2这条路径走下去的时候，list中应该是[1，2]。因为是递归调用最终还会回到节点1，如果不把2给移除掉，当沿着1→4这个分支走下去的时候就变成[1，2，4]，但实际上1→4这个分支的结果应该是[1，4]，这是因为我们把前一个分支的值给带过来了。当1，2这两个节点遍历完之后最终还是返回节点1，在回到节点1的时候就应该把结点2的值给移除掉，让list变为[1]，然后再沿着1→4这个分支走下去，结果就是[1，4]。

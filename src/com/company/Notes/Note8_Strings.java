@@ -110,7 +110,7 @@ public class Note8_Strings {
     // 用数组来记录每个字母出现的次数
     public String minWindow1(String s, String t) {
         int[] map = new int[128];
-        for (char c : s.toCharArray()) {
+        for (char c : t.toCharArray()) {
             map[c]++;  // 记录字符串t中每个字符的数量
         }
         int count = t.length();
@@ -715,4 +715,733 @@ public class Note8_Strings {
             return s.substring(start, start + maxLen);
         }
     }
+
+    // LeetCode28: Implement strStr()
+
+    /**
+     * Implement strStr().
+     * <p>
+     * Given two strings needle and haystack, return the index of the first occurrence of needle in haystack, or -1 if
+     * needle is not part of haystack.
+     * <p>
+     * Clarification:
+     * <p>
+     * What should we return when needle is an empty string? This is a great question to ask during an interview.
+     * <p>
+     * For the purpose of this problem, we will return 0 when needle is an empty string. This is consistent to C's
+     * strstr() and Java's indexOf().
+     * <p>
+     * Input: haystack = "hello", needle = "ll"
+     * Output: 2
+     * <p>
+     * Input: haystack = "aaaaa", needle = "bba"
+     * Output: -1
+     */
+
+    class Solution28 {
+        public int strStr(String haystack, String needle) {
+            if (needle == null || needle.length() == 0) return 0;
+            for (int i = 0; i < haystack.length(); i++) {
+                if (i + needle.length() > haystack.length()) break;
+                for (int j = 0; j < needle.length(); j++) {
+                    if (haystack.charAt(i + j) != needle.charAt(j)) break;
+                    if (j == needle.length() - 1) return i;
+                }
+            }
+            return -1;
+        }
+    }
+
+    // LeetCode 14: Longest Common Prefix
+    /**
+     *Write a function to find the longest common prefix string amongst an array of strings.
+     *
+     * If there is no common prefix, return an empty string "".
+     *
+     * Input: strs = ["flower","flow","flight"]
+     * Output: "fl"
+     *
+     * Input: strs = ["dog","racecar","car"]
+     * Output: ""
+     * Explanation: There is no common prefix among the input strings.
+     */
+    class Solution14{
+        public String longestCommonPrefix(String[] strs) {
+            if (strs == null || strs.length == 0) return "";
+            for (int i = 0; i < strs[0].length(); i ++) {  // 将第一个单词的字母拿出来一个接着一个遍历
+                char c = strs[0].charAt(i);
+                for (int j = 1; j < strs.length; j++) {  // 将接着的字符串的相应位置的字母拿去和第一个字母的对应位置比较
+                    if (i == strs[j].length() || strs[j].charAt(i) != c ) {
+                        return strs[0].substring(0, i);
+                    }
+                }
+            }
+            return strs[0];  // 如果第一个单词遍历完了，直接输出第一个单词
+        }
+    }
+
+    // LeetCode 165: Compare Version Numbers
+    /**
+     * Given two version numbers, version1 and version2, compare them.
+     *
+     * Version numbers consist of one or more revisions joined by a dot '.'. Each revision consists of digits and may
+     * contain leading zeros. Every revision contains at least one character. Revisions are 0-indexed from left to right,
+     * with the leftmost revision being revision 0, the next revision being revision 1, and so on. For example 2.5.33 and 0.1 are valid version numbers.
+     *
+     * To compare version numbers, compare their revisions in left-to-right order. Revisions are compared using their
+     * integer value ignoring any leading zeros. This means that revisions 1 and 001 are considered equal. If a version
+     * number does not specify a revision at an index, then treat the revision as 0. For example, version 1.0 is less
+     * than version 1.1 because their revision 0s are the same, but their revision 1s are 0 and 1 respectively, and 0 < 1.
+     *
+     * Return the following:
+     *
+     * If version1 < version2, return -1.
+     * If version1 > version2, return 1.
+     * Otherwise, return 0.
+     *
+     */
+    /*
+    Input: version1 = "1.01", version2 = "1.001"
+    Output: 0
+    Explanation: Ignoring leading zeroes, both "01" and "001" represent the same integer "1".
+     */
+
+    class Solution165{
+        public int compareVersion(String version1, String version2) {
+            String[] v1 = version1.split("\\.");
+            String[] v2 = version2.split("\\.");
+            for (int i = 0; i < Math.max(v2.length, v1.length); i ++) {
+                int num1 = i < v1.length ? Integer.parseInt(v1[i]) : 0;
+                int num2 = i < v2.length ? Integer.parseInt(v2[i]) : 0;
+                if (num1 < num2) return -1;
+                else if (num1 > num2) return 1;
+            }
+            return 0;
+        }
+    }
+
+    // LeetCode 168: Excel Column Title
+    /**
+     * Given an integer columnNumber, return its corresponding column title as it appears in an Excel sheet.
+     *
+     * For example:
+     *
+     * A -> 1
+     * B -> 2
+     * C -> 3
+     * ...
+     * Z -> 26
+     * AA -> 27
+     * AB -> 28
+     * ...
+     *
+     *
+     * Example 1:
+     *
+     * Input: columnNumber = 1
+     * Output: "A"
+     * Example 2:
+     *
+     * Input: columnNumber = 28
+     * Output: "AB"
+     */
+
+    class Solution168{
+
+        public String convertToTitle(int columnNumber) {
+            StringBuilder sb = new StringBuilder();
+            while (columnNumber > 0) {
+                columnNumber--;
+                sb.append((char)('A' + columnNumber % 26));
+                columnNumber /= 26;
+            }
+            return sb.reverse().toString();
+        }
+    }
+
+    //LeetCode 32: Longest Valid Parentheses
+    /**
+     * Given a string containing just the characters '(' and ')', find the length of the longest valid
+     * (well-formed) parentheses substring.
+     *
+     * Input: s = "(()"
+     * Output: 2
+     * Explanation: The longest valid parentheses substring is "()".
+     *
+     * Input: s = ")()())"
+     * Output: 4
+     * Explanation: The longest valid parentheses substring is "()()".
+     */
+    class Solution32 {
+        public int longestValidParentheses(String s) {
+            Stack<Integer> stack = new Stack<>();
+            int res = 0, j = -1;
+            for (int i = 0; i < s.length(); i++) {
+                if (s.charAt(i) == '(') stack.push(i);
+                else{
+                    if (stack.isEmpty()) j = i;  // 一开始就遇到（
+                    else {
+                        stack.pop();
+                        if (stack.isEmpty()) res = Math.max(res, i - j);
+                        else res = Math.max(res, i - stack.peek());
+                    }
+                }
+            }
+            return res;
+        }
+    }
+
+    // LeetCode 392: Is Subsequence
+    /**
+     * Given two strings s and t, return true if s is a subsequence of t, or false otherwise.
+     *
+     * A subsequence of a string is a new string that is formed from the original string by deleting some (can be none)
+     * of the characters without disturbing the relative positions of the remaining characters.
+     * (i.e., "ace" is a subsequence of "abcde" while "aec" is not).
+     *
+     * Input: s = "abc", t = "ahbgdc"
+     * Output: true
+     *
+     * Input: s = "axc", t = "ahbgdc"
+     * Output: false
+     */
+    class Solution392{
+        public boolean isSubsequence(String s, String t) {
+            if (s == null || s.length() == 0) return true;
+            int i = 0, j = 0;  // i控制的是s
+            while (i < s.length() && j < t.length()) {
+                if (s.charAt(i) == t.charAt(j)) i++;
+                j++;
+            }
+            return i == s.length();
+        }
+    }
+
+    // LeetCode 521: Longest Uncommon Subsequence I
+
+    /**
+     * Given two strings a and b, return the length of the longest uncommon subsequence between a and b. If the longest
+     * uncommon subsequence does not exist, return -1.
+     *
+     * An uncommon subsequence between two strings is a string that is a subsequence of one but not the other.
+     *
+     * A subsequence of a string s is a string that can be obtained after deleting any number of characters from s.
+     *
+     * For example, "abc" is a subsequence of "aebdc" because you can delete the underlined characters in "aebdc" to
+     * get "abc". Other subsequences of "aebdc" include "aebdc", "aeb", and "" (empty string).
+     *
+     * Input: a = "aba", b = "cdc"
+     * Output: 3
+     * Explanation: One longest uncommon subsequence is "aba" because "aba" is a subsequence of "aba" but not "cdc".
+     * Note that "cdc" is also a longest uncommon subsequence.
+     *
+     * Input: a = "aaa", b = "bbb"
+     * Output: 3
+     * Explanation: The longest uncommon subsequences are "aaa" and "bbb".
+     *
+     * Input: a = "aaa", b = "aaa"
+     * Output: -1
+     * Explanation: Every subsequence of string a is also a subsequence of string b. Similarly, every subsequence of string b is also a subsequence of string a.
+     */
+
+    class Solution521 {
+        public int findLUSlength(String a, String b) {
+            return a.equals(b) ? -1 : Math.max(a.length(), b.length());
+        }
+    }
+
+    // LeetCode 58: LengthOf Last Word
+    /**
+     * Given a string s consisting of words and spaces, return the length of the last word in the string.
+     *
+     * A word is a maximal substring consisting of non-space characters only.
+     *
+     * Input: s = "Hello World"
+     * Output: 5
+     * Explanation: The last word is "World" with length 5.
+     *
+     * Input: s = "   fly me   to   the moon  "
+     * Output: 4
+     * Explanation: The last word is "moon" with length 4.
+     */
+
+    class Solution58{
+        public int lengthOfLastWord(String s) {
+            String[] strings = s.split(" ");
+            if (strings.length == 0) return 0;
+            return strings[strings.length - 1].length();
+        }
+    }
+
+    //LeetCode 171: Excel sheet column number
+    /**
+     *
+     * Given a string columnTitle that represents the column title as appears in an Excel sheet, return its corresponding column number.
+     *
+     * For example:
+     *
+     * A -> 1
+     * B -> 2
+     * C -> 3
+     * ...
+     * Z -> 26
+     * AA -> 27
+     * AB -> 28
+     * ...
+     *
+     * Input: columnTitle = "A"
+     * Output: 1
+     *
+     * Input: columnTitle = "AB"
+     * Output: 28
+     * res = 1 * 26 + 2 = 28
+     */
+    class Solution171 {
+        public int titleToNumber(String columnTitle) {
+            int res = 0;
+            for (int i = 0; i < columnTitle.length(); i++) {
+                res = res * 26 + (columnTitle.charAt(i) - 'A' + 1);
+            }
+            return res;
+        }
+    }
+
+    // LeetCode 161: one Edit Distance
+    /**
+     * GIven two Strings s and t, determine if they are both one edit distance apart
+     *
+     * 1. abcre abere
+     * 2. abdc abc
+     * 3. abc abdc
+     *
+     */
+    class Solution161{
+        public boolean isOneEditDistance (String s, String t) {
+            for (int i = 0; i < Math.min(s.length(), t.length()); i++) {
+                if (s.charAt(i) != t.charAt(i)) return s.substring( i + 1).equals(t.substring(i + 1));
+                else if (s.length() > t.length()) return s.substring(i+1).equals(t.substring(i));
+                else return t.substring(i+1).equals(s.substring(i));
+            }
+            return Math.abs(s.length() - t.length()) == 1;
+        }
+    }
+
+    // LeetCode 434: Number of Segments in a String
+    /**
+     *
+     * Given a string s, return the number of segments in the string.
+     *
+     * A segment is defined to be a contiguous sequence of non-space characters.
+     *
+     * Input: s = "Hello, my name is John"
+     * Output: 5
+     * Explanation: The five segments are ["Hello,", "my", "name", "is", "John"]
+     *
+     * time: o(n):trim为O(n)
+     */
+    class Solution434{
+        public int conutSegments(String s) {
+            s = s.trim();
+            if (s.length() == 0) return 0;
+            return s.split("\\s+").length;
+        }
+    }
+
+    // LeetCode 482: License key formatting
+
+    /**
+     * You are given a license key represented as a string s that consists of only alphanumeric characters and dashes.
+     * The string is separated into n + 1 groups by n dashes. You are also given an integer k.
+     *
+     * We want to reformat the string s such that each group contains exactly k characters, except for the first group,
+     * which could be shorter than k but still must contain at least one character. Furthermore, there must be a dash
+     * inserted between two groups, and you should convert all lowercase letters to uppercase.
+     *
+     * Return the reformatted license key.
+     *
+     * Input: s = "5F3Z-2e-9-w", k = 4
+     * Output: "5F3Z-2E9W"
+     * Explanation: The string s has been split into two parts, each part has 4 characters.
+     * Note that the two extra dashes are not needed and can be removed.
+     *
+     * Input: s = "2-5g-3-J", k = 2
+     * Output: "2-5G-3J"
+     * Explanation: The string s has been split into three parts, each part has 2 characters except the first part as it could be shorter as mentioned above.
+     *
+     * time:O(n)
+     * space:O(n)
+     */
+    class solution482{
+        public String licenseKey(String s, int k) {
+            StringBuilder sb = new StringBuilder();
+            for (int i =s.length() - 1; i >= 0; i--) {
+                if (s.charAt(i) != '-') sb.append(sb.length() % (k + 1) == k ? '-':"").append(s.charAt(i));
+            }
+            return sb.reverse().toString().toUpperCase();
+        }
+    }
+
+    //LeetCode 344: Reverse String
+    /**
+     * Write a function that reverses a string. The input string is given as an array of characters s.
+     *
+     * You must do this by modifying the input array in-place with O(1) extra memory.
+     *
+     * Input: s = ["h","e","l","l","o"]
+     * Output: ["o","l","l","e","h"]
+     *
+     * Input: s = ["H","a","n","n","a","h"]
+     * Output: ["h","a","n","n","a","H"]
+     */
+
+    class Solution344{
+        public void reverseString(char[] s) {
+            if (s == null || s.length == 0) return;
+            int left = 0, right = s.length - 1;
+            while (left < right) {
+                char temp = s[left];
+                s[left++] = s[right];
+                s[right--] = temp;
+            }
+        }
+    }
+
+    // LeetCode 186: reverse words in a string II
+    /**
+     * input : the sky is blue (char array)
+     * output: blue is sky the (char array)
+     *
+     * time: O(n)
+     * space: O(1)
+     */
+
+    class Solution186{
+        public void reverseWords(char[] s) {
+            reverse(s, 0, s.length - 1);  // 先整体进行一个翻转
+            int r = 0;
+            while (r < s.length) {
+                int l = r;
+                while (r < s.length && s[r] != ' ') r++;  // 内部的单词进行翻转
+                reverse(s, l, r - 1);
+                r++;
+            }
+        }
+
+        private void reverse(char[] s, int i, int j) {
+            while(i < j) {
+                char temp = s[i];
+                s[i++] = s[j];
+                s[j--] = temp;
+            }
+        }
+    }
+
+    //LeetCode 151: Reverse words in a String
+    /**
+     * Given an input string s, reverse the order of the words.
+     *
+     * A word is defined as a sequence of non-space characters. The words in s will be separated by at least one space.
+     *
+     * Return a string of the words in reverse order concatenated by a single space.
+     *
+     * Note that s may contain leading or trailing spaces or multiple spaces between two words. The returned string
+     * should only have a single space separating the words. Do not include any extra spaces.
+     *
+     * Input: s = "the sky is blue"
+     * Output: "blue is sky the"
+     *
+     * Input: s = "  hello world  "
+     * Output: "world hello"
+     * Explanation: Your reversed string should not contain leading or trailing spaces.
+     *
+     * time：O(n)
+     * space: O(n)
+     */
+    class Solution151 {
+        public String reverseWords(String s) {
+            if (s == null || s.length() == 0) return s;
+            String[] words = s.trim().split("\\s+");  // 去掉前后的空格，分成string的array
+            StringBuilder sb = new StringBuilder();
+            for (int i = words.length - 1; i >= 0; i --) {  // 从后往前加到sb后面
+                sb.append(words[i] + " ");
+            }
+            return sb.toString().trim();  // 去掉最后一个空格
+        }
+    }
+
+    // LeetCode 345
+    /**
+     * Given a string s, reverse only all the vowels in the string and return it.
+     *
+     * The vowels are 'a', 'e', 'i', 'o', and 'u', and they can appear in both cases.
+     *
+     * Input: s = "hello"
+     * Output: "holle"
+     *
+     * Input: s = "leetcode"
+     * Output: "leotcede"
+     */
+    class Solution345{
+
+        public String reverseVowels(String s) {
+            if (s == null || s.length() == 0) return s;
+            String vowels = "aeiouAEIOU";
+            char[] str = s.toCharArray();
+
+            int left = 0;
+            int right = s.length() - 1;
+            while (left < right) {
+                while (left < right && vowels.indexOf(str[left]) == -1) left++;
+                while (right > left && vowels.indexOf(str[right]) == -1) right--;
+                char temp = str[left];
+                str[left++] = str[right];
+                str[right--] = temp;
+            }
+            return new String(str);
+        }
+    }
+
+    // LeetCide541: Reverse String II
+    /**
+     *
+     * Given a string s and an integer k, reverse the first k characters for every 2k characters counting
+     * from the start of the string.
+     *
+     * If there are fewer than k characters left, reverse all of them. If there are less than 2k but greater than or
+     * equal to k characters, then reverse the first k characters and leave the other as original.
+     *
+     * Input: s = "abcdefg", k = 2
+     * Output: "bacdfeg"
+     *
+     * Input: s = "abcd", k = 2
+     * Output: "bacd"
+     */
+    class Solution541 {
+        public String reverseStr(String s, int k) {
+            char[] arr = s. toCharArray();
+            int index = 0;
+            while(index < s.length()) {
+                int j = Math.min( index + k - 1, s.length() - 1);
+                swap (arr, index , j);
+                index += 2 * k;
+            }
+            return String.valueOf(arr);
+        }
+
+        private void swap(char[] arr, int i, int j) {
+            while(i < j) {
+                char temp = arr[i];
+                arr[i++] = arr[j];
+                arr[j--] = temp;
+            }
+        }
+    }
+
+    // LeetCode 557: Reverse Words in a String III
+    /**
+     * Given a string s, reverse the order of characters in each word within a sentence while still preserving whitespace and initial word order.
+     *
+     * Input: s = "Let's take LeetCode contest"
+     * Output: "s'teL ekat edoCteeL tsetnoc"
+     *
+     * Input: s = "God Ding"
+     * Output: "doG gniD"
+     */
+    class Solution557{
+        public String reverseWords(String s) {
+            if (s == null || s.length() == 0) return s;
+            char[] arr = s.toCharArray();
+            int i = 0;
+            for (int j = 0; j < arr.length; j++) {
+                if (arr[j] == ' ') {
+                    reverse(arr, i , j - 1);  // 遇到空格就把之前的单词转换
+                    i = j + 1;  // i 移动到下一个字母开始的位置
+                }
+            }
+            reverse(arr, i ,arr.length - 1); // 最后一个单词是没有空格的
+            return String.valueOf(arr);
+        }
+
+        private void reverse(char[] arr, int i, int j) {
+            while (i < j) {
+                char temp = arr[i];
+                arr[i ++] = arr[j];
+                arr[j --] = temp;
+            }
+        }
+    }
+
+    public String reverseWords2(String s) {
+        if (s == null || s.length() == 0) return s;
+        String[] str = s.split(" ");
+        for (int i = 0; i < str.length; i ++) {
+            str[i] = new StringBuilder(str[i]).reverse().toString();
+        }
+        StringBuilder sb = new StringBuilder();
+        for (String st : str) {
+            sb.append(st + " ");
+        }
+        return sb.toString().trim();
+    }
+
+    // LeetCode 556: Next Greater Element III
+    /**
+     *
+     * Given a positive integer n, find the smallest integer which has exactly the same digits existing in the integer
+     * n and is greater in value than n. If no such positive integer exists, return -1.
+     *
+     * Note that the returned integer should fit in 32-bit integer, if there is a valid answer but it does
+     * not fit in 32-bit integer, return -1.
+     *
+     * 123 4 7655 5 3
+     * 123 5 7655 4 3 找到降序的那个数字然后和从右往左数第一个比它大的数交换
+     * 123 5 345567 然后再 把降序变成升序
+     *
+     * Input: n = 12
+     * Output: 21
+     *
+     * Input: n = 21
+     * Output: -1
+     */
+    class Solution556{
+        public int nextGreaterElement(int n) {
+            char[] res = ("" + n).toCharArray();
+            int i = res.length - 2;  // 从倒数第二个数字开始找
+            while (i >= 0 && res[i + 1] <= res[i]) i--;  // 找到开始下降的那个位置
+            if(i < 0) return -1;  // 如果没有找到下降的那个直接没有答案
+            int j = res.length - 1;
+            while (j >= 0 &&res[j] <= res[i]) j--;  // 找到第一个比刚刚找到的数字大的数
+            swap(res, i ,j);  // 交换两个数字
+            reverse(res, i + 1);  // 将降序变成升序
+            long val = Long.parseLong(new String(res));
+            return val <= Integer.MAX_VALUE ? (int)val : -1;
+        }
+
+        private void reverse(char[] chars, int start) {
+            int i = start, j = chars.length - 1;
+            while (i < j) {
+                swap(chars, i++, j--);
+            }
+        }
+        private void swap(char[] chars, int i, int j) {
+            char temp = chars[i];
+            chars[i++] = chars[j];
+            chars[j--] = temp;
+        }
+    }
+
+    // LeetCode 459： Repeated SubString Pattern
+    /**
+     * Given a string s, check if it can be constructed by taking a substring of
+     * it and appending multiple copies of the substring together.
+     *
+     * Input: s = "abab"
+     * Output: true
+     * Explanation: It is the substring "ab" twice.
+     *
+     * Input: s = "aba"
+     * Output: false
+     */
+    class Solution459 {
+        public boolean repeatedSubstringPattern(String str) {
+            String s = str + str; // 将str重复两遍，去掉首尾，如果中间剩下的字符串包含str的话就可以
+            return s.substring(1, s.length() - 1).contains(str);
+        }
+
+        public boolean repeatedSubStringPattern1(String str) {
+            int len = str.length();
+            for (int i = len / 2; i >= 1; i--) {
+                if (len % i == 0) {
+                    int num = len / i;
+                    String sub= str.substring(0 , i);
+                    StringBuilder sb = new StringBuilder();
+                    for (int j = 0; j < num; j ++) {
+                        sb.append(sub);
+                    }
+                    if (sb.toString().equals(str)) return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    //LeetCode 520: Detect Capital
+    /**
+     * We define the usage of capitals in a word to be right when one of the following cases holds:
+     *
+     * All letters in this word are capitals, like "USA".
+     * All letters in this word are not capitals, like "leetcode".
+     * Only the first letter in this word is capital, like "Google".
+     * Given a string word, return true if the usage of capitals in it is right.
+     *
+     *
+     */
+    class solution520{
+        public boolean detectCapitalUse(String word) {
+            int numUpper = 0;
+            for (int i = 0; i < word.length(); i++) {
+                if (Character.isUpperCase(word.charAt(i))) numUpper ++;
+            }
+            if (numUpper == 1) return Character.isUpperCase(word.charAt(0));
+            return numUpper == 0 || numUpper == word.length();
+        }
+    }
+
+    //LeetCode 38: Count and Stay
+    /**
+     * The count-and-say sequence is a sequence of digit strings defined by the recursive formula:
+     *
+     * countAndSay(1) = "1"
+     * countAndSay(n) is the way you would "say" the digit string from countAndSay(n-1), which is then converted into
+     * a different digit string.
+     * To determine how you "say" a digit string, split it into the minimal number of substrings such that each
+     * substring contains exactly one unique digit. Then for each substring, say the number of digits, then say the digit. Finally, concatenate every said digit.
+     *
+     * For example, the saying and conversion for digit string "3322251":
+     *
+     *
+     * Given a positive integer n, return the nth term of the count-and-say sequence.
+     *
+     * Input: n = 1
+     * Output: "1"
+     * Explanation: This is the base case.
+     *
+     * Input: n = 4
+     * Output: "1211"
+     * Explanation:
+     * countAndSay(1) = "1"
+     * countAndSay(2) = say "1" = one 1 = "11"
+     * countAndSay(3) = say "11" = two 1's = "21"
+     * countAndSay(4) = say "21" = one 2 + one 1 = "12" + "11" = "1211"
+     */
+
+    class Solution38{
+        public String countAndSay(int n) {
+            int i = 1;
+            String res = "1";
+            while(i < n) {  // i 控制的是n
+                int count = 0;
+                StringBuilder sb = new StringBuilder();
+                char c = res.charAt(0);
+                for (int j = 0; j <= res.length(); j++) {  // j控制的是res的长度
+                    if (j != res.length() && res.charAt(j) == c ) {
+                        count ++;
+                    } else {
+                        sb.append(count);
+                        sb.append(c);
+                        if (j != res.length()){
+                            count = 1;
+                            c = res.charAt(j);
+                        }
+                    }
+                }
+                res = sb.toString();
+                i++;
+            }
+            return res;
+
+        }
+
+    }
+
 }
