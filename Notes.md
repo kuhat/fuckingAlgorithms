@@ -2350,6 +2350,132 @@ Output: true
 + 从最简单到最难
 + 最常考：边界条件
 
+# 9. 图形题
+
+1. 点，线，面
+2. 除了特殊算法，不涉及任何数据结构（HashMap除外）
+3. 属于最难的题之一
+4. 计算机图形学
+
+## 9.1 题型
+
+![image-20220713140200200](C:\zwh\Documents\myBlog\图形题型)
+
+## 10.2 点
+
+### 10.2.1 点在线段上
+
+1. 点 O 是否在所在的直线（A, B）上，带入点到直线方程，算x轴的范围
+
+   不要轻易算斜率！
+
+2. 两点式：(y -y1)/(y2 - y1) = (x -x1)/(x2 - x1) (x1 ≠ x2, y1 ≠ y2)
+
+### 10.2.2 向量
+
+1. A X B = A.x * B.y - A.y * B.x
+
+## 10.3 方向
+
+![image-20220713145616793](C:\zwh\Documents\myBlog\图形方向)
+
+## 10.4 点在直线上
+
+# [149\. Max Points on a Line](https://leetcode.com/problems/max-points-on-a-line/submissions/)
+
+## Description
+
+Difficulty: **Hard**  
+
+Related Topics: [Array](https://leetcode.com/tag/array/), [Hash Table](https://leetcode.com/tag/hash-table/), [Math](https://leetcode.com/tag/math/), [Geometry](https://leetcode.com/tag/geometry/)
+
+
+Given an array of `points` where points[i] = [x<sub>i</sub>, y<sub>i</sub>] represents a point on the **X-Y** plane, return _the maximum number of points that lie on the same straight line_.
+
+**Example 1:**
+
+![](https://assets.leetcode.com/uploads/2021/02/25/plane1.jpg)
+
+```
+Input: points = [[1,1],[2,2],[3,3]]
+Output: 3
+```
+
+**Example 2:**
+
+![](https://assets.leetcode.com/uploads/2021/02/25/plane2.jpg)
+
+```
+Input: points = [[1,1],[3,2],[5,3],[4,1],[2,3],[1,4]]
+Output: 4
+```
+
+**Constraints:**
+
+*   `1 <= points.length <= 300`
+*   `points[i].length == 2
+*   -10<sup>4</sup> <= x<sub>i</sub>, y<sub>i</sub> <= 10<sup>4</sup>
+*   All the points` are **unique**.
+
+
+## Solution
+
+Language: **Java**
+
+```java
+class Solution {
+    
+   
+    public int maxPoints(int[][] points) {
+            if (points == null || points.length == 0) return 0;
+            if (points.length < 2) return points.length;
+            int res = 0;
+
+            for (int i = 0; i < points.length; i ++) {
+                HashMap<String, Integer> map = new HashMap<>();  // 用hashmap来记录点和对应的斜率
+                int samePoint = 0;
+                int sameXAxis = 1;
+                for (int j = 0; j < points.length; j++) {
+                    if (i != j) {
+                        if (points[i][0] == points[j][0] && points[i][1] == points[j][1]) {
+                            samePoint++;
+                        }
+                        if (points[i][0] == points[j][0]) {
+                            sameXAxis++;  // x = x的时候不能计算斜率
+                            continue;
+                        }
+                        int numerator = points[i][1] - points[j][1];
+                        int denominator = points[i][0] - points[j][0];
+                        int gcd = gcd(numerator, denominator);  // 通过最大公约数来计算斜率
+                        String hashStr = (numerator / gcd) + "/" + (denominator / gcd);
+                        map.put(hashStr, map.getOrDefault(hashStr, 1) + 1);
+                        res = Math.max(res, map.get(hashStr) + samePoint);
+                    }
+                }
+                res = Math.max(res, sameXAxis);  // 垂直于x轴的点之前没有算
+            }
+            return res;
+        }
+    
+        private int gcd(int a, int b) {  // 和GCD捆绑
+            if (a == 0) return b;
+            return gcd(b % a, a);
+        }
+}
+```
+
+边界条件：平行/重合
+
+## 10.5 点与面
+
+圆的表达式：`(x - a)^2 + (y -b)^2 = r ^2`.
+
+点与圆的关系：
+
+1. P在圆外，PO > r
+2. P在圆上，PO = r
+3. P在圆内，PO < r
+
 
 
 # 11. 回溯法

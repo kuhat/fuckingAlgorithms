@@ -1,5 +1,7 @@
 package com.company.Notes;
 
+import jdk.jshell.execution.Util;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -219,7 +221,113 @@ public class Note11_Backtracking {
                 list.remove(list.size() - 1);
             }
         }
+    }
 
+    // LeetCode 51: N Queens problem
+    /**
+     * The n-queens puzzle is the problem of placing n queens on an n x n chessboard such that no two queens attack each other.
+     *
+     * Given an integer n, return all distinct solutions to the n-queens puzzle. You may return the answer in any order.
+     *
+     * Each solution contains a distinct board configuration of the n-queens' placement, where 'Q' and '.' both indicate a queen and an empty space, respectively.
+     *
+     *
+     * Input: n = 4
+     * Output: [[".Q..","...Q","Q...","..Q."],["..Q.","Q...","...Q",".Q.."]]
+     * Explanation: There exist two distinct solutions to the 4-queens puzzle as shown above
+     *
+     * Input: n = 1
+     * Output: [["Q"]]
+     */
+
+    /*
+
+    先从第1行的第1列开始往下找，然后再从第1行的第2列……，一直到第1行的第n列。就是一个n叉树的遍历
+    轮廓代码：
+    private void solve (char[][] chess, int row) {
+        "终止条件"
+        return;
+        for (int col = 0; col < chess.length; col++) {
+            // 判断这个位置可不可以放皇后
+            if (valid(chess, row, col)) {
+                char[][] temp = copy(chess);
+                // 把这个位置放上皇后
+                temp[col][row] = 'Q';
+                // 解决下一行
+                solve(temp, row + 1);
+            }
+        }
+    }
+    这里的终止条件就是最后一行走完了，也就是
+    if (row == chess.length) return;
+    第7行就是判断在这个位置我们能不能放皇后，如果不能放我们就判断这一行的下一列能不能放……，
+    如果能放我们就把原来数组chess复制一份，然后把皇后放到这个位置，然后再判断下一行，
+    注意这里的第9行为什么要复制一份，因为数组是引用传递，这涉及到递归的时候分支污染问题
+    当然不复制一份也是可以的. 当我们把上面的问题都搞懂的时候，代码也就很容易写出来了，
+
+    */
+
+    class Solution51{
+        public List<List<String>> solveNQueens(int n) {
+            char[][] chess = new char[n][n];
+            List<List<String>> res = new ArrayList<>();
+            for (int i = 0; i < n; i++) {
+                Arrays.fill(chess[i], '.');
+            }
+            solve(res, chess, 0);
+            return res;
+        }
+
+        private void solve(List<List<String>> res, char[][] chess, int row) {
+            if (row == chess.length) {
+                res.add(construct(chess));
+                return;
+            }
+            for (int col = 0; col < chess.length; col ++) {
+                if (valid(chess, row, col)) {
+                    char[][] temp = copy(chess);
+                    temp[row][col] = 'Q';
+                    solve(res, temp, row + 1);
+                }
+            }
+        }
+
+        private List<String> construct(char[][] chess) {
+            List<String> res = new ArrayList<>();
+            for (int i = 0; i < chess.length; i++) {
+                String s = new String(chess[i]);
+                res.add(s);
+            }
+            return res;
+        }
+
+        // 把二维数组chess中的数据copy一份
+        private char[][] copy(char[][] chess) {
+            char[][] temp = new char[chess.length][chess[0].length];
+            for (int i = 0; i < chess.length; i++) {
+                for (int j = 0; j < chess[0].length; j++) {
+                    temp[i][j] = chess[i][j];
+                }
+            }
+            return temp;
+        }
+
+        private boolean valid(char[][] chess, int row, int col) {
+            // 判断当前列有没有皇后，因为这是一行一行往下走的，我们值需要检测走过的行数即可。
+            // 通俗一点就是判断当前坐标位置的上面有没有皇后
+            for (int i = 0; i < row; i++) {
+                if (chess[i][col] == 'Q') return false;
+            }
+            // 判断当前坐标的右上交有没有皇后
+            for (int i = row - 1, j = col + 1; i >= 0 && j < chess.length ; i--, j ++) {
+                if (chess[i][j] == 'Q') return false;
+            }
+            // 判断当前坐标的左上角有没有皇后
+            for (int i = row - 1, j = col - 1; i >= 0 && j >= 0; i --, j--) {
+                if (chess[i][j] == 'Q') return false;
+            }
+            return true;
+        }
     }
 }
 
