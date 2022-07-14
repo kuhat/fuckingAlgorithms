@@ -1,5 +1,7 @@
 package com.company.Notes;
 
+import com.sun.nio.sctp.AbstractNotificationHandler;
+
 import java.util.*;
 
 public class Note8_Strings {
@@ -753,25 +755,26 @@ public class Note8_Strings {
     }
 
     // LeetCode 14: Longest Common Prefix
+
     /**
-     *Write a function to find the longest common prefix string amongst an array of strings.
-     *
+     * Write a function to find the longest common prefix string amongst an array of strings.
+     * <p>
      * If there is no common prefix, return an empty string "".
-     *
+     * <p>
      * Input: strs = ["flower","flow","flight"]
      * Output: "fl"
-     *
+     * <p>
      * Input: strs = ["dog","racecar","car"]
      * Output: ""
      * Explanation: There is no common prefix among the input strings.
      */
-    class Solution14{
+    class Solution14 {
         public String longestCommonPrefix(String[] strs) {
             if (strs == null || strs.length == 0) return "";
-            for (int i = 0; i < strs[0].length(); i ++) {  // 将第一个单词的字母拿出来一个接着一个遍历
+            for (int i = 0; i < strs[0].length(); i++) {  // 将第一个单词的字母拿出来一个接着一个遍历
                 char c = strs[0].charAt(i);
                 for (int j = 1; j < strs.length; j++) {  // 将接着的字符串的相应位置的字母拿去和第一个字母的对应位置比较
-                    if (i == strs[j].length() || strs[j].charAt(i) != c ) {
+                    if (i == strs[j].length() || strs[j].charAt(i) != c) {
                         return strs[0].substring(0, i);
                     }
                 }
@@ -781,24 +784,24 @@ public class Note8_Strings {
     }
 
     // LeetCode 165: Compare Version Numbers
+
     /**
      * Given two version numbers, version1 and version2, compare them.
-     *
+     * <p>
      * Version numbers consist of one or more revisions joined by a dot '.'. Each revision consists of digits and may
      * contain leading zeros. Every revision contains at least one character. Revisions are 0-indexed from left to right,
      * with the leftmost revision being revision 0, the next revision being revision 1, and so on. For example 2.5.33 and 0.1 are valid version numbers.
-     *
+     * <p>
      * To compare version numbers, compare their revisions in left-to-right order. Revisions are compared using their
      * integer value ignoring any leading zeros. This means that revisions 1 and 001 are considered equal. If a version
      * number does not specify a revision at an index, then treat the revision as 0. For example, version 1.0 is less
      * than version 1.1 because their revision 0s are the same, but their revision 1s are 0 and 1 respectively, and 0 < 1.
-     *
+     * <p>
      * Return the following:
-     *
+     * <p>
      * If version1 < version2, return -1.
      * If version1 > version2, return 1.
      * Otherwise, return 0.
-     *
      */
     /*
     Input: version1 = "1.01", version2 = "1.001"
@@ -806,11 +809,11 @@ public class Note8_Strings {
     Explanation: Ignoring leading zeroes, both "01" and "001" represent the same integer "1".
      */
 
-    class Solution165{
+    class Solution165 {
         public int compareVersion(String version1, String version2) {
             String[] v1 = version1.split("\\.");
             String[] v2 = version2.split("\\.");
-            for (int i = 0; i < Math.max(v2.length, v1.length); i ++) {
+            for (int i = 0; i < Math.max(v2.length, v1.length); i++) {
                 int num1 = i < v1.length ? Integer.parseInt(v1[i]) : 0;
                 int num2 = i < v2.length ? Integer.parseInt(v2[i]) : 0;
                 if (num1 < num2) return -1;
@@ -821,11 +824,12 @@ public class Note8_Strings {
     }
 
     // LeetCode 168: Excel Column Title
+
     /**
      * Given an integer columnNumber, return its corresponding column title as it appears in an Excel sheet.
-     *
+     * <p>
      * For example:
-     *
+     * <p>
      * A -> 1
      * B -> 2
      * C -> 3
@@ -834,25 +838,25 @@ public class Note8_Strings {
      * AA -> 27
      * AB -> 28
      * ...
-     *
-     *
+     * <p>
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: columnNumber = 1
      * Output: "A"
      * Example 2:
-     *
+     * <p>
      * Input: columnNumber = 28
      * Output: "AB"
      */
 
-    class Solution168{
+    class Solution168 {
 
         public String convertToTitle(int columnNumber) {
             StringBuilder sb = new StringBuilder();
             while (columnNumber > 0) {
                 columnNumber--;
-                sb.append((char)('A' + columnNumber % 26));
+                sb.append((char) ('A' + columnNumber % 26));
                 columnNumber /= 26;
             }
             return sb.reverse().toString();
@@ -860,14 +864,15 @@ public class Note8_Strings {
     }
 
     //LeetCode 32: Longest Valid Parentheses
+
     /**
      * Given a string containing just the characters '(' and ')', find the length of the longest valid
      * (well-formed) parentheses substring.
-     *
+     * <p>
      * Input: s = "(()"
      * Output: 2
      * Explanation: The longest valid parentheses substring is "()".
-     *
+     * <p>
      * Input: s = ")()())"
      * Output: 4
      * Explanation: The longest valid parentheses substring is "()()".
@@ -878,7 +883,7 @@ public class Note8_Strings {
             int res = 0, j = -1;
             for (int i = 0; i < s.length(); i++) {
                 if (s.charAt(i) == '(') stack.push(i);
-                else{
+                else {
                     if (stack.isEmpty()) j = i;  // 一开始就遇到（
                     else {
                         stack.pop();
@@ -892,20 +897,21 @@ public class Note8_Strings {
     }
 
     // LeetCode 392: Is Subsequence
+
     /**
      * Given two strings s and t, return true if s is a subsequence of t, or false otherwise.
-     *
+     * <p>
      * A subsequence of a string is a new string that is formed from the original string by deleting some (can be none)
      * of the characters without disturbing the relative positions of the remaining characters.
      * (i.e., "ace" is a subsequence of "abcde" while "aec" is not).
-     *
+     * <p>
      * Input: s = "abc", t = "ahbgdc"
      * Output: true
-     *
+     * <p>
      * Input: s = "axc", t = "ahbgdc"
      * Output: false
      */
-    class Solution392{
+    class Solution392 {
         public boolean isSubsequence(String s, String t) {
             if (s == null || s.length() == 0) return true;
             int i = 0, j = 0;  // i控制的是s
@@ -922,23 +928,23 @@ public class Note8_Strings {
     /**
      * Given two strings a and b, return the length of the longest uncommon subsequence between a and b. If the longest
      * uncommon subsequence does not exist, return -1.
-     *
+     * <p>
      * An uncommon subsequence between two strings is a string that is a subsequence of one but not the other.
-     *
+     * <p>
      * A subsequence of a string s is a string that can be obtained after deleting any number of characters from s.
-     *
+     * <p>
      * For example, "abc" is a subsequence of "aebdc" because you can delete the underlined characters in "aebdc" to
      * get "abc". Other subsequences of "aebdc" include "aebdc", "aeb", and "" (empty string).
-     *
+     * <p>
      * Input: a = "aba", b = "cdc"
      * Output: 3
      * Explanation: One longest uncommon subsequence is "aba" because "aba" is a subsequence of "aba" but not "cdc".
      * Note that "cdc" is also a longest uncommon subsequence.
-     *
+     * <p>
      * Input: a = "aaa", b = "bbb"
      * Output: 3
      * Explanation: The longest uncommon subsequences are "aaa" and "bbb".
-     *
+     * <p>
      * Input: a = "aaa", b = "aaa"
      * Output: -1
      * Explanation: Every subsequence of string a is also a subsequence of string b. Similarly, every subsequence of string b is also a subsequence of string a.
@@ -951,21 +957,22 @@ public class Note8_Strings {
     }
 
     // LeetCode 58: LengthOf Last Word
+
     /**
      * Given a string s consisting of words and spaces, return the length of the last word in the string.
-     *
+     * <p>
      * A word is a maximal substring consisting of non-space characters only.
-     *
+     * <p>
      * Input: s = "Hello World"
      * Output: 5
      * Explanation: The last word is "World" with length 5.
-     *
+     * <p>
      * Input: s = "   fly me   to   the moon  "
      * Output: 4
      * Explanation: The last word is "moon" with length 4.
      */
 
-    class Solution58{
+    class Solution58 {
         public int lengthOfLastWord(String s) {
             String[] strings = s.split(" ");
             if (strings.length == 0) return 0;
@@ -974,12 +981,12 @@ public class Note8_Strings {
     }
 
     //LeetCode 171: Excel sheet column number
+
     /**
-     *
      * Given a string columnTitle that represents the column title as appears in an Excel sheet, return its corresponding column number.
-     *
+     * <p>
      * For example:
-     *
+     * <p>
      * A -> 1
      * B -> 2
      * C -> 3
@@ -988,10 +995,10 @@ public class Note8_Strings {
      * AA -> 27
      * AB -> 28
      * ...
-     *
+     * <p>
      * Input: columnTitle = "A"
      * Output: 1
-     *
+     * <p>
      * Input: columnTitle = "AB"
      * Output: 28
      * res = 1 * 26 + 2 = 28
@@ -1007,39 +1014,39 @@ public class Note8_Strings {
     }
 
     // LeetCode 161: one Edit Distance
+
     /**
      * GIven two Strings s and t, determine if they are both one edit distance apart
-     *
+     * <p>
      * 1. abcre abere
      * 2. abdc abc
      * 3. abc abdc
-     *
      */
-    class Solution161{
-        public boolean isOneEditDistance (String s, String t) {
+    class Solution161 {
+        public boolean isOneEditDistance(String s, String t) {
             for (int i = 0; i < Math.min(s.length(), t.length()); i++) {
-                if (s.charAt(i) != t.charAt(i)) return s.substring( i + 1).equals(t.substring(i + 1));
-                else if (s.length() > t.length()) return s.substring(i+1).equals(t.substring(i));
-                else return t.substring(i+1).equals(s.substring(i));
+                if (s.charAt(i) != t.charAt(i)) return s.substring(i + 1).equals(t.substring(i + 1));
+                else if (s.length() > t.length()) return s.substring(i + 1).equals(t.substring(i));
+                else return t.substring(i + 1).equals(s.substring(i));
             }
             return Math.abs(s.length() - t.length()) == 1;
         }
     }
 
     // LeetCode 434: Number of Segments in a String
+
     /**
-     *
      * Given a string s, return the number of segments in the string.
-     *
+     * <p>
      * A segment is defined to be a contiguous sequence of non-space characters.
-     *
+     * <p>
      * Input: s = "Hello, my name is John"
      * Output: 5
      * Explanation: The five segments are ["Hello,", "my", "name", "is", "John"]
-     *
+     * <p>
      * time: o(n):trim为O(n)
      */
-    class Solution434{
+    class Solution434 {
         public int conutSegments(String s) {
             s = s.trim();
             if (s.length() == 0) return 0;
@@ -1052,49 +1059,50 @@ public class Note8_Strings {
     /**
      * You are given a license key represented as a string s that consists of only alphanumeric characters and dashes.
      * The string is separated into n + 1 groups by n dashes. You are also given an integer k.
-     *
+     * <p>
      * We want to reformat the string s such that each group contains exactly k characters, except for the first group,
      * which could be shorter than k but still must contain at least one character. Furthermore, there must be a dash
      * inserted between two groups, and you should convert all lowercase letters to uppercase.
-     *
+     * <p>
      * Return the reformatted license key.
-     *
+     * <p>
      * Input: s = "5F3Z-2e-9-w", k = 4
      * Output: "5F3Z-2E9W"
      * Explanation: The string s has been split into two parts, each part has 4 characters.
      * Note that the two extra dashes are not needed and can be removed.
-     *
+     * <p>
      * Input: s = "2-5g-3-J", k = 2
      * Output: "2-5G-3J"
      * Explanation: The string s has been split into three parts, each part has 2 characters except the first part as it could be shorter as mentioned above.
-     *
+     * <p>
      * time:O(n)
      * space:O(n)
      */
-    class solution482{
+    class solution482 {
         public String licenseKey(String s, int k) {
             StringBuilder sb = new StringBuilder();
-            for (int i =s.length() - 1; i >= 0; i--) {
-                if (s.charAt(i) != '-') sb.append(sb.length() % (k + 1) == k ? '-':"").append(s.charAt(i));
+            for (int i = s.length() - 1; i >= 0; i--) {
+                if (s.charAt(i) != '-') sb.append(sb.length() % (k + 1) == k ? '-' : "").append(s.charAt(i));
             }
             return sb.reverse().toString().toUpperCase();
         }
     }
 
     //LeetCode 344: Reverse String
+
     /**
      * Write a function that reverses a string. The input string is given as an array of characters s.
-     *
+     * <p>
      * You must do this by modifying the input array in-place with O(1) extra memory.
-     *
+     * <p>
      * Input: s = ["h","e","l","l","o"]
      * Output: ["o","l","l","e","h"]
-     *
+     * <p>
      * Input: s = ["H","a","n","n","a","h"]
      * Output: ["h","a","n","n","a","H"]
      */
 
-    class Solution344{
+    class Solution344 {
         public void reverseString(char[] s) {
             if (s == null || s.length == 0) return;
             int left = 0, right = s.length - 1;
@@ -1107,15 +1115,16 @@ public class Note8_Strings {
     }
 
     // LeetCode 186: reverse words in a string II
+
     /**
      * input : the sky is blue (char array)
      * output: blue is sky the (char array)
-     *
+     * <p>
      * time: O(n)
      * space: O(1)
      */
 
-    class Solution186{
+    class Solution186 {
         public void reverseWords(char[] s) {
             reverse(s, 0, s.length - 1);  // 先整体进行一个翻转
             int r = 0;
@@ -1128,7 +1137,7 @@ public class Note8_Strings {
         }
 
         private void reverse(char[] s, int i, int j) {
-            while(i < j) {
+            while (i < j) {
                 char temp = s[i];
                 s[i++] = s[j];
                 s[j--] = temp;
@@ -1137,23 +1146,24 @@ public class Note8_Strings {
     }
 
     //LeetCode 151: Reverse words in a String
+
     /**
      * Given an input string s, reverse the order of the words.
-     *
+     * <p>
      * A word is defined as a sequence of non-space characters. The words in s will be separated by at least one space.
-     *
+     * <p>
      * Return a string of the words in reverse order concatenated by a single space.
-     *
+     * <p>
      * Note that s may contain leading or trailing spaces or multiple spaces between two words. The returned string
      * should only have a single space separating the words. Do not include any extra spaces.
-     *
+     * <p>
      * Input: s = "the sky is blue"
      * Output: "blue is sky the"
-     *
+     * <p>
      * Input: s = "  hello world  "
      * Output: "world hello"
      * Explanation: Your reversed string should not contain leading or trailing spaces.
-     *
+     * <p>
      * time：O(n)
      * space: O(n)
      */
@@ -1162,7 +1172,7 @@ public class Note8_Strings {
             if (s == null || s.length() == 0) return s;
             String[] words = s.trim().split("\\s+");  // 去掉前后的空格，分成string的array
             StringBuilder sb = new StringBuilder();
-            for (int i = words.length - 1; i >= 0; i --) {  // 从后往前加到sb后面
+            for (int i = words.length - 1; i >= 0; i--) {  // 从后往前加到sb后面
                 sb.append(words[i] + " ");
             }
             return sb.toString().trim();  // 去掉最后一个空格
@@ -1170,18 +1180,19 @@ public class Note8_Strings {
     }
 
     // LeetCode 345
+
     /**
      * Given a string s, reverse only all the vowels in the string and return it.
-     *
+     * <p>
      * The vowels are 'a', 'e', 'i', 'o', and 'u', and they can appear in both cases.
-     *
+     * <p>
      * Input: s = "hello"
      * Output: "holle"
-     *
+     * <p>
      * Input: s = "leetcode"
      * Output: "leotcede"
      */
-    class Solution345{
+    class Solution345 {
 
         public String reverseVowels(String s) {
             if (s == null || s.length() == 0) return s;
@@ -1202,34 +1213,34 @@ public class Note8_Strings {
     }
 
     // LeetCide541: Reverse String II
+
     /**
-     *
      * Given a string s and an integer k, reverse the first k characters for every 2k characters counting
      * from the start of the string.
-     *
+     * <p>
      * If there are fewer than k characters left, reverse all of them. If there are less than 2k but greater than or
      * equal to k characters, then reverse the first k characters and leave the other as original.
-     *
+     * <p>
      * Input: s = "abcdefg", k = 2
      * Output: "bacdfeg"
-     *
+     * <p>
      * Input: s = "abcd", k = 2
      * Output: "bacd"
      */
     class Solution541 {
         public String reverseStr(String s, int k) {
-            char[] arr = s. toCharArray();
+            char[] arr = s.toCharArray();
             int index = 0;
-            while(index < s.length()) {
-                int j = Math.min( index + k - 1, s.length() - 1);
-                swap (arr, index , j);
+            while (index < s.length()) {
+                int j = Math.min(index + k - 1, s.length() - 1);
+                swap(arr, index, j);
                 index += 2 * k;
             }
             return String.valueOf(arr);
         }
 
         private void swap(char[] arr, int i, int j) {
-            while(i < j) {
+            while (i < j) {
                 char temp = arr[i];
                 arr[i++] = arr[j];
                 arr[j--] = temp;
@@ -1238,35 +1249,36 @@ public class Note8_Strings {
     }
 
     // LeetCode 557: Reverse Words in a String III
+
     /**
      * Given a string s, reverse the order of characters in each word within a sentence while still preserving whitespace and initial word order.
-     *
+     * <p>
      * Input: s = "Let's take LeetCode contest"
      * Output: "s'teL ekat edoCteeL tsetnoc"
-     *
+     * <p>
      * Input: s = "God Ding"
      * Output: "doG gniD"
      */
-    class Solution557{
+    class Solution557 {
         public String reverseWords(String s) {
             if (s == null || s.length() == 0) return s;
             char[] arr = s.toCharArray();
             int i = 0;
             for (int j = 0; j < arr.length; j++) {
                 if (arr[j] == ' ') {
-                    reverse(arr, i , j - 1);  // 遇到空格就把之前的单词转换
+                    reverse(arr, i, j - 1);  // 遇到空格就把之前的单词转换
                     i = j + 1;  // i 移动到下一个字母开始的位置
                 }
             }
-            reverse(arr, i ,arr.length - 1); // 最后一个单词是没有空格的
+            reverse(arr, i, arr.length - 1); // 最后一个单词是没有空格的
             return String.valueOf(arr);
         }
 
         private void reverse(char[] arr, int i, int j) {
             while (i < j) {
                 char temp = arr[i];
-                arr[i ++] = arr[j];
-                arr[j --] = temp;
+                arr[i++] = arr[j];
+                arr[j--] = temp;
             }
         }
     }
@@ -1274,7 +1286,7 @@ public class Note8_Strings {
     public String reverseWords2(String s) {
         if (s == null || s.length() == 0) return s;
         String[] str = s.split(" ");
-        for (int i = 0; i < str.length; i ++) {
+        for (int i = 0; i < str.length; i++) {
             str[i] = new StringBuilder(str[i]).reverse().toString();
         }
         StringBuilder sb = new StringBuilder();
@@ -1285,36 +1297,36 @@ public class Note8_Strings {
     }
 
     // LeetCode 556: Next Greater Element III
+
     /**
-     *
      * Given a positive integer n, find the smallest integer which has exactly the same digits existing in the integer
      * n and is greater in value than n. If no such positive integer exists, return -1.
-     *
+     * <p>
      * Note that the returned integer should fit in 32-bit integer, if there is a valid answer but it does
      * not fit in 32-bit integer, return -1.
-     *
+     * <p>
      * 123 4 7655 5 3
      * 123 5 7655 4 3 找到降序的那个数字然后和从右往左数第一个比它大的数交换
      * 123 5 345567 然后再 把降序变成升序
-     *
+     * <p>
      * Input: n = 12
      * Output: 21
-     *
+     * <p>
      * Input: n = 21
      * Output: -1
      */
-    class Solution556{
+    class Solution556 {
         public int nextGreaterElement(int n) {
             char[] res = ("" + n).toCharArray();
             int i = res.length - 2;  // 从倒数第二个数字开始找
             while (i >= 0 && res[i + 1] <= res[i]) i--;  // 找到开始下降的那个位置
-            if(i < 0) return -1;  // 如果没有找到下降的那个直接没有答案
+            if (i < 0) return -1;  // 如果没有找到下降的那个直接没有答案
             int j = res.length - 1;
-            while (j >= 0 &&res[j] <= res[i]) j--;  // 找到第一个比刚刚找到的数字大的数
-            swap(res, i ,j);  // 交换两个数字
+            while (j >= 0 && res[j] <= res[i]) j--;  // 找到第一个比刚刚找到的数字大的数
+            swap(res, i, j);  // 交换两个数字
             reverse(res, i + 1);  // 将降序变成升序
             long val = Long.parseLong(new String(res));
-            return val <= Integer.MAX_VALUE ? (int)val : -1;
+            return val <= Integer.MAX_VALUE ? (int) val : -1;
         }
 
         private void reverse(char[] chars, int start) {
@@ -1323,6 +1335,7 @@ public class Note8_Strings {
                 swap(chars, i++, j--);
             }
         }
+
         private void swap(char[] chars, int i, int j) {
             char temp = chars[i];
             chars[i++] = chars[j];
@@ -1331,14 +1344,15 @@ public class Note8_Strings {
     }
 
     // LeetCode 459： Repeated SubString Pattern
+
     /**
      * Given a string s, check if it can be constructed by taking a substring of
      * it and appending multiple copies of the substring together.
-     *
+     * <p>
      * Input: s = "abab"
      * Output: true
      * Explanation: It is the substring "ab" twice.
-     *
+     * <p>
      * Input: s = "aba"
      * Output: false
      */
@@ -1353,9 +1367,9 @@ public class Note8_Strings {
             for (int i = len / 2; i >= 1; i--) {
                 if (len % i == 0) {
                     int num = len / i;
-                    String sub= str.substring(0 , i);
+                    String sub = str.substring(0, i);
                     StringBuilder sb = new StringBuilder();
-                    for (int j = 0; j < num; j ++) {
+                    for (int j = 0; j < num; j++) {
                         sb.append(sub);
                     }
                     if (sb.toString().equals(str)) return true;
@@ -1366,21 +1380,20 @@ public class Note8_Strings {
     }
 
     //LeetCode 520: Detect Capital
+
     /**
      * We define the usage of capitals in a word to be right when one of the following cases holds:
-     *
+     * <p>
      * All letters in this word are capitals, like "USA".
      * All letters in this word are not capitals, like "leetcode".
      * Only the first letter in this word is capital, like "Google".
      * Given a string word, return true if the usage of capitals in it is right.
-     *
-     *
      */
-    class solution520{
+    class solution520 {
         public boolean detectCapitalUse(String word) {
             int numUpper = 0;
             for (int i = 0; i < word.length(); i++) {
-                if (Character.isUpperCase(word.charAt(i))) numUpper ++;
+                if (Character.isUpperCase(word.charAt(i))) numUpper++;
             }
             if (numUpper == 1) return Character.isUpperCase(word.charAt(0));
             return numUpper == 0 || numUpper == word.length();
@@ -1388,24 +1401,25 @@ public class Note8_Strings {
     }
 
     //LeetCode 38: Count and Stay
+
     /**
      * The count-and-say sequence is a sequence of digit strings defined by the recursive formula:
-     *
+     * <p>
      * countAndSay(1) = "1"
      * countAndSay(n) is the way you would "say" the digit string from countAndSay(n-1), which is then converted into
      * a different digit string.
      * To determine how you "say" a digit string, split it into the minimal number of substrings such that each
      * substring contains exactly one unique digit. Then for each substring, say the number of digits, then say the digit. Finally, concatenate every said digit.
-     *
+     * <p>
      * For example, the saying and conversion for digit string "3322251":
-     *
-     *
+     * <p>
+     * <p>
      * Given a positive integer n, return the nth term of the count-and-say sequence.
-     *
+     * <p>
      * Input: n = 1
      * Output: "1"
      * Explanation: This is the base case.
-     *
+     * <p>
      * Input: n = 4
      * Output: "1211"
      * Explanation:
@@ -1415,21 +1429,21 @@ public class Note8_Strings {
      * countAndSay(4) = say "21" = one 2 + one 1 = "12" + "11" = "1211"
      */
 
-    class Solution38{
+    class Solution38 {
         public String countAndSay(int n) {
             int i = 1;
             String res = "1";
-            while(i < n) {  // i 控制的是n
+            while (i < n) {  // i 控制的是n
                 int count = 0;
                 StringBuilder sb = new StringBuilder();
                 char c = res.charAt(0);
                 for (int j = 0; j <= res.length(); j++) {  // j控制的是res的长度
-                    if (j != res.length() && res.charAt(j) == c ) {
-                        count ++;
+                    if (j != res.length() && res.charAt(j) == c) {
+                        count++;
                     } else {
                         sb.append(count);
                         sb.append(c);
-                        if (j != res.length()){
+                        if (j != res.length()) {
                             count = 1;
                             c = res.charAt(j);
                         }
@@ -1439,9 +1453,386 @@ public class Note8_Strings {
                 i++;
             }
             return res;
+        }
+    }
 
+    // LeetCode 522: Longest Uncommon Subsequence II
+
+    /**
+     * Given an array of strings strs, return the length of the longest uncommon subsequence between them. If the
+     * longest uncommon subsequence does not exist, return -1.
+     * <p>
+     * An uncommon subsequence between an array of strings is a string that is a subsequence of one string but not the others.
+     * <p>
+     * A subsequence of a string s is a string that can be obtained after deleting any number of characters from s.
+     * <p>
+     * For example, "abc" is a subsequence of "aebdc" because you can delete the underlined characters in "aebdc" to get
+     * "abc". Other subsequences of "aebdc" include "aebdc", "aeb", and "" (empty string).
+     * <p>
+     * Input: strs = ["aba","cdc","eae"]
+     * Output: 3
+     * <p>
+     * Input: strs = ["aaa","aaa","aa"]
+     * Output: -1
+     */
+
+    class Solution522 {
+        public int findLUSlength(String[] strs) {
+            int res = -1, j = 0;
+            for (int i = 0; i < strs.length; i++) {
+                for (j = 0; j < strs.length; j++) {
+                    if (j == i) continue;
+                    if (isSUbsequence(strs[i], strs[j])) break;
+                }
+                if (j == strs.length) res = Math.max(res, strs[i].length());
+            }
+            return res;
+        }
+
+        public boolean isSUbsequence(String s, String t) {
+            if (s == null || s.length() == 0) return true;
+            int i = 0, j = 0;
+            while (i < s.length() && j < t.length()) {
+                if (s.charAt(i) == t.charAt(j)) i++;
+                j++;
+            }
+            return i == s.length();
+        }
+    }
+
+    // LeetCode 553: Optimal DIvision
+
+    /**
+     * You are given an integer array nums. The adjacent integers in nums will perform the float division.
+     * <p>
+     * For example, for nums = [2,3,4], we will evaluate the expression "2/3/4".
+     * However, you can add any number of parenthesis at any position to change the priority of operations.
+     * You want to add these parentheses such the value of the expression after the evaluation is maximum.
+     * <p>
+     * Return the corresponding expression that has the maximum value in string format.
+     * <p>
+     * Note: your expression should not contain redundant parenthesis.
+     * <p>
+     * Input: nums = [1000,100,10,2]
+     * Output: "1000/(100/10/2)"
+     * Explanation:
+     * 1000/(100/10/2) = 1000/((100/10)/2) = 200
+     * However, the bold parenthesis in "1000/((100/10)/2)" are redundant, since they don't influence the operation priority. So you should return "1000/(100/10/2)".
+     * Other cases:
+     * 1000/(100/10)/2 = 50
+     * 1000/(100/(10/2)) = 50
+     * 1000/100/10/2 = 0.5
+     * 1000/100/(10/2) = 2
+     */
+    class Solution553 {
+        public String optimalDivision(int[] nums) {
+            if (nums.length == 1) return nums[0] + "";
+            if (nums.length == 2) return nums[0] + "/" + nums[1];
+            StringBuilder res = new StringBuilder(nums[0] + "/(" + nums[1]);
+            for (int i = 2; i < nums.length; i++) res.append("/" + nums[i]);
+            res.append(")");
+            return res.toString();
+        }
+    }
+
+    // LeetCode 551: Student Attendance Record 1
+
+    /**
+     * You are given a string s representing an attendance record for a student where each character signifies whether
+     * the student was absent, late, or present on that day. The record only contains the following three characters:
+     * <p>
+     * 'A': Absent.
+     * 'L': Late.
+     * 'P': Present.
+     * The student is eligible for an attendance award if they meet both of the following criteria:
+     * <p>
+     * The student was absent ('A') for strictly fewer than 2 days total.
+     * The student was never late ('L') for 3 or more consecutive days.
+     * Return true if the student is eligible for an attendance award, or false otherwise.
+     * <p>
+     * Input: s = "PPALLP"
+     * Output: true
+     * Explanation: The student has fewer than 2 absences and was never late 3 or more consecutive days.
+     * <p>
+     * Input: s = "PPALLL"
+     * Output: false
+     * Explanation: The student was late 3 consecutive days in the last 3 days, so is not eligible for the award.
+     */
+    class Solution551 {
+        public boolean checkRecord(String s) {
+            int count = 0;
+            for (int i = 0; i < s.length(); i++) {
+                if (s.charAt(i) == 'A') count++;
+                if (i <= s.length() - 3 && s.charAt(i) == 'L' && s.charAt(i + 1) == 'L' && s.charAt(i + 2) == 'L') {
+                    return false;
+                }
+            }
+            return count < 2;
+        }
+    }
+
+
+    // leetCode 506: Relative rankings
+
+    /**
+     * You are given an integer array score of size n, where score[i] is the score of the ith athlete in a competition.
+     * All the scores are guaranteed to be unique.
+     * <p>
+     * The athletes are placed based on their scores, where the 1st place athlete has the highest score, the 2nd place
+     * athlete has the 2nd highest score, and so on. The placement of each athlete determines their rank:
+     * <p>
+     * The 1st place athlete's rank is "Gold Medal".
+     * The 2nd place athlete's rank is "Silver Medal".
+     * The 3rd place athlete's rank is "Bronze Medal".
+     * For the 4th place to the nth place athlete, their rank is their placement number (i.e., the xth place athlete's rank is "x").
+     * Return an array answer of size n where answer[i] is the rank of the ith athlete.
+     * <p>
+     * Input: score = [5,4,3,2,1]
+     * Output: ["Gold Medal","Silver Medal","Bronze Medal","4","5"]
+     * Explanation: The placements are [1st, 2nd, 3rd, 4th, 5th].
+     */
+
+    class Solution {
+        public String[] findRelativeRanks(int[] score) {
+            String[] res = new String[score.length];
+            int max = 0;
+            for (int num : score) {
+                max = Math.max(num, max);  // 找到最大值
+            }
+            // 桶排序
+            int[] bucket = new int[max + 1];
+            for (int i = 0; i < score.length; i++) {
+                bucket[score[i]] = i + 1;  // 将score的index存入bucket里
+            }
+            // 倒序遍历bucket
+            int medal = 1;
+            for (int i = bucket.length - 1; i >= 0; i--) {
+                if (bucket[i] != 0) {
+                    if (medal == 1) res[bucket[i] - 1] = "Gold Medal";
+                    else if (medal == 2) res[bucket[i] - 1] = "Silver Medal";
+                    else if (medal == 3) res[bucket[i] - 1] = "Bronze Medal";
+                    else res[bucket[i] - 1] = String.valueOf(medal);
+                    medal++;
+                }
+            }
+            return res;
+        }
+    }
+
+    // LeetCode 290: word Pattern
+
+    /**
+     * Given a pattern and a string s, find if s follows the same pattern.
+     * <p>
+     * Here follow means a full match, such that there is a bijection between a letter in pattern and a non-empty word in s.
+     * <p>
+     * <p>
+     * Input: pattern = "abba", s = "dog cat cat dog"
+     * Output: true
+     * <p>
+     * Input: pattern = "abba", s = "dog cat cat fish"
+     * Output: false
+     */
+    class Solution290 {
+        public boolean wordPattern(String pattern, String s) {
+            String[] arr = s.split(" ");
+            if (arr.length != pattern.length()) return false;
+            HashMap<Character, String> map = new HashMap<>();
+            for (int i = 0; i < arr.length; i++) {
+                char c = pattern.charAt(i);
+                if (map.containsKey(c)) {
+                    if (map.get(c).equals(arr[i])) continue;
+                    else return false;
+                } else {
+                    if (!map.containsValue(arr[i])) map.put(c, arr[i]);
+                    else return false;
+                }
+            }
+            return true;
+        }
+    }
+
+    // LeetCOde 500 : keyBoard Row
+
+    /**
+     * Given an array of strings words, return the words that can be typed using letters of
+     * the alphabet on only one row of American keyboard like the image below.
+     * <p>
+     * In the American keyboard:
+     * <p>
+     * the first row consists of the characters "qwertyuiop",
+     * the second row consists of the characters "asdfghjkl", and
+     * the third row consists of the characters "zxcvbnm".
+     * <p>
+     * Input: words = ["Hello","Alaska","Dad","Peace"]
+     * Output: ["Alaska","Dad"]
+     * <p>
+     * nput: words = ["adsdf","sfd"]
+     * Output: ["adsdf","sfd"]
+     */
+    class Solution500 {
+        public String[] findWords(String[] words) {
+            String[] rows = {"qwertyuiop", "asdfghjkl", "zxcvbnm"};
+            HashMap<Character, Integer> keyBoard = new HashMap<>();
+            for (int i = 0; i < rows.length; i++) {
+                for (char c : rows[i].toCharArray()) {
+                    keyBoard.put(c, i);  //  将每个字符和行数匹配存储
+                }
+            }
+            List<String> res = new ArrayList<>();
+            for (String word : words) {
+                char[] letters = word.toLowerCase().toCharArray();
+                boolean sameRow = true;
+                int index = keyBoard.get(letters[0]);
+                for (char c : letters) {
+                    if (index != keyBoard.get(c)) {
+                        sameRow = false;
+                        break;
+                    }
+                }
+                if (sameRow) {
+                    res.add(word);
+                }
+            }
+            return res.stream().toArray(String[]::new);
+        }
+    }
+
+    // 316: remove duplicate letters
+    /**
+     * Given a string s, remove duplicate letters so that every letter appears once and only once.
+     * You must make sure your result is the smallest in lexicographical order among all possible results.
+     *
+     * Input: s = "bcabc"
+     * Output: "abc"
+     *
+     * Input: s = "cbacdcbc"
+     * Output: "acdb"
+     */
+    class Solution316 {
+        public String removeDuplicateLetters(String s) {
+            if (s == null || s.length() == 0) return s;
+            HashMap<Character, Integer> map = new HashMap<>();
+            for (int i = 0; i < s.length(); i++) {
+                map.put(s.charAt(i), i);  // map存的是key:每个字母，value:最后一次出现的index
+            }
+            char[] res = new char[map.size()];
+            int start = 0, end = findMinLastPos(map);  // 查找map中出现次数的最小值
+
+            for (int i = 0; i < res.length; i++) {  // 放字母
+                char minChar = 'z' + 1;  // 相当于integer.max_value,一个上限
+                for(int k = start; k <= end; k ++) {  // 找字母，按照字母排序最小的
+                    if (map.containsKey(s.charAt(k)) && s.charAt(k) < minChar) {
+                        minChar = s.charAt(k);
+                        start = k + 1;  // 下一次找的位置
+                    }
+                }
+                res[i] = minChar;
+                map.remove(minChar);
+                if (s.charAt(end) == minChar) end = findMinLastPos(map);
+            }
+            return new String(res);
+        }
+
+        private int findMinLastPos(HashMap<Character, Integer> map) {
+            int res = Integer.MAX_VALUE;
+            for (int nunm : map.values()) {
+                res = Math.min(res, nunm);
+            }
+            return res;
         }
 
     }
 
+    //535：
+    /**
+     * Note: This is a companion problem to the System Design problem: Design TinyURL.
+     * TinyURL is a URL shortening service where you enter a URL such as https://leetcode.com/problems/design-tinyurl
+     * and it returns a short URL such as http://tinyurl.com/4e9iAk. Design a class to encode a URL and decode a tiny URL.
+     *
+     * There is no restriction on how your encode/decode algorithm should work. You just need to ensure that a URL can
+     * be encoded to a tiny URL and the tiny URL can be decoded to the original URL.
+     *
+     * Implement the Solution class:
+     *
+     * Solution() Initializes the object of the system.
+     * String encode(String longUrl) Returns a tiny URL for the given longUrl.
+     * String decode(String shortUrl) Returns the original long URL for the given shortUrl. It is guaranteed that the
+     * given shortUrl was encoded by the same object.
+     *
+     * Input: url = "https://leetcode.com/problems/design-tinyurl"
+     * Output: "https://leetcode.com/problems/design-tinyurl"
+     *
+     * Explanation:
+     * Solution obj = new Solution();
+     * string tiny = obj.encode(url); // returns the encoded tiny url.
+     * string ans = obj.decode(tiny); // returns the original url after decoding it.
+     */
+    public class Codec {
+
+        HashMap<String, String> map = new HashMap<>();
+        String mapping = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        // Encodes a URL to a shortened URL.
+        public String encode(String longUrl) {
+            Random random = new Random();
+            StringBuilder res = new StringBuilder();
+            for (int i = 0; i < 6; i++) {
+                int index = random.nextInt(mapping.length());  // 在mapping 中随机选择一个index
+                res.append(mapping.charAt(index));  // 在mapping 中选择index位置的字母接在res 后面
+            }
+            String url = "https://tinyurl.com/" + res.toString();
+            if (!map.containsKey(url)) map.put(url, longUrl);
+            return url;
+        }
+
+        // Decodes a shortened URL to its original URL.
+        public String decode(String shortUrl) {
+            return map.get(shortUrl);
+        }
+    }
+
+    //228: Summary Ranges
+    /**
+     * You are given a sorted unique integer array nums.
+     *
+     * A range [a,b] is the set of all integers from a to b (inclusive).
+     *
+     * Return the smallest sorted list of ranges that cover all the numbers in the array exactly.
+     * That is, each element of nums is covered by exactly one of the ranges, and there is no
+     * integer x such that x is in one of the ranges but not in nums.
+     *
+     * Each range [a,b] in the list should be output as:
+     *
+     * "a->b" if a != b
+     * "a" if a == b
+     *
+     * Input: nums = [0,1,2,4,5,7]
+     * Output: ["0->2","4->5","7"]
+     * Explanation: The ranges are:
+     * [0,2] --> "0->2"
+     * [4,5] --> "4->5"
+     * [7,7] --> "7"
+     *
+     * Input: nums = [0,2,3,4,6,8,9]
+     * Output: ["0","2->4","6","8->9"]
+     * Explanation: The ranges are:
+     * [0,0] --> "0"
+     * [2,4] --> "2->4"
+     * [6,6] --> "6"
+     * [8,9] --> "8->9"
+     */
+
+    class Solution228 {
+        public List<String> summaryRanges(int[] nums) {
+            List<String> res = new ArrayList<>();
+            if (nums == null || nums.length == 0) return res;
+            for (int i = 0; i < nums.length; i ++) {
+                int num = nums[i];
+                while (i < nums.length - 1 && nums[i] + 1 == nums[i + 1]) i++;
+                if (num != nums[i]) res.add(num + "->" + nums[i]);
+                else res.add(num + "");
+            }
+            return res;
+        }
+    }
 }

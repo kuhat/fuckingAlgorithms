@@ -2361,9 +2361,9 @@ Output: true
 
 ![image-20220713140200200](C:\zwh\Documents\myBlog\图形题型)
 
-## 10.2 点
+## 9.2 点
 
-### 10.2.1 点在线段上
+### 9.2.1 点在线段上
 
 1. 点 O 是否在所在的直线（A, B）上，带入点到直线方程，算x轴的范围
 
@@ -2371,15 +2371,15 @@ Output: true
 
 2. 两点式：(y -y1)/(y2 - y1) = (x -x1)/(x2 - x1) (x1 ≠ x2, y1 ≠ y2)
 
-### 10.2.2 向量
+### 9.2.2 向量
 
 1. A X B = A.x * B.y - A.y * B.x
 
-## 10.3 方向
+## 9.3 方向
 
 ![image-20220713145616793](C:\zwh\Documents\myBlog\图形方向)
 
-## 10.4 点在直线上
+## 9.4 点在直线上
 
 # [149\. Max Points on a Line](https://leetcode.com/problems/max-points-on-a-line/submissions/)
 
@@ -2466,7 +2466,7 @@ class Solution {
 
 边界条件：平行/重合
 
-## 10.5 点与面
+## 9.5 点与面
 
 圆的表达式：`(x - a)^2 + (y -b)^2 = r ^2`.
 
@@ -2475,6 +2475,221 @@ class Solution {
 1. P在圆外，PO > r
 2. P在圆上，PO = r
 3. P在圆内，PO < r
+
++ 三角形
+
+  代码：Math.abs((x1 * (y2 -y3) + x2 * (y3 -y1) + x3 * (y1 -y2)) / 2.0 )
+
+  ![image-20220713183938844](C:\zwh\Documents\myBlog\三角形)
+
+​		
+
+## 9.6 线段是否相交
+
+判断两条线段是否相交：
+
+1. 如果以一条线段的两个头为端点，另一条线段的两个端点一定在他们的两边。
+
+2. 平行相交的话要先判断是否平行，再判断是否一条线段的端点在另一条上面
+
+   ```java
+    public class Point {
+           int x;
+           int y;
+   
+           public Point(int x, int y) {
+               this.x =x ;
+               this.y = y;
+           }
+       }
+   
+       public boolean onSegment(Point p, Point q, Point r) {
+           if (q.x <= Math.max(p.x, r.x) && q.x >= Math.min(p.x, r.x)
+                   && q.y <= Math.max(p.y, r.y) && q.y >= Math.min(p.y, r.y)) {
+               return true;
+           }
+           return false;
+       }
+   
+       public boolean pointOnSegment(Point C, Point A, Point B) {
+           Point AC = new Point(C.x - A.x, C.y - A.y);
+           Point BC = new Point(C.x - B.x, C.y - B.y);
+           int res = AC.x * BC.y - AC.y * BC.x;
+           return res == 0 && onSegment(A, C, B);
+       }
+   
+       public int orientation(Point p, Point q, Point r) {
+           int res = (q.y - p.y) * (r.x - q.x) - (q.x - p .x) * (r.y - q.y);
+           if (res == 0) return 0;
+           return res >0 ? 1 : 2;  // 0 是平行，1是在左边2是在右边
+       }
+   
+       // 线段相交
+       public boolean segmentIntersect(Point p1, Point q1, Point p2, Point q2) {
+           int o1 = orientation(p1, q1, p2);
+           int o2 = orientation(p1, q1, q2);
+           int o3 = orientation(p2, q2, p1);
+           int o4 = orientation(p2, q2, q1);
+           if (o1 != o2 && o3 != o4) return true;  // 不平行的情况
+           if (o1 == 0 && onSegment(p1, p2, q1)) return true;  // 平行的情况，其中一个点在另一个直线上
+           if (o2 == 0 && onSegment(p1, q2, q1)) return true;
+           if (o3 == 0 && onSegment(p2, p1, q2)) return true;
+           if (o4 == 0 && onSegment(p2, q1, q2)) return true;
+           return false;
+       }
+   
+   ```
+
+## 9.7 点是否在多边形内
+
++ 扫描线算法，对于每一条扫描线的处理：
+  1. 求交点
+  2. 交点排序
+  3. 交点匹配
+  4. 区间填充
+  5. 排序和交点
+
+## 9.8 圆
+
++ 方格与圆
+
+  给一个圆，半径和圆心点的坐标，求有多少整数完全在圆内？
+
+  + 取整
+
+    ```java
+    public int circlePoint(double r) {
+    	int res = 0;
+    	for (int x = 0, x < r; x ++) {
+    		int y = (int)Math.sqrt(r * r - x * x);
+    		res += y;
+    	}
+    	return res * 4 + 1;
+    }
+    ```
+
+
+
++ 二分图
+
+  # [785\. Is Graph Bipartite?](https://leetcode.com/problems/is-graph-bipartite/)
+
+  ## Description
+
+  Difficulty: **Medium**  
+
+  Related Topics: [Depth-First Search](https://leetcode.com/tag/depth-first-search/), [Breadth-First Search](https://leetcode.com/tag/breadth-first-search/), [Union Find](https://leetcode.com/tag/union-find/), [Graph](https://leetcode.com/tag/graph/)
+
+
+  There is an **undirected** graph with `n` nodes, where each node is numbered between `0` and `n - 1`. You are given a 2D array `graph`, where `graph[u]` is an array of nodes that node `u` is adjacent to. More formally, for each `v` in `graph[u]`, there is an undirected edge between node `u` and node `v`. The graph has the following properties:
+
+  *   There are no self-edges (`graph[u]` does not contain `u`).
+  *   There are no parallel edges (`graph[u]` does not contain duplicate values).
+  *   If `v` is in `graph[u]`, then `u` is in `graph[v]` (the graph is undirected).
+  *   The graph may not be connected, meaning there may be two nodes `u` and `v` such that there is no path between them.
+
+  A graph is **bipartite** if the nodes can be partitioned into two independent sets `A` and `B` such that **every** edge in the graph connects a node in set `A` and a node in set `B`.
+
+  Return `true` _if and only if it is **bipartite**_.
+
+  **Example 1:**
+
+  ![](https://assets.leetcode.com/uploads/2020/10/21/bi2.jpg)
+
+  ```
+  Input: graph = [[1,2,3],[0,2],[0,1,3],[0,2]]
+  Output: false
+  Explanation: There is no way to partition the nodes into two independent sets such that every edge connects a node in one and a node in the other.
+  ```
+
+  **Example 2:**
+
+  ![](https://assets.leetcode.com/uploads/2020/10/21/bi1.jpg)
+
+  ```
+  Input: graph = [[1,3],[0,2],[1,3],[0,2]]
+  Output: true
+  Explanation: We can partition the nodes into two sets: {0, 2} and {1, 3}.
+  ```
+
+  **Constraints:**
+
+  *   `graph.length == n`
+  *   `1 <= n <= 100`
+  *   `0 <= graph[u].length < n`
+  *   `0 <= graph[u][i] <= n - 1`
+  *   `graph[u]` does not contain `u`.
+  *   All the values of `graph[u]` are **unique**.
+  *   If `graph[u]` contains `v`, then `graph[v]` contains `u`.
+
+
+  ## Solution
+
+  Language: **Java**
+
+  ```java
+  class Solution {
+      public boolean isBipartite(int[][] graph) {
+            // 先对点进行着色
+              int[] colors = new int[graph.length];
+              for (int i = 0; i < colors.length; i++) {
+                  if (colors[i] == 0 ) {
+                      Queue<Integer> queue = new LinkedList<>();
+                      queue.offer(i);
+                      colors[i] = 1;  // 如果没有着色就将当前的位置着色
+                      while (!queue.isEmpty()) {
+                          Integer node = queue.poll();
+                          for (int adjacent : graph[node]) {  // 找相邻的两个点
+                              if (colors[adjacent] == colors[node]) return false;  // 一旦相邻的两个点产生冲突了就不行
+                              else if (colors[adjacent] == 0) {  // 如果相邻的点没有着色
+                                  queue.offer(adjacent);  // 加入队列
+                                  colors[adjacent] = -colors[node];  // 将相邻的点着色成 -1
+                              }
+                          }
+                      }
+                  }
+              }
+              return true;
+      }
+  }
+  ```
+
+## 9.9 正方形
+
+平面有若干个点，问能组成多少正方形（平行与x轴）
+
++ 两点（对角线的点）确定一个正方形
+
++ 边长相等
+
++ 对角线垂直平分, 中点加长度
+
+  ```java
+  public int countSquare(List<Point> list ) {
+  	if (list.size() == 0) return 0;
+  	int res = 0;
+      HashSet<Point> set = new HashSet<>();  // 点的集合
+      for (Point point : list) set.add(point);
+  	for (int i = 0; i < list.size(); i ++) {
+  		Point node1 = list.get(i); // 对角线的第一个点
+  		for (int j = i + 1; j < list.size(); j++) {
+  			Point node 2 = list.get(j);  // 第二个点
+              if (Math.abs(node1.x - node2.x) != Math.abs(node1.y - node2.y)  // 长方形去掉这一行
+                 || node1.equals(node2)) countinue;
+              Point left = new Point(node1.x, node2.y);
+              Point right = new Point(node2.x, node1.y);
+              if (set.contains(left) && set.contains(right)) res++;
+  		}
+  	}
+  	return res / 2;  // 会重复计算两次
+  }
+  ```
+
+
+不平行与x轴呢：
+
+```
+```
 
 
 

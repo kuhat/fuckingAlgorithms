@@ -730,6 +730,106 @@ public class Note3_Arrays {
         return res;
     }
 
+    // LeetCode 485： Max Consecutive ones 1
+    /**
+     * Given a binary array nums, return the maximum number of consecutive 1's in the array.
+     *
+     * Input: nums = [1,1,0,1,1,1]
+     * Output: 3
+     * Explanation: The first two digits or the last three digits are consecutive 1s. The maximum number of consecutive 1s is 3.
+     *
+     * Input: nums = [1,0,1,1,0,1]
+     * Output: 2
+     */
+
+    class Solution485 {
+        public int findMaxConsecutiveOnes(int[] nums) {
+            int count = 0, max = 0;
+            for (int x: nums) {
+                if (x == 1) count++;
+                else {
+                    max = Math.max(count, max);
+                    count = 0;
+                }
+            }
+            return Math.max(max, count);
+        }
+    }
+
+    // LeetCode 1004 Max Consecutive ones 3: 滑动窗口
+
+    /**
+     * Given a binary array nums and an integer k, return the maximum number of consecutive 1's in the
+     * array if you can flip at most k 0's.
+     *
+     * Input: nums = [1,1,1,0,0,0,1,1,1,1,0], k = 2
+     * Output: 6
+     * Explanation: [1,1,1,0,0,1,1,1,1,1,1]
+     * Bolded numbers were flipped from 0 to 1. The longest subarray is underlined.
+     *
+     * Input: nums = [0,0,1,1,0,0,1,1,1,0,1,1,0,0,0,1,1,1,1], k = 3
+     * Output: 10
+     * Explanation: [0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1]
+     * Bolded numbers were flipped from 0 to 1. The longest subarray is underlined.
+     */
+    /*
+    我们可以使用两个指针，一个指向窗口的左边，一个指向窗口的右边，每次遍历数组的时候窗口左边的指针先不动，窗口右边的指针始终都会往右移动，
+    然后顺便统计窗口内0的个数，如果0的个数大于K的时候，说明我们即使使用魔法，也不能把窗口内的所有数字都变为1，这个时候我们在移动窗口左边的指针，
+    直到窗口内0的个数不大于K为止……
+     */
+
+    class Solution {
+        public int longestOnes(int[] nums, int k) {
+            int left = 0, right = 0;
+            int countZero = 0;
+            int maxWindow = 0;
+            for (; right < nums.length; right ++) {
+                if (nums[right] == 0) countZero ++;
+                while(countZero > k) {
+                    if (nums[left++] == 0) countZero--;
+                }
+                maxWindow = Math.max(maxWindow, right - left + 1);
+            }
+            return maxWindow;
+        }
+    }
+
+    // LeetCode 239: Sliding Window Maximum
+
+    /**
+     *
+     * You are given an array of integers nums, there is a sliding window of size k which is moving from
+     * the very left of the array to the very right. You can only see the k numbers in the window. Each time
+     * the sliding window moves right by one position.
+     *
+     * Return the max sliding window.
+     *
+     * Input: nums = [1,3,-1,-3,5,3,6,7], k = 3
+     * Output: [3,3,5,5,6,7]
+     * Explanation:
+     * Window position                Max
+     * ---------------               -----
+     * [1  3  -1] -3  5  3  6  7       3
+     *  1 [3  -1  -3] 5  3  6  7       3
+     *  1  3 [-1  -3  5] 3  6  7       5
+     *  1  3  -1 [-3  5  3] 6  7       5
+     *  1  3  -1  -3 [5  3  6] 7       6
+     *  1  3  -1  -3  5 [3  6  7]      7
+     */
+    class Solution239 {
+        public int[] maxSlidingWindow(int[] nums, int k) {
+            if (nums == null || nums.length == 0) return new int[0];
+            int[] res = new int[nums.length - k + 1];
+            for (int i = 0; i < res.length; i ++) {
+                int max = nums[i];
+                for (int j = 1; j < k; j ++) {  // 在每个窗口内找到最大值
+                    max = Math.max(max, nums[i + j]);
+                }
+                res[i] = max;
+            }
+            return res;
+        }
+    }
 
 
 

@@ -117,7 +117,7 @@ public class Note11_Backtracking {
      * Output: []
      * Explanation: There are no expressions that can be created from "3456237490" to evaluate to 9191.
      */
-    class Solution292 {
+    class Solution282 {
         public List<String> addOperators(String num, int target) {
             List<String> res = new ArrayList<>();
             dfs(res, num, target, 0, 0, 0, "");
@@ -328,6 +328,11 @@ public class Note11_Backtracking {
             }
             return true;
         }
+    }
+
+    public static void main(String[] args) {
+        List<Boolean> list = new ArrayList<>(Arrays.asList(new Boolean[5]));
+        System.out.println(list);
     }
 }
 
