@@ -106,6 +106,16 @@ public class Note1_bitmap {
         return res;
     }
 
+    public static int hammingWeight2(int n) {
+        int res = 0;
+        while (n != 0) {
+            if ((n & 1) == 1) res += 1;
+            n >>>= 1;  // 将右移数字最左边用0来替代
+
+        }
+        return res;
+    }
+
     public static void bitSet() {
         BitSet bitSet = new BitSet();
         System.out.println(bitSet.get(0));
@@ -149,8 +159,7 @@ public class Note1_bitmap {
     public static int missingNumberMath(int[] nums) {
         int expectedSum = (nums.length + 1) * nums.length / 2;
         int actualNum = 0;
-        for (int i :
-                nums) {
+        for (int i : nums) {
             actualNum += i;
         }
         return expectedSum - actualNum;
@@ -200,7 +209,7 @@ public class Note1_bitmap {
         for (int i = 0; i < words.length; i++) {
             int val = 0;
             for (int j = 0; j < words[i].length(); j++) {
-                val |= 1 << (words[i].charAt(j) - 'a');
+                val |= 1 << (words[i].charAt(j) - 'a');  // 将每个单词转化成2进制的形式
             }
             bytes[i] = val;
         }

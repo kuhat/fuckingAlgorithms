@@ -1835,4 +1835,48 @@ public class Note8_Strings {
             return res;
         }
     }
+
+
+    // 475： Heaters
+    /**
+     *
+     * Winter is coming! During the contest, your first job is to design a standard heater with a fixed warm radius to
+     * warm all the houses.
+     *
+     * Every house can be warmed, as long as the house is within the heater's warm radius range.
+     *
+     * Given the positions of houses and heaters on a horizontal line, return the minimum radius standard of heaters
+     * so that those heaters could cover all houses.
+     *
+     * Notice that all the heaters follow your radius standard, and the warm radius will the same.
+     *
+     * Input: houses = [1,2,3], heaters = [2]
+     * Output: 1
+     * Explanation: The only heater was placed in the position 2, and if we use the radius 1 standard, then all the
+     * houses can be warmed.
+     *
+     * Input: houses = [1,2,3,4], heaters = [1,4]
+     * Output: 1
+     * Explanation: The two heater was placed in the position 1 and 4. We need to use radius 1 standard, then all the
+     * houses can be warmed.
+     */
+    class Solution475 {
+        public int findRadius(int[] houses, int[] heaters) {
+            Arrays.sort(houses);
+            Arrays.sort(heaters);
+            int i = 0, res = 0;
+            for (int house : houses) {
+                while (i < heaters.length - 1
+                        && Math.abs(heaters[i + 1] - house) <= Math.abs(heaters[i] - house)) {
+                    // 如果下一个heater到目前房子的距离小于这个heater到目前房子的距离
+                    i ++;  // 找下一个heater
+                }
+                res = Math.max(res, Math.abs(heaters[i] - house));
+            }
+            return res;
+        }
+    }
+
+
+
 }
