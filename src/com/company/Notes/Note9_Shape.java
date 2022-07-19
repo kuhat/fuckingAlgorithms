@@ -1,8 +1,6 @@
 package com.company.Notes;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 
 public class Note9_Shape {
 
@@ -90,9 +88,9 @@ public class Note9_Shape {
         for (int i = 0; i < list.size(); i ++) {
             Point node1 = list.get(i); // 对角线的第一个点
             for (int j = i + 1; j < list.size(); j++) {
-                Point node 2 = list.get(j);  // 第二个点
+                Point node2 = list.get(j);  // 第二个点
                 if (Math.abs(node1.x - node2.x) != Math.abs(node1.y - node2.y)  // 长方形去掉这一行
-                        || node1.equals(node2)) countinue;
+                        || node1.equals(node2)) continue;
                 Point left = new Point(node1.x, node2.y);
                 Point right = new Point(node2.x, node1.y);
                 if (set.contains(left) && set.contains(right)) res++;

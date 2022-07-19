@@ -255,7 +255,7 @@ public class Note1_bitmap {
         }
     }
 
-    // LeetCode 397: IntegerReolacement
+    // LeetCode 397: IntegerReplacement
 
     /**
      * 如果倒数第二位是0，那么n-1的操作会比n+1的操作消去更多的1

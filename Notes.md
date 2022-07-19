@@ -2693,9 +2693,365 @@ class Solution {
 
 
 
+# 10. Heap
+
+## 10.1 Heap的实现 & PriorityQuque
+
++ 默认升序排列，其他排列顺序需重写compare函数
+
+  ```java
+  public static void compare1(){
+      int[] nums = new int[]{1, 2 ,3, 4};
+      PriorityQueue<Integer> priorityQueue = new PriorityQueue<>(new Comparator<Integer>() {
+          @Override
+          public int compare(Integer o1, Integer o2) {
+              return o2 - o1;  // 默认为升序排列，降序排列为2-1
+          }
+      });
+      for (int num : nums) {
+          priorityQueue.offer(num);
+      }
+  }
+  ```
+
++ Lamda表达式形式
+
+  
+
+```java
+ public class ListNode {
+        int val;
+        Note5_LinkedList.ListNode next;
+
+        ListNode() {
+        }
+
+        ListNode(int val) {
+            this.val = val;
+        }
+
+        ListNode(int val, Note5_LinkedList.ListNode next) {
+            this.val = val;
+            this.next = next;
+        }
+    }
+
+public static void compare4() {
+    int[] nums = new int[] {1 ,2 ,3 , 4};
+    PriorityQueue<ListNode> priorityQueue = new PriorityQueue<>(5, (a, b) -> (a.val - b.val));  // lamda表达式
+
+}
+```
+
+## 10.2 全排列 VS 局部排序
+
+排序：
+
+1. 全排序：Arrays.sort
+
+2. 部分排序：PriorityQueue: 凡是看到元素间局部排序，涉及到最大，最小，用PriorityQueue
+
+   时间复杂：Arrays.sort: nlogn, PriorityQueue: nlogk
+
+   # [215\. Kth Largest Element in an Array](https://leetcode.com/problems/kth-largest-element-in-an-array/)
+
+   ## Description
+
+   Difficulty: **Medium**  
+
+   Related Topics: [Array](https://leetcode.com/tag/array/), [Divide and Conquer](https://leetcode.com/tag/divide-and-conquer/), [Sorting](https://leetcode.com/tag/sorting/), [Heap (Priority Queue)](https://leetcode.com/tag/heap-priority-queue/), [Quickselect](https://leetcode.com/tag/quickselect/)
+
+
+   Given an integer array `nums` and an integer `k`, return _the_ k<sup>th</sup> _largest element in the array_.
+
+   Note that it is the k<sup>th</sup> largest element in the sorted order, not the k<sup>th</sup> distinct element.
+
+   You must solve it in `O(n)` time complexity.
+
+   **Example 1:**
+
+   ```
+   Input: nums = [3,2,1,5,6,4], k = 2
+   Output: 5
+   ```
+
+   **Example 2:**
+
+   ```
+   Input: nums = [3,2,3,1,2,4,5,5,6], k = 4
+   Output: 4
+   ```
+
+   **Constraints:**
+
+   *   1 <= k <= nums.length <= 10<sup>5</sup>
+   *   -10<sup>4</sup> <= nums[i] <= 10<sup>4</sup>
+
+
+   ## Solution
+
+   Language: **Java**
+
+   ```java
+   class Solution {
+       public int findKthLargest(int[] nums, int k) {
+             if (nums == null || nums.length == 0) {
+               return 0;
+           }
+           PriorityQueue<Integer> minHeap = new PriorityQueue<>();
+           for (Integer num : nums) {
+               minHeap.offer(num);
+               if (minHeap.size() > k) {
+                   minHeap.poll();
+               }
+           }
+           return minHeap.poll();
+       }
+   }
+   ```
+
+## 10.3 Arrays.sort
+
++ Arrays.sort也可以重写 compareTo接口
+
+  # [56\. Merge Intervals](https://leetcode.com/problems/merge-intervals/submissions/)
+
+  ## Description
+
+  Difficulty: **Medium**  
+
+  Related Topics: [Array](https://leetcode.com/tag/array/), [Sorting](https://leetcode.com/tag/sorting/)
+
+
+  Given an array of `intervals` where intervals[i] = [start<sub>i</sub>, end<sub>i</sub>], merge all overlapping intervals, and return _an array of the non-overlapping intervals that cover all the intervals in the input_.
+
+  **Example 1:**
+
+  ```
+  Input: intervals = [[1,3],[2,6],[8,10],[15,18]]
+  Output: [[1,6],[8,10],[15,18]]
+  Explanation: Since intervals [1,3] and [2,6] overlap, merge them into [1,6].
+  ```
+
+  **Example 2:**
+
+  ```
+  Input: intervals = [[1,4],[4,5]]
+  Output: [[1,5]]
+  Explanation: Intervals [1,4] and [4,5] are considered overlapping.
+  ```
+
+  **Constraints:**
+
+  *   1 <= intervals.length <= 10<sup>4</sup>
+  *   `intervals[i].length == 2`
+  *   0 <= start<sub>i</sub> <= end<sub>i</sub> <= 10<sup>4</sup>
+
+
+  ## Solution
+
+  Language: **Java**
+
+  ```java
+  class Solution {
+      public int[][] merge(int[][] intervals) {
+           if (intervals == null || intervals.length == 0) return new int[][]{};
+              Arrays.sort(intervals, (a,b) -> (a[0] - b[0]));  //  按起点的大小进行升序排列
+              List<int[]> res = new ArrayList<>();
+              int start = intervals[0][0];
+              int end = intervals[0][1];
+              for (int[] interval : intervals) {
+                  if (interval[0] <= end) end = Math.max(interval[1], end);  // 如果后一个的start小于end,将前一个的end更新为后一个的end
+                  else {
+                      res.add(new int[]{start, end});
+                      start = interval[0];
+                      end = interval[1];
+                  }
+              }
+              res.add(new int[]{start, end});
+              return res.toArray(new int[][]{});
+      }
+  }
+  ```
+
+## 10.4 pair和时间复杂度
+
+1. 部分排序：低级大，第几小
+
+2. 涉及 Pair类型，两个变量，大多要有先后顺序（优先级）
+
+3. 只要涉及到排序优先级就是priorityqueue和 arrays.sort
+
+   # [373\. Find K Pairs with Smallest Sums](https://leetcode.com/problems/find-k-pairs-with-smallest-sums/submissions/)
+
+   ## Description
+
+   Difficulty: **Medium**  
+
+   Related Topics: [Array](https://leetcode.com/tag/array/), [Heap (Priority Queue)](https://leetcode.com/tag/heap-priority-queue/)
+
+
+   You are given two integer arrays `nums1` and `nums2` sorted in **ascending order** and an integer `k`.
+
+   Define a pair `(u, v)` which consists of one element from the first array and one element from the second array.
+
+   Return _the_ `k` _pairs_ (u<sub>1</sub>, v<sub>1</sub>), (u<sub>2</sub>, v<sub>2</sub>), ..., (u<sub>k</sub>, v<sub>k</sub>) _with the smallest sums_.
+
+   **Example 1:**
+
+   ```
+   Input: nums1 = [1,7,11], nums2 = [2,4,6], k = 3
+   Output: [[1,2],[1,4],[1,6]]
+   Explanation: The first 3 pairs are returned from the sequence: [1,2],[1,4],[1,6],[7,2],[7,4],[11,2],[7,6],[11,4],[11,6]
+   ```
+
+   **Example 2:**
+
+   ```
+   Input: nums1 = [1,1,2], nums2 = [1,2,3], k = 2
+   Output: [[1,1],[1,1]]
+   Explanation: The first 2 pairs are returned from the sequence: [1,1],[1,1],[1,2],[2,1],[1,2],[2,2],[1,3],[1,3],[2,3]
+   ```
+
+   **Example 3:**
+
+   ```
+   Input: nums1 = [1,2], nums2 = [3], k = 3
+   Output: [[1,3],[2,3]]
+   Explanation: All possible pairs are returned from the sequence: [1,3],[2,3]
+   ```
+
+   **Constraints:**
+
+   *   1 <= nums1.length, nums2.length <= 10<sup>5</sup>
+   *   -10<sup>9</sup> <= nums1[i], nums2[i] <= 10<sup>9</sup>
+   *   `nums1` and `nums2` both are sorted in **ascending order**.
+   *   1 <= k <= 10<sup>4</sup>
+
+
+   ## Solution
+
+   Language: **Java**
+
+   ```java
+   class Solution {
+       public List<List<Integer>> kSmallestPairs(int[] nums1, int[] nums2, int k) {
+            List<List<Integer>> res = new ArrayList<>();
+               if (nums1.length == 0 || nums2.length == 0 || k == 0) return res;
+               PriorityQueue<int[]> priorityQueue = new PriorityQueue<>((a,b) -> (a[0] + a[1] - b[0] - b[1]));  //  lamda重写compare方法
+               for (int i = 0; i < k && i < nums1.length; i++) {  //  只需要加入k个元素，num1和num2[0]加入，第三个index位置对应的是nums2的index
+                   priorityQueue.offer(new int[]{nums1[i], nums2[0], 0});
+               }
+               while (!priorityQueue.isEmpty() && k-- > 0) {
+                   int[] cur = priorityQueue.poll();  // 取出第一小和的元素
+                   List<Integer> temp = new ArrayList<>();
+                   temp.add(cur[0]);
+                   temp.add(cur[1]);
+                   res.add(temp);
+                   if (cur[2] == nums2.length - 1) continue;  // cur[2]的最后一个元素了，相当于nums2没有元素可以加了
+                   priorityQueue.offer(new int[]{cur[0], nums2[cur[2] + 1], cur[2] + 1});  // 加入nums[2]的下一个位置的元素和num1当前的元素，index ++
+               }
+               return res;
+       }
+   }
+   ```
+
+
+
+## 10.5 Class 排序
+
+类，多个变量，有先后顺序
+
++ 外排序（External sorting): 大文件的排序，待排序的文件无法一次装入内存
+
+  1. 空间不够，化大为下，拆分
+
+  2. 使用内排序方法排序
+
+  3. 问题：merge k srted arrays
+
+     ```java
+     // merge k sorted arrays
+     
+     /**
+      * array1: [1, 3, 5, 7]
+      * array2: [2, 4 ,6 ,8]
+      * array3: [0, 9, 10, 11]
+      * 将这三个array组合为一个sorted array
+      * [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+      */
+     class mergeKsortedArrays{
+         public static int[] mergeKSortedArrays(int[][] arrays) {
+             List<Integer> ret = new ArrayList<>();
+             if (arrays == null || arrays.length == 0) return new int[]{};
+     
+             PriorityQueue<ArrayContainer> priorityQueue = new PriorityQueue<>();  // 比较每个array的起始位置的大小，一个个装进新的数组
+             for (int i = 0; i < arrays.length; i++) {
+                 if (arrays[i].length != 0) {
+                     ArrayContainer ac = new ArrayContainer(arrays[i], 0);
+                     priorityQueue.offer(ac);
+                 }
+             }
+     
+             while (!priorityQueue.isEmpty()) {
+                 ArrayContainer ac = priorityQueue.poll();  // 将当前位置最小的那个poll出来加入ret，并且把index++
+                 ret.add(ac.array[ac.index++]);  
+                 if (ac.index < ac.array.length) priorityQueue.offer(new ArrayContainer(ac.array,ac.index));  // 加入下一个
+             }
+     
+             int[] res = new int[ret.size()];
+             for (int i = 0; i < res.length; i++) {
+                 res[i] = ret.get(i);
+             }
+             return res;
+         }
+     
+         // 新建一个class来表示 array和它的起始值（当前遍历到的 index）
+         private static class ArrayContainer implements Comparable<ArrayContainer> {
+             // 放入array和它的起始位置
+             int[] array;
+             int index;
+     
+             public ArrayContainer(int[] array, int index) {
+                 this.array = array;
+                 this.index = index;
+             }
+     
+             @Override
+             public int compareTo(ArrayContainer o) {
+                 return this.array[index] - o.array[o.index];  // 按照index位置的大小升序排列
+             }
+         }
+     }
+     ```
+
+     + 模板
+
+       ```java
+       // 处理数据 Arrays.sort 混合应用
+       PriorityQueue<T> priorityQueue = new PriorityQueue<>((a,b) -> 重写比较)；
+       for(遍历原数据) {
+       	priorityQueue.offer();  // 加入数据
+       }
+       while() {
+           // 处理数据
+       }
+       /// 时间复杂度：O(nlohn) / O(nlogk)
+       ```
+
+       
+
+
+
 # 11. 回溯法
 
-## 11.1 二叉树的遍历
+按条件进行搜索，当探索到某一步时，发现原先的选择达不到目标或不是最优，就退回一步重新选择，这个过程叫做回溯。
+
++ 实现：递归（枚举）
++ DFS: 全部解，全部枚举
++ Backtracking: 部分解，部分枚举，相当于剪枝的DFS
+
+## 11 .1 二叉树的遍历
 
 + 三种遍历方式
 
@@ -2777,3 +3133,363 @@ class Solution {
 	  
 	
 	  这是一棵非常简单的3叉树，假如要对他进行DFS遍历，当沿着1→2这条路径走下去的时候，list中应该是[1，2]。因为是递归调用最终还会回到节点1，如果不把2给移除掉，当沿着1→4这个分支走下去的时候就变成[1，2，4]，但实际上1→4这个分支的结果应该是[1，4]，这是因为我们把前一个分支的值给带过来了。当1，2这两个节点遍历完之后最终还是返回节点1，在回到节点1的时候就应该把结点2的值给移除掉，让list变为[1]，然后再沿着1→4这个分支走下去，结果就是[1，4]。
+
+## 11.2 三大题型：排列
+
++ # [46\. Permutations](https://leetcode.com/problems/permutations/)
+
+  ## Description
+
+  Difficulty: **Medium**  
+
+  Related Topics: [Array](https://leetcode.com/tag/array/), [Backtracking](https://leetcode.com/tag/backtracking/)
+
+
+  Given an array `nums` of distinct integers, return _all the possible permutations_. You can return the answer in **any order**.
+
+  **Example 1:**
+
+  ```
+  Input: nums = [1,2,3]
+  Output: [[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]
+  ```
+
+  **Example 2:**
+
+  ```
+  Input: nums = [0,1]
+  Output: [[0,1],[1,0]]
+  ```
+
+  **Example 3:**
+
+  ```
+  Input: nums = [1]
+  Output: [[1]]
+  ```
+
+  **Constraints:**
+
+  *   `1 <= nums.length <= 6`
+  *   `-10 <= nums[i] <= 10`
+  *   All the integers of `nums` are **unique**.
+
+
+  +  Solution
+
+  Language: **Java**
+
+  ```java
+  class Solution {
+      public List<List<Integer>> permute(int[] nums) {
+          List<List<Integer>> res = new ArrayList<>();
+              backtrack(res, new ArrayList<>(), nums);
+              return res;
+          }
+  
+          private void backtrack(List<List<Integer>> list, List<Integer> temp, int[] nums) {
+              // 终止条件，如果数字被用完了，说明找到了一个排列（可以把它看成n叉树到叶子节点了，不能往下走了，要返回）
+              if (temp.size() == nums.length) {
+                  list.add(new ArrayList<>(temp));
+                  return;
+              }
+              // 遍历n叉树的每个节点的子节点
+              for (int i = 0; i < nums.length; i++) {
+                  // 不能有重复的，有就要跳过
+                  if (temp.contains(nums[i])) continue;
+                  temp.add(nums[i]);
+                  backtrack(list, temp, nums);
+                  temp.remove(temp.size() - 1);
+              }
+          }
+      }
+  
+  ```
+
+## 11.3 三大题型：子集
+
++ # [78\. Subsets](https://leetcode.com/problems/subsets/)
+
+  ## Description
+
+  Difficulty: **Medium**  
+
+  Related Topics: [Array](https://leetcode.com/tag/array/), [Backtracking](https://leetcode.com/tag/backtracking/), [Bit Manipulation](https://leetcode.com/tag/bit-manipulation/)
+
+
+  Given an integer array `nums` of **unique** elements, return _all possible subsets (the power set)_.
+
+  The solution set **must not** contain duplicate subsets. Return the solution in **any order**.
+
+  **Example 1:**
+
+  ```
+  Input: nums = [1,2,3]
+  Output: [[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]
+  ```
+
+  **Example 2:**
+
+  ```
+  Input: nums = [0]
+  Output: [[],[0]]
+  ```
+
+  **Constraints:**
+
+  *   `1 <= nums.length <= 10`
+  *   `-10 <= nums[i] <= 10`
+  *   All the numbers of `nums` are **unique**.
+
+
+  ## Solution
+
+  Language: **Java**
+
+  ```java
+  class Solution {
+      public List<List<Integer>> subsets(int[] nums) {
+          List<List<Integer>> res = new ArrayList<>();
+          if (nums == null || nums.length == 0) return res;
+          subsetsHelper(res, new ArrayList<>(), nums, 0);
+          return res;
+      }
+      
+      private void subsetsHelper(List<List<Integer>> res, List<Integer> list, int[] nums, int index) {
+          res.add(new ArrayList<>(list));  // 没有限制，直接加入
+          for (int i = index; i < nums.length; i++) {  // Index: 已经算过的数字不用去管了
+              list.add(nums[i]);
+              subsetsHelper(res, list, nums, i + 1);
+              list.remove(list.size() -1);
+          }
+          
+      }
+  }
+  ```
+
+## 11.4 模板
+
+```java
+public static List<LIst<Integer>> backtracking(int[] nums) {
+	List<List<Integer>> res = new ArrayList<>();  // result 数组
+	if (nums == null || nums.length == 0) return res;
+	helper(res, new ArrayList<>(), nums, 0);
+	return res;
+}
+
+// 参数，分析得出res + list + 输入 + index（看情况）
+public static void helper(List<LIst<Integer>> res, List<Integer> list, int[] nums, ...) {
+	// 返回条件 + res.add(new ArrayList<>(list));
+	for (int i = ...; i < nuns.length; i++) {
+		list.add(nums[i]);
+		helper(res, list, nums ...);
+		list.remove(list.size() - 1);  // java是值传递，list是一个对象，是一个引用，要把这一次的删除才不影响上一层的
+	}
+}
+```
+
+# 12. 图
+
+
+
+## 12.1 Flood fill 的 DFS
+
+把一个点所有相邻的点都涂上统一颜色，一直填充下去，知道这个区域内所有的点都被填充完为止
+
++ # [200\. Number of Islands](https://leetcode.com/problems/number-of-islands/)
+
+  ## Description
+
+  Difficulty: **Medium**  
+
+  Related Topics: [Array](https://leetcode.com/tag/array/), [Depth-First Search](https://leetcode.com/tag/depth-first-search/), [Breadth-First Search](https://leetcode.com/tag/breadth-first-search/), [Union Find](https://leetcode.com/tag/union-find/), [Matrix](https://leetcode.com/tag/matrix/)
+
+
+  Given an `m x n` 2D binary grid `grid` which represents a map of `'1'`s (land) and `'0'`s (water), return _the number of islands_.
+
+  An **island** is surrounded by water and is formed by connecting adjacent lands horizontally or vertically. You may assume all four edges of the grid are all surrounded by water.
+
+  **Example 1:**
+
+  ```
+  Input: grid = [
+    ["1","1","1","1","0"],
+    ["1","1","0","1","0"],
+    ["1","1","0","0","0"],
+    ["0","0","0","0","0"]
+  ]
+  Output: 1
+  ```
+
+  **Example 2:**
+
+  ```
+  Input: grid = [
+    ["1","1","0","0","0"],
+    ["1","1","0","0","0"],
+    ["0","0","1","0","0"],
+    ["0","0","0","1","1"]
+  ]
+  Output: 3
+  ```
+
+  **Constraints:**
+
+  *   `m == grid.length`
+  *   `n == grid[i].length`
+  *   `1 <= m, n <= 300`
+  *   `grid[i][j]` is `'0'` or `'1'`.
+
+
+  + **Solution**
+
+  Language: **Java**
+
+  ```java
+  class Solution {
+        private int m;
+          private int n;
+          public int numIslands(char[][] grid) {
+              if (grid == null || grid.length == 0) return 0;
+              m = grid.length;
+              n = grid[0].length;
+              int res =0;
+              for (int i = 0; i < m; i++) {
+                  for (int j = 0; j < n; j++) {
+                      if (grid[i][j] == '1') {  // 当遍历到1的时候进行flood fill
+                          floodfill(grid, i, j);
+                          res++;
+                      }
+                  }
+              }
+              return res;
+          }
+  
+          private void floodfill(char[][] grid, int i, int j) {
+              if (i < 0 || j < 0 || i >= m || j >= n || grid[i][j] == '0') return;  // 如果遍历到边界或者遇到了0就返回
+              grid[i][j] = '0';  // 把当前位置变为0
+              floodfill(grid, i , j + 1);  // 上下左右都进行遍历
+              floodfill(grid, i , j - 1);
+              floodfill(grid, i + 1 , j);
+              floodfill(grid, i - 1, j);
+          }
+  
+       private void floodfillBFS(char[][] grid, int x, int y) {
+              grid[x][y] = '0';
+              Queue<Integer> queue = new LinkedList<>();
+              queue.offer(x * n + y);  // 将2d的元素扯成一条线，x*行数+y
+              while (!queue.isEmpty()) {
+                  int cur = queue.poll();
+                  int i = cur / n;  // 行数
+                  int j = cur % n;  // 列数
+                  if (i > 0 && grid[i - 1][j] == '1') {  // 判断上下左右四个位置
+                      queue.offer((i - 1) * n + j);  // 上面位置是1
+                      grid[i - 1][j] = '0'; // 加入进去，把当前位置变成0
+                  }
+                  if (i < m -1 && grid[i + 1][j] == '1') {  // 下面位置
+                      queue.offer((i + 1) * n + j);
+                      grid[i + 1][j] = '0';
+                  }
+                  if (j > 0 && grid[i][j -1] == '1') {  // 左边位置
+                      queue.offer(i * n + j - 1);
+                      grid[i][j - 1]='0';
+                  }if (i < n - 1 && grid[i][j + 1] == '1') {  // 右边位置
+                      queue.offer((i * n + j + 1);
+                      grid[i][j + 1] = '0';
+                  }
+              }
+          }
+  }
+  ```
+
+
+
++ BFS的优化
+
+  ```java
+  private void bfs(char[][] grid, int x, int y){
+              int[][] directions = new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}};  // 上下左右四个方向
+              Queue<Point> queue = new LinkedList<>();
+              queue.offer(new Point(x, y));
+              while(!queue.isEmpty()) {
+                  Point cur = queue.poll();
+                  for(int[] direction : directions) {  // 四个方向进行遍历
+                      int newX = cur.x + direction[0];
+                      int newY = cur.y + direction[1];
+                      if (isValid(grid, newX, newY)) {  // 判断边界条件
+                          queue.offer(new Point(newX, newY));  // 加入新的点
+                          grid[newX][newY] = '0';
+                      }
+                  }
+              }
+          }
+  
+          private boolean isValid(char[][] grid, int x, int y) {
+              return x >= 0 && y >= 0 && x < grid.length && y < grid[0].length && grid[x][y] == '1';
+          }
+  
+          class Point{
+              int x;
+              int y;
+              public Point(int x, int y) {
+                  this.x = x;
+                  this.y = y;
+              }
+          }
+  ```
+
+  
+
+## 12.2 棋盘迷宫
+
+
+0代表障碍物，1代表路，求到目的地的最段路径
+
+```java
+public class mazeOfChessBoard{
+    private boolean hasPath(char[][] maze, int[] start, int[] end){  // 从七点走到终点
+        int[][] directions = new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}};  // 上下左右四个方向
+
+        boolean[][] visited = new boolean[maze.length][maze[0].length];  // 记录走的路径
+
+        Queue<solution200.Point> queue = new LinkedList<>();
+        queue.offer(new solution200.Point(start[0], start[1]));  // 初始化，加入起点
+        visited[start[0]][start[1]] = true;
+
+        while(!queue.isEmpty()) {
+            solution200.Point cur = queue.poll();
+            if (cur.x == end[0] && cur.y == end[1]) return true;  // 走到终点的时候return true
+            for(int[] direction : directions) {  // 四个方向进行遍历
+                int newX = cur.x + direction[0];
+                int newY = cur.y + direction[1];
+                if (isValid(maze, newX, newY) && !visited[newX][newY]) {  // 判断边界条件, 如果没有走过，再走它
+                    queue.offer(new solution200.Point(newX, newY));
+                    visited[newX][newY] = true;  // 将当前节点变为true
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean isValid(char[][] grid, int x, int y) {
+        return x >= 0 && y >= 0 && x < grid.length && y < grid[0].length && grid[x][y] == '1';
+    }
+
+    class Point{
+        int x;
+        int y;
+        public Point(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
+
+}
+```
+
+
+
+
+
+
+
