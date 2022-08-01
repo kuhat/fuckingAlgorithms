@@ -7,7 +7,7 @@ public class Note_10PriorityQueue {
 
     public class ListNode {
         int val;
-        Note5_LinkedList.ListNode next;
+        ListNode next;
 
         ListNode() {
         }
@@ -16,7 +16,7 @@ public class Note_10PriorityQueue {
             this.val = val;
         }
 
-        ListNode(int val, Note5_LinkedList.ListNode next) {
+        ListNode(int val, ListNode next) {
             this.val = val;
             this.next = next;
         }
@@ -159,7 +159,7 @@ public class Note_10PriorityQueue {
         }
     }
 
-    // merge k sorted arrays
+    // 23:merge k sorted arrays
 
     /**
      * array1: [1, 3, 5, 7]
@@ -209,6 +209,114 @@ public class Note_10PriorityQueue {
             @Override
             public int compareTo(ArrayContainer o) {
                 return this.array[index] - o.array[o.index];  // 按照index位置的大小升序排列
+            }
+        }
+
+        public ListNode mergeKLists2(ListNode[] lists) {
+            ListNode dummy = new ListNode(0);
+            ListNode cur = dummy;
+            if (lists == null || lists.length == 0) return dummy.next;
+
+            PriorityQueue<ListNode> pq = new PriorityQueue<>((a,b) -> (a.val - b.val));  // 拉姆达表达式
+            for (int i =0; i < lists.length; i++) {
+                if (lists[i] != null) {
+                    pq.offer(lists[i]);
+                }
+            }
+            while(!pq.isEmpty()) {
+                ListNode newNode = pq.poll();
+                cur.next = newNode;
+                cur = cur.next;
+                if (newNode.next != null) pq.offer(newNode.next);
+            }
+            return dummy.next;
+        }
+
+
+        // 分治方法
+        // O（nlogk）
+        public ListNode mergeKLists(ListNode[] lists) {
+            if (lists == null || lists.length == 0) return null;
+            return sort(lists, 0, lists.length -1);
+        }
+
+        private ListNode sort(ListNode[] lists, int lo, int hi) {  // 将整体的链表array两个两个的分开
+            if (lo > hi) return lists[lo];
+            int mid = (hi - lo) / 2 + lo;
+            ListNode L1 = sort(lists, lo, mid);
+            ListNode L2 = sort(lists, mid + 1, hi);
+            return merge(L1, L2);
+        }
+
+        private ListNode merge(ListNode L1, ListNode L2) {  // 两个两个的链表合在一起
+            if (L1 == null) return L2;
+            if (L2 == null) return L1;
+            if (L1.val < L2.val){
+                L1.next = merge(L1.next, L2);
+                return L1;
+            }
+            L2.next = merge(L1, L2.next);
+            return L2;
+        }
+
+    }
+
+    // 313 super ugly number
+
+    /**
+     * A super ugly number is a positive integer whose prime factors are in the array primes.
+     *
+     * Given an integer n and an array of integers primes, return the nth super ugly number.
+     *
+     * The nth super ugly number is guaranteed to fit in a 32-bit signed integer.
+     *
+     * Input: n = 12, primes = [2,7,13,19]
+     * Output: 32
+     * Explanation: [1,2,4,7,8,13,14,16,19,26,28,32] is the sequence of the first 12 super ugly numbers given primes = [2,7,13,19].
+     *
+     * Input: n = 1, primes = [2,3,5]
+     * Output: 1
+     * Explanation: 1 has no prime factors, therefore all of its prime factors are in the array primes = [2,3,5].
+     *
+     * pq:
+     * 2 1 2
+     * 7 1 7
+     * 13 1 13
+     * 19 1 19
+     *
+     * pq:
+     * 4 2 2
+     *
+     */
+    class solution313{
+        public int nthSuperUglyNumber(int n, int[] primes) {
+            int[] res = new int[n];
+            res[0] = 1;
+            PriorityQueue<Num> pq = new PriorityQueue<>((a,b)->(a.val - b.val));
+            for (int i = 0; i < primes.length; i++) {
+                pq.add(new Num(primes[i], 1, primes[i]));  // pq 初始化
+            }
+
+            for (int i = 1; i < n; i++) {
+                res[i] = pq.peek().val;
+                while (pq.peek().val == res[i]) {
+                    Num next = pq.poll();
+                    pq.add(new Num(next.prime * res[next.index], next.index + 1, next.prime));
+                }
+            }
+
+            return res[n -1];
+        }
+
+        class Num {
+            int val;
+            int index;
+            int prime;
+
+            public Num(int val, int index, int prime) {
+                this.val = val;
+                this.index = index;
+                this.prime = prime;
             }
         }
     }

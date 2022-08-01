@@ -3487,9 +3487,977 @@ public class mazeOfChessBoard{
 }
 ```
 
+## 12.3 思考方式 转换图
+
++ # [127\. Word Ladder](https://leetcode.com/problems/word-ladder/submissions/)
+
+  ## Description
+
+  Difficulty: **Hard**  
+
+  Related Topics: [Hash Table](https://leetcode.com/tag/hash-table/), [String](https://leetcode.com/tag/string/), [Breadth-First Search](https://leetcode.com/tag/breadth-first-search/)
+
+
+  A **transformation sequence** from word `beginWord` to word `endWord` using a dictionary `wordList` is a sequence of words beginWord -> s<sub>1</sub> -> s<sub>2</sub> -> ... -> s<sub>k</sub> such that:
+
+  *   Every adjacent pair of words differs by a single letter.
+  *   Every s<sub>i</sub> for `1 <= i <= k` is in `wordList`. Note that `beginWord` does not need to be in `wordList`.
+  *   s<sub>k</sub> == endWord
+
+  Given two words, `beginWord` and `endWord`, and a dictionary `wordList`, return _the **number of words** in the **shortest transformation sequence** from_ `beginWord` _to_ `endWord`_, or_ `0` _if no such sequence exists._
+
+  **Example 1:**
+
+  ```
+  Input: beginWord = "hit", endWord = "cog", wordList = ["hot","dot","dog","lot","log","cog"]
+  Output: 5
+  Explanation: One shortest transformation sequence is "hit" -> "hot" -> "dot" -> "dog" -> cog", which is 5 words long.
+  ```
+
+  **Example 2:**
+
+  ```
+  Input: beginWord = "hit", endWord = "cog", wordList = ["hot","dot","dog","lot","log"]
+  Output: 0
+  Explanation: The endWord "cog" is not in wordList, therefore there is no valid transformation sequence.
+  ```
+
+  **Constraints:**
+
+  *   `1 <= beginWord.length <= 10`
+  *   `endWord.length == beginWord.length`
+  *   `1 <= wordList.length <= 5000`
+  *   `wordList[i].length == beginWord.length`
+  *   `beginWord`, `endWord`, and `wordList[i]` consist of lowercase English letters.
+  *   `beginWord != endWord`
+  *   All the words in `wordList` are **unique**.
+
+
+  + Solution
+
+  Language: **Java**
+
+  ```java
+  class Solution {
+      public int ladderLength(String beginWord, String endWord, List<String> wordList) {
+              Graph graph = new Graph();
+              for (String word : wordList) graph.addNode(new Node(word));  // 将所有单词加入graph
+              if (!wordList.contains(beginWord)) {
+                  graph.addNode(new Node(beginWord));
+                  wordList.add(beginWord);
+              }
+  
+              for (String word: wordList){
+                  Node node = graph.getNode(word);
+                  for (int i = 0; i < word.length(); i ++) {
+                      char[] wordUnit = word.toCharArray();  // 每一个字母都变换
+                      for (char j = 'a'; j <= 'z'; j++) {
+                          wordUnit[i] = j;
+                          String temp = new String(wordUnit);
+                          if (graph.getNode(temp) != null && !node.neighbors.contains(temp) && !temp.equals(word)) {
+                              // 如果没有加过，不等与它本身
+                              node.neighbors.add(graph.getNode(temp));
+                          }
+                      }
+                  }
+              }
+              // BFS
+              HashSet<Node> visited = new HashSet<>();
+              Queue<Node> queue = new LinkedList<>();
+  
+              visited.add(graph.getNode(beginWord));
+              queue.offer(graph.getNode(beginWord));
+  
+              int res = 0;
+               while (!queue.isEmpty()) {
+                  res ++;
+                  int size = queue.size();
+                  for (int i = 0; i < size; i++) {
+                      Node node = queue.poll();
+                      if (node.word.equals(endWord)) return res;  // 如果碰到了endword就停止
+                      for (Node neighbor: node.neighbors) {  // 在node的neighbor里面找临结点
+                          if(!visited.contains(neighbor)) {  // 如果没有走过就加入queue
+                              queue.offer(neighbor);
+                              visited.add(neighbor);
+                          }
+                      }
+                  }
+              }
+          return 0;
+          }
+  
+          class Graph {  // 将整个word list转化成一个图
+              List<Node> nodes;
+              HashMap<String, Integer> map;  // 加入了一个string后就把index也加进去，后面要找这个词就找得到了
+  
+              public Graph() {
+                  this.nodes = new ArrayList<>();
+                  this.map = new HashMap<>();
+              }
+  
+              public void addNode(Node node) {  //  将node节点放入graph 之中
+                  map.put(node.word, nodes.size());  // 通过word在hashMap中找到index, 通过index在nodes里面找到对应的Node
+                  nodes.add(node);
+              }
+  
+              public Node getNode(String word) {
+                  if (map.containsKey(word)) return nodes.get(map.get(word));
+                  return null;
+              }
+          }
+  
+          class Node {
+              String word;
+              List<Node> neighbors;  // 每个单词的临结点
+              public Node(String word) {
+                  this.word = word;
+                  this.neighbors = new ArrayList<>();
+              }
+          }
+      }
+  ```
+
+## 12.4 最大匹配
+
+给定一个二分图G，在G的一个子图M中，M的边集中的任意两条边都不依附于同一个顶点，则称M是一个匹配。选择这样的边数最大的子集称为图的最大匹配问题（Maximal matching problem）
+
++ 图中的每个顶点和图中某条边相关联，则称此匹配为完全匹配
++ 完全匹配一定是最大匹配
+
++ 匈牙利算法
+
+  ![匈牙利算法](C:\zwh\Documents\myBlog\匈牙利算法.png)
+
+A和1，2相连，B和2，3相连，C和1，2相连，如何形成最大匹配。
 
 
 
+# 13. Tree
+
++ 要点：
+
+  preorder, Inorder, PostOrder, LevelOrder
+
+  1. 通用解法：Prerder
+  2. BST: InOrder
+  3. 子模块：PostOrder
+  4. 层次：LevelOrder
+
+## 13.1 双Pre
+
++ LeetCode 112:
+
+  # [112\. Path Sum](https://leetcode.com/problems/path-sum/submissions/)
+
+  ## Description
+
+  Difficulty: **Easy**  
+
+  Related Topics: [Tree](https://leetcode.com/tag/tree/), [Depth-First Search](https://leetcode.com/tag/depth-first-search/), [Breadth-First Search](https://leetcode.com/tag/breadth-first-search/), [Binary Tree](https://leetcode.com/tag/binary-tree/)
 
 
+  Given the `root` of a binary tree and an integer `targetSum`, return `true` if the tree has a **root-to-leaf** path such that adding up all the values along the path equals `targetSum`.
 
+  A **leaf** is a node with no children.
+
+  **Example 1:**
+
+  ![](https://assets.leetcode.com/uploads/2021/01/18/pathsum1.jpg)
+
+  ```
+  Input: root = [5,4,8,11,null,13,4,7,2,null,null,null,1], targetSum = 22
+  Output: true
+  Explanation: The root-to-leaf path with the target sum is shown.
+  ```
+
+  **Example 2:**
+
+  ![](https://assets.leetcode.com/uploads/2021/01/18/pathsum2.jpg)
+
+  ```
+  Input: root = [1,2,3], targetSum = 5
+  Output: false
+  Explanation: There two root-to-leaf paths in the tree:
+  (1 --> 2): The sum is 3.
+  (1 --> 3): The sum is 4.
+  There is no root-to-leaf path with sum = 5.
+  ```
+
+  **Example 3:**
+
+  ```
+  Input: root = [], targetSum = 0
+  Output: false
+  Explanation: Since the tree is empty, there are no root-to-leaf paths.
+  ```
+
+  **Constraints:**
+
+  *   The number of nodes in the tree is in the range `[0, 5000]`.
+  *   `-1000 <= Node.val <= 1000`
+  *   `-1000 <= targetSum <= 1000`
+
+
+  + **Solution**
+
+  Language: **Java**
+
+  ```java
+  /**
+   * Definition for a binary tree node.
+   * public class TreeNode {
+   *     int val;
+   *     TreeNode left;
+   *     TreeNode right;
+   *     TreeNode() {}
+   *     TreeNode(int val) { this.val = val; }
+   *     TreeNode(int val, TreeNode left, TreeNode right) {
+   *         this.val = val;
+   *         this.left = left;
+   *         this.right = right;
+   *     }
+   * }
+   */
+  class Solution {
+      public boolean hasPathSum(TreeNode root, int targetSum) {
+             if (root == null) return false;  // 边界条件
+              if (root.left == null && root.right == null) {
+                  return targetSum == root.val;  // 具体内容
+              }
+              return hasPathSum(root.left, targetSum - root.val) || hasPathSum(root.right, targetSum - root.val);  // 从上到下遍历，到最后一层就可以
+      }
+  }
+  ```
+
+## 13.2 Inorder 题目解法
+
+BST: 升序用Inorder
+
++ # [230\. Kth Smallest Element in a BST](https://leetcode.com/problems/kth-smallest-element-in-a-bst/submissions/)
+
+  ## Description
+
+  Difficulty: **Medium**  
+
+  Related Topics: [Tree](https://leetcode.com/tag/tree/), [Depth-First Search](https://leetcode.com/tag/depth-first-search/), [Binary Search Tree](https://leetcode.com/tag/binary-search-tree/), [Binary Tree](https://leetcode.com/tag/binary-tree/)
+
+
+  Given the `root` of a binary search tree, and an integer `k`, return _the_ k<sup>th</sup> _smallest value (**1-indexed**) of all the values of the nodes in the tree_.
+
+  **Example 1:**
+
+  ![](https://assets.leetcode.com/uploads/2021/01/28/kthtree1.jpg)
+
+  ```
+  Input: root = [3,1,4,null,2], k = 1
+  Output: 1
+  ```
+
+  **Example 2:**
+
+  ![](https://assets.leetcode.com/uploads/2021/01/28/kthtree2.jpg)
+
+  ```
+  Input: root = [5,3,6,2,4,null,null,1], k = 3
+  Output: 3
+  ```
+
+  **Constraints:**
+
+  *   The number of nodes in the tree is `n`.
+  *   1 <= k <= n <= 10<sup>4</sup>
+  *   0 <= Node.val <= 10<sup>4</sup>
+
+  **Follow up:** If the BST is modified often (i.e., we can do insert and delete operations) and you need to find the kth smallest frequently, how would you optimize?
+
+
+  + **Solution**
+
+  Language: **Java**
+
+  ```java
+  /**
+   * Definition for a binary tree node.
+   * public class TreeNode {
+   *     int val;
+   *     TreeNode left;
+   *     TreeNode right;
+   *     TreeNode() {}
+   *     TreeNode(int val) { this.val = val; }
+   *     TreeNode(int val, TreeNode left, TreeNode right) {
+   *         this.val = val;
+   *         this.left = left;
+   *         this.right = right;
+   *     }
+   * }
+   */
+  class Solution {
+      int count;
+          int res;
+          public int kthSmallest(TreeNode root, int k) {
+              count = k;
+              res = 0;
+              helper(root);
+              return res;
+          }
+  
+          public void helper(TreeNode root) {
+              if(root == null) return;
+              helper(root.left);
+              count --;
+              if (count == 0) res = root.val;
+              helper(root.right);
+          }
+  }
+  ```
+
++ 模板
+
+  ```java
+  public void helper(TreeNode root) {
+              if(root == null) return;
+              helper(root.left);
+              // 操作
+              helper(root.right);
+          }
+  ```
+
+  和BST关系最紧密，排序
+
+## 13.3 postorder 解法
+
++ # [124\. Binary Tree Maximum Path Sum](https://leetcode.com/problems/binary-tree-maximum-path-sum/submissions/)
+
+  ## Description
+
+  Difficulty: **Hard**  
+
+  Related Topics: [Dynamic Programming](https://leetcode.com/tag/dynamic-programming/), [Tree](https://leetcode.com/tag/tree/), [Depth-First Search](https://leetcode.com/tag/depth-first-search/), [Binary Tree](https://leetcode.com/tag/binary-tree/)
+
+
+  A **path** in a binary tree is a sequence of nodes where each pair of adjacent nodes in the sequence has an edge connecting them. A node can only appear in the sequence **at most once**. Note that the path does not need to pass through the root.
+
+  The **path sum** of a path is the sum of the node's values in the path.
+
+  Given the `root` of a binary tree, return _the maximum **path sum** of any **non-empty** path_.
+
+  **Example 1:**
+
+  ![](https://assets.leetcode.com/uploads/2020/10/13/exx1.jpg)
+
+  ```
+  Input: root = [1,2,3]
+  Output: 6
+  Explanation: The optimal path is 2 -> 1 -> 3 with a path sum of 2 + 1 + 3 = 6.
+  ```
+
+  **Example 2:**
+
+  ![](https://assets.leetcode.com/uploads/2020/10/13/exx2.jpg)
+
+  ```
+  Input: root = [-10,9,20,null,null,15,7]
+  Output: 42
+  Explanation: The optimal path is 15 -> 20 -> 7 with a path sum of 15 + 20 + 7 = 42.
+  ```
+
+  **Constraints:**
+
+  *   The number of nodes in the tree is in the range [1, 3 * 10<sup>4</sup>].
+  *   `-1000 <= Node.val <= 1000`
+
+
+  + Solution
+
+  Language: **Java**
+
+  ```java
+  /**
+   * Definition for a binary tree node.
+   * public class TreeNode {
+   *     int val;
+   *     TreeNode left;
+   *     TreeNode right;
+   *     TreeNode() {}
+   *     TreeNode(int val) { this.val = val; }
+   *     TreeNode(int val, TreeNode left, TreeNode right) {
+   *         this.val = val;
+   *         this.left = left;
+   *         this.right = right;
+   *     }
+   * }
+   */
+  class Solution {
+       int res;
+          public int maxPathSum(TreeNode root) {
+              if (root == null) return 0;
+              res = Integer.MIN_VALUE;
+              helper(root);
+              return res;
+          }
+  
+          private int helper(TreeNode root) {
+              if(root == null) return 0;
+              int left = Math.max(0, helper(root.left));  // 舍去负数
+              int right = Math.max(0, helper(root.right));
+              res = Math.max(res, left + right + root.val);
+              return Math.max(left, right) + root.val;  // 左边和右边取最大的那一条路径
+          }
+  
+  }
+  ```
+
++ # [104\. Maximum Depth of Binary Tree](https://leetcode.com/problems/maximum-depth-of-binary-tree/submissions/)
+
+  ## Description
+
+  Difficulty: **Easy**  
+
+  Related Topics: [Tree](https://leetcode.com/tag/tree/), [Depth-First Search](https://leetcode.com/tag/depth-first-search/), [Breadth-First Search](https://leetcode.com/tag/breadth-first-search/), [Binary Tree](https://leetcode.com/tag/binary-tree/)
+
+
+  Given the `root` of a binary tree, return _its maximum depth_.
+
+  A binary tree's **maximum depth** is the number of nodes along the longest path from the root node down to the farthest leaf node.
+
+  **Example 1:**
+
+  ![](https://assets.leetcode.com/uploads/2020/11/26/tmp-tree.jpg)
+
+  ```
+  Input: root = [3,9,20,null,null,15,7]
+  Output: 3
+  ```
+
+  **Example 2:**
+
+  ```
+  Input: root = [1,null,2]
+  Output: 2
+  ```
+
+  **Constraints:**
+
+  *   The number of nodes in the tree is in the range [0, 10<sup>4</sup>].
+  *   `-100 <= Node.val <= 100`
+
+
+  + **Solution**
+
+  Language: **Java**
+
+  ```java
+  /**
+   * Definition for a binary tree node.
+   * public class TreeNode {
+   *     int val;
+   *     TreeNode left;
+   *     TreeNode right;
+   *     TreeNode() {}
+   *     TreeNode(int val) { this.val = val; }
+   *     TreeNode(int val, TreeNode left, TreeNode right) {
+   *         this.val = val;
+   *         this.left = left;
+   *         this.right = right;
+   *     }
+   * }
+   */
+  class Solution {
+      public int maxDepth(TreeNode root) {
+           if (root == null) return 0;
+              int left = maxDepth(root.left) + 1;
+              int right = maxDepth(root.right) + 1;
+              return Math.max(left, right);
+      }
+  }
+  ```
+
++ 模板
+
+  ```java
+  // 结果
+  Public TreeNode helper(TreeNode root) {
+  	if (root == null) return 0;
+  	TreeNode l = helper(root.left);
+  	TreeNode r = helper(root.right);
+  	// 操作
+  	return 结果 / （l,r）
+  }
+  // 特点：子模块，子树，由底层到上层
+  ```
+
+## 13.4 levelorder
+
++ # [199\. Binary Tree Right Side View](https://leetcode.com/problems/binary-tree-right-side-view/submissions/)
+
+  ## Description
+
+  Difficulty: **Medium**  
+
+  Related Topics: [Tree](https://leetcode.com/tag/tree/), [Depth-First Search](https://leetcode.com/tag/depth-first-search/), [Breadth-First Search](https://leetcode.com/tag/breadth-first-search/), [Binary Tree](https://leetcode.com/tag/binary-tree/)
+
+
+  Given the `root` of a binary tree, imagine yourself standing on the **right side** of it, return _the values of the nodes you can see ordered from top to bottom_.
+
+  **Example 1:**
+
+  ![](https://assets.leetcode.com/uploads/2021/02/14/tree.jpg)
+
+  ```
+  Input: root = [1,2,3,null,5,null,4]
+  Output: [1,3,4]
+  ```
+
+  **Example 2:**
+
+  ```
+  Input: root = [1,null,3]
+  Output: [1,3]
+  ```
+
+  **Example 3:**
+
+  ```
+  Input: root = []
+  Output: []
+  ```
+
+  **Constraints:**
+
+  *   The number of nodes in the tree is in the range `[0, 100]`.
+  *   `-100 <= Node.val <= 100`
+
+
+  + **Solution**
+
+  Language: **Java**
+
+  ```java
+  /**
+   * Definition for a binary tree node.
+   * public class TreeNode {
+   *     int val;
+   *     TreeNode left;
+   *     TreeNode right;
+   *     TreeNode() {}
+   *     TreeNode(int val) { this.val = val; }
+   *     TreeNode(int val, TreeNode left, TreeNode right) {
+   *         this.val = val;
+   *         this.left = left;
+   *         this.right = right;
+   *     }
+   * }
+   */
+  class Solution {
+      public List<Integer> rightSideView(TreeNode root) {
+           List<Integer> res = new ArrayList<>();
+              if (root == null) return res;
+              Queue<TreeNode> queue = new LinkedList<>();
+              queue.offer(root);
+              while (!queue.isEmpty()) {  // 一层一层的去扫
+                  int size = queue.size();
+                  for (int i = 0; i < size; i++) {
+                      TreeNode cur = queue.poll();
+                      if (i == 0) res.add(cur.val);  // 添加头节点的值
+                      if (cur.right != null) queue.offer(cur.right);
+                      if (cur.left != null) queue.offer(cur.left);
+                  }
+              }
+              return res;
+      }
+  }
+  ```
+
+## 13.5 Preorder 通用解法
+
+无特殊要求都用preorder
+
+```java
+public void helper(TreeNode root) {
+	if (root == null) return;
+	// 操作
+	helper(res, root.left);
+	helper(res, root.right);
+}
+```
+
++ # [257\. Binary Tree Paths](https://leetcode.com/problems/binary-tree-paths/submissions/)
+
+  ## Description
+
+  Difficulty: **Easy**  
+
+  Related Topics: [String](https://leetcode.com/tag/string/), [Backtracking](https://leetcode.com/tag/backtracking/), [Tree](https://leetcode.com/tag/tree/), [Depth-First Search](https://leetcode.com/tag/depth-first-search/), [Binary Tree](https://leetcode.com/tag/binary-tree/)
+
+
+  Given the `root` of a binary tree, return _all root-to-leaf paths in **any order**_.
+
+  A **leaf** is a node with no children.
+
+  **Example 1:**
+
+  ![](https://assets.leetcode.com/uploads/2021/03/12/paths-tree.jpg)
+
+  ```
+  Input: root = [1,2,3,null,5]
+  Output: ["1->2->5","1->3"]
+  ```
+
+  **Example 2:**
+
+  ```
+  Input: root = [1]
+  Output: ["1"]
+  ```
+
+  **Constraints:**
+
+  *   The number of nodes in the tree is in the range `[1, 100]`.
+  *   `-100 <= Node.val <= 100`
+
+
+  + **Solution**
+
+  Language: **Java**
+
+  ```java
+  /**
+   * Definition for a binary tree node.
+   * public class TreeNode {
+   *     int val;
+   *     TreeNode left;
+   *     TreeNode right;
+   *     TreeNode() {}
+   *     TreeNode(int val) { this.val = val; }
+   *     TreeNode(int val, TreeNode left, TreeNode right) {
+   *         this.val = val;
+   *         this.left = left;
+   *         this.right = right;
+   *     }
+   * }
+   */
+  class Solution {
+       public List<String> binaryTreePaths(TreeNode root) {
+              List<String> res= new ArrayList<>();
+              if (root == null) return res;
+              helper(res, root, "");
+              return res;
+          }
+  
+          private void helper(List<String> res, TreeNode root, String path) {
+              if (root.left == null && root.right == null) res.add(path + root.val);
+              if (root.left != null) helper(res,root.left, path + root.val + "->");
+              if (root.right != null) helper(res, root.right, path + root.val + "->");
+          } 
+  }
+  ```
+
+# 14. Trie
+
+字典树 / 前缀树 / 单词查找树 / Trie
+
+时间复杂度：O（word.length）
+
+空间复杂度：O (num of TrueNode * 26)
+
+## 14.1 Trie Node
+
+```java
+public class  TrieNode{
+        TrieNode[] children;
+        boolean isWord;  // 判断是否是单词
+//        char c;  // 可以没有
+        public TrieNode(){
+            children = new TrieNode[26];  // 并不一定有26个
+            isWord = false;
+        }
+        // 要点：仅是数组，就可以知道路径对应的字母
+    }
+```
+
++ Follow up: 改变TrieNode, 对应题意增加变量
+
+## 14.2 add() 和 contains()函数
+
+```java
+public class Trie {
+    TrieNode root;
+
+    private void add(String word) {
+        TrieNode cur = root;
+        for (char c : word.toCharArray()) {
+            if (cur.children[c - 'a'] == null) {  // 如果这个字母的位置是空的，就进行初始化
+                cur.children[c - 'a'] = new TrieNode();
+            }
+            cur =cur.children[c - 'a'];  // 移动cur到下一个节点
+        }
+        cur.isWord = true;
+    }
+
+    private boolean contains(String word) {
+        TrieNode cur = root;
+        for(char c : word.toCharArray()) {
+            if (cur.children[c - 'a'] == null) {  // 如果没有当前节点，对应于之后的路径都没有
+                return false;
+            }
+            cur = cur.children[c - 'a'];
+        }
+        return cur.isWord;
+    }
+}
+```
+
+## 14.3 Search
+
+```java
+
+private boolean search(String word) {
+    return search(root, word, 0);
+}
+
+private boolean search(TrieNode cur, String word, int index) {
+    if (index == word.length()) return cur.isWord;
+    if (word.charAt(index) == '.') {
+        for (TrieNode temp : cur.children) {  // 将所有的孩子节点遍历
+            if (temp != null && search(temp, word, index + 1)) return true;  // 如果当前节点不是空和下一个节点成立返回true
+        }
+        return false;
+    } else {  // 当前不是.则对当前的字母进行查询
+        char c = word.charAt(index);
+        TrieNode temp = cur.children[c - 'a'];
+        return temp != null && search(temp, word, index + 1);
+    }
+}
+```
+
+# 15. 线段树 和 树状树
+
+# 18. 动态规划
+
++ Basic: FIbonacci
+
+  # [509\. Fibonacci Number](https://leetcode.com/problems/fibonacci-number/submissions/)
+
+  ## Description
+
+  Difficulty: **Easy**  
+
+  Related Topics: [Math](https://leetcode.com/tag/math/), [Dynamic Programming](https://leetcode.com/tag/dynamic-programming/), [Recursion](https://leetcode.com/tag/recursion/), [Memoization](https://leetcode.com/tag/memoization/)
+
+
+  The **Fibonacci numbers**, commonly denoted `F(n)` form a sequence, called the **Fibonacci sequence**, such that each number is the sum of the two preceding ones, starting from `0` and `1`. That is,
+
+  ```
+  F(0) = 0, F(1) = 1
+  F(n) = F(n - 1) + F(n - 2), for n > 1.
+  ```
+
+  Given `n`, calculate `F(n)`.
+
+  **Example 1:**
+
+  ```
+  Input: n = 2
+  Output: 1
+  Explanation: F(2) = F(1) + F(0) = 1 + 0 = 1.
+  ```
+
+  **Example 2:**
+
+  ```
+  Input: n = 3
+  Output: 2
+  Explanation: F(3) = F(2) + F(1) = 1 + 1 = 2.
+  ```
+
+  **Example 3:**
+
+  ```
+  Input: n = 4
+  Output: 3
+  Explanation: F(4) = F(3) + F(2) = 2 + 1 = 3.
+  ```
+
+  **Constraints:**
+
+  *   `0 <= n <= 30`
+
+
+  ## Solution
+
+  Language: **Java**
+
+  ```java
+  class Solution {
+      public int fib(int n) {
+              if (n <= 1) return n;
+              return fib(n -1) + fib(n - 2);
+      }
+  }
+  ```
+
++ 记忆化搜索：自顶向下，用变量记录中间结果
+
+  ```java
+  int[] memorization = new int[15464691];  // 15464691是 java中数组开辟最大值
+  
+  public int fib2(int N) {
+      if (N <= 1) return N;
+      if (memorization[N] == 0) memorization[N] = fib2(N - 1) + fib2(N - 2);
+      return memorization[N];
+  }
+  ```
+
+  ![](C:\zwh\Documents\myBlog\Fibnacci1.png)
+
++ 动态规划：自底向上
+
+  将原问题拆成若干个子问题，每个子问题只求解一次，并保持子问题的解，最终获得原问题的答案。
+
+  与分治法区别：重复计算
+
+  ```java
+  public int fib3(int N) {
+      if(N <= 1) return N;
+      int[] dp = new int[N + 1];
+      dp[1] = 1;
+      for (int i = 2; i <= N; i++) {
+          dp[i] = dp[i - 1] + dp[i - 2];
+      }
+      return dp[N];
+  }
+  ```
+
+  
+
++ 139： word break
+
+  # [139\. Word Break](https://leetcode.com/problems/word-break/submissions/)
+
+  ## Description
+
+  Difficulty: **Medium**  
+
+  Related Topics: [Hash Table](https://leetcode.com/tag/hash-table/), [String](https://leetcode.com/tag/string/), [Dynamic Programming](https://leetcode.com/tag/dynamic-programming/), [Trie](https://leetcode.com/tag/trie/), [Memoization](https://leetcode.com/tag/memoization/)
+
+
+  Given a string `s` and a dictionary of strings `wordDict`, return `true` if `s` can be segmented into a space-separated sequence of one or more dictionary words.
+
+  **Note** that the same word in the dictionary may be reused multiple times in the segmentation.
+
+  **Example 1:**
+
+  ```
+  Input: s = "leetcode", wordDict = ["leet","code"]
+  Output: true
+  Explanation: Return true because "leetcode" can be segmented as "leet code".
+  ```
+
+  **Example 2:**
+
+  ```
+  Input: s = "applepenapple", wordDict = ["apple","pen"]
+  Output: true
+  Explanation: Return true because "applepenapple" can be segmented as "apple pen apple".
+  Note that you are allowed to reuse a dictionary word.
+  ```
+
+  **Example 3:**
+
+  ```
+  Input: s = "catsandog", wordDict = ["cats","dog","sand","and","cat"]
+  Output: false
+  ```
+
+  **Constraints:**
+
+  *   `1 <= s.length <= 300`
+  *   `1 <= wordDict.length <= 1000`
+  *   `1 <= wordDict[i].length <= 20`
+  *   `s` and `wordDict[i]` consist of only lowercase English letters.
+  *   All the strings of `wordDict` are **unique**.
+
+
+  ## Solution
+
+  Language: **Java**
+
+  ```java
+  class Solution {
+      
+      // memorization backtracking
+       public boolean wordBreak(String s, List<String> wordDict) {
+          return helper(s, new HashSet<>(wordDict), 0, new Boolean[s.length()]);
+      }
+  
+      private boolean helper(String s, HashSet<String> wordDict, int index, Boolean[] memo) {
+          if (index == s.length()) return true;
+          if (memo[index] != null) return memo[index];
+          for (int i = index + 1; i <= s.length(); i ++) {
+              if (wordDict.contains(s.substring(index, i)) && helper(s, wordDict, i,memo)) {
+                  memo[index] = true;
+                  return true;
+              }
+          }
+          memo[index] = false;
+          return false;
+      }
+  }
+  ```
+
+  ```java
+  // Backtracking
+  public boolean wordBreak(String s, List<String> wordDict) {
+      return helper(s, new HashSet<>(wordDict), 0);
+  }
+  
+  private boolean helper(String s, HashSet<String> wordDict, int index) {
+      if (index == s.length()) return true;
+      for (int i = index + 1; i <= s.length(); i ++) {
+          if (wordDict.contains(s.substring(index, i)) && helper(s, wordDict, i)) return true;
+      }
+      return false;
+  }
+  ```
+
+  ```java
+  // DP
+  public boolean wordBreakDP1(String s, List<String> wordDict) {
+      boolean[] dp = new boolean[s.length() + 1];  // 初始化为false
+      dp[0] = true;
+      for (int i = 1; i < s.length(); i++) {
+          for (int j = 0; j < i; j++) {  // 从头开始看wordDict里面有没有，如果前面j的为true，后面j到i再dict里面找得到就
+              if (dp[j] && wordDict.contains(s.substring(j, i))) {    // 把i前面的改为true
+                  dp[i] = true;
+                  break;
+              }
+          }
+      }
+      return dp[s.length()];
+  }
+  ```
+
+## 18.1 三大方法
+
++ 暴力解：回溯法
+
++ 自上而下：记忆化搜索（正常三位 DP）
+
++ 自下而上：正常 DP
+
+注意：所有动态规划问题都可以用递归（DFS/回溯）解决，二维化一维，一维化固定
+
++ 三大特性
+  1. 子问题重叠：空间换时间
+  2. 最优化原理：一个最优化策略的子策略总是最优的，最优子结构性质
+  3. 无后效性：每个状态都是过去历史的一个万整总结
+
+## 18.2 动态规划
+
++ 状态：dp[]
++ 状态转移方程：dp函数
++ 动态规划的本质：对状态的定义和动态转移方程的定义
++ 以动态规划去思考
+  1. 重新定义问题，让问题可以进行拆分 (不同的定义会导致后续步骤不一样)
+  2. 如何拆分问题：状态的定义和状态转移方程的定义
+  3. 写代码，然后优化
