@@ -1878,6 +1878,39 @@ public class Note8_Strings {
     }
 
 
+    //409 longest Palindrome
+
+    /**
+     * Given a string s which consists of lowercase or uppercase letters, return the length of the
+     * longest palindrome that can be built with those letters.
+     *
+     * Letters are case sensitive, for example, "Aa" is not considered a palindrome here.
+     *
+     * Example 1:
+     *
+     * Input: s = "abccccdd"
+     * Output: 7
+     * Explanation: One longest palindrome that can be built is "dccaccd", whose length is 7.
+     */
+    class Solution409{
+        /*
+        因为这题让求的是可以构造的最长回文串，我们只需要把所有字符截取最大的偶数个，统计他们的和，如果还有剩下的字符，最后再加1，如果没有，最后不用再加了。
+         */
+        public int longestPalindrome(String s) {
+            int[] map = new int[256];
+            for (char c : s.toCharArray()) {
+                map[c] ++;
+            }
+            int res = 0;
+            int mask = -2;
+            for (int count : map) res += count & mask;  //每个字符的个数取最大偶数，然后相加
+            /*
+            因为mask是-2，count&-2的意思就是如果count是偶数，计算的结果还是count，如果count是奇数，计算的结果是count-1。直接看可能不直观，把-2转化为二进制就明白了。
+            11111111 11111111 11111111 11111110
+             */
+            return res < s.length() ? res + 1: res;  // //如果相加的和小于字符串的长度，最后还要加1
+        }
+    }
 
 
 }
