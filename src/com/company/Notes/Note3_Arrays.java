@@ -2,6 +2,8 @@ package com.company.Notes;
 
 import java.util.*;
 
+import static com.company.Notes.Note3_Arrays.Solution724.pivotIndex;
+
 public class Note3_Arrays {
 
     // LeetCode 243: shortestDistance
@@ -64,7 +66,7 @@ public class Note3_Arrays {
         return true;
     }
 
-    //    LeetCode 153: Meeting Rooms 2
+    //    LeetCode 253: Meeting Rooms 2  重要！！！！！会考到
 
     /**
      * Given an array of meeting time intervals consisting of start and end times [[s1, e1]. [s2, e2], ...]
@@ -831,12 +833,1007 @@ public class Note3_Arrays {
         }
     }
 
+    // 299：bulls and cows
+    /**
+     * You are playing the Bulls and Cows game with your friend.
+     *
+     * You write down a secret number and ask your friend to guess what the number is. When your friend makes a guess,
+     * you provide a hint with the following info:
+     *
+     * The number of "bulls", which are digits in the guess that are in the correct position.
+     * The number of "cows", which are digits in the guess that are in your secret number but are located in the wrong
+     * position. Specifically, the non-bull digits in the guess that could be rearranged such that they become bulls.
+     * Given the secret number secret and your friend's guess guess, return the hint for your friend's guess.
+     *
+     * The hint should be formatted as "xAyB", where x is the number of bulls and y is the number of cows. Note that
+     * both secret and guess may contain duplicate digits.
+     *
+     * Example 1:
+     *
+     * Input: secret = "1807", guess = "7810"
+     * Output: "1A3B"
+     * Explanation: Bulls are connected with a '|' and cows are underlined:
+     * "1807"
+     *   |
+     * "7810"
+     * Example 2:
+     *
+     * Input: secret = "1123", guess = "0111"
+     * Output: "1A1B"
+     * Explanation: Bulls are connected with a '|' and cows are underlined:
+     * "1123"        "1123"
+     *   |      or     |
+     * "0111"        "0111"
+     * Note that only one of the two unmatched 1s is counted as a cow since the non-bull digits can only be rearranged
+     * to allow one 1 to be a bull.
+     */
+    class Solution299 {
+        public String getHint(String secret, String guess) {
+            int bulls = 0, cows = 0;
+            int[] count = new int[10];
+            for (int i = 0; i < secret.length(); i++) {
+                if (secret.charAt(i) == guess.charAt(i)) bulls++;
+                else {
+                    if (count[secret.charAt(i) - '0']++ < 0) cows++;  //
+                    if (count[guess.charAt(i) - '0']-- > 0) cows++;  // 之前在secret里面出现过，然后减掉（已经用过了）
+                }
+            }
+            return bulls + "A" + cows + "B";
+        }
+    }
 
+    // 274 H-index
+    /**
+     * Given an array of integers citations where citations[i] is the number of citations a researcher received for their ith paper, return compute the researcher's h-index.
+     *
+     * According to the definition of h-index on Wikipedia: A scientist has an index h if h of their n papers have at least h citations each, and the other n − h papers have no more than h citations each.
+     *
+     * If there are several possible values for h, the maximum one is taken as the h-index.
+     *
+     *
+     *
+     * Example 1:
+     *
+     * Input: citations = [3,0,6,1,5]
+     * Output: 3
+     * Explanation: [3,0,6,1,5] means the researcher has 5 papers in total and each of them had received 3, 0, 6, 1, 5
+     * citations respectively.
+     * Since the researcher has 3 papers with at least 3 citations each and the remaining two with no more than 3
+     *
+     * citations each, their h-index is 3.
+     * Example 2:
+     *
+     * Input: citations = [1,3,1]
+     * Output: 1
+     */
+    // o(nlogn)
+    class Solution274{
+        public int hIndex(int[] citations) {
+            Arrays.sort(citations);
+            int res = 0;
+            // 从后往前遍历，至少引用n次的文章有n篇，如果当前的文章引用次数大于res, res就加一
+            while (res < citations.length && citations[citations.length - 1 -res] > res) res ++;
+            return res;
+        }
+    }
 
+    // 451 sort characters by frequency
+    /**
+     * Given a string s, sort it in decreasing order based on the frequency of the characters. The frequency of a character is the number of times it appears in the string.
+     *
+     * Return the sorted string. If there are multiple answers, return any of them.
+     *
+     * Example 1:
+     *
+     * Input: s = "tree"
+     * Output: "eert"
+     * Explanation: 'e' appears twice while 'r' and 't' both appear once.
+     * So 'e' must appear before both 'r' and 't'. Therefore "eetr" is also a valid answer.
+     * Example 2:
+     *
+     * Input: s = "cccaaa"
+     * Output: "aaaccc"
+     * Explanation: Both 'c' and 'a' appear three times, so both "cccaaa" and "aaaccc" are valid answers.
+     * Note that "cacaca" is incorrect, as the same characters must be together.
+     */
+    class Solution451{
+        public String frequencySort(String s) {
+            HashMap<Character, Integer> map = new HashMap<>();
+            for (char c : s.toCharArray()) {
+                map.put(c, map.getOrDefault(c, 0) + 1);  // 计算每个字母出现的频率
+            }
+
+            // 一个装了不同频数的桶，每个位置装了出现次数相同的字母，频数从小到大排列
+            List<Character>[] bucket = new List[s.length() + 1];
+            for (char c : map.keySet()) {
+                int freq = map.get(c);  // 当前字母出现的次数
+                if (bucket[freq] == null) bucket[freq] = new LinkedList<>();  // 如果桶对应的频率处为空，新建一个list
+                bucket[freq].add(c);  // 将字母加入这个位置
+            }
+            // 从后往前加入桶的位置对应的字母
+            StringBuilder sb = new StringBuilder();
+            for (int i = bucket.length - 1; i >= 0; i --) {
+                if (bucket[i] != null) {
+                    for (char c : bucket[i]) {  // 将这个位置装的字母加到sb里
+                        for (int j = 0; j < map.get(c); j ++) sb.append(c);
+                    }
+                }
+            }
+            return sb.toString();
+        }
+    }
+
+    // 347： top K frequent elements  排名第一重要！！！！都出现过
+    /**
+     * Given an integer array nums and an integer k, return the k most frequent elements. You may return the answer in
+     * any order.
+     *
+     * Example 1:
+     *
+     * Input: nums = [1,1,1,2,2,3], k = 2
+     * Output: [1,2]
+     * Example 2:
+     *
+     * Input: nums = [1], k = 1
+     * Output: [1]
+     */
+    static class Solution347 {
+        // bucket sort
+        public static int[] topKFrequent(int[] nums, int k) {
+            HashMap<Integer, Integer> map = new HashMap<>();
+            for (int num : nums) map.put(num, map.getOrDefault(num, 0) + 1);
+
+            List<Integer>[] bucket = new List[nums.length + 1];
+            for (int num : map.keySet()) {
+                int freq = map.get(num);
+                if (bucket[freq] == null) bucket[freq] = new LinkedList<>();
+                bucket[freq].add(num);
+            }
+            System.out.print(Arrays.toString(bucket));
+
+            int[] res = new int[k];
+            for (int i = bucket.length - 1; i >= 0 ; i--) {
+                int j = 0;
+                while (bucket[i] != null && j < bucket[i].size() && k > 0) {
+                    res[j] = bucket[i].get(j++);
+                }
+            }
+            return res;
+        }
+
+        // PriorityQueue time: O(klogn) space: O(n)
+        public static int[] topFrequent2(int[] nums, int k) {
+            HashMap<Integer, Integer> map = new HashMap<>();
+            for (int num: nums) map.put(num, map.getOrDefault(num, 0) + 1);
+            // 优先队列是一个最小堆，开头的元素最小，我们要把它变成一个最大堆，重写compare
+            PriorityQueue<Map.Entry<Integer, Integer>> maxHeap = new PriorityQueue<>((a,b) -> (b.getValue() - a.getValue()));
+            for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+                maxHeap.add(entry);
+            }
+
+            // 将优先队列的前k个元素给加到res里
+            int[] res = new int[k];
+            while (k-- >= 0) {
+                res[k - 1] = maxHeap.poll().getKey();
+            }
+            return res;
+        }
+
+        // TreeMap
+        public static List<Integer> topKFrequent3(int[] nums, int k) {
+            HashMap<Integer, Integer> map = new HashMap<>();
+            for (int num: nums) map.put(num, map.getOrDefault(num, 0) + 1);
+            TreeMap<Integer, List<Integer>> freqMap = new TreeMap<>();
+            for (int num : map.keySet()) {
+                int freq = map.get(num);
+                if (freqMap.containsKey(freq)) freqMap.get(freq).add(num);
+                else {
+                    freqMap.put(freq, new LinkedList<>());
+                    freqMap.get(freq).add(num);
+                }
+            }
+            List<Integer> res = new ArrayList<>();
+            while (res.size() < k) {
+                Map.Entry<Integer, List<Integer>> entry = freqMap.pollLastEntry();
+                res.addAll(entry.getValue());
+            }
+            return res;
+
+        }
+
+    }
+
+    // 27: Remove Element
+
+    /**
+     * Given an integer array nums and an integer val, remove all occurrences of val in nums in-place. The relative order of the elements may be changed.
+     *
+     * Since it is impossible to change the length of the array in some languages, you must instead have the result be placed in the first part of the array nums. More formally, if there are k elements after removing the duplicates, then the first k elements of nums should hold the final result. It does not matter what you leave beyond the first k elements.
+     *
+     * Return k after placing the final result in the first k slots of nums.
+     *
+     * Do not allocate extra space for another array. You must do this by modifying the input array in-place with O(1) extra memory.
+     *
+     * Custom Judge:
+     *
+     * The judge will test your solution with the following code:
+     *
+     * int[] nums = [...]; // Input array
+     * int val = ...; // Value to remove
+     * int[] expectedNums = [...]; // The expected answer with correct length.
+     *                             // It is sorted with no values equaling val.
+     *
+     * int k = removeElement(nums, val); // Calls your implementation
+     *
+     * assert k == expectedNums.length;
+     * sort(nums, 0, k); // Sort the first k elements of nums
+     * for (int i = 0; i < actualLength; i++) {
+     *     assert nums[i] == expectedNums[i];
+     * }
+     * If all assertions pass, then your solution will be accepted.
+     *
+     *
+     *
+     * Example 1:
+     *
+     * Input: nums = [3,2,2,3], val = 3
+     * Output: 2, nums = [2,2,_,_]
+     * Explanation: Your function should return k = 2, with the first two elements of nums being 2.
+     * It does not matter what you leave beyond the returned k (hence they are underscores).
+     * Example 2:
+     *
+     * Input: nums = [0,1,2,2,3,0,4,2], val = 2
+     * Output: 5, nums = [0,1,4,0,3,_,_,_]
+     * Explanation: Your function should return k = 5, with the first five elements of nums containing 0, 0, 1, 3, and 4.
+     * Note that the five elements can be returned in any order.
+     * It does not matter what you leave beyond the returned k (hence they are underscores).
+     *
+     */
+    class Solution27 {
+        public int removeElement(int[] nums, int val) {
+            if (nums == null || nums.length == 0) return 0;
+            int res = 0;
+            for (int i = 0; i < nums.length; i++) {
+                // 如果当前位置的值不等同于val，把res指针的位置变成当前的值
+                if (nums[i] != val) nums[res++] = nums[i];
+            }
+            return res;
+        }
+    }
+
+    // 26： remove duplicates from sorted Array
+
+    /**
+     * Given an integer array nums sorted in non-decreasing order, remove the duplicates in-place such that
+     * each unique element appears only once. The relative order of the elements should be kept the same.
+     *
+     * Since it is impossible to change the length of the array in some languages, you must instead have the
+     * result be placed in the first part of the array nums. More formally, if there are k elements after
+     * removing the duplicates, then the first k elements of nums should hold the final result. It does not
+     * matter what you leave beyond the first k elements.
+     *
+     * Return k after placing the final result in the first k slots of nums.
+     *
+     * Do not allocate extra space for another array. You must do this by modifying the input array in-place
+     * with O(1) extra memory.
+     *
+     * Custom Judge:
+     *
+     * The judge will test your solution with the following code:
+     *
+     * int[] nums = [...]; // Input array
+     * int[] expectedNums = [...]; // The expected answer with correct length
+     *
+     * int k = removeDuplicates(nums); // Calls your implementation
+     *
+     * assert k == expectedNums.length;
+     * for (int i = 0; i < k; i++) {
+     *     assert nums[i] == expectedNums[i];
+     * }
+     * If all assertions pass, then your solution will be accepted.
+     *
+     *
+     *
+     * Example 1:
+     *
+     * Input: nums = [1,1,2]
+     * Output: 2, nums = [1,2,_]
+     * Explanation: Your function should return k = 2, with the first two elements of nums being 1 and 2 respectively.
+     * It does not matter what you leave beyond the returned k (hence they are underscores).
+     * Example 2:
+     *
+     * Input: nums = [0,0,1,1,1,2,2,3,3,4]
+     * Output: 5, nums = [0,1,2,3,4,_,_,_,_,_]
+     * Explanation: Your function should return k = 5, with the first five elements of nums being 0, 1, 2, 3, and
+     * 4 respectively.
+     * It does not matter what you leave beyond the returned k (hence they are underscores).
+     */
+    static class Solution26{
+        public static int removeDuplicates(int[] nums) {
+            if(nums.length==0) return 0;
+            int i=0;
+            for(int j=1;j<nums.length;j++){
+                if(nums[i]!=nums[j]){  // 如果左右指针不一样，左指针向右移，把右指针的值给左指针
+                    i++;
+                    nums[i]=nums[j];
+                }
+            }
+            return i+1;
+        }
+    }
+
+    // 80： Remove Duplicates from sorted Array II
+
+    /**
+     * Given an integer array nums sorted in non-decreasing order, remove some duplicates in-place such that each unique element appears at most twice. The relative order of the elements should be kept the same.
+     *
+     * Since it is impossible to change the length of the array in some languages, you must instead have the result be placed in the first part of the array nums. More formally, if there are k elements after removing the duplicates, then the first k elements of nums should hold the final result. It does not matter what you leave beyond the first k elements.
+     *
+     * Return k after placing the final result in the first k slots of nums.
+     *
+     * Do not allocate extra space for another array. You must do this by modifying the input array in-place with O(1) extra memory.
+     *
+     * Custom Judge:
+     *
+     * The judge will test your solution with the following code:
+     *
+     * int[] nums = [...]; // Input array
+     * int[] expectedNums = [...]; // The expected answer with correct length
+     *
+     * int k = removeDuplicates(nums); // Calls your implementation
+     *
+     * assert k == expectedNums.length;
+     * for (int i = 0; i < k; i++) {
+     *     assert nums[i] == expectedNums[i];
+     * }
+     * If all assertions pass, then your solution will be accepted.
+     *
+     *
+     *
+     * Example 1:
+     *
+     * Input: nums = [1,1,1,2,2,3]
+     * Output: 5, nums = [1,1,2,2,3,_]
+     * Explanation: Your function should return k = 5, with the first five elements of nums being 1, 1, 2, 2 and 3
+     * respectively.
+     * It does not matter what you leave beyond the returned k (hence they are underscores).
+     * Example 2:
+     *
+     * Input: nums = [0,0,1,1,1,1,2,3,3]
+     * Output: 7, nums = [0,0,1,1,2,3,3,_,_]
+     * Explanation: Your function should return k = 7, with the first seven elements of nums being 0, 0, 1, 1, 2, 3 and
+     * 3 respectively.
+     * It does not matter what you leave beyond the returned k (hence they are underscores).
+     */
+    class Solution80 {
+        public int removeDuplicates80(int[] nums) {
+            if (nums.length <= 2) return nums.length;
+            int count = 2;
+            for (int i = 2; i < nums.length; i ++) {
+                if (nums[i] != nums[count - 2]) {
+                    nums[count++] = nums[i];
+                }
+            }
+            return count;
+        }
+    }
+
+    // 57：Insert Interval 重要！！
+
+    /**
+     * You are given an array of non-overlapping intervals intervals where intervals[i] = [starti, endi] represent
+     * the start and the end of the ith interval and intervals is sorted in ascending order by starti. You are also
+     * given an interval newInterval = [start, end] that represents the start and end of another interval.
+     *
+     * Insert newInterval into intervals such that intervals is still sorted in ascending order by starti and intervals
+     * still does not have any overlapping intervals (merge overlapping intervals if necessary).
+     *
+     * Return intervals after the insertion.
+     *
+     * Example 1:
+     *
+     * Input: intervals = [[1,3],[6,9]], newInterval = [2,5]
+     * Output: [[1,5],[6,9]]
+     * Example 2:
+     *
+     * Input: intervals = [[1,2],[3,5],[6,7],[8,10],[12,16]], newInterval = [4,8]
+     * Output: [[1,2],[3,10],[12,16]]
+     * Explanation: Because the new interval [4,8] overlaps with [3,5],[6,7],[8,10].
+     */
+    class Solution57{
+        public int[][] insert(int[][] intervals, int[] newInterval) {
+            if (newInterval == null) return intervals;
+            List<int[]> res = new ArrayList<>();
+            int i = 0;
+            // 当老interval的结束小于newInterval的开始的时候，说明他俩没有overlap, 直接加入老的interval
+            while (i < intervals.length && intervals[i][1] < newInterval[0]) {
+                res.add(intervals[i++]);
+            }
+            // 当老 interval的开始小于新interval的结束时，新interval的开始就等于新老interval的起点的最小值
+            while (i < intervals.length && intervals[i][0] <= newInterval[1]) {
+                newInterval[0] = Math.min(newInterval[0], intervals[i][0]);
+                newInterval[1] = Math.max(newInterval[1], intervals[i++][1]);
+            }
+            res.add(newInterval);
+            // 加上剩下的intervals
+            while (i < intervals.length) {
+                res.add(intervals[i++]);
+            }
+            return res.toArray(new int[res.size()][]);
+        }
+    }
+
+    // 56 Merge Intervals
+
+    /**
+     * Given an array of intervals where intervals[i] = [starti, endi], merge all overlapping intervals, and return an
+     * array of the non-overlapping intervals that cover all the intervals in the input.
+     *
+     * Example 1:
+     *
+     * Input: intervals = [[1,3],[2,6],[8,10],[15,18]]
+     * Output: [[1,6],[8,10],[15,18]]
+     * Explanation: Since intervals [1,3] and [2,6] overlap, merge them into [1,6].
+     * Example 2:
+     *
+     * Input: intervals = [[1,4],[4,5]]
+     * Output: [[1,5]]
+     * Explanation: Intervals [1,4] and [4,5] are considered overlapping.
+     */
+    class Solution56{
+        public int[][] merge(int[][] intervals) {
+            if (intervals == null || intervals.length == 0) return new int[][]{};
+            Arrays.sort(intervals, (a ,b) -> (a[0] - b[0]));  // 通过起点排序
+            int start = intervals[0][0];
+            int end = intervals[0][1];
+            List<int[]> res = new ArrayList<>();
+            for (int[] interval : intervals) {
+                // 如果后一个的start小于end,将前一个的end更新为后一个的end
+                if (interval[0] <= end) end = Math.max(interval[1], end);
+                else {
+                    res.add(new int[]{start, end});
+                    start = interval[0];
+                    end = interval[1];
+                }
+            }
+            res.add(new int[]{start,end});  // 没有办法判断最后一个
+            return res.toArray(new int[][]{});
+        }
+    }
+
+    // 435：Non-overlapping intervals
+
+    /**
+     * Given an array of intervals intervals where intervals[i] = [starti, endi], return the minimum number of
+     * intervals you need to remove to make the rest of the intervals non-overlapping.
+     *
+     * Example 1:
+     *
+     * Input: intervals = [[1,2],[2,3],[3,4],[1,3]]
+     * Output: 1
+     * Explanation: [1,3] can be removed and the rest of the intervals are non-overlapping.
+     * Example 2:
+     *
+     * Input: intervals = [[1,2],[1,2],[1,2]]
+     * Output: 2
+     * Explanation: You need to remove two [1,2] to make the rest of the intervals non-overlapping.
+     * Example 3:
+     *
+     * Input: intervals = [[1,2],[2,3]]
+     * Output: 0
+     * Explanation: You don't need to remove any of the intervals since they're already non-overlapping.
+     *
+     * [[1,2], [1,3], [2,3], [3,4]]
+     *
+     */
+    class Solution435{
+        public int eraseOverLaoIntervals(int[][] intervals) {
+            if (intervals.length == 0) return 0;
+            Arrays.sort(intervals, (a, b) -> a[1] - b[1]);
+            int end = intervals[0][1];
+            int count = 1;
+            for (int i = 1; i < intervals.length; i ++) {
+                // 当下一个interval的开始值大于end的时候，说明找到了一个没有overlap的，更新end值，count加一
+                if (intervals[i][0] >= end) {
+                    end = intervals[i][1];
+                    count++;
+                }
+            }
+            return intervals.length - count;
+        }
+    }
+
+    // 436: Find right interval
+
+    /**
+     * You are given an array of intervals, where intervals[i] = [starti, endi] and each starti is unique.
+     *
+     * The right interval for an interval i is an interval j such that startj >= endi and startj is minimized. Note that i may equal j.
+     *
+     * Return an array of right interval indices for each interval i. If no right interval exists for interval i, then put -1 at index i.
+     *
+     * Example 1:
+     *
+     * Input: intervals = [[1,2]]
+     * Output: [-1]
+     * Explanation: There is only one interval in the collection, so it outputs -1.
+     * Example 2:
+     *
+     * Input: intervals = [[3,4],[2,3],[1,2]]
+     * Output: [-1,0,1]
+     * Explanation: There is no right interval for [3,4].
+     * The right interval for [2,3] is [3,4] since start0 = 3 is the smallest start that is >= end1 = 3.
+     * The right interval for [1,2] is [2,3] since start1 = 2 is the smallest start that is >= end2 = 2.
+     */
+    class Solution436 {
+        // 根据start进行排序，看到interval就想到排序，使用treemap 将start和index对应
+        public int[] findRightInterval(int[][] intervals) {
+            int[] res = new int[intervals.length];
+            TreeMap<Integer, Integer> map = new TreeMap<>(); // treemap 从小到大排列，又排序又对应
+            // 将intervals按照起始位置进行升序排列，index也要进行对应
+            for (int i = 0; i < intervals.length; i++) {
+                map.put(intervals[i][0], i);
+            }
+            for (int i = 0; i < intervals.length; i ++) {
+                Integer key = map.ceilingKey(intervals[i][1]);  //  返回大于等于当前给定的key值
+                res[i] = key != null ? map.get(key) : -1;
+            }
+            return res;
+        }
+    }
+
+    // 325 Data Stream as Disjoint Intervals
+
+    /**
+     * Given a data stream input of non-negative integers a1, a2, ..., an, summarize the numbers seen
+     * so far as a list of disjoint intervals.
+     *
+     * Implement the SummaryRanges class:
+     *
+     * SummaryRanges() Initializes the object with an empty stream.
+     * void addNum(int val) Adds the integer val to the stream.
+     * int[][] getIntervals() Returns a summary of the integers in the stream currently as a list of disjoint intervals [starti, endi].
+     *
+     * Example 1:
+     *
+     * Input
+     * ["SummaryRanges", "addNum", "getIntervals", "addNum", "getIntervals", "addNum", "getIntervals", "addNum", "getIntervals", "addNum", "getIntervals"]
+     * [[], [1], [], [3], [], [7], [], [2], [], [6], []]
+     * Output
+     * [null, null, [[1, 1]], null, [[1, 1], [3, 3]], null, [[1, 1], [3, 3], [7, 7]], null, [[1, 3], [7, 7]], null, [[1, 3], [6, 7]]]
+     *
+     * Explanation
+     * SummaryRanges summaryRanges = new SummaryRanges();
+     * summaryRanges.addNum(1);      // arr = [1]
+     * summaryRanges.getIntervals(); // return [[1, 1]]
+     * summaryRanges.addNum(3);      // arr = [1, 3]
+     * summaryRanges.getIntervals(); // return [[1, 1], [3, 3]]
+     * summaryRanges.addNum(7);      // arr = [1, 3, 7]
+     * summaryRanges.getIntervals(); // return [[1, 1], [3, 3], [7, 7]]
+     * summaryRanges.addNum(2);      // arr = [1, 2, 3, 7]
+     * summaryRanges.getIntervals(); // return [[1, 3], [7, 7]]
+     * summaryRanges.addNum(6);      // arr = [1, 2, 3, 6, 7]
+     * summaryRanges.getIntervals(); // return [[1, 3], [6, 7]]
+     */
+
+    /**
+     * TreeMap: 红黑树，排序
+     * lowerKey: Returns the greatest key less than the given key
+     * higherKey: returns the least key greater than the given key
+     * treeMap kay: 1 3 7 12 val = 9
+     * lowerKey: 7 higherKey: 12
+     */
+    class SummaryRanges {
+
+        TreeMap<Integer, int[]> Map;
+
+        public SummaryRanges() {
+            Map = new TreeMap<>();
+        }
+
+        // O(logn)
+        public void addNum(int val) {
+            if (Map.containsKey(val)) return;
+            Integer lowerKey = Map.lowerKey(val);
+            Integer higherKey = Map.higherKey(val);
+            // 如果lowerkey和higherKey都不是空的话，并且lowerKey的end +1等于val, val + 1等于higherKey的start
+            // 说明这两个个interval 可以合并,
+            // 将lowerKey的end等于higherKey的end, 并移除higherKey
+            if (lowerKey != null && higherKey != null && Map.get(lowerKey)[1] + 1== val && val + 1== Map.get(higherKey)[0]) {
+                Map.get(lowerKey)[1] = Map.get(higherKey)[1];
+                Map.remove(higherKey);
+            }else if (lowerKey != null && val <= Map.get(lowerKey)[1] + 1) {
+                // 当higherKey为空并且val小于lowerKey的end+1时，代表当前加进的val值可以和之前的形成一个合并区间
+                Map.get(lowerKey)[1] = Math.max(Map.get(lowerKey)[1], val);
+            } else if (higherKey != null && Map.get(higherKey)[0] - 1 == val) {
+                // 当higherKey不是空，lowerKey是空，并且higherKey的start - 1等于val时
+                // 将新的interval和higherKey融合
+                Map.put(val, new int[] {val, Map.get(higherKey)[1]});
+                Map.remove(higherKey);
+            } else {
+                Map.put(val, new int[] {val, val});
+            }
+        }
+
+        public int[][] getIntervals() {
+            return Map.values().toArray(new int[][]{});
+        }
+    }
+
+    /**
+     * Your SummaryRanges object will be instantiated and called as such:
+     * SummaryRanges obj = new SummaryRanges();
+     * obj.addNum(val);
+     * int[][] param_2 = obj.getIntervals();
+     */
+
+    // 406 : Queue Reconstruction by Height
+
+    /**
+     * You are given an array of people, people, which are the attributes of some people in a queue (not necessarily in order).
+     * Each people[i] = [hi, ki] represents the ith person of height hi with exactly ki other people in front who have a height greater than or equal to hi.
+     *
+     * Reconstruct and return the queue that is represented by the input array people. The returned queue should be formatted
+     * as an array queue, where queue[j] = [hj, kj] is the attributes of the jth person in the queue (queue[0] is the person at the front of the queue).
+     *
+     * Example 1:
+     *
+     * Input: people = [[7,0],[4,4],[7,1],[5,0],[6,1],[5,2]]
+     * Output: [[5,0],[7,0],[5,2],[6,1],[4,4],[7,1]]
+     * Explanation:
+     * Person 0 has height 5 with no other people taller or the same height in front.
+     * Person 1 has height 7 with no other people taller or the same height in front.
+     * Person 2 has height 5 with two persons taller or the same height in front, which is person 0 and 1.
+     * Person 3 has height 6 with one person taller or the same height in front, which is person 1.
+     * Person 4 has height 4 with four people taller or the same height in front, which are people 0, 1, 2, and 3.
+     * Person 5 has height 7 with one person taller or the same height in front, which is person 1.
+     * Hence [[5,0],[7,0],[5,2],[6,1],[4,4],[7,1]] is the reconstructed queue.
+     * Example 2:
+     *
+     * Input: people = [[6,0],[5,0],[4,0],[3,2],[2,2],[1,4]]
+     * Output: [[4,0],[5,0],[2,2],[3,2],[1,4],[6,0]]
+     *
+     */
+    class Solution406 {
+        /*
+        [[7,0],[4,4],[7,1],[5,0],[6,1],[5,2]]
+        第一次排序后：
+        [7,0],[7,1],[6,1],[5,0],[5,2],[4,4]
+        第二次排序后：
+        [5,0][7,0],[5,2],[6,1],[4,4],[7,1]
+         */
+        public int[][] reconstructQueue(int[][] people) {
+            if (people == null || people.length == 0 || people[0].length == 0) return new int[0][0];
+            List<int[]> res=  new ArrayList<>();
+            // 如果people的起始数字也就是高度相同的，按照第二个数字升序排列，如果不同，按照身高降序排列
+            Arrays.sort(people, (a,b) -> (a[0] == b[0] ? a[1] - b[1] : b[0] - a[0]));
+            for (int[] cur : people) {
+                res.add(cur[1], cur);  // 将当前的people按照第二个数字插入当前的res里。
+            }
+            return res.toArray(new int[people.length][]);
+        }
+    }
+
+    // 325 Maximum Size Subarray sum Equals K (子数组)
+
+    /**
+     *
+
+     Given an array nums and a target value k, find the maximum length of a subarray that sums to k. If there isn't one, return 0 instead.
+
+     Note:
+
+     The sum of the entire nums array is guaranteed to fit within the 32-bit signed integer range.
+
+     */
+    /*
+        设 sum[i] 表示 nums[0] + nums[1] + … + nums[i-1] 的和，称为第 i 位的前缀和。
+
+        于是，如果存在两个索引 i 和 j，使得 sum[j] - sum[i] == k，说明找到一个子数组 [i, j-1] ，子数组的和为 k。
+        定义一个 HashMap ，把 sum[i] 作为 key ，把 i 作为 value。如果有相同的 sum[i] ，我们保存 i 最小的那个。
+
+        从 i == sum.length-1 开始遍历 map：
+
+        遍历到的为 sum[i] ,如果在 map 中存在 sum[i]-k ，说明存在一个长度为 k 的子数组，现在我们得找到这个子数组的起始索引，
+        即 map.get(sum[i]-k)，于是我们统计从 map.get(sum[i]-k) 到 i-1 长度为，并更新 maxLength。
+     */
+    class solution325{
+        public int maxSubarrayLen(int[] nums, int k) {
+            if (nums == null || nums.length == 0) return 0;
+            int res = 0;
+            HashMap<Integer, Integer> map = new HashMap<>();
+            map.put(0, -1);
+
+            // 计算前i项的和
+            for (int i = 1; i < nums.length; i ++) {
+                nums[i] += nums[i - 1];
+            }
+            for (int i = 0; i < nums.length; i++) {
+                // 如果map里有nums[i] - k的key值, 说明之前有
+                if (map.containsKey(nums[i] - k)){
+                    res = Math.max(res, i - map.get(nums[i] - k));
+                }
+                if (!map.containsKey(nums[i])) {
+                    map.put(nums[i], i);
+                }
+            }
+            return res;
+        }
+    }
+
+    // 209： Minimum Size SubArray Sum
+
+    /**
+     * Given an array of positive integers nums and a positive integer target, return the minimal length of a contiguous
+     * subarray [numsl, numsl+1, ..., numsr-1, numsr] of which the sum is greater than or equal to target. If there
+     * is no such subarray, return 0 instead.
+     *
+     * Example 1:
+     *
+     * Input: target = 7, nums = [2,3,1,2,4,3]
+     * Output: 2
+     * Explanation: The subarray [4,3] has the minimal length under the problem constraint.
+     * Example 2:
+     *
+     * Input: target = 4, nums = [1,4,4]
+     * Output: 1
+     * Example 3:
+     *
+     * Input: target = 11, nums = [1,1,1,1,1,1,1,1]
+     * Output: 0
+     *
+     */
+    class Solujtion209{
+        public int minSubArrayLen(int target, int[] nums) {
+            int res = Integer.MAX_VALUE;
+            int left = 0, sum = 0;
+            for (int i = 0; i < nums.length; i ++) {
+                sum += nums[i];
+                while(left <= i && sum >= target) {
+                    res = Math.min(res, i - left + 1);
+                    sum -= nums[left++];
+                }
+            }
+            return res == Integer.MAX_VALUE ? 0: res;
+        }
+    }
+
+    // 523: Continuous Subarray Sum
+
+    /**
+     * Given an integer array nums and an integer k, return true if nums has a continuous subarray of size at
+     * least two whose elements sum up to a multiple of k, or false otherwise.
+     *
+     * An integer x is a multiple of k if there exists an integer n such that x = n * k. 0 is always a multiple of k.
+     *
+     * Example 1:
+     *
+     * Input: nums = [23,2,4,6,7], k = 6
+     * Output: true
+     * Explanation: [2, 4] is a continuous subarray of size 2 whose elements sum up to 6.
+     * Example 2:
+     *
+     * Input: nums = [23,2,6,4,7], k = 6
+     * Output: true
+     * Explanation: [23, 2, 6, 4, 7] is an continuous subarray of size 5 whose elements sum up to 42.
+     * 42 is a multiple of 6 because 42 = 7 * 6 and 7 is an integer.
+     */
+    class Solution523{
+
+        /**
+         * 这道题如果使用暴力法的话会超时，对于一个中等题也不能指望用暴力法通过
+         *
+         * 也想到了前缀和，但就是想不出然后怎么利用前缀和降低时间复杂度
+         *
+         * 看了题解后发现自己未掌握一个定理：同余定理
+         *
+         * 如果 “(i − j) mod k = 0”， 那么 "i mod k = j mod k"
+         *
+         * 这样一来，如果前 i 个元素的前缀和对 k 取余后等于前 j 个元素的前缀和对 k 取余，那么这两个前缀和一减便是一个连续子区间的元素和（i、j之差必须大于等于2），且是 k 的倍数，正好符合题意
+         *
+         * 另外这个“等于”可以转换为“存在过”，而且为了判断下标之差要大于等于2，所以采用HashMap的方式存放“{取余的值, 下标}”
+         *
+         * 发现有一行代码为put(0, -1)，这是做什么？
+         *
+         * 其实源代码返回true的前提标准就是Map中出现过此余数，但是如果在计算前缀和的时候就出现余数为0的情况，讲道理应该直接返回true，但是由
+         * 于0这个余数没有存放在Map中，所以不会立刻返回true，因此需要提前放置一个key为0的键值对。
+         * 至于value，因为返回true的第二个标准为下标之差大于等于2，最极端的就是nums[]的前两个元素即满足题意，此时 j 为1，为了满足下标之差
+         * ，只要设定一个小于0的value即可（也别太小，防止在计算时越界，按题目nums[]长度的取值范围来看，取-1准没错）
+         */
+        public boolean checkSubarraySum(int[] nums, int k) {
+            int sum = 0;
+            HashMap<Integer, Integer> map = new HashMap<>();
+            map.put(0, -1);
+            for (int i = 0; i < nums.length; i ++) {
+                sum += nums[i];
+                if (k != 0) sum = sum % k;
+                if (map.containsKey(sum)) {
+                    if (i - map.get(sum) > 1) return true;
+                } else {
+                    map.put(sum, i);
+                }
+            }
+            return false;
+        }
+
+        // 暴力解法：
+        public boolean check2(int[] nums, int k){
+            int length = nums.length;
+            if( length < 2 ) return false;
+            for(int i = 0; i < length; i++) {
+                int sum = nums[i];
+                for(int j = i+1; j < length; j++) {
+                    sum += nums[j];
+                    //当k=0，且数组中所有元素也为0时也满足，但此时k不能作为除数
+                    if( k == 0 && sum == k) return true;
+                    if( k !=0 && sum % k == 0 ) return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    // 560： SubArray sum equals K (子数组)
+
+    /**
+     * Given an array of integers nums and an integer k, return the total number of subarrays whose sum equals to k.
+     *
+     * A subarray is a contiguous non-empty sequence of elements within an array.
+     * Example 1:
+     *
+     * Input: nums = [1,1,1], k = 2
+     * Output: 2
+     * Example 2:
+     *
+     * Input: nums = [1,2,3], k = 3
+     * Output: 2
+     */
+    class solution560 {
+        // 暴力解
+        public int subArraySum(int[] nums, int k) {
+            int res = 0;
+            for (int i = 0; i < nums.length; i++) {
+                int sum = 0;
+                for (int j = i; j < nums.length; j++) {
+                    sum += nums[j];
+                    if (sum == k) {
+                        res ++;
+                    }
+                }
+            }
+            return res;
+        }
+
+        public int subArraySum1(int[] nums, int k) {
+            int res = 0;
+            int sum = 0;
+            HashMap<Integer, Integer> map = new HashMap<>();
+            for (int i = 0; i < nums.length; i++) {
+                sum += nums[i];
+                if (map.containsKey(sum - k)) {
+                    res += map.get(sum - k);
+                }
+                map.put(sum, map.getOrDefault(sum, 0) + 1);
+            }
+            return res;
+        }
+    }
+
+    // 11: Container with most Water
+
+    /**
+     * You are given an integer array height of length n. There are n vertical lines drawn such that the two endpoints
+     * of the ith line are (i, 0) and (i, height[i]).
+     *
+     * Find two lines that together with the x-axis form a container, such that the container contains the most water.
+     *
+     * Return the maximum amount of water a container can store.
+     *
+     * Notice that you may not slant the container.
+     *
+     * Input: height = [1,8,6,2,5,4,8,3,7]
+     * Output: 49
+     * Explanation: The above vertical lines are represented by array [1,8,6,2,5,4,8,3,7].
+     * In this case, the max area of water (blue section) the container can contain is 49.
+     * Example 2:
+     *
+     * Input: height = [1,1]
+     * Output: 1
+     */
+    class Solution11 {
+        public int maxArea(int[] height) {
+            int res = 0;
+            int l = 0, r = height.length - 1;
+            while(l < r) {
+                res = Math.max(res, Math.min(height[l], height[r]) * (r - l));  // 木桶原理，取l 和 r短的那个乘以长度就是面积
+                if (height[l] < height[r]) {
+                    l ++;  // 左边小于右边，左指针向右走
+                } else r --;
+            }
+            return res;
+        }
+    }
+
+    // 724 Find pivot index
+
+    /**
+     * Given an array of integers nums, calculate the pivot index of this array.
+     *
+     * The pivot index is the index where the sum of all the numbers strictly to the left of the index is
+     * equal to the sum of all the numbers strictly to the index's right.
+     *
+     * If the index is on the left edge of the array, then the left sum is 0 because there are no elements
+     * to the left. This also applies to the right edge of the array.
+     *
+     * Return the leftmost pivot index. If no such index exists, return -1.
+     *
+     *
+     * Example 1:
+     *
+     * Input: nums = [1,7,3,6,5,6]
+     * Output: 3
+     * Explanation:
+     * The pivot index is 3.
+     * Left sum = nums[0] + nums[1] + nums[2] = 1 + 7 + 3 = 11
+     * Right sum = nums[4] + nums[5] = 5 + 6 = 11
+     * Example 2:
+     *
+     * Input: nums = [1,2,3]
+     * Output: -1
+     * Explanation:
+     * There is no index that satisfies the conditions in the problem statement.
+     * Example 3:
+     *
+     * Input: nums = [2,1,-1]
+     * Output: 0
+     * Explanation:
+     * The pivot index is 0.
+     * Left sum = 0 (no elements to the left of index 0)
+     * Right sum = nums[1] + nums[2] = 1 + -1 = 0
+     */
+    class Solution724{
+        public static int pivotIndex(int[] nums) {
+            if (nums == null || nums.length == 0) return 0;
+            int[] left = new int[nums.length];
+            int[] right = new int[nums.length];
+
+            left[0] = 0;
+            for (int i = 1; i < nums.length; i++) {
+                left[i] += nums[i - 1] + left[ i -  1];
+            }
+
+            right[nums.length - 1] = 0;
+            for(int i = nums.length - 2; i >= 0; i--) {
+                right[i] += nums[i + 1] + right[i + 1];
+            }
+            System.out.println(Arrays.toString(right));
+
+            for (int i = 0; i < nums.length; i++) {
+                if (left[i] == right[i]) return i;
+            }
+            return -1;
+        }
+
+        
+        // 前缀和解法
+        public int pivotIndex1(int[] nums) {
+            int sum = 0, leftsum = 0;
+            for (int x: nums) sum += x;
+            for (int i = 0; i < nums.length; ++i) {
+                if (leftsum == sum - leftsum - nums[i]) return i;
+                leftsum += nums[i];
+            }
+            return -1;
+        }
+    }
 
     public static void main(String[] args) {
-        System.out.println(intersect(new int[]{1, 2, 3}, new int[]{1, 3}));
+//        Solution347.topKFrequent(new int[]{1, 1, 1, 2, 2, 3}, 2);
+//        Solution26.removeDuplicates(new int[]{0, 0, 1, 1, 1, 2, 2, 3, 3, 4});
+        pivotIndex(new int[]{1,7,3,6,5,6});
     }
+
+
 }
 
 

@@ -666,6 +666,42 @@ public class Note7_Stack {
      * int param_4 = obj.getMin();
      */
 
+    // 22 Generate Parentheses
+
+    /**
+     * Given n pairs of parentheses, write a function to generate all combinations of well-formed parentheses.
+     *
+     * Example 1:
+     *
+     * Input: n = 3
+     * Output: ["((()))","(()())","(())()","()(())","()()()"]
+     * Example 2:
+     *
+     * Input: n = 1
+     * Output: ["()"]
+     *
+     */
+    class Solution {
+        public List<String> generateParenthesis(int n) {
+            List<String> res = new ArrayList<>();
+            if (n == 0) return res;
+            helper(res, "", n, n);  // 左括号有n个，右括号有n个
+            return res;
+        }
+
+        public void helper(List<String> res, String s, int left, int right) {
+            // left一定要大于right, 一定要先有左括号再有右括号，左括号剩余的数量要比右括号的多的话就return
+            if (left > right) return;
+            if (left == 0 && right == 0){
+                res.add(s);
+                return;
+            }
+            if (left > 0) helper(res, s + "(", left - 1, right);
+            if (right > 0) helper(res, s +")", left, right - 1);
+        }
+
+    }
+
 
     public static void main(String[] args) {
         System.out.println(String.valueOf("3"));

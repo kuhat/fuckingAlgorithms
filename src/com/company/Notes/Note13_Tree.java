@@ -373,6 +373,262 @@ public class Note13_Tree {
                 cur = cur.right;
             }
         }
-
     }
+
+    // 101. Symmetric Tree
+    /**
+     *Given the root of a binary tree, check whether it is a mirror of itself (i.e., symmetric around its center).
+     *
+     *Input: root = [1,2,2,3,4,4,3]
+     * Output: true
+     *
+     */
+
+    /**
+     * Definition for a binary tree node.
+     * public class TreeNode {
+     *     int val;
+     *     TreeNode left;
+     *     TreeNode right;
+     *     TreeNode() {}
+     *     TreeNode(int val) { this.val = val; }
+     *     TreeNode(int val, TreeNode left, TreeNode right) {
+     *         this.val = val;
+     *         this.left = left;
+     *         this.right = right;
+     *     }
+     * }
+     */
+    class Solution101 {
+        public boolean isSymmetric(TreeNode root) {
+            if (root == null) return true;
+            return helper(root.left, root.right);
+        }
+
+        public boolean helper(TreeNode p, TreeNode q) {
+            if (p == null && q == null) return true;
+            if (p == null || q == null) return false;
+            if (p.val != q.val) return false;
+            return helper(p.left, q.right) && helper(p.right, q.left);
+        }
+    }
+
+    // 100 Same Tree
+    /**
+     * Given the roots of two binary trees p and q, write a function to check if they are the same or not.
+     *
+     * Two binary trees are considered the same if they are structurally identical, and the nodes have the same value.
+     *
+     * Input: p = [1,2,3], q = [1,2,3]
+     * Output: true
+     *
+     * Input: p = [1,2], q = [1,null,2]
+     * Output: false
+     */
+    class Solution100 {
+        public boolean isSameTree(TreeNode p, TreeNode q) {
+            if (p == null && q == null) return true;
+            if (p == null || q == null) return false;
+            if (p.val != q.val) return false;
+            return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
+        }
+    }
+
+    // 589 N-array
+    /**
+     * Given the root of an n-ary tree, return the preorder traversal of its nodes' values.
+     *
+     * Nary-Tree input serialization is represented in their level order traversal. Each group of children
+     * is separated by the null value (See examples)
+     *
+     * Input: root = [1,null,3,2,4,null,5,6]
+     * Output: [1,3,5,6,2,4]
+     */
+    class Node {
+        public int val;
+        public List<Node> children;
+
+        public Node() {}
+
+        public Node(int _val) {
+            val = _val;
+        }
+
+        public Node(int _val, List<Node> _children) {
+            val = _val;
+            children = _children;
+        }
+    };
+    class Solution589 {
+        public List<Integer> preorder(Node root) {
+            List<Integer> res = new ArrayList<>();
+            if (root == null) return res;
+            helper(res, root);
+            return res;
+        }
+
+        public void helper(List<Integer> res, Node root) {
+            if (root == null) return;
+            res.add(root.val);
+            for (Node child: root.children) {
+                helper(res, child);
+            }
+        }
+    }
+
+    // 559 Maximum of n-array tree
+    /**
+     * Given a n-ary tree, find its maximum depth.
+     *
+     * The maximum depth is the number of nodes along the longest path from the root node down to the farthest leaf node.
+     *
+     * Nary-Tree input serialization is represented in their level order traversal, each group of children is separated by the null value (See examples).
+     *
+     *Input: root = [1,null,3,2,4,null,5,6]
+     * Output: 3
+     */
+    class Solution559 {
+        int res = 0;
+
+        public int maxDepth(Node root) {
+            if (root == null) return res;
+            int depth = 1;
+            helper(root, depth);
+            return res;
+        }
+
+        public void helper(Node root, int depth) {
+            if (root == null) return;
+            res = Math.max(res, depth);
+            for (Node child : root.children) {
+                helper(child, depth + 1);
+            }
+        }
+    }
+
+    // 513. Find Bottom Left Tree Value
+    /**
+     * Given the root of a binary tree, return the leftmost value in the last row of the tree.
+     */
+    class Solution513 {
+
+        int res = 0;
+        int height = 0;
+
+        public int findBottomLeftValue(TreeNode root) {
+            if (root == null) return res;
+            helper(root, 1);
+            return res;
+        }
+
+        public void helper(TreeNode root, int depth) {
+            if (root == null) return;
+            if (height < depth) {
+                height =  depth;
+                res = root.val;
+            }
+            helper(root.left, depth +1);
+            helper(root.right, depth + 1);
+        }
+    }
+
+    // 113. Path Sum II
+    /**
+     * Given the root of a binary tree and an integer targetSum, return all root-to-leaf paths where the sum of
+     * the node values in the path equals targetSum. Each path should be returned as a list of the node values,
+     * not node references.
+     *
+     * A root-to-leaf path is a path starting from the root and ending at any leaf node. A leaf is a node with no children.
+     *
+     * Input: root = [5,4,8,11,null,13,4,7,2,null,null,5,1], targetSum = 22
+     * Output: [[5,4,11,2],[5,8,4,5]]
+     * Explanation: There are two paths whose sum equals targetSum:
+     * 5 + 4 + 11 + 2 = 22
+     * 5 + 8 + 4 + 5 = 22
+     */
+    class Solution113 {
+        public List<List<Integer>> pathSum(TreeNode root, int targetSum) {
+            List<List<Integer>> res = new ArrayList<>();
+            if (root == null) return res;
+            helper(res, root, targetSum, new ArrayList<Integer>());
+            return res;
+        }
+
+        public void helper(List<List<Integer>> res, TreeNode root, int sum, List<Integer> list) {
+            if (root == null) return;
+            list.add(root.val);
+            if (root.left == null && root.right == null) {
+                if (root.val == sum) {
+                    res.add(new ArrayList<>(list));
+                }
+            }
+            helper(res, root.left, sum - root.val, list);
+            helper(res, root.right, sum - root.val, list);
+            list.remove(list.size() - 1);
+        }
+    }
+
+    // 437： Path III
+    /**
+     * Given the root of a binary tree and an integer targetSum, return the number of paths where the
+     * sum of the values along the path equals targetSum.
+     *
+     * The path does not need to start or end at the root or a leaf, but it must go downwards (i.e.,
+     * traveling only from parent nodes to child nodes).
+     *
+     * Input: root = [10,5,-3,3,2,null,11,3,-2,null,1], targetSum = 8
+     * Output: 3
+     * Explanation: The paths that sum to 8 are shown.
+     *
+     */
+
+    class Solution437 {
+        public int pathSum(TreeNode root, int targetSum) {
+            if (root == null) return 0;
+            // 把左子数和右子树都看成一颗整体的树重新遍历
+            return helper(root, targetSum) + pathSum(root.left, targetSum) + pathSum(root.right, targetSum);
+        }
+
+        public int helper(TreeNode root, int sum) {
+            int res = 0;
+            if (root == null) return res;  // 如果遇到数底了就返回res
+            if (sum == root.val) res++;  // 如果sum等于root的值了说明找到了就把res加一
+            // res加上root的左子树的值和右子数的值
+            res += helper(root.left, sum - root.val) + helper(root.right, sum - root.val);
+            return res;
+        }
+    }
+
+    // 129 Sum Root to Leaf Numbers
+    /**
+     * You are given the root of a binary tree containing digits from 0 to 9 only.
+     *
+     * Each root-to-leaf path in the tree represents a number.
+     *
+     * For example, the root-to-leaf path 1 -> 2 -> 3 represents the number 123.
+     * Return the total sum of all root-to-leaf numbers. Test cases are generated so that the answer will fit in a
+     * 32-bit integer.
+     *
+     * A leaf node is a node with no children.
+     *
+     * Input: root = [1,2,3]
+     * Output: 25
+     * Explanation:
+     * The root-to-leaf path 1->2 represents the number 12.
+     * The root-to-leaf path 1->3 represents the number 13.
+     * Therefore, sum = 12 + 13 = 25.
+     */
+    class Solution129 {
+        public int sumNumbers(TreeNode root) {
+            return helper(root, 0);
+        }
+
+        public int helper(TreeNode root, int num) {
+            if (root == null) return 0;
+            if (root.left == null && root.right == null) return num * 10 + root.val;
+            return helper(root.left, num * 10 + root.val) + helper(root.right, num * 10 + root.val);
+        }
+    }
+
+
 }

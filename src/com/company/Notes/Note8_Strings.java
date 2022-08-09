@@ -160,7 +160,6 @@ public class Note8_Strings {
      * Explanation: Replace the one 'A' in the middle with 'B' and form "AABBBBA".
      * The substring "BBBB" has the longest repeating letters, which is 4.
      *
-     * @param args
      */
 
     public int CharacterReplacement(String s, int k) {
@@ -184,6 +183,21 @@ public class Note8_Strings {
             }
         }
         return maxWindow;
+    }
+
+    public int CharacterReplacement1(String s, int k) {
+        int[] count = new int[26];
+        int res = 0, start = 0, max = 0;
+        for (int i = 0; i < s.length(); i++) {
+            max = Math.max(max, ++count[s.charAt(i) - 'A']);
+            while (i - start + 1 - max > k) {  // 当i减去start+1减去max大于k时，也就是当前的窗口使用的字母个数小于k时，
+                count[s.charAt(start) - 'A']--;  // 当前窗口左边的字母数减一
+                start++;  // 窗口左边的值向右走
+            }
+            res = Math.max(res, i - start + 1);
+        }
+        return res;
+
     }
 
     // 125: Valid Palindrome
@@ -880,15 +894,15 @@ public class Note8_Strings {
     class Solution32 {
         public int longestValidParentheses(String s) {
             Stack<Integer> stack = new Stack<>();
-            int res = 0, j = -1;
+            int res = 0, start = -1;
             for (int i = 0; i < s.length(); i++) {
-                if (s.charAt(i) == '(') stack.push(i);
+                if (s.charAt(i) == '(') stack.push(i);  // 如果遇到左括号（，把左括号的起始位置放入stack中
                 else {
-                    if (stack.isEmpty()) j = i;  // 一开始就遇到（
+                    if (stack.isEmpty()) start = i;  // 一开始就遇到）
                     else {
-                        stack.pop();
-                        if (stack.isEmpty()) res = Math.max(res, i - j);
-                        else res = Math.max(res, i - stack.peek());
+                        stack.pop();  // 如果stack不是空的，相当于遇到了右括号），把stack的第一个值pop出来
+                        if (stack.isEmpty()) res = Math.max(res, i - start);  // 如果pop了一个出来过后stack为空了，则更新res为i-start
+                        else res = Math.max(res, i - stack.peek());  // 如果pop了一个之后res不为空
                     }
                 }
             }
@@ -1909,6 +1923,225 @@ public class Note8_Strings {
             11111111 11111111 11111111 11111110
              */
             return res < s.length() ? res + 1: res;  // //如果相加的和小于字符串的长度，最后还要加1
+        }
+    }
+
+    // 565 Array Nesting
+
+    /**
+     * you are given an integer array nums of length n where nums is a permutation of the numbers in the range [0, n - 1].
+     *
+     * You should build a set s[k] = {nums[k], nums[nums[k]], nums[nums[nums[k]]], ... } subjected to the following rule:
+     *
+     * The first element in s[k] starts with the selection of the element nums[k] of index = k.
+     * The next element in s[k] should be nums[nums[k]], and then nums[nums[nums[k]]], and so on.
+     * We stop adding right before a duplicate element occurs in s[k].
+     * Return the longest length of a set s[k].
+     *
+     *
+     *
+     * Example 1:
+     *
+     * Input: nums = [5,4,0,3,1,6,2]
+     * Output: 4
+     * Explanation:
+     * nums[0] = 5, nums[1] = 4, nums[2] = 0, nums[3] = 3, nums[4] = 1, nums[5] = 6, nums[6] = 2.
+     * One of the longest sets s[k]:
+     * s[0] = {nums[0], nums[5], nums[6], nums[2]} = {5, 6, 2, 0}
+     * Example 2:
+     *
+     * Input: nums = [0,1,2]
+     * Output: 1
+     */
+    class Solution565{
+        public int arrayNesting(int[] nums) {
+            int res = 0;
+            for (int i = 0; i < nums.length; i++) {
+                int next = i;
+                int count = 0;
+                while (nums[next] != -1) {
+                    count ++;
+                    int temp = next;
+                    next = nums[next];
+                    nums[temp] = -1;
+                }
+                res = Math.max(res, count);
+            }
+            return res;
+        }
+    }
+
+    //30 SubString with Concatenation All Words  sliding window
+    /**
+     * You are given a string s and an array of strings words of the same length. Return all starting indices of
+     * substring(s) in s that is a concatenation of each word in words exactly once, in any order, and without any intervening characters.
+     *
+     * You can return the answer in any order.
+     *
+     * Example 1:
+     *
+     * Input: s = "barfoothefoobarman", words = ["foo","bar"]
+     * Output: [0,9]
+     * Explanation: Substrings starting at index 0 and 9 are "barfoo" and "foobar" respectively.
+     * The output order does not matter, returning [9,0] is fine too.
+     * Example 2:
+     *
+     * Input: s = "wordgoodgoodgoodbestword", words = ["word","good","best","word"]
+     * Output: []
+     * Example 3:
+     *
+     * Input: s = "barfoofoobarthefoobarman", words = ["bar","foo","the"]
+     * Output: [6,9,12]
+     *
+     * O（n^2）
+     * space: O(N)
+     */
+    class Solution30 {
+        public List<Integer> findSubstring(String s, String[] words) {
+            if (s == null || words == null || words.length == 0) return new ArrayList<>();
+            List<Integer> res = new ArrayList<>();
+            int n = words.length;
+            int m = words[0].length();
+            HashMap<String, Integer> map = new HashMap<>();
+            // 将words里的所有单词放入map
+            for (String str : words) map.put(str, map.getOrDefault(str, 0) + 1);
+
+            for (int i = 0; i <= s.length() - n * m; i++) {  // 找到匹配的话最后的终点肯定是s的长度减去words里面的总长度
+                HashMap<String, Integer> copy = new HashMap<>(map);
+                int k = n, j = i;  // 每次遍历一次都要看当前的
+                while (k > 0) {
+                    String str = s.substring(j, j + m);  // 判断当前单词是否属于words里面的单词
+                    if (!copy.containsKey(str) || copy.get(str) < 1) break;  // 如果没有包含，或者出现的次数过多，直接跳过
+                    copy.put(str, copy.get(str) - 1);  // 如果包含了，把当前单词的数量减一
+                    k --;  // 要找的总单词数量减一
+                    j += m;  // 越过当前找到的单词
+                }
+                if (k == 0) res.add(i);
+            }
+            return res;
+        }
+    }
+    /*
+    寻找字符串满足某个条件的子串，考虑双指针+滑动窗口思想（右指针一直前进，当遇到某个条件成立/不成立，更新左指针，然后右指针接着前进）。
+     */
+
+    // 340 至多包含k个不同字符的最长子串
+
+    /**
+     * 给定一个字符串s,找出至多包含k个不同字符的最长子串T  sliding window
+     *
+     * example1:
+     * input: s = "eceba", k = 2
+     * output: 3
+     * explaination: T is "ece", the length is 3
+     */
+    class solution340{
+        public int lengthOfLongestSubstringKDistinct(String s, int k) {
+            if (s == null || s.length() == 0 || k == 0) return 0;
+            int left = 0, right = 0, nums = 0/*记录重复的字母*/, res = 0;
+            int[] count = new int[256];
+            while(right < s.length()) {
+                if (count[s.charAt(right++)]++ == 0) nums++;
+                if (nums > k) {  // 当重复的字母大于了k时，将左指针向右移，减去相同的字母数nums
+                    while (--count[s.charAt(left)] > 0) left++;
+                    nums--;
+                }
+                res = Math.max(res, right - left + 1);
+            }
+            return res;
+        }
+    }
+
+    // 49： Group Anagrams
+    /**
+     * Given an array of strings strs, group the anagrams together. You can return the answer in any order.
+     *
+     * An Anagram is a word or phrase formed by rearranging the letters of a different word or phrase,
+     * typically using all the original letters exactly once.
+
+     * Example 1:
+     *
+     * Input: strs = ["eat","tea","tan","ate","nat","bat"]
+     * Output: [["bat"],["nat","tan"],["ate","eat","tea"]]
+     * Example 2:
+     *
+     * Input: strs = [""]
+     * Output: [[""]]
+     * Example 3:
+     *
+     * Input: strs = ["a"]
+     * Output: [["a"]]
+     *
+     */
+
+    class Solution49 {
+        public List<List<String>> groupAnagrams(String[] strs) {
+            HashMap<String, List<String>> map = new HashMap<>();
+            for (String str : strs) {
+                int[] count = new int[26];
+                for (Character ch : str.toCharArray()) {
+                    count[ch - 'a'] ++;  // 统计每个字母出现的次数
+                }
+                String s = "";
+                for (int i = 0; i < count.length; i ++) {
+                    // 去数出现过的字母比如说 ababc将被转化成2a2b1c
+                    if (count[i] != 0) s += String.valueOf(count[i]) + String.valueOf((char) (i + 'a'));
+                }
+                if (map.containsKey(s)) {  // 如果之前已经有这个key值了，将这个新的str加入lsit
+                    List<String> list = map.get(s);
+                    list.add(str);
+                } else {  // 如果第一次出现，将这个s和list添加到map里
+                    List<String> list = new ArrayList<>();
+                    list.add(str);
+                    map.put(s, list);
+                }
+            }
+            return new ArrayList<>(map.values());
+        }
+    }
+
+    // 438 find all Anagrams in a StringAnagram
+    /**
+     * Given two strings s and p, return an array of all the start indices of p's anagrams in s. You may return the answer in any order.
+     *
+     * An Anagram is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once.
+     *
+     *
+     *
+     * Example 1:
+     *
+     * Input: s = "cbaebabacd", p = "abc"
+     * Output: [0,6]
+     * Explanation:
+     * The substring with start index = 0 is "cba", which is an anagram of "abc".
+     * The substring with start index = 6 is "bac", which is an anagram of "abc".
+     * Example 2:
+     *
+     * Input: s = "abab", p = "ab"
+     * Output: [0,1,2]
+     * Explanation:
+     * The substring with start index = 0 is "ab", which is an anagram of "ab".
+     * The substring with start index = 1 is "ba", which is an anagram of "ab".
+     * The substring with start index = 2 is "ab", which is an anagram of "ab".
+     */
+    class Solution438 {
+        public List<Integer> findAnagrams(String s, String p) {
+            List<Integer> res = new ArrayList<>();
+            if (s == null || s.length() == 0 || p.length() == 0) return res;
+            int[] chars = new int[26];
+            for (Character ch : p.toCharArray()) {
+                chars[ch - 'a'] ++;
+            }
+            int start = 0, end = 0;
+            int count = p.length();  // 用count来记录是否该添加进res里，当count==0时代表找到了
+            while (end < s.length()) {
+                // 当end-start等于p的长 和 当前start位置的字母的数量大于0时（代表是p里面出现的字符），start位置的数字的数量加一，start向右走，count++(相当于restore一下)
+                if (end - start == p.length() && chars[s.charAt(start ++) - 'a']++ >= 0) count++;
+                // 如果当前end位置的字母减一还大于等于0，说明找到了p中的字母，count--
+                if (--chars[s.charAt(end++) - 'a'] >= 0) count--;
+                if (count == 0) res.add(start);
+            }
+            return res;
         }
     }
 
