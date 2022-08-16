@@ -111,7 +111,7 @@ public class Note9_Shape {
             int res = 0;
 
             for (int i = 0; i < points.length; i ++) {
-                HashMap<String, Integer> map = new HashMap<>();
+                HashMap<String, Integer> map = new HashMap<>();  // key: 斜率，value: 当前斜率的点个数
                 int samePoint = 0;
                 int sameXAxis = 1;  // x左边一样
                 for (int j = 0; j < points.length; j++) {

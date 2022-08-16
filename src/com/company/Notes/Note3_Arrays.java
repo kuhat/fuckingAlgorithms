@@ -546,7 +546,7 @@ public class Note3_Arrays {
         return res;
     }
 
-    // 219： Contains Duplicate
+    // 219： Contains Duplicate II
 
     /**
      * Given an integer array nums and an integer k, return true if there are two distinct indices i and j in
@@ -1824,6 +1824,330 @@ public class Note3_Arrays {
                 leftsum += nums[i];
             }
             return -1;
+        }
+    }
+
+    // 16 3 Sum Closest
+
+    /**
+     * Given an integer array nums of length n and an integer target, find three integers in nums such that the sum is closest to target.
+     *
+     * Return the sum of the three integers.
+     *
+     * You may assume that each input would have exactly one solution.
+     *
+     * Example 1:
+     *
+     * Input: nums = [-1,2,1,-4], target = 1
+     * Output: 2
+     * Explanation: The sum that is closest to the target is 2. (-1 + 2 + 1 = 2).
+     * Example 2:
+     *
+     * Input: nums = [0,0,0], target = 1
+     * Output: 0
+     *
+     */
+    class Solution16 {
+        public int threeSumClosest(int[] nums, int target) {
+            int res = nums[0] + nums[1] + nums[nums.length - 1];
+            Arrays.sort(nums);
+            for (int i = 0; i < nums.length - 2; i ++) {
+                int start = i + 1, end = nums.length - 1;
+                while (start < end) {
+                    int sum = nums[i] + nums[start] + nums[end];
+                    if (sum > target) {
+                        end--;
+                    } else {
+                        start++;
+                    }
+                    if (Math.abs(sum - target) < Math.abs(res - target)) {
+                        res = sum;
+                    }
+                }
+            }
+            return res;
+        }
+    }
+
+    // 18： 4Sum
+
+    /**
+     * Given an array nums of n integers
+     * return an array of all the unique quadruplets [nums[a], nums[b], nums[c], nums[d]] such that:
+     *
+     * 0 <= a, b, c, d < n
+     * a, b, c, and d are distinct.
+     * nums[a] + nums[b] + nums[c] + nums[d] == target
+     * You may return the answer in any order.
+     *
+     *
+     *
+     * Example 1:
+     *
+     * Input: nums = [1,0,-1,0,-2,2], target = 0
+     * Output: [[-2,-1,1,2],[-2,0,0,2],[-1,0,0,1]]
+     * Example 2:
+     *
+     * Input: nums = [2,2,2,2,2], target = 8
+     * Output: [[2,2,2,2]]
+     *
+     */
+
+    class Solution18{
+        public List<List<Integer>> fourSum(int[] nums, int target) {
+            List<List<Integer>> res = new ArrayList<>();
+            if (nums.length < 4) return res;
+            Arrays.sort(nums);
+
+            for (int i = 0; i < nums.length - 3; i ++) {
+                if (i > 0 && nums[i] == nums[i - 1]) continue;
+                for (int j = i + 1; j < nums.length - 2; j++) {
+                    if (j > i + 1 && nums[j] == nums[j - 1]) continue;
+                    int low = j + 1, high = nums.length - 1;
+                    while(low < high) {
+                        long sum = (long)nums[i] + (long)nums[j] + (long)nums[low] + (long)nums[high];
+                        if (sum == target) {
+                            res.add(Arrays.asList(nums[i], nums[j], nums[low], nums[high]));
+                            while(low < high && nums[low] == nums[low + 1]) low++;
+                            while (low < high && nums[high] == nums[high - 1]) high--;
+                            low++;
+                            high--;
+                        } else if (sum < target) {
+                            low++;
+                        } else{
+                            high--;
+                        }
+                    }
+                }
+            }
+            return res;
+        }
+    }
+
+    // 454 4 sumII
+
+    /**
+     * Given four integer arrays nums1, nums2, nums3, and nums4 all of length n, return the number of tuples (i, j, k, l) such that:
+     *
+     * 0 <= i, j, k, l < n
+     * nums1[i] + nums2[j] + nums3[k] + nums4[l] == 0
+     *
+     *
+     * Example 1:
+     *
+     * Input: nums1 = [1,2], nums2 = [-2,-1], nums3 = [-1,2], nums4 = [0,2]
+     * Output: 2
+     * Explanation:
+     * The two tuples are:
+     * 1. (0, 0, 0, 1) -> nums1[0] + nums2[0] + nums3[0] + nums4[1] = 1 + (-2) + (-1) + 2 = 0
+     * 2. (1, 1, 0, 0) -> nums1[1] + nums2[1] + nums3[0] + nums4[0] = 2 + (-1) + (-1) + 0 = 0
+     * Example 2:
+     *
+     * Input: nums1 = [0], nums2 = [0], nums3 = [0], nums4 = [0]
+     * Output: 1
+     */
+    class Solution454 {
+        public int fourSumCount(int[] nums1, int[] nums2, int[] nums3, int[] nums4) {
+            HashMap<Integer, Integer> map = new HashMap<>();
+            int res = 0;
+            for (int a : nums1) {
+                for (int b: nums2) {
+                    int sum = a + b;
+                    map.put(sum, map.getOrDefault(sum, 0) + 1);
+                }
+            }
+            for (int c : nums3) {
+                for (int d : nums4) {
+                    int sum = -c -d;
+                    res += map.getOrDefault(sum, 0);
+                }
+            }
+            return res;
+        }
+    }
+
+    // 189: Rotate Array
+    class Solution189{
+        public void ratate(int[] nums, int k) {
+            int[] temp = new int[nums.length];
+            for (int i = 0; i< nums.length; i++) {
+                temp[(i + k) % nums.length]  = nums[i];
+            }
+            for (int i = 0; i < nums.length; i++) {
+                nums[i] = temp[i];
+            }
+        }
+    }
+
+    // 280 wiggle sort
+
+    /**
+     * given an unsorted array nums, reorder it in-place such that nums[0] <= nums[1] >= nums[2] <= nums[3]....
+     *
+     * Example:
+     * nums = [3, 5, 2, 1, 6, 4], one answer is: [1, 6 ,2, 5, 3, 4]
+     */
+    class Solution280{
+        public void wiggleSort(int[] nums) {
+            for (int i = 1; i < nums.length; i ++) {
+                //  如果是奇数位，肯定是要大于前一个数的。如果当前奇数位小于前一个数，交换。
+                // 如果当前位是哥偶数，当前数大于上一个数，就交换
+                if ((i % 2 == 1) && nums[i] < nums[i - 1] || (i % 2 == 0 && nums[i] > nums[i - 1])) {
+                    int temp = nums[ i - 1];
+                    nums[i - 1] = nums[ i];
+                    nums[i] = temp;
+                }
+            }
+        }
+    }
+
+    // 41： first missing positive
+
+    /**
+     * Given an unsorted integer array nums, return the smallest missing positive integer.
+     *
+     * You must implement an algorithm that runs in O(n) time and uses constant extra space.
+     *
+     *
+     *
+     * Example 1:
+     *
+     * Input: nums = [1,2,0]
+     * Output: 3
+     * Example 2:
+     *
+     * Input: nums = [3,4,-1,1]
+     * Output: 2
+     * Example 3:
+     *
+     * Input: nums = [7,8,9,11,12]
+     * Output: 1
+     */
+    class Solution41{
+        public int firstMissingPositive(int[] nums) {
+            if (nums == null || nums.length == 0) return 1;
+            for (int i = 0; i < nums.length; i++) {
+                //                    当前的index位置的值小于数组的长度  当前index的数字应该放在哪个位置
+                while (nums[i] > 0 && nums[i] <= nums.length && nums[nums[i] - 1] != nums[i]) {
+                    int temp = nums[nums[i] - 1];  // 将当前 index的数字放在它的值对应的位置上
+                    nums[nums[i] - 1] = nums[i];
+                    nums[i] = temp;
+                }
+            }
+            // 将原数组上的数字排好序后，index相对应的值应该和i + 1相等
+            for (int i = 0; i < nums.length; i++) {
+                if (nums[i] != i + 1) return i + 1;
+            }
+            return nums.length + 1;
+        }
+    }
+
+    // 217 contains duplicate
+
+    /**
+     * Given an integer array nums, return true if any value appears at least twice in the array,
+     * and return false if every element is distinct.
+     *
+     * Example 1:
+     *
+     * Input: nums = [1,2,3,1]
+     * Output: true
+     * Example 2:
+     *
+     * Input: nums = [1,2,3,4]
+     * Output: false
+     *
+     */
+    class Solution217{
+        public boolean containsDuplicate(int[] nums) {
+            HashSet<Integer> set = new HashSet<>();
+            for (int i = 0; i < nums.length; i++) {
+                // 如果能加入返回true, 不能加入（里面已经有了），返回false
+                if (!set.add(nums[i])) return true;
+            }
+            return false;
+        }
+
+        public boolean containsDuplicate1(int[] nums) {
+            Arrays.sort(nums);
+            for (int i = 1; i < nums.length; i ++) {
+                if (nums[i] == nums[i - 1]) return true;
+            }
+            return false;
+        }
+    }
+
+
+    // 575 Distribute Candies
+
+    /**
+     * Alice has n candies, where the ith candy is of type candyType[i]. Alice noticed that she started to gain weight,
+     * so she visited a doctor.
+     *
+     * The doctor advised Alice to only eat n / 2 of the candies she has (n is always even). Alice likes her candies very
+     * much, and she wants to eat the maximum number of different types of candies while still following the doctor's advice.
+     *
+     * Given the integer array candyType of length n, return the maximum number of different types of candies she can
+     * eat if she only eats n / 2 of them.
+     *
+     * Example 1:
+     *
+     * Input: candyType = [1,1,2,2,3,3]
+     * Output: 3
+     * Explanation: Alice can only eat 6 / 2 = 3 candies. Since there are only 3 types, she can eat one of each type.
+     * Example 2:
+     *
+     * Input: candyType = [1,1,2,3]
+     * Output: 2
+     * Explanation: Alice can only eat 4 / 2 = 2 candies. Whether she eats types [1,2], [1,3], or [2,3], she still can only eat 2 different types.
+     */
+
+    class Solution575{
+        /**
+         * 此题就是返回 candyType / 2 和 糖的种类的最小值
+         * @param candyType
+         * @return
+         */
+        public int distributeCandies(int[] candyType) {
+            HashSet<Integer> set = new HashSet<>();
+            for (int candy : candyType) set.add(candy);
+            return Math.min(set.size(), candyType.length / 2);
+
+        }
+    }
+
+    // 525: Contiguous Array
+
+    /**
+     * Given a binary array nums, return the maximum length of a contiguous subarray with an equal number of 0 and 1.
+     *
+     * Example 1:
+     *
+     * Input: nums = [0,1]
+     * Output: 2
+     * Explanation: [0, 1] is the longest contiguous subarray with an equal number of 0 and 1.
+     * Example 2:
+     *
+     * Input: nums = [0,1,0]
+     * Output: 2
+     * Explanation: [0, 1] (or [1, 0]) is a longest contiguous subarray with equal number of 0 and 1.
+     */
+    class Solution525{
+
+        public int findMaxLength(int[] nums) {
+            // key是count, value是index
+            // 0和1数量相等时，count的值就为0
+            HashMap<Integer, Integer> map = new HashMap<>();
+            // index从0开始
+            map.put(0, -1);
+            int count = 0;
+            int res = 0;
+            for (int i = 0; i < nums.length; i++) {
+                count = count + (nums[i] == 1 ? 1 : -1);
+                if (map.containsKey(count)) res = Math.max(res, i - map.get(count));
+                else map.put(count, i);
+            }
+            return res;
         }
     }
 

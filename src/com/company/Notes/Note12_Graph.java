@@ -303,6 +303,183 @@ public class Note12_Graph {
         }
     }
 
+    // 130 surrounded region
+    /**
+     * Given an m x n matrix board containing 'X' and 'O', capture all regions that are 4-directionally surrounded by 'X'.
+     *
+     * A region is captured by flipping all 'O's into 'X's in that surrounded region.
+     *
+     * Example 1:
+     *
+     * Input: board = [["X","X","X","X"],["X","O","O","X"],["X","X","O","X"],["X","O","X","X"]]
+     * Output: [["X","X","X","X"],["X","X","X","X"],["X","X","X","X"],["X","O","X","X"]]
+     * Explanation: Notice that an 'O' should not be flipped if:
+     * - It is on the border, or
+     * - It is adjacent to an 'O' that should not be flipped.
+     * The bottom 'O' is on the border, so it is not flipped.
+     * The other three 'O' form a surrounded region, so they are flipped.
+     * Example 2:
+     *
+     * Input: board = [["X"]]
+     * Output: [["X"]]
+     */
+
+    class Solution {
+        /**
+         * O 在边缘位置，第一行，第一列，最后一行，最后一列,不会被围住
+         * @param board
+         */
+        public void solve(char[][] board) {
+            if (board == null || board.length == 0 || board[0].length == 0) return;
+            int m = board.length - 1; // 行数
+            int n = board[0].length - 1; // 列数
+            for (int i = 0; i <= m; i++) {
+                if (board[i][0] == 'O') dfs(board, i, 0); // 第一列
+                if (board[i][n] == 'O') dfs(board, i , n);  // 最后一列
+            }
+            for (int i = 0; i <= n; i++) {
+                if (board[0][i] == 'O') dfs(board, 0, i);
+                if (board[m][i] == 'O') dfs(board, m, i);
+            }
+
+            for (int i = 0; i <= m; i++) {
+                for (int j = 0; j <= n; j++) {
+                    if (board[i][j] == 'O') {
+                        board[i][j] = 'X';  // 如果遇到该变的O, 变到X
+                    } else if (board[i][j] == '1') {  // 如果遇到不该变的，变回O
+                        board[i][j] = 'O';
+                    }
+                }
+            }
+        }
+
+        private void dfs(char[][] board, int i, int j) {
+            if (i < 0 || j < 0 || i >= board.length || j >= board[0].length || board[i][j] != 'O') return;
+            board[i][j] = '1';  // 先把不该变的变成一个1
+            dfs(board, i ,j + 1);
+            dfs(board, i ,j - 1);
+            dfs(board, i + 1 ,j);
+            dfs(board, i - 1 ,j);
+
+        }
+    }
+
+    // 490 The Maze
+    /**
+     * 在迷宫中有一个球，里面有空的空间和墙壁。球可以通过滚上，下，左或右移动，
+     * 但它不会停止滚动直到撞到墙上。当球停止时，它可以选择下一个方向。
+     *
+     * 给定球的起始位置，目的地和迷宫，确定球是否可以停在终点。
+     *
+     * 迷宫由二维数组表示。1表示墙和0表示空的空间。你可以假设迷宫的边界都是墙。开始和目标坐标用行和列索引表示。
+     * 样例
+     *
+     * 例1:
+     *
+     *     输入:
+     *     map =
+     *     [
+     *      [0,0,1,0,0],
+     *      [0,0,0,0,0],
+     *      [0,0,0,1,0],
+     *      [1,1,0,1,1],
+     *      [0,0,0,0,0]
+     *     ]
+     *     start = [0,4]
+     *     end = [3,2]
+     *     输出:
+     *     false
+     */
+    class Solution490{
+        public boolean hasPath(int[][] maze, int[] start, int[] destination) {
+            boolean[][] visited = new boolean[maze.length][maze[0].length];
+            int[][] directions = {{1,0}, {-1,0}, {0,1},{0, -1}};
+
+            Queue<Point> queue = new LinkedList<>();
+            queue.offer(new Point(start[0], start[1]));
+            while (!queue.isEmpty()) {
+                Point cur = queue.poll();
+                visited[cur.x][cur.y] = true;
+                if (cur.x == destination[0] && cur.y == destination[1]) {
+                    return true;
+                }
+                for (int[] direction: directions) {
+                    int newX = cur.x;
+                    int newY = cur.y;
+                    while(isValid(maze, newX + direction[0], newY + direction[1])) {
+                        newX += direction[0];
+                        newY += direction[1];
+                    }
+                    if (!visited[newX][newY]) queue.offer(new Point(newX, newY));
+                }
+            }
+            return false;
+        }
+
+        private boolean isValid(int[][] maze, int x, int y) {
+            return x>= 0 && y >=0 && x<maze.length && y <maze[0].length && maze[x][y] == 0;
+        }
+
+        class Point{
+            int x;
+            int y;
+
+            public Point(int x, int y) {
+                this.x = x;
+                this.y = y;
+            }
+        }
+    }
+
+    // 79: word search
+    /**
+     * Given an m x n grid of characters board and a string word, return true if word exists in the grid.
+     *
+     * The word can be constructed from letters of sequentially adjacent cells, where adjacent cells are horizontally
+     * or vertically neighboring. The same letter cell may not be used more than once.
+     *
+     * Example 1:
+     *
+     * Input: board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]], word = "ABCCED"
+     * Output: true
+     * Example 2:
+     *
+     *
+     * Input: board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]], word = "SEE"
+     * Output: true
+     * Example 3:
+     *
+     *
+     * Input: board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]], word = "ABCB"
+     * Output: false
+     */
+
+    class Solution79 {
+        public boolean exist(char[][] board, String word) {
+            for (int i = 0; i <= board.length; i++) {
+                for (int j = 0; j < board[0].length; j++) {
+                    if (exist(board, i, j, word, 0)) return true;  // 每个位置都去找
+                }
+            }
+            return false;
+        }
+
+        private boolean exist(char[][] board, int i, int j, String word, int start) {
+            if (start >= word.length()) return true;  // word里的字母都找完了
+            if (i <0 || i >= board.length || j < 0 || j >= board[0].length ) return false;  // 边界条件
+            if (board[i][j] == word.charAt(start ++)) {
+                char c = board[i][j];
+                board[i][j] = '#';  // 这个地方不能再用了
+                boolean res = exist(board, i + 1, j, word, start) ||
+                        exist(board, i - 1, j, word, start) ||
+                        exist(board, i, j + 1, word, start) ||
+                        exist(board, i , j - 1, word, start);
+                board[i][j] = c;
+                return res;
+            }
+            return false;
+        }
+    }
 
 
 }

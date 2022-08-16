@@ -931,6 +931,8 @@ public class Note5_LinkedList {
     //21
 
     public static void main(String[] args) {
+        String s = "aaa";
 
+        System.out.println(String.valueOf(4));
     }
 }

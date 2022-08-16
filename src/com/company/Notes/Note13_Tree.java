@@ -630,5 +630,65 @@ public class Note13_Tree {
         }
     }
 
+    // 98: valid BST
+    /**
+     * Given the root of a binary tree, determine if it is a valid binary search tree (BST).
+     *
+     * A valid BST is defined as follows:
+     *
+     * The left subtree of a node contains only nodes with keys less than the node's key.
+     * The right subtree of a node contains only nodes with keys greater than the node's key.
+     * Both the left and right subtrees must also be binary search trees.
+     *
+     *
+     * Example 1:
+     *
+     *
+     * Input: root = [2,1,3]
+     * Output: true
+     * Example 2:
+     *
+     *
+     * Input: root = [5,1,4,null,null,3,6]
+     * Output: false
+     * Explanation: The root node's value is 5 but its right child's value is 4.
+     */
+    /**
+     * Definition for a binary tree node.
+     * public class TreeNode {
+     *     int val;
+     *     TreeNode left;
+     *     TreeNode right;
+     *     TreeNode() {}
+     *     TreeNode(int val) { this.val = val; }
+     *     TreeNode(int val, TreeNode left, TreeNode right) {
+     *         this.val = val;
+     *         this.left = left;
+     *         this.right = right;
+     *     }
+     * }
+     */
+    class Solution98 {
+        public boolean isValidBST(TreeNode root) {
+            return helper(root, Long.MIN_VALUE, Long.MAX_VALUE);
+        }
+
+        /**
+         * 陷阱1：
+         * 不能单纯的比较左节点小于中间节点，右节点大于中间节点就够了。我们要比较的是左子树所有节点小于中间节点，右子树左右节点大于中间节点。
+         * 陷阱2：
+         * 样例中的最小节点，可能是int的最小值，如果用最小的int(Integer.MIN_VALUE)来比较是不行的。此时可以初始化为Long.MIN_VALUE
+         * 树的每一个节点都有一个取址范围，根节点root的取址范围是（-∞，+∞），而它的左节点的范围则是（-∞，root.val）,
+         * 它的右节点的取址范围是（root.val，+∞）。后面就可以递归啦。
+         */
+
+        public boolean helper(TreeNode root, long left, long right) {
+            if (root == null) return true;
+            if (root.val <= left || root.val >=right) return false;
+            return helper(root.left, left, root.val) && helper(root.right, root.val, right);
+
+        }
+    }
+
 
 }

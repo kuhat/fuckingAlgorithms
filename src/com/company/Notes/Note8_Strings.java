@@ -2145,5 +2145,461 @@ public class Note8_Strings {
         }
     }
 
+    // 9: Palindrome Number
+    /**
+     * Given an integer x, return true if x is palindrome integer.
+
+     An integer is a palindrome when it reads the same backward as forward.
+
+     For example, 121 is a palindrome while 123 is not.
+
+
+     Example 1:
+
+     Input: x = 121
+     Output: true
+     Explanation: 121 reads as 121 from left to right and from right to left.
+     Example 2:
+
+     Input: x = -121
+     Output: false
+     Explanation: From left to right, it reads -121. From right to left, it becomes 121-. Therefore it is not a palindrome.
+     *
+     */
+    class Solution9 {
+        public boolean isPalindrome(int x) {
+            if(x < 0 || (x % 10 == 0 && x != 0)) return false;
+            if(x > 0 && x <= 9) return true;
+            int palind = x;
+            int rev = 0;
+
+            while(x > 0) {
+                rev = rev * 10 + x % 10;
+                x /= 10;
+            }
+            return palind == rev;
+        }
+    }
+
+    // 409 longest palindrome
+
+    /**
+     * Given a string s which consists of lowercase or uppercase letters, return the length of the longest palindrome
+     * that can be built with those letters.
+     *
+     * Letters are case sensitive, for example, "Aa" is not considered a palindrome here.
+     *
+     * Example 1:
+     *
+     * Input: s = "abccccdd"
+     * Output: 7
+     * Explanation: One longest palindrome that can be built is "dccaccd", whose length is 7.
+     * Example 2:
+     *
+     * Input: s = "a"
+     * Output: 1
+     * Explanation: The longest palindrome that can be built is "a", whose length is 1.
+     */
+    class Solution4091{
+        public int longestPalindrome (String s) {
+            if (s == null || s.length() == 0) return 0;
+            HashSet<Character> set = new HashSet<>();  // 用一个set来记录相同字母出现的奇偶数
+            int count = 0;
+            for (char c : s.toCharArray()) {
+                // 如果之前加过这个字母了，说明出现了偶数个，count++
+                if (set.contains(c)) {
+                    set.remove(c);
+                    count++;
+                } else set.add(c);
+            }
+            // 到最后如果set里面剩下了，出现了奇数个的，就加一
+            if (set.size() != 0) return count * 2 + 1;
+            return count * 2;
+        }
+
+        public int longestPalindrome1(String s) {
+            int[] count = new int[256];
+            int res = 0;
+            for (char ch : s.toCharArray()) {
+                count[ch] ++;
+            }
+            for (int i : count) {
+                res += i / 2 * 2;
+                if (res % 2 == 0 && i % 2 == 1) res ++;
+
+            }
+            return res;
+        }
+    }
+
+    // 299：palindrome permutation
+
+    /**
+     * Given a string, determine if a permutations of the string could form a palindrome
+     * 出现一次的字母有一个，其他的都是两个
+     * 或者都是偶数个
+     */
+    class Solution299{
+        // HashSet:space: o(n)
+        public boolean canPermutePalindrome(String s) {
+            HashSet<Character> set = new HashSet<>();
+            for (char c : s.toCharArray()) {
+                if (set.contains(c)) set.remove(c);
+                else set.add(c);
+            }
+            // set的size等于1代表出现了一个奇数，其他都是偶数，等于0代表全是偶数
+            return set.size() <= 1;
+        }
+
+        public boolean canPermutePalindrome1(String s) {
+            char[] count = new char[256];
+            int res = 0;
+            for (char c : s.toCharArray()) {
+                if (count[c] > 0) {
+                    // 如果出现这个字符，就--
+                    count[c] --;
+                } else {
+                    count[c] ++;
+                }
+            }
+            // 正常如果可以有回文出现，那只能有1个或者0个位置不是0（最多只能出现一个奇数个的字母）
+            for (int i = 0; i < count.length; i++) {
+                if (count[i] != 0) res ++;
+            }
+            return res <= 1;
+        }
+    }
+
+    // 214：shortest palindrome
+    /**
+     * You are given a string s. You can convert s to a palindrome by adding characters in front of it.
+     *
+     * Return the shortest palindrome you can find by performing this transformation.
+     *
+     * Example 1:
+     *
+     * Input: s = "aacecaaa"
+     * Output: "aaacecaaa"
+     * Example 2:
+     *
+     * Input: s = "abcd"
+     * Output: "dcbabcd"
+     */
+    class Solution214 {
+        public String shortestPalindrome(String s) {
+            // i  控制的是起始，j控制的是最后的指针，e控制的是要加的字符到底从哪里开始
+            int i = 0, j = s.length() - 1;
+            int end = s.length() - 1;
+            char[] chars = s.toCharArray();
+            while (i < j) {
+                // 如果i和j对应的字符相等，这两个地方可以构成一个回文字符，直接向中间走
+                if (chars[i] == chars[j]) {
+                    j --;
+                    i ++;
+                } else {
+                    i = 0;
+                    end --;
+                    j = end;
+                }
+            }
+            return new StringBuilder(s.substring(end + 1)).reverse().toString() + s;
+        }
+    }
+
+    // 5: longest palindrome subString
+    /**
+     * Given a string s, return the longest palindromic substring in s.
+     *
+     *
+     *
+     * Example 1:
+     *
+     * Input: s = "babad"
+     * Output: "bab"
+     * Explanation: "aba" is also a valid answer.
+     * Example 2:
+     *
+     * Input: s = "cbbd"
+     * Output: "bb"
+     */
+    class Solution51 {
+        public String longestPalindrome(String s) {
+            if (s == null || s.length() == 0) return s;
+            String res = "";
+            int max = 0;
+            boolean[][] dp = new boolean[s.length()][s.length()];  // 起点到中点是否为palindrome，是否为最大的palindrome
+            for (int j = 0; j < s.length(); j ++) {
+                for (int i = 0; i <= j; i++) {
+                    dp[i][j] = s.charAt(i) == s.charAt(j) && ((j - i <= 2) || dp[i + 1][j - 1]);
+                    //         两端的字母相同                   只剩下三个字母      中间剩下的字母，i向右走一个和j向左走一个相同
+                    if(dp[i][j]) {
+                        if (j - i + 1 > max) {  // 更新max值
+                            max = j - i + 1;
+                            res = s.substring(i , j + 1);
+                        }
+                    }
+                }
+            }
+            return res;
+        }
+
+        // 中心扩散法
+        String res = "";
+        public String longestPalindrome1(String s) {
+            if (s == null || s.length() == 0) return s;
+            for (int i = 0; i < s.length(); i ++) {
+                // 回文的长度是奇数
+                helper(s, i, i);
+                // 回文的长度是偶数
+                helper(s, i, i + 1);
+            }
+            return res;
+        }
+
+        // 以left和right为中心，求回文字符串的数量
+        public void helper(String s, int left, int right)  {
+            while(left >= 0 && right < s.length() && s.charAt(left) == s.charAt(right)) {
+                left --;
+                right ++;
+            }
+            String cur = s.substring(left + 1, right);
+            if (cur.length() > res.length()) res =cur;
+        }
+    }
+
+    // 336: palindrome pairs
+    /**
+     * Given a list of unique words, return all the pairs of the distinct indices (i, j) in the given list,
+     * so that the concatenation of the two words words[i] + words[j] is a palindrome.
+
+     * Example 1:
+     *
+     * Input: words = ["abcd","dcba","lls","s","sssll"]
+     * Output: [[0,1],[1,0],[3,2],[2,4]]
+     * Explanation: The palindromes are ["dcbaabcd","abcddcba","slls","llssssll"]
+     * Example 2:
+     *
+     * Input: words = ["bat","tab","cat"]
+     * Output: [[0,1],[1,0]]
+     * Explanation: The palindromes are ["battab","tabbat"]
+     */
+    class Solution336 {
+        public List<List<Integer>> palindromePairs(String[] words) {
+            List<List<Integer>> res = new ArrayList<>();
+            if (words == null || words.length < 2) return res;
+            // 用map 把index和单词存进去
+            HashMap<String, Integer>map = new HashMap<>();
+            for (int i = 0 ; i < words.length; i++) {
+                map.put(words[i], i);
+            }
+            // 遍历每个单词
+            for (int i = 0; i < words.length; i++) {
+                // 遍历单词的每个字母
+                for (int j = 0; j <= words[i].length(); j++) {
+                    // 拆分单词，看看有没有回文
+                    String str1 = words[i].substring(0 , j);
+                    String str2 = words[i].substring(j);
+                    // 判断前半段是不是回文
+                    if (isPalindrome(str1)){
+                        // 将str2倒置，
+                        String str2rvs = new StringBuilder(str2).reverse().toString();
+                        // 如果map里面有str2的反向，而且不等于str1的话
+                        if (map.containsKey(str2rvs) && map.get(str2rvs) != i) {
+                            res.add(Arrays.asList(map.get(str2rvs), i));
+                        }
+                    }
+                    if (str2.length() != 0 && isPalindrome(str2)) {
+                        String str1rvs = new StringBuilder(str1).reverse().toString();
+                        if (map.containsKey(str1rvs) && map.get(str1rvs) != i) {
+                            res.add(Arrays.asList(i, map.get(str1rvs)));
+                        }
+                    }
+                }
+            }
+            return res;
+        }
+
+        public boolean isPalindrome(String s) {
+            int left = 0;
+            int right = s.length() - 1;
+            while(left <= right) {
+                if (s.charAt(left) != s.charAt(right)) return false;
+                left++;
+                right --;
+            }
+            return true;
+        }
+    }
+
+    // 131： Palindrome partition
+    /**
+     * Given a string s, partition s such that every substring of the partition is a palindrome. Return all possible
+     * palindrome partitioning of s.
+     *
+     * A palindrome string is a string that reads the same backward as forward.
+     *
+     *
+     *
+     * Example 1:
+     *
+     * Input: s = "aab"
+     * Output: [["a","a","b"],["aa","b"]]
+     * Example 2:
+     *
+     * Input: s = "a"
+     * Output: [["a"]]
+     *
+     * time: O(2^n)
+     */
+    class Solution131 {
+        public List<List<String>> partition(String s) {
+            List<List<String>> res = new ArrayList<>();
+            if (s == null || s.length() == 0) return res;
+            helper(s, res, new ArrayList<>(), 0);
+            return res;
+        }
+
+        private void helper(String s, List<List<String>> res, List<String> temp, int index) {
+            if (index >= s.length()) {
+                res.add(new ArrayList<>(temp));
+                return;
+            }
+
+            for (int i = index; i < s.length(); i++) {
+                if (!isPalindrome(s.substring(index, i + 1))) continue;
+                temp.add(s.substring(index, i +1));
+                helper(s, res, temp, i + 1);
+                temp.remove(temp.size() -1);
+            }
+        }
+
+        private boolean isPalindrome(String s) {
+            int left = 0, right = s.length() - 1;
+            while(left < right) {
+                if (s.charAt(left++) != s.charAt(right--)) return false;
+            }
+            return true;
+        }
+    }
+
+
+    // 132: Palindrome partition II
+    /**
+     * Given a string s, partition s such that every substring of the partition is a palindrome.
+     *
+     * Return the minimum cuts needed for a palindrome partitioning of s.
+     * Example 1:
+     *
+     * Input: s = "aab"
+     * Output: 1
+     * Explanation: The palindrome partitioning ["aa","b"] could be produced using 1 cut.
+     * Example 2:
+     *
+     * Input: s = "a"
+     * Output: 0
+     * Example 3:
+     *
+     * Input: s = "ab"
+     * Output: 1
+     */
+    class Solution132{
+
+        /**
+         * 判断回文用dp
+         * [][] isPalindrome: 从i到j是否为回文
+         * 判断字符串前i个字符构成的子串能分割的最少次数，只需返回cuts[len - 1]
+         * [] cuts
+         * 如果子串从[0..i]是回文，就不同分隔，即cuts[i] = 0
+         *
+         * s.charAt(i) == s.charAt(j) && isPalindrome[i + 1][j - 1]
+         *
+         */
+        public int minCut(String s) {
+            if (s == null || s.length() == 0) return 0;
+            int len = s.length();
+            int[] cuts = new int[len];
+            //  判断字符串[j..i]是否为回文
+            boolean[][] isPalindrome = new boolean[len][len];
+            for (int i = 0; i < len; i++) {
+                int min = i;  // 初始化是有几个字符就切几刀
+                for (int j = 0; j <= i; j++) {
+                    if (s.charAt(i) == s.charAt(j) && (i - j <= 2 || isPalindrome[j + 1][i - 1])) {
+                        isPalindrome[j][i] = true;
+                        // 如果前面的字母是回文，
+                        min = j == 0 ? 0 : Math.min(min, cuts[j - 1] + 1);
+                    }
+                }
+                cuts[i] = min;
+            }
+            return cuts[len - 1];
+        }
+    }
+
+    // 267: Palindrome Permutation II (Backtracking)
+    /**
+     * Given a string s, return all the palindrome permutations (without duplicates) of it, return an empty list if no
+     * palindromes are found
+     *
+     * given s= "aabb", return ["abba", "baab"]
+     */
+    class Solution267{
+        /**
+         * 如果奇数个的字母出现次数多于1的话肯定构成不了回文
+         *
+         */
+        public List<String> generatePalindrome(String s) {
+            int odd = 0;
+            // 中间的字母，如果有一个字母出现了基数次，就为那个字母，如果全为偶数次，就为空
+            String mid = "";
+            List<String> res = new ArrayList<>();
+            // 重新排列的list
+            List<Character> list = new ArrayList<>();
+            // 用map统计字母出现的次数
+            HashMap<Character, Integer> map = new HashMap<>();
+            for (int i = 0; i < s.length(); i ++) {
+                char c = s.charAt(i);
+                map.put(c, map.getOrDefault(c, 0)  + 1);
+                odd += map.get(c) % 2 != 0 ? 1 : -1;  // 统计这个字母出现的是奇数次还是偶数次
+            }
+            // 如果奇数个字母的数量大于1，不能构成回文
+            if(odd > 1) return res;
+
+            for (Map.Entry<Character, Integer> entry : map.entrySet()) {
+                char key = entry.getKey();
+                int val = entry.getValue();
+                // 如果出现次数是奇数，中间的字母就是这个
+                if (val % 2 != 0) mid += key;
+                // 即使出现了偶数次，只放入list中一半的数量，另一半直接翻转就可以了
+                for (int i = 0; i < val / 2; i ++) {
+                    list.add(key);
+                }
+            }
+            helper(list, mid, new boolean[list.size()], new StringBuilder(), res);
+            return res;
+        }
+
+        public void helper(List<Character> list, String mid, boolean[] used, StringBuilder sb, List<String> res) {
+            // list中的所有元素在sb中都用了时为终止条件
+            if (sb.length() == list.size()) {
+                res.add(sb.toString() + mid + sb.reverse().toString());
+                sb.reverse();  // 上一步翻转了，这里重置sb
+                return;
+            }
+            for (int i = 0; i < list.size(); i++) {
+                // 去重，当第i个字母和i-1个相等时并且第i-1个没用过时，跳过
+                if (i > 0 && list.get(i) == list.get(i - 1) && !used[i - 1]) continue;
+                if (!used[i]) {
+                    used[i] = true;
+                    sb.append(list.get(i));
+                    helper(list, mid, used, sb, res);
+                    used[i] = false;
+                    sb.deleteCharAt(sb.length() - 1);
+                }
+
+            }
+        }
+    }
+
+
 
 }

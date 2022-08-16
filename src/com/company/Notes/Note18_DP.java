@@ -557,7 +557,7 @@ public class Note18_DP {
             dp[0] = nums[0];
             int res = nums[0];
             for (int i = 1; i < nums.length; i++) {
-                dp[i] = nums[i] + (dp[i - 1] < 0 ? 0 : dp[i - 1]);  //  当前的dp值等于nums[i]加上上一个dp的值，如果上一个值为负数就不加
+                dp[i] = nums[i] + Math.max(0, dp[i - 1]);  //  当前的dp值等于nums[i]加上上一个dp的值，如果上一个值为负数就不加
                 res = Math.max(dp[i], res);
             }
             return res;
@@ -648,7 +648,7 @@ public class Note18_DP {
         public int minimumTotal(List<List<Integer>> triangle) {
             int[] res = new int[triangle.size() + 1];  // 没有+1最后一层会越界
             //从下往上走
-            for (int i = triangle.size() - 1; i >= 0; i--){
+            for (int i = triangle.size() - 1; i >= 0; i--) {
                 for (int j = 0; j < triangle.get(i).size(); j++) {
                     res[j] = Math.min(res[j], res[j + 1])+ triangle.get(i).get(j);  // 上一层的第j个数字对应数字的最小值是这一层的第j和第j+1个
                 }
@@ -1202,6 +1202,237 @@ public class Note18_DP {
         }
     }
 
+    // 516 Longest Palindrome subsequence
+
+    /**
+     * Given a string s, find the longest palindromic subsequence's length in s.
+     *
+     * A subsequence is a sequence that can be derived from another sequence by deleting some or no elements
+     * without changing the order of the remaining elements.
+     *
+     * Example 1:
+     *
+     * Input: s = "bbbab"
+     * Output: 4
+     * Explanation: One possible longest palindromic subsequence is "bbbb".
+     * Example 2:
+     *
+     * Input: s = "cbbd"
+     * Output: 2
+     * Explanation: One possible longest palindromic subsequence is "bb".
+     */
+    class Solution516{
+        /**
+         * /*
+         * 本题是求回文子序列，也就是不要求连续咯~
+         * 本题初始化非常特殊，要着重记忆一下。
+         *
+         * 这个类型题中的 dp 数组，需要把一个字符串从两个维度来分析，展成一个二维的，有点不太习惯，需要画图做题适应一下。
+         *
+         * 动态规划五部曲：
+         *
+         * * 1、确定 dp 数组以及下标的含义
+         *   * dp[i] [j]  ： 字符串 s 在 [i, j] 范围内最长的回文子序列的长度 dp[i] [j]
+         * * 2、确定递推公式
+         *   * 情况一：s[i] = s[j]
+         *     * dp[i] [j] = dp[i + 1] [j - 1] + 2
+         *   * 情况二：s[i] ！= s[j]
+         *     * 说明s[i]和s[j]的同时加入 并不能增加[i,j]区间回文子串的长度，那么分别加入s[i]、s[j]看看哪一个可以组成最长的回文子序列。
+         *     * 加入s[j]的回文子序列长度为dp[i + 1] [j]。
+         *     * 加入s[i]的回文子序列长度为dp[i] [j - 1]。
+         *     * 所以此时： dp[i] j] = max(dp[i + 1] [j], dp[i] [j - 1]);
+         * * 3、dp 数组初始化
+         *   * 首先要考虑当 i 和 j 相同的情况，从递推公式可以看出，是计算不到 i=j 的情况的，所以需要手动初始化一下，
+         *   *  i=j ，则 dp[i] [j] = 1，也就是一个字符的回文子序列的长度就是 1。
+         *   * 其他情况的 dp[i] [j] 初始化为 0 即可。
+         *   * 这样情况二中的递推公式 dp[i] [j] 才不会被初始值覆盖。
+         *
+         * * 4、确定遍历顺序
+         *   * 从递推公式可以看出，dp[i] [j] 依赖于 dp[i + 1] [j - 1] 和 dp[i + 1] [j]
+         *   * 所以遍历顺序一定是从下到上，从左到右，才能保证CIA一行的数据是经过计算的
+         */
+        public int longestPalindromeSubsequence(String s) {
+            int[][] dp = new int[s.length()][s.length()];
+
+            for (int i = s.length() - 1; i >= 0; i--) {
+                dp[i][i] = 1;  // 一个字母的回文为1
+                for (int j = i + 1; j < s.length(); j++) {
+                    if (s.charAt(i) == s.charAt(j)) dp[i][j] = dp[i + 1][j - 1] + 2;
+                    else dp[i][j] = Math.max(dp[i + 1][j], dp[i][j - 1]);
+                }
+            }
+            return dp[0][s.length() - 1];
+        }
+    }
+
+    // 518 coin change2 完全背包问题
+
+    /**
+     * You are given an integer array coins representing coins of different denominations and
+     * an integer amount representing a total amount of money.
+     *
+     * Return the number of combinations that make up that amount. If that amount of money cannot be made up
+     * by any combination of the coins, return 0.
+     *
+     * You may assume that you have an infinite number of each kind of coin.
+     *
+     * The answer is guaranteed to fit into a signed 32-bit integer.
+     *
+     * Example 1:
+     *
+     * Input: amount = 5, coins = [1,2,5]
+     * Output: 4
+     * Explanation: there are four ways to make up the amount:
+     * 5=5
+     * 5=2+2+1
+     * 5=2+1+1+1
+     * 5=1+1+1+1+1
+     *
+     * Example 2:
+     *
+     * Input: amount = 3, coins = [2]
+     * Output: 0
+     * Explanation: the amount of 3 cannot be made up just with coins of 2.
+     * Example 3:
+     *
+     * Input: amount = 10, coins = [10]
+     * Output: 1
+     *
+     */
+    class Soution518{
+        /**
+         * dp[i]: amount = i时有几种匹配方法
+         * dp[i] = dp[i - coin] + dp[i]
+         * @param amount
+         * @param coins
+         * @return
+         */
+        public int change(int amount, int[] coins) {
+            int[] dp = new int[amount + 1];
+            dp[0] = 1;   // 没有钱的时候为一种
+            for (int coin: coins) {
+                for (int i = coin; i <= amount; i ++) {
+                    dp[i] += dp[i - coin];
+                }
+            }
+            return dp[amount];
+        }
+    }
+
+    // 322 coin change
+
+    /**
+     * You are given an integer array coins representing coins of different denominations and an integer amount
+     * representing a total amount of money.
+     *
+     * Return the fewest number of coins that you need to make up that amount. If that amount of money cannot be made up
+     * by any combination of the coins, return -1.
+     *
+     * You may assume that you have an infinite number of each kind of coin.
+     *
+     * Example 1:
+     *
+     * Input: coins = [1,2,5], amount = 11
+     * Output: 3
+     * Explanation: 11 = 5 + 5 + 1
+     * Example 2:
+     *
+     * Input: coins = [2], amount = 3
+     * Output: -1
+     * Example 3:
+     *
+     * Input: coins = [1], amount = 0
+     * Output: 0
+     */
+    class Solution322 {
+        /**
+         *     硬币相当于我们的物品，每种硬币可以选择「无限次」，我们应该很自然的想到「完全背包」。
+         *     如果不能，那么从现在开始就要培养这样的习惯：
+         *     当看到题目是给定一些「物品」，让我们从中进行选择，以达到「最大价值」或者「特定价值」时，我们应该联想到「背包问题」。
+         *     这本质上其实是一个组合问题：被选物品之间不需要满足特定关系，只需要选择物品，以达到「全局最优」或者「特定状态」即可。
+         *     再根据物品的「选择次数限制」来判断是何种背包问题。
+         *     本题每种硬币可以被选择「无限次」，我们可以直接套用「完全背包」的状态定义进行微调：
+         *     定义 dp[i][j] 为考虑前 i 件物品，凑成总和为 j 所需要的最少硬币数量。
+         *     为了方便初始化，我们一般让 dp[0][x] 代表不考虑任何物品的情况。
+         *     因此我们有显而易见的初始化条件：dp[0][0]=0，其余dp[0][x]=INF 。
+         *     代表当没有任何硬币的时候，存在凑成总和为 0 的方案，方案所使用的硬币为 0；凑成其他总和的方案不存在。
+         *     由于我们要求的是「最少」硬币数量，因此我们不希望「无效值」参与转移，可设 INF=INT_MAX。
+         *     当「状态定义」与「基本初始化」有了之后，我们不失一般性的考虑 dp[i][j] 该如何转移。
+         *     对于第 i 个硬币我们有两种决策方案：
+         *     不使用该硬币：dp[i][j]=dp[i-1][j]
+         *     使用该硬币，由于每种硬币可以被选择多次（容量允许的情况下），因此最优解应当是所有方案中的最小值。即dp[i][j]=min(dp[i-1][j-k*coin]+ k)
+         */
+        public int coinChange(int[] coins, int amount) {
+            if (amount == 0) return 0;
+            if (coins == null || coins.length == 0) return -1;
+            int[] dp = new int[amount + 1];
+            for (int i = 1; i <= amount; i++) {  // 背包的容量，列
+                int min = Integer.MAX_VALUE;
+                for (int j = 0; j < coins.length; j++) {  // 硬币的数量，行
+                    // 如果背包的容量容得下当前的价值，而且之前的那个硬币对应的位置不是-1
+                    if (i >= coins[j] && dp[i - coins[j]] != -1) min = Math.min(min, dp[i - coins[j]] + 1);
+                }
+                dp[i] = min == Integer.MAX_VALUE ? -1 : min;
+            }
+            return dp[amount];
+        }
+    }
+
+    // 312: burst balloons
+
+    /**
+     * You are given n balloons, indexed from 0 to n - 1. Each balloon is painted with a number on it represented by an
+     * array nums. You are asked to burst all the balloons.
+     *
+     * If you burst the ith balloon, you will get nums[i - 1] * nums[i] * nums[i + 1] coins. If i - 1 or i + 1 goes out
+     * of bounds of the array, then treat it as if there is a balloon with a 1 painted on it.
+     *
+     * Return the maximum coins you can collect by bursting the balloons wisely.
+     *
+     * Example 1:
+     *
+     * Input: nums = [3,1,5,8]
+     * Output: 167
+     * Explanation:
+     * nums = [3,1,5,8] --> [3,5,8] --> [3,8] --> [8] --> []
+     * coins =  3*1*5    +   3*5*8   +  1*3*8  + 1*8*1 = 167
+     * Example 2:
+     *
+     * Input: nums = [1,5]
+     * Output: 10
+     */
+    class Solution312{
+        /**
+         * dp[i][j] 为打破的气球为i~j之间的最大值
+         * 为了方便计算我们 还是来申请一个临时数组，他的长度比原数组长度大2，那么这题就可以变成求戳破开区间(0, length+1)中所有气球所获得的最大硬币数
+         *                                          左指针的前一个 扎的这个气球 右指针的后一个
+         * dp[i][j] = max(dp[i][j], dp[i][x - 1] + nums[i - 1] * nums[x] * nums[j + 1] + dp[x + 1][j]);
+         * @param nums
+         * @return
+         */
+        public int maxCoins(int[] nums) {
+            int n = nums.length;
+            // 将最左和最右都加上一个1
+            int[] arr = new int[n + 2];
+            for (int i = 0; i < n; i++) {
+                arr[i + 1] = nums[i];
+            }
+            arr[0] = arr[n + 1] = 1;
+            int[][] dp = new int[n + 2][n + 2];
+            return helper(1, n, arr, dp);
+        }
+
+        public int helper(int i, int j, int[] nums, int[][] dp) {
+            if (i > j) return 0;
+            if (dp[j][j] > 0) return dp[i][j];
+            for (int x = i; x <= j; x++) {
+                dp[i][j] = Math.max(dp[i][j], helper(i, x - 1, nums, dp)
+                        + nums[i - 1] * nums[x] * nums[j + 1]
+                        + helper(x + 1, j, nums, dp));
+            }
+            return dp[i][j];
+        }
+    }
 
 
 
