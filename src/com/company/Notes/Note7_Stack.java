@@ -699,11 +699,238 @@ public class Note7_Stack {
             if (left > 0) helper(res, s + "(", left - 1, right);
             if (right > 0) helper(res, s +")", left, right - 1);
         }
-
     }
 
+    // 232： Implement queue using stack
+
+    /**
+     * Implement a first in first out (FIFO) queue using only two stacks. The implemented queue should support all the functions of a normal queue (push, peek, pop, and empty).
+     *
+     * Implement the MyQueue class:
+     *
+     * void push(int x) Pushes element x to the back of the queue.
+     * int pop() Removes the element from the front of the queue and returns it.
+     * int peek() Returns the element at the front of the queue.
+     * boolean empty() Returns true if the queue is empty, false otherwise.
+     * Notes:
+     *
+     * You must use only standard operations of a stack, which means only push to top, peek/pop from top, size, and is empty operations are valid.
+     * Depending on your language, the stack may not be supported natively. You may simulate a stack using a list or deque (double-ended queue) as long as you use only a stack's standard operations.
+     *
+     *
+     * Example 1:
+     *
+     * Input
+     * ["MyQueue", "push", "push", "peek", "pop", "empty"]
+     * [[], [1], [2], [], [], []]
+     * Output
+     * [null, null, null, 1, 1, false]
+     *
+     * Explanation
+     * MyQueue myQueue = new MyQueue();
+     * myQueue.push(1); // queue is: [1]
+     * myQueue.push(2); // queue is: [1, 2] (leftmost is front of the queue)
+     * myQueue.peek(); // return 1
+     * myQueue.pop(); // return 1, queue is [2]
+     * myQueue.empty(); // return false
+     */
+    class MyQueue {
+
+        Stack<Integer> s1;
+        Stack<Integer> s2;
+
+        public MyQueue() {
+            s1 = new Stack<>();
+            s2 = new Stack<>();
+        }
+
+        public void push(int x) {
+            s1.push(x);
+        }
+
+        /*
+        s1: 1 2 3  代表没进行处理的stack, queue的反方向
+        s2: 3 2 1 颠倒顺序，和queue的方向一样
+         */
+
+        public int pop() {
+            if (!s2.isEmpty()) return s2.pop();
+            else while (!s1.isEmpty()) s2.push(s1.pop());  // 颠倒s1的顺序再pop
+            return s2.pop();
+        }
+
+        public int peek() {
+            if (!s2.isEmpty()) return s2.peek();
+            else {
+                while (!s1.isEmpty()) s2.push(s1.pop());
+                return s2.peek();
+            }
+        }
+
+        public boolean empty() {
+            return s1.isEmpty() && s2.isEmpty();
+        }
+    }
+
+    /**
+     * Your MyQueue object will be instantiated and called as such:
+     * MyQueue obj = new MyQueue();
+     * obj.push(x);
+     * int param_2 = obj.pop();
+     * int param_3 = obj.peek();
+     * boolean param_4 = obj.empty();
+     */
+
+    // 225: Implement stack using queue
+
+    /**
+     * Implement a last-in-first-out (LIFO) stack using only two queues. The implemented stack should support all the functions of a normal stack (push, top, pop, and empty).
+     *
+     * Implement the MyStack class:
+     *
+     * void push(int x) Pushes element x to the top of the stack.
+     * int pop() Removes the element on the top of the stack and returns it.
+     * int top() Returns the element on the top of the stack.
+     * boolean empty() Returns true if the stack is empty, false otherwise.
+     * Notes:
+     *
+     * You must use only standard operations of a queue, which means that only push to back, peek/pop from front, size and is empty operations are valid.
+     * Depending on your language, the queue may not be supported natively. You may simulate a queue using a list or deque (double-ended queue) as long as you use only a queue's standard operations.
+     *
+     *
+     * Example 1:
+     *
+     * Input
+     * ["MyStack", "push", "push", "top", "pop", "empty"]
+     * [[], [1], [2], [], [], []]
+     * Output
+     * [null, null, null, 2, 2, false]
+     *
+     * Explanation
+     * MyStack myStack = new MyStack();
+     * myStack.push(1);
+     * myStack.push(2);
+     * myStack.top(); // return 2
+     * myStack.pop(); // return 2
+     * myStack.empty(); // return False
+     */
+    class MyStack {
+        Queue<Integer> queue;
+
+        public MyStack() {
+            queue = new LinkedList<>();
+        }
+
+        public void push(int x) {
+            queue.add(x);
+            for (int i = 0; i < queue.size(); i ++) {
+                queue.add(queue.poll());  // 在queue的内部进行调换顺序
+            }
+        }
+
+        public int pop() {
+            return queue.poll();
+        }
+
+        public int top() {
+            return queue.peek();
+        }
+
+        public boolean empty() {
+            return queue.isEmpty();
+        }
+    }
+
+    /**
+     * Your MyStack object will be instantiated and called as such:
+     * MyStack obj = new MyStack();
+     * obj.push(x);
+     * int param_2 = obj.pop();
+     * int param_3 = obj.top();
+     * boolean param_4 = obj.empty();
+     */
+
+    //388 ： longest Absolute file path
+
+    /**
+     * Suppose we have a file system that stores both files and directories. An example of one system is represented
+     * in the following picture:
+     *
+     *
+     *
+     * Here, we have dir as the only directory in the root. dir contains two subdirectories, subdir1 and subdir2.
+     * subdir1 contains a file file1.ext and subdirectory subsubdir1. subdir2 contains a subdirectory subsubdir2,
+     * which contains a file file2.ext.
+     *
+     * In text form, it looks like this (with ⟶ representing the tab character):
+     *
+     * dir
+     * ⟶ subdir1
+     * ⟶ ⟶ file1.ext
+     * ⟶ ⟶ subsubdir1
+     * ⟶ subdir2
+     * ⟶ ⟶ subsubdir2
+     * ⟶ ⟶ ⟶ file2.ext
+     * If we were to write this representation in code, it will look like this:
+     * "dir\n\tsubdir1\n\t\tfile1.ext\n\t\tsubsubdir1\n\tsubdir2\n\t\tsubsubdir2\n\t\t\tfile2.ext".
+     * Note that the '\n' and '\t' are the new-line and tab characters.
+     *
+     * Every file and directory has a unique absolute path in the file system, which is the order of directories that
+     * must be opened to reach the file/directory itself, all concatenated by '/'s. Using the above example, the
+     * absolute path to file2.ext is "dir/subdir2/subsubdir2/file2.ext". Each directory name consists of letters,
+     * digits, and/or spaces. Each file name is of the form name.extension, where name and extension consist of letters, digits, and/or spaces.
+     *
+     * Given a string input representing the file system in the explained format, return the length of the longest
+     * absolute path to a file in the abstracted file system. If there is no file in the system, return 0.
+     *
+     * Note that the testcases are generated such that the file system is valid and no file or directory name has length 0.
+     *
+     * Example 1:
+     *
+     *
+     * Input: input = "dir\n\tsubdir1\n\tsubdir2\n\t\tfile.ext"
+     * Output: 20
+     * Explanation: We have only one file, and the absolute path is "dir/subdir2/file.ext" of length 20.
+     * Example 2:
+     *
+     *
+     * Input: input = "dir\n\tsubdir1\n\t\tfile1.ext\n\t\tsubsubdir1\n\tsubdir2\n\t\tsubsubdir2\n\t\t\tfile2.ext"
+     * Output: 32
+     * Explanation: We have two files:
+     * "dir/subdir1/file1.ext" of length 21
+     * "dir/subdir2/subsubdir2/file2.ext" of length 32.
+     * We return 32 since it is the longest absolute path to a file.
+     * Example 3:
+     *
+     * Input: input = "a"
+     * Output: 0
+     * Explanation: We do not have any files, just a single directory named "a".
+     */
+
+    class Solution388 {
+        /**
+         *
+         * dir \subdir2 \file.ext
+         * 3    7         8      = 20
+         *
+         */
+        public int lengthLongestPath(String input) {
+            Stack<Integer> stack = new Stack<>();
+            stack.push(0);
+            int res = 0;
+            for (String s : input.split("\n")) {
+                int level = s.lastIndexOf("\t") + 1;  //  找最后的\t，表示当前的level
+                while (level + 1 < stack.size()) stack.pop();  // 找父节点是什么
+                int len = stack.peek() + s.length() - level + 1;  //  -level 是减去
+                stack.push(len);
+                if (s.contains(".")) res = Math.max(res, len - 1);
+            }
+            return res;
+        }
+    }
 
     public static void main(String[] args) {
+        System.out.println(String.valueOf("asd"));
         System.out.println(String.valueOf("3"));
     }
 

@@ -321,4 +321,191 @@ public class Note_10PriorityQueue {
         }
     }
 
+// 502
+    /**
+     * Suppose LeetCode will start its IPO soon. In order to sell a good price of its shares to Venture Capital, LeetCode would like to work on some projects to increase its capital before the IPO. Since it has limited resources, it can only finish at most k distinct projects before the IPO. Help LeetCode design the best way to maximize its total capital after finishing at most k distinct projects.
+     *
+     * You are given n projects where the ith project has a pure profit profits[i] and a minimum capital of capital[i] is needed to start it.
+     *
+     * Initially, you have w capital. When you finish a project, you will obtain its pure profit and the profit will be added to your total capital.
+     *
+     * Pick a list of at most k distinct projects from given projects to maximize your final capital, and return the final maximized capital.
+     *
+     * The answer is guaranteed to fit in a 32-bit signed integer.
+     *
+     * Example 1:
+     *
+     * Input: k = 2, w = 0, profits = [1,2,3], capital = [0,1,1]
+     * Output: 4
+     * Explanation: Since your initial capital is 0, you can only start the project indexed 0.
+     * After finishing it you will obtain profit 1 and your capital becomes 1.
+     * With capital 1, you can either start the project indexed 1 or the project indexed 2.
+     * Since you can choose at most 2 projects, you need to finish the project indexed 2 to get the maximum capital.
+     * Therefore, output the final maximized capital, which is 0 + 1 + 3 = 4.
+     * Example 2:
+     *
+     * Input: k = 3, w = 0, profits = [1,2,3], capital = [0,1,2]
+     * Output: 6
+     */
+
+    class Solution {
+        public int findMaximizedCapital(int k, int w, int[] profits, int[] capital) {
+            PriorityQueue<int[]> cap = new PriorityQueue<>((a,b)->(a[0] - b[0]));  // capital 从小到大排序
+            PriorityQueue<int[]> pro = new PriorityQueue<>((a,b)->(b[1] - a[1]));  // profit 从大到小排序
+            for (int i = 0; i < profits.length; i++) {  // 将商品按照profits从小到大加进pq
+                cap.add(new int[]{capital[i], profits[i]});
+            }
+            for (int i = 0; i < k; i++) {  // 当可以买的时候
+                while(!cap.isEmpty() && cap.peek()[0] <= w) {
+                    pro.add(cap.poll());  // 如果第一个 capital 的值小于w，说明可以负担，profit加进去，进行排序降序
+                }
+                if (pro.isEmpty()) break;
+                w += pro.poll()[1];  //  把pro最大的拿出来
+            }
+            return w;
+        }
+    }
+
+    // 295： find Median from data stream
+    /**
+     * The median is the middle value in an ordered integer list. If the size of the list is even, there is no middle
+     * value and the median is the mean of the two middle values.
+     *
+     * For example, for arr = [2,3,4], the median is 3.
+     * For example, for arr = [2,3], the median is (2 + 3) / 2 = 2.5.
+     * Implement the MedianFinder class:
+     *
+     * MedianFinder() initializes the MedianFinder object.
+     * void addNum(int num) adds the integer num from the data stream to the data structure.
+     * double findMedian() returns the median of all elements so far. Answers within 10-5 of the actual answer
+     * will be accepted.
+     *
+     * Example 1:
+     *
+     * Input
+     * ["MedianFinder", "addNum", "addNum", "findMedian", "addNum", "findMedian"]
+     * [[], [1], [2], [], [3], []]
+     * Output
+     * [null, null, null, 1.5, null, 2.0]
+     *
+     * Explanation
+     * MedianFinder medianFinder = new MedianFinder();
+     * medianFinder.addNum(1);    // arr = [1]
+     * medianFinder.addNum(2);    // arr = [1, 2]
+     * medianFinder.findMedian(); // return 1.5 (i.e., (1 + 2) / 2)
+     * medianFinder.addNum(3);    // arr[1, 2, 3]
+     * medianFinder.findMedian(); // return 2.0
+     */
+
+    class MedianFinder {
+
+        private PriorityQueue<Long> small;
+        private PriorityQueue<Long> large;
+
+        public MedianFinder() {
+            small = new PriorityQueue<>();
+            large = new PriorityQueue<>();
+        }
+
+        public void addNum(int num) {
+            large.add((long) num);
+            small.add(-large.poll());
+            if (large.size() < small.size()){
+                large.add(-small.poll());
+            }
+        }
+
+        public double findMedian() {
+            return large.size() > small.size() ? large.peek() : (large.peek() - small.peek()) / 2.0;
+        }
+    }
+
+    // 378: Kth smallest element in a sorted matrix
+    /**
+     * Given an n x n matrix where each of the rows and columns is sorted in ascending order, return the kth smallest element in the matrix.
+     *
+     * Note that it is the kth smallest element in the sorted order, not the kth distinct element.
+     *
+     * You must find a solution with a memory complexity better than O(n2).
+     *
+     *
+     *
+     * Example 1:
+     *
+     * Input: matrix = [[1,5,9],[10,11,13],[12,13,15]], k = 8
+     * Output: 13
+     * Explanation: The elements in the matrix are [1,5,9,10,11,12,13,13,15], and the 8th smallest number is 13
+     * Example 2:
+     *
+     * Input: matrix = [[-5]], k = 1
+     * Output: -5
+     */
+    class Solution378 {
+        public int kthSmallest(int[][] matrix, int k) {
+            PriorityQueue<Tuple> pq = new PriorityQueue<>(matrix.length, (a,b) -> (a.val - b.val));
+            for (int i = 0; i < matrix.length; i++) {
+                pq.offer(new Tuple(0, i, matrix[0][i]));  // 第一行加入
+            }
+            for (int i = 0; i < k - 1; i ++) {  // 把前k - 1个元素pop出来过后剩下的一个就是
+                Tuple tuple = pq.poll();
+                if (tuple.x == matrix.length - 1) continue;  // 边界条件
+                pq.offer(new Tuple(tuple.x + 1, tuple.y, matrix[tuple.x + 1][tuple.y]));  // 下一行的数加入
+            }
+            return pq.poll().val;
+
+        }
+
+        class Tuple{
+            int x, y, val;
+            public Tuple(int x, int y, int val) {
+                this.x = x;
+                this.y = y;
+                this.val = val;
+            }
+        }
+    }
+
+    // 1024：Last weight stone
+    /**
+     * You are given an array of integers stones where stones[i] is the weight of the ith stone.
+     *
+     * We are playing a game with the stones. On each turn, we choose the heaviest two stones and smash them together. Suppose the heaviest two stones have weights x and y with x <= y. The result of this smash is:
+     *
+     * If x == y, both stones are destroyed, and
+     * If x != y, the stone of weight x is destroyed, and the stone of weight y has new weight y - x.
+     * At the end of the game, there is at most one stone left.
+     *
+     * Return the weight of the last remaining stone. If there are no stones left, return 0.
+     *
+     *
+     *
+     * Example 1:
+     *
+     * Input: stones = [2,7,4,1,8,1]
+     * Output: 1
+     * Explanation:
+     * We combine 7 and 8 to get 1 so the array converts to [2,4,1,1,1] then,
+     * we combine 2 and 4 to get 2 so the array converts to [2,1,1,1] then,
+     * we combine 2 and 1 to get 1 so the array converts to [1,1,1] then,
+     * we combine 1 and 1 to get 0 so the array converts to [1] then that's the value of the last stone.
+     * Example 2:
+     *
+     * Input: stones = [1]
+     * Output: 1
+     */
+    class Solution1024 {
+        public int lastStoneWeight(int[] stones) {
+            PriorityQueue<Integer> pq = new PriorityQueue<>((a,b) -> b - a);
+            for (int i = 0; i < stones.length; i++) {
+                pq.offer(stones[i]);
+            }
+            while (pq.size() > 1) {
+                int remain = pq.poll() - pq.poll();
+                if (remain != 0) pq.offer(remain);
+            }
+            return pq.size() != 0 ? pq.poll() : 0;
+        }
+    }
+
+
 }

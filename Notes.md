@@ -4234,6 +4234,179 @@ private boolean search(TrieNode cur, String word, int index) {
 
 # 15. 线段树 和 树状树
 
+# 16. Greedy
+
+贪心算法定义：对问题求解时，总是做出在**当前看来是最好的选择**。也就是说，不从整体最优上加以考虑，它所做出的仅是在某种意义上的局部最优解。
+
++ # [55\. Jump Game](https://leetcode.com/problems/jump-game/submissions/)
+
+  ## Description
+
+  Difficulty: **Medium**  
+
+  Related Topics: [Array](https://leetcode.com/tag/array/), [Dynamic Programming](https://leetcode.com/tag/dynamic-programming/), [Greedy](https://leetcode.com/tag/greedy/)
+
+
+  You are given an integer array `nums`. You are initially positioned at the array's **first index**, and each element in the array represents your maximum jump length at that position.
+
+  Return `true` _if you can reach the last index, or_ `false` _otherwise_.
+
+  **Example 1:**
+
+  ```
+  Input: nums = [2,3,1,1,4]
+  Output: true
+  Explanation: Jump 1 step from index 0 to 1, then 3 steps to the last index.
+  ```
+
+  **Example 2:**
+
+  ```
+  Input: nums = [3,2,1,0,4]
+  Output: false
+  Explanation: You will always arrive at index 3 no matter what. Its maximum jump length is 0, which makes it impossible to reach the last index.
+  ```
+
+  **Constraints:**
+
+  *   1 <= nums.length <= 10<sup>4</sup>
+  *   0 <= nums[i] <= 10<sup>5</sup>
+
+  ***Solution***
+
+  Language: **Java**
+
+  ```java
+  class Solution {
+      public boolean canJump(int[] nums) {
+          int max = 0;
+              for (int i = 0; i < nums.length; i++) {
+                  if (i > max) return false;  // 如果i大于当前可以跳的最远距离，说明不能到达最后一个元素
+                  max = Math.max(nums[i] + i, max);  // 当前可以跳的最远距离（局部最优）
+              }
+              return true;
+      }
+  }
+  ```
+
++ 出题套路：极大极小
+
++ 贪心思想：所求问题的整体最优解可以通过一系列局部最优的选择，即贪心选择来达到
+
++ 最优子结构：当一个问题的最优解包含其子问题的最优解时，称次问题具有最优子结构的性质
+
+  1. 最大即最大（最后求的是最大值，小问题就是最大值），最小即最小
+  2. 从顶层到底层，从大到小看（倒着去想）
+
++ # [452\. Minimum Number of Arrows to Burst Balloons](https://leetcode.com/problems/minimum-number-of-arrows-to-burst-balloons/)
+
+  ## Description
+
+  Difficulty: **Medium**  
+
+  Related Topics: [Array](https://leetcode.com/tag/array/), [Greedy](https://leetcode.com/tag/greedy/), [Sorting](https://leetcode.com/tag/sorting/)
+
+
+  There are some spherical balloons taped onto a flat wall that represents the XY-plane. The balloons are represented as a 2D integer array `points` where points[i] = [x<sub>start</sub>, x<sub>end</sub>] denotes a balloon whose **horizontal diameter** stretches between x<sub>start</sub> and x<sub>end</sub>. You do not know the exact y-coordinates of the balloons.
+
+  Arrows can be shot up **directly vertically** (in the positive y-direction) from different points along the x-axis. A balloon with x<sub>start</sub> and x<sub>end</sub> is **burst** by an arrow shot at `x` if x<sub>start</sub> <= x <= x<sub>end</sub>. There is **no limit** to the number of arrows that can be shot. A shot arrow keeps traveling up infinitely, bursting any balloons in its path.
+
+  Given the array `points`, return _the **minimum** number of arrows that must be shot to burst all balloons_.
+
+  **Example 1:**
+
+  ```
+  Input: points = [[10,16],[2,8],[1,6],[7,12]]
+  Output: 2
+  Explanation: The balloons can be burst by 2 arrows:
+  - Shoot an arrow at x = 6, bursting the balloons [2,8] and [1,6].
+  - Shoot an arrow at x = 11, bursting the balloons [10,16] and [7,12].
+  ```
+
+  **Example 2:**
+
+  ```
+  Input: points = [[1,2],[3,4],[5,6],[7,8]]
+  Output: 4
+  Explanation: One arrow needs to be shot for each balloon for a total of 4 arrows.
+  ```
+
+  **Example 3:**
+
+  ```
+  Input: points = [[1,2],[2,3],[3,4],[4,5]]
+  Output: 2
+  Explanation: The balloons can be burst by 2 arrows:
+  - Shoot an arrow at x = 2, bursting the balloons [1,2] and [2,3].
+  - Shoot an arrow at x = 4, bursting the balloons [3,4] and [4,5].
+  ```
+
+  **Constraints:**
+
+  *   1 <= points.length <= 10<sup>5</sup>
+  *   `points[i].length == 2`
+  *   -2<sup>31</sup> <= x<sub>start</sub> < x<sub>end</sub> <= 2<sup>31</sup> - 1
+
+  ***Solution***
+
+  Language: **Java**
+
+  ```java
+  class Solution {
+      public int findMinArrowShots(int[][] points) {
+          if(points == null || points.length == 0) return 0;
+              int res = 1;
+              Arrays.sort(points, (a,b) -> {
+                  if (a[1] < b[1]) {
+                      return -1;
+                  } else if (a[1] > b[1]) {
+                      return 1;
+                  } else return 0;
+              });
+              int end = points[0][1];  // 第一个气球的末尾
+              for (int i = 1; i < points.length; i++) {
+                  if (points[i][0] > end) {
+                      res++;  // 如果下一个点的起始大于上一个的结束，res++
+                      end = points[i][1]; // 更新end为下一个气球的end
+                  } else {
+                      end = Math.min(end, points[i][1]);
+                  }
+              }
+              return res;
+      }
+  }
+  ```
+
+## 16.1 Greedy 的基本思路
+
+1. 建立数学模型来描述问题
+2. 把求解的问题分成若干个子问题
+3. 对每一子问题求解，得到子问题的局部最优解
+4. 把子问题的解局部最优解合成原来解问题的一个解
+
++ 贪心三步走
+  1. 探求题目本质：转化为极致问题
+  2. 数据处理
+  3. 求局部最优解：即全局最优解
+
+模板：
+
+```java
+// res & 排序处理
+for / while () {
+	Math.min/max / < / >
+	// 求局部最优解，每次前进一步
+}
+```
+
+
+
+## 16.2 Greedy的局限性
+
+无后效性： 某个状态以后的过程不会影响以前的状态，至于当前的状态有关
+
++ 和DP的区别：当前最优解改变，是否影响以后解
+
 # 18. 动态规划
 
 + Basic: FIbonacci

@@ -2601,5 +2601,114 @@ public class Note8_Strings {
     }
 
 
+    // 443：String Compression
+    /**
+     * Given an array of characters chars, compress it using the following algorithm:
+     *
+     * Begin with an empty string s. For each group of consecutive repeating characters in chars:
+     *
+     * If the group's length is 1, append the character to s.
+     * Otherwise, append the character followed by the group's length.
+     * The compressed string s should not be returned separately, but instead, be stored in the input character array
+     * chars. Note that group lengths that are 10 or longer will be split into multiple characters in chars.
+     *
+     * After you are done modifying the input array, return the new length of the array.
+     *
+     * You must write an algorithm that uses only constant extra space.
+     *
+     *
+     *
+     * Example 1:
+     *
+     * Input: chars = ["a","a","b","b","c","c","c"]
+     * Output: Return 6, and the first 6 characters of the input array should be: ["a","2","b","2","c","3"]
+     * Explanation: The groups are "aa", "bb", and "ccc". This compresses to "a2b2c3".
+     * Example 2:
+     *
+     * Input: chars = ["a"]
+     * Output: Return 1, and the first character of the input array should be: ["a"]
+     * Explanation: The only group is "a", which remains uncompressed since it's a single character.
+     * Example 3:
+     *
+     * Input: chars = ["a","b","b","b","b","b","b","b","b","b","b","b","b"]
+     * Output: Return 4, and the first 4 characters of the input array should be: ["a","b","1","2"].
+     * Explanation: The groups are "a" and "bbbbbbbbbbbb". This compresses to "ab12".
+     */
+    class Solution443 {
+        public int compress(char[] chars) {
+            int res = 0, index = 0;  // res记录当前的位置， index记录遍历到字母的位置
+            while (index < chars.length) {
+                char cur = chars[index];
+                int count = 0;
+                while(index < chars.length && chars[index] == cur) {
+                    index ++;  // 是重复的数一下有多少个
+                    count++;
+                }
+                chars[res ++] = cur;  // 替换
+                if (count != 1) {
+                    for (char c : String.valueOf(count).toCharArray()) {
+                        chars[res ++] = c;  // 数字的替换
+                    }
+                }
+            }
+            return res;
+        }
+    }
+
+    // 273: Integer To English Words  考的次数不占少数
+    /**
+     * Convert a non-negative integer num to its English words representation.
+     *
+     *
+     *
+     * Example 1:
+     *
+     * Input: num = 123
+     * Output: "One Hundred Twenty Three"
+     * Example 2:
+     *
+     * Input: num = 12345
+     * Output: "Twelve Thousand Three Hundred Forty Five"
+     * Example 3:
+     *
+     * Input: num = 1234567
+     * Output: "One Million Two Hundred Thirty Four Thousand Five Hundred Sixty Seven"
+     */
+    class Solution273 {
+
+        String[] less20 = new String[]{"", "One","Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven","Twelve","Thirteen", "Fourteen", "Fifteen", "Sixteen",
+        "Seventeen", "Eighteen", "Nineteen"};
+        String[] tens = new String[]{"", "Ten", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"};
+        String[] thousands = new String[]{"", "Thousand", "Million", "Billion"};
+
+        /*
+        1 2 3 4 5: Twelve thousand three hundred forty five
+         */
+        public String numberToWords(int num) {
+            if (num == 0) return "Zero";
+            String res = "";
+            int i = 0;
+            while(num > 0) {
+                if (num % 1000 != 0) {
+                    res = helper(num % 1000) + thousands[i] + " " +res;  // helper(345)
+                }
+                num /= 1000;
+                i++;
+            }
+            return res.trim();
+        }
+
+        private String helper(int num ) {
+            if (num == 0) return "";
+            if (num < 20) {
+                return less20[num % 20] + " ";
+            } else if (num < 100) {
+                return tens[num / 10] + " " + helper(num % 10);
+            } else {
+                return less20[num / 100] + " Hundred " + helper(num % 100);
+            }
+        }
+
+    }
 
 }

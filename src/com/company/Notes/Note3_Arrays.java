@@ -607,6 +607,53 @@ public class Note3_Arrays {
         return false;
     }
 
+    // 220 :Contains duplicate III
+    /**
+     * Given an integer array nums and two integers k and t, return true if there are two distinct indices i and j in
+     * the array such that abs(nums[i] - nums[j]) <= t and abs(i - j) <= k.
+     *
+     * Example 1:
+     *
+     * Input: nums = [1,2,3,1], k = 3, t = 0
+     * Output: true
+     * Example 2:
+     *
+     * Input: nums = [1,0,1,1], k = 1, t = 2
+     * Output: true
+     * Example 3:
+     *
+     * Input: nums = [1,5,9,1,5,9], k = 2, t = 3
+     * Output: false
+     */
+    class Solution220{
+        // TreeSet写法
+
+        /**
+         * TreeSet: 红黑树，自带排序
+         *
+         * ceiling: 返回大于或等于element的最小元素
+         *
+         * floor：发怒hi小于或等于element的最大元素
+         *
+         * @param nums
+         * @param k
+         * @param t
+         * @return
+         */
+        public boolean containsDuplicate(int[] nums, int k, int t) {
+            TreeSet<Long> set = new TreeSet<>();
+            for (int i = 0; i < nums.length; i++) {
+                Long floor = set.floor((long) nums[i] + t);
+                Long ceil = set.ceiling((long)nums[i] - t);
+                // 如果floor大于nums[i]或者ceiling小于nums[i]说明找到了
+                if (floor != null && floor >= nums[i] || ceil != null && ceil <= nums[i]) return true;
+                set.add((long)nums[i]);
+                if (i >= k) set.remove((long) nums[i - k]);
+            }
+            return false;
+        }
+    }
+
     // 1423: Maximum points you can obtain from cards
 
     /**
@@ -2150,6 +2197,190 @@ public class Note3_Arrays {
             return res;
         }
     }
+
+    // valid sudoku 重要，面经里有
+
+    /**
+     * Determine if a 9 x 9 Sudoku board is valid. Only the filled cells need to be validated according to the following rules:
+     *
+     * Each row must contain the digits 1-9 without repetition.
+     * Each column must contain the digits 1-9 without repetition.
+     * Each of the nine 3 x 3 sub-boxes of the grid must contain the digits 1-9 without repetition.
+     * Note:
+     *
+     * A Sudoku board (partially filled) could be valid but is not necessarily solvable.
+     * Only the filled cells need to be validated according to the mentioned rules.
+     *
+     * Example 1:
+     *
+     * Input: board =
+     * [["5","3",".",".","7",".",".",".","."]
+     * ,["6",".",".","1","9","5",".",".","."]
+     * ,[".","9","8",".",".",".",".","6","."]
+     * ,["8",".",".",".","6",".",".",".","3"]
+     * ,["4",".",".","8",".","3",".",".","1"]
+     * ,["7",".",".",".","2",".",".",".","6"]
+     * ,[".","6",".",".",".",".","2","8","."]
+     * ,[".",".",".","4","1","9",".",".","5"]
+     * ,[".",".",".",".","8",".",".","7","9"]]
+     * Output: true
+     * Example 2:
+     *
+     * Input: board =
+     * [["8","3",".",".","7",".",".",".","."]
+     * ,["6",".",".","1","9","5",".",".","."]
+     * ,[".","9","8",".",".",".",".","6","."]
+     * ,["8",".",".",".","6",".",".",".","3"]
+     * ,["4",".",".","8",".","3",".",".","1"]
+     * ,["7",".",".",".","2",".",".",".","6"]
+     * ,[".","6",".",".",".",".","2","8","."]
+     * ,[".",".",".","4","1","9",".",".","5"]
+     * ,[".",".",".",".","8",".",".","7","9"]]
+     * Output: false
+     * Explanation: Same as Example 1, except with the 5 in the top left corner being modified to 8. Since there are two 8's in the top left 3x3 sub-box, it is invalid.
+     *
+     */
+    class Solution36{
+        /**
+         *
+         * int rowIndex = 3 * (i / 3)
+         * int colIndex = 3 * (i % 3)
+         *
+         * 0 1 2 3 4 5 6 7 8
+         * 0 0 0 3 3 3 6 6 6    rowIndex = 0
+         * 0 3 6 0 3 6 0 3 6    colIndex = 0
+         *
+         * 0 0 0 1 1 1 2 2 2    j / 3
+         * 0 1 2 0 1 2 0 1 2    j % 3
+         *
+         * @param board
+         * @return
+         */
+        public boolean isValidSudoku1(char[][] board) {
+            for (int i = 0; i < board.length; i++) {
+                HashSet<Character> rows = new HashSet<>();
+                HashSet<Character> cols = new HashSet<>();
+                HashSet<Character> cube = new HashSet<>();
+                for (int j = 0; j < board[0].length; j++) {
+                    // 有重复，set.add()返回false
+                    if (board[i][j] != '.' && !rows.add(board[i][j])) return false;  // 行
+                    if (board[j][i] != '.' && !cols.add(board[j][i])) return false;  // 列
+
+                    int rowIndex = 3 * (i / 3);
+                    int colIndex = 3 * (i % 3);
+
+                    if (board[rowIndex + j /3][colIndex + j % 3] != '.' && !cube.add(board[rowIndex + j /3][colIndex + j % 3])) return false;
+                }
+            }
+            return true;
+        }
+
+        public boolean isValidSudoku2(char[][] board) {
+            for (int i = 0; i < board.length; i++) {
+                for (int j = 0; j < board[0].length; j++) {
+                    if (board[i][j] == '.') continue;
+                    if(!valid(board, i, j)) return false;
+                }
+            }
+            return true;
+        }
+
+        public boolean valid(char[][] board, int i, int j) {
+            for (int row = 0; row < board.length; row ++) {
+                if (row == i) continue;
+                if (board[row][j] == board[i][j]) return false;
+            }
+            for (int col = 0; col < board.length; col ++) {
+                if (col == i) continue;
+                if (board[i][col] == board[i][j]) return false;
+            }
+            for (int row = (i / 3) * 3;row < (i / 3 + 1) * 3; row++){
+                for (int col = (j / 3) * 3; col < (j / 3 + 1) * 3; col++) {
+                    if (row == i && col == j) continue;
+                    if (board[row][col] == board[i][j]) return false;
+                }
+            }
+            return true;
+        }
+    }
+
+    // 37: Sudoku solver
+
+    /**
+     * Write a program to solve a Sudoku puzzle by filling the empty cells.
+     *
+     * A sudoku solution must satisfy all of the following rules:
+     *
+     * Each of the digits 1-9 must occur exactly once in each row.
+     * Each of the digits 1-9 must occur exactly once in each column.
+     * Each of the digits 1-9 must occur exactly once in each of the 9 3x3 sub-boxes of the grid.
+     * The '.' character indicates empty cells.
+     *
+     *
+     *
+     * Example 1:
+     *
+     *
+     * Input: board =
+     * [["5","3",".",".","7",".",".",".","."],
+     * ["6",".",".","1","9","5",".",".","."],
+     * [".","9","8",".",".",".",".","6","."],
+     * ["8",".",".",".","6",".",".",".","3"],
+     * ["4",".",".","8",".","3",".",".","1"],
+     * ["7",".",".",".","2",".",".",".","6"],
+     * [".","6",".",".",".",".","2","8","."],
+     * [".",".",".","4","1","9",".",".","5"],
+     * [".",".",".",".","8",".",".","7","9"]]
+     * Output:
+     * [["5","3","4","6","7","8","9","1","2"],
+     * ["6","7","2","1","9","5","3","4","8"],
+     * ["1","9","8","3","4","2","5","6","7"],
+     * ["8","5","9","7","6","1","4","2","3"],
+     * ["4","2","6","8","5","3","7","9","1"],
+     * ["7","1","3","9","2","4","8","5","6"],
+     * ["9","6","1","5","3","7","2","8","4"],
+     * ["2","8","7","4","1","9","6","3","5"],
+     * ["3","4","5","2","8","6","1","7","9"]]
+     *
+     */
+    class Solution37{
+        public void solveSudoku(char[][] board) {
+            if (board == null || board.length == 0) return;
+            solve(board);
+        }
+
+        public boolean solve(char[][] board) {
+            for (int i = 0; i < board.length; i++) {
+                for (int j = 0; j < board[0].length; j++) {
+                    if (board[i][j] == '.') {
+                        for (char c = '1'; c <= '9'; c ++) {  // 从1到9选择字母填充
+                            if (isvalid(board, i , j, c)) {  // 如果当前位置填充后可以组成数独就替换
+                                board[i][j] = c;
+                                if (solve(board)) return true;
+                                else board[i][j] = '.';
+                            }
+                        }
+                        return false;  // 一到九都不行的话直接返回false
+                    }
+                }
+            }
+            return true;
+        }
+
+        public boolean isvalid(char[][] board, int row, int col, char c) {
+            for (int i = 0; i < 9; i ++) {
+                if (board[i][col] != '.' && board[i][col] == c) return false;  //  列
+                if (board[row][i] != '.' && board[row][i] == c) return false;  // 行
+                if (board[3 * (row / 3) + i / 3][3 * (col / 3) + i % 3]  != '.' &&  // 九宫格
+                        board[3 * (row / 3) + i / 3][3 * (col / 3) + i % 3] == c) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+    }
+
 
     public static void main(String[] args) {
 //        Solution347.topKFrequent(new int[]{1, 1, 1, 2, 2, 3}, 2);

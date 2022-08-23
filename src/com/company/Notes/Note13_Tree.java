@@ -2,10 +2,7 @@ package com.company.Notes;
 
 import com.sun.source.tree.Tree;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 public class Note13_Tree {
     public class TreeNode{
@@ -58,7 +55,7 @@ public class Note13_Tree {
         }
     }
 
-    // 230: KthSmallest
+    // 230: KthSmallest In a BST
 
     /**
      * Given the root of a binary search tree, and an integer k, return the kth smallest value (1-indexed)
@@ -690,5 +687,698 @@ public class Note13_Tree {
         }
     }
 
+    // Minimum Depth of Binary Tree
+    /**
+     * Given a binary tree, find its minimum depth.
+     *
+     * The minimum depth is the number of nodes along the shortest path from the root node down to the nearest leaf node.
+     *
+     * Note: A leaf is a node with no children.
+     *
+     * Example 1:
+     *
+     *
+     * Input: root = [3,9,20,null,null,15,7]
+     * Output: 2
+     * Example 2:
+     *
+     * Input: root = [2,null,3,null,4,null,5,null,6]
+     * Output: 5
+     */
+    class Solution111 {
+        public int minDepth(TreeNode root) {
+            if (root == null) return 0;
+            // 如果碰到左子树或者右子树为空，就得取最大值，不然会出现漏层数的情况
+            if (root.left == null || root.right == null) {
+                return Math.max(minDepth(root.left), minDepth(root.right)) + 1;
+            }
+            return Math.min(minDepth(root.left), minDepth(root.right)) + 1;
 
+        }
+    }
+
+    // 572： Subtree Of Another tree
+    /**
+     * Given the roots of two binary trees root and subRoot, return true if there is a subtree of root with the same
+     * structure and node values of subRoot and false otherwise.
+     *
+     * A subtree of a binary tree tree is a tree that consists of a node in tree and all of this node's descendants.
+     * The tree tree could also be considered as a subtree of itself.
+     *
+     * Example 1:
+     *
+     *
+     * Input: root = [3,4,5,1,2], subRoot = [4,1,2]
+     * Output: true
+     * Example 2:
+     *
+     *
+     * Input: root = [3,4,5,1,2,null,null,null,null,0], subRoot = [4,1,2]
+     * Output: false
+     */
+
+    class Solution572 {
+        public boolean isSubtree(TreeNode root, TreeNode subRoot) {
+            if (root == null) return false;
+            if (isSameTree(root, subRoot)) return true;
+            return isSubtree(root.left, subRoot) || isSubtree(root.right, subRoot);
+        }
+
+        public boolean isSameTree(TreeNode p, TreeNode q) {
+            if (p == null && q == null) return true;
+            if (p == null || q == null) return false;
+            if (p.val != q.val) return false;
+            return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
+        }
+    }
+
+    // 107: Binary Tree Level order traversal II (BFS)
+    /**
+     * Given the root of a binary tree, return the bottom-up level order traversal of its nodes' values.
+     * (i.e., from left to right, level by level from leaf to root).
+     *
+     * Example 1:
+     *
+     * Input: root = [3,9,20,null,null,15,7]
+     * Output: [[15,7],[9,20],[3]]
+     * Example 2:
+     *
+     * Input: root = [1]
+     * Output: [[1]]
+     * Example 3:
+     *
+     * Input: root = []
+     * Output: []
+     */
+    class Solution107 {
+        public List<List<Integer>> levelOrderBottom(TreeNode root) {
+            List<List<Integer>> res=  new ArrayList<>();
+            if(root == null) return res;
+            Queue<TreeNode> queue = new LinkedList<>();
+            queue.offer(root);
+            while(!queue.isEmpty()) {
+                int size = queue.size();
+                List<Integer> list= new ArrayList<>();
+                for (int i = 0 ; i < size; i++) {
+                    TreeNode cur = queue.poll();
+                    if (cur.left != null) queue.offer(cur.left);
+                    if(cur.right != null) queue.offer(cur.right);
+                    list.add(cur.val);
+                }
+                res.add(0, list);
+            }
+            return res;
+        }
+    }
+
+    // 103 : Binary tree zigzag level order traversal
+    /**
+     * Given the root of a binary tree, return the zigzag level order traversal of its nodes' values. (i.e., from left to right, then right to left for the next level and alternate between).
+     *
+     *
+     *
+     * Example 1:
+     *
+     *
+     * Input: root = [3,9,20,null,null,15,7]
+     * Output: [[3],[20,9],[15,7]]
+     * Example 2:
+     *
+     * Input: root = [1]
+     * Output: [[1]]
+     * Example 3:
+     *
+     * Input: root = []
+     * Output: []
+     */
+    class Solution103 {
+        public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+            List<List<Integer>> res = new ArrayList<>();
+            if (root == null) return res;
+            Queue<TreeNode> queue = new LinkedList<>();
+            queue.offer(root);
+            boolean x = true;
+            while(!queue.isEmpty()) {
+                int size = queue.size();
+                List<Integer> list = new ArrayList<>();
+                for (int i = 0;  i < size; i++) {
+                    TreeNode cur = queue.poll();
+                    if (x) list.add(cur.val);  // 如果x为true，从尾部加
+                    else list.add(0,cur.val);  // 否则，从头部加
+                    if (cur.left != null) queue.offer(cur.left);
+                    if (cur.right != null) queue.offer(cur.right);
+                }
+                res.add(list);
+                x = x ? false : true;
+            }
+            return res;
+        }
+    }
+
+    // 226： Invert Binary tree
+    /**
+     * Given the root of a binary tree, invert the tree, and return its root.
+     *
+     * Example 1:
+     *
+     * Input: root = [4,2,7,1,3,6,9]
+     * Output: [4,7,2,9,6,3,1]
+     * Example 2:
+     *
+     *
+     * Input: root = [2,1,3]
+     * Output: [2,3,1]
+     * Example 3:
+     *
+     * Input: root = []
+     * Output: []
+     */
+    class Solution226 {
+        public TreeNode invertTree(TreeNode root) {
+            if (root == null) return root;
+            TreeNode left = invertTree(root.left);
+            TreeNode right = invertTree(root.right);
+            root.left = right;
+            root.right = left;
+            return root;
+        }
+
+        public TreeNode invertree1(TreeNode root) {
+            if (root == null) return root;
+            Queue<TreeNode> queue = new LinkedList<>();
+            queue.offer(root);
+            while(!queue.isEmpty()) {
+                int size = queue.size();
+                for (int i = 0; i < size; i++) {
+                    TreeNode cur = queue.poll();
+                    TreeNode tmp = cur.left;
+                    cur.left = cur.right;
+                    cur.right = tmp;
+                    if (cur.left != null) queue.offer(cur.left);
+                    if (cur.right != null) queue.offer(cur.right);
+                }
+            }
+            return root;
+        }
+    }
+
+    // 404: Sum of left leaves
+    /**
+     * Given the root of a binary tree, return the sum of all left leaves.
+     *
+     * A leaf is a node with no children. A left leaf is a leaf that is the left child of another node.
+     *
+     *
+     *
+     * Example 1:
+     *
+     *
+     * Input: root = [3,9,20,null,null,15,7]
+     * Output: 24
+     * Explanation: There are two left leaves in the binary tree, with values 9 and 15 respectively.
+     * Example 2:
+     *
+     * Input: root = [1]
+     * Output: 0
+     */
+    class Solution404{
+        public int sumOfLeftLeaves(TreeNode root) {
+            if (root == null) return 0;
+            int res= 0;
+            if (root.left != null) {  // 判断左节点是否为空
+                if (root.left.left == null && root.left.right == null) {  // 判断是否为叶子节点
+                    res+=root.left.val;
+                } else res += sumOfLeftLeaves(root.left);
+            }
+            res += sumOfLeftLeaves(root.right);
+            return res;
+        }
+
+        public int sumOfLeftLeavesQueue(TreeNode root) {
+            if (root == null) return 0;
+            int res = 0;
+            Queue<TreeNode> queue = new LinkedList<>();
+            queue.offer(root);
+            while (!queue.isEmpty()){
+                TreeNode cur= queue.poll();
+                if (cur.left != null) {
+                    if (cur.left.left == null && cur.left.right == null) res += cur.left.val;
+                    else queue.offer(cur.left);
+                }
+                if (cur.right != null) queue.offer(cur.right);
+            }
+            return res;
+        }
+    }
+
+    // 429:N-ary tree level order traversl
+    /**
+     * Given an n-ary tree, return the level order traversal of its nodes' values.
+     *
+     * Nary-Tree input serialization is represented in their level order traversal, each group of children is
+     * separated by the null value (See examples).
+     *
+     * Example 1:
+     * Input: root = [1,null,3,2,4,null,5,6]
+     * Output: [[1],[3,2,4],[5,6]]
+     * Example 2:
+     *
+     * Input: root = [1,null,2,3,4,5,null,null,6,7,null,8,null,9,10,null,null,11,null,12,null,13,null,null,14]
+     * Output: [[1],[2,3,4,5],[6,7,8,9,10],[11,12,13],[14]]
+     */
+
+    class Solution429 {
+        public List<List<Integer>> levelOrder(Node root) {
+            List<List<Integer>> res = new ArrayList<>();
+            if (root == null) return res;
+            Queue<Node> queue = new LinkedList<>();
+            queue.offer(root);
+            while(!queue.isEmpty()) {
+                List<Integer> curLevel = new ArrayList<>();
+                int size = queue.size();
+                for (int i = 0 ; i < size; i ++) {
+                    Node cur = queue.poll();
+                    curLevel.add(cur.val);
+                    for (Node child: cur.children) queue.offer(child);
+                }
+                res.add(curLevel);
+            }
+            return res;
+        }
+    }
+
+    // 515: Find Largest value in Each Tree Row (BFS)
+    /**
+     * Given the root of a binary tree, return an array of the largest value in each row of the tree (0-indexed).
+     *
+     * Example 1:
+     *
+     *
+     * Input: root = [1,3,2,5,3,null,9]
+     * Output: [1,3,9]
+     * Example 2:
+     *
+     * Input: root = [1,2,3]
+     * Output: [1,3]
+     *
+     * 都是O（N）
+     */
+    class Solution515 {
+        public List<Integer> largestValues(TreeNode root) {
+            List<Integer> res = new ArrayList<>();
+            if (root == null) return res;
+
+            Queue<TreeNode> queue = new LinkedList<>();
+            queue.offer(root);
+            int max = Integer.MIN_VALUE;
+            while(!queue.isEmpty()) {
+                int size = queue.size();
+                for (int i = 0; i < size; i++) {
+                    TreeNode cur  = queue.poll();
+                    max = Math.max(max, cur.val);
+                    if (cur.left != null) queue.offer(cur.left);
+                    if (cur.right != null) queue.offer(cur.right);
+                }
+                res.add(max);
+                max = Integer.MIN_VALUE;
+            }
+            return res;
+        }
+    }
+
+    // 110 Binary Balanced Tree
+    /**
+     * Given a binary tree, determine if it is height-balanced.
+     *
+     * For this problem, a height-balanced binary tree is defined as:
+     *
+     * a binary tree in which the left and right subtrees of every node differ in height by no more than 1.
+     *
+     * Example 1:
+     *
+     *
+     * Input: root = [3,9,20,null,null,15,7]
+     * Output: true
+     * Example 2:
+     *
+     *
+     * Input: root = [1,2,2,3,3,null,null,4,4]
+     * Output: false
+     */
+    class Solution110 {
+        public boolean isBalanced(TreeNode root) {
+            if (root == null) return true;
+            return helper(root) != -1;
+        }
+
+        public int helper(TreeNode root) {
+            if (root == null) return 0;
+            int l = helper(root.left);
+            int r = helper(root.right);
+            if (Math.abs(l - r) > 1 || l == -1 || r == -1) return -1;
+            return Math.max(l, r) + 1;
+
+        }
+    }
+
+    // 563: Binary Tree Tilt
+    /**
+     * Given the root of a binary tree, return the sum of every tree node's tilt.
+     *
+     * The tilt of a tree node is the absolute difference between the sum of all left subtree node values and all right
+     * subtree node values. If a node does not have a left child, then the sum of the left subtree node values is
+     * treated as 0. The rule is similar if the node does not have a right child.
+     *
+     *
+     *
+     * Example 1:
+     *
+     *
+     * Input: root = [1,2,3]
+     * Output: 1
+     * Explanation:
+     * Tilt of node 2 : |0-0| = 0 (no children)
+     * Tilt of node 3 : |0-0| = 0 (no children)
+     * Tilt of node 1 : |2-3| = 1 (left subtree is just left child, so sum is 2; right subtree is just right child, so sum is 3)
+     * Sum of every tilt : 0 + 0 + 1 = 1
+     * Example 2:
+     *
+     *
+     * Input: root = [4,2,9,3,5,null,7]
+     * Output: 15
+     * Explanation:
+     * Tilt of node 3 : |0-0| = 0 (no children)
+     * Tilt of node 5 : |0-0| = 0 (no children)
+     * Tilt of node 7 : |0-0| = 0 (no children)
+     * Tilt of node 2 : |3-5| = 2 (left subtree is just left child, so sum is 3; right subtree is just right child, so sum is 5)
+     * Tilt of node 9 : |0-7| = 7 (no left child, so sum is 0; right subtree is just right child, so sum is 7)
+     * Tilt of node 4 : |(3+5+2)-(9+7)| = |10-16| = 6 (left subtree values are 3, 5, and 2, which sums to 10; right
+     * subtree values are 9 and 7, which sums to 16)
+     * Sum of every tilt : 0 + 0 + 0 + 2 + 7 + 6 = 15
+     */
+
+    class Solution563 {
+        int res = 0;
+        public int findTilt(TreeNode root) {
+            helper(root);
+            return res;
+        }
+
+        public int helper(TreeNode root) {
+            if (root == null) return 0;
+            int left = helper(root.left);
+            int right = helper(root.right);
+            res += Math.abs(left - right);
+            return left + right + root.val;
+        }
+    }
+
+    // 543: Diameter of Binary Tree
+    /**
+     * Given the root of a binary tree, return the length of the diameter of the tree.
+     *
+     * The diameter of a binary tree is the length of the longest path between any two nodes in a tree. This path may
+     * or may not pass through the root.
+     *
+     * The length of a path between two nodes is represented by the number of edges between them.
+     *
+
+     * Example 1:
+     *
+     *
+     * Input: root = [1,2,3,4,5]
+     * Output: 3
+     * Explanation: 3 is the length of the path [4,2,1,3] or [5,2,1,3].
+     * Example 2:
+     *
+     * Input: root = [1,2]
+     * Output: 1
+     */
+
+    class Solution543{
+        private int res = 0;
+
+        public int diameterOfBinaryTree(TreeNode root) {
+            helper(root);
+            return res;
+        }
+
+        public int helper(TreeNode root){
+            if (root == null) return 0;
+            int left = helper(root.left);  // 左子树的最大深度
+            int right = helper(root.right);  // 右子树的最大深度
+            res = Math.max(res, left + right);
+            return Math.max(left, right) + 1;
+        }
+    }
+
+   // find leaves of Binary Tree
+    class Solution366{
+        public List<List<Integer>> findLeaves(TreeNode root) {
+            List<List<Integer>> res = new ArrayList<>();
+            helper(res, root);
+            return res;
+        }
+
+        public int helper(List<List<Integer>> res, TreeNode root) {
+            if (root == null) return -1;
+            int left = helper(res, root.left);
+            int right = helper(res, root.right);
+            int level = Math.max(left, right) + 1;
+            if (res.size() == level) res.add(new ArrayList<>());
+            res.get(level).add(root.val);
+            root.left = null;
+            root.right = null;
+            return level;
+        }
+   }
+
+   // 337 : House Robber III
+    /**
+     * The thief has found himself a new place for his thievery again. There is only one entrance to this area, called root.
+     *
+     * Besides the root, each house has one and only one parent house. After a tour, the smart thief realized that all
+     * houses in this place form a binary tree. It will automatically contact the police if two directly-linked houses
+     * were broken into on the same night.
+     *
+     * Given the root of the binary tree, return the maximum amount of money the thief can rob without alerting the police.
+     *
+     * Example 1:
+     *
+     *
+     * Input: root = [3,2,3,null,3,null,1]
+     * Output: 7
+     * Explanation: Maximum amount of money the thief can rob = 3 + 3 + 1 = 7.
+     * Example 2:
+     *
+     *
+     * Input: root = [3,4,5,1,3,null,1]
+     * Output: 9
+     * Explanation: Maximum amount of money the thief can rob = 4 + 5 = 9.
+     */
+    class Solution337 {
+        public int rob(TreeNode root) {
+            if (root == null) return 0;
+            int val = 0;
+            if (root.left != null) {
+                val += rob(root.left.left) + rob(root.left.right);
+            }
+            if (root.right != null) {
+                val += rob(root.right.left) + rob(root.right.right);
+            }
+            return Math.max(val + root.val, rob(root.left) + rob(root.right));
+        }
+
+        public int rob2(TreeNode root) {
+            int[] res = robSub(root);
+            return Math.max(res[0], res[1]);  // 1：第一层，第三次取去偷，0：第2层去偷
+        }
+
+        public int[] robSub(TreeNode root) {
+            if (root == null) return new int[2];
+            int[] left = robSub(root.left);
+            int[] right = robSub(root.right);
+            int[] res = new int[2];
+
+            res[0] = Math.max(left[0], left[1]) + Math.max(right[0], right[1]);  // 二四层
+            res[1] = root.val + left[0] + right[0];   // 偷一三层
+            return res;
+        }
+    }
+
+    // 236： lowest common Ancestor of a binary tree 经典必考题
+    /**
+     * Given a binary tree, find the lowest common ancestor (LCA) of two given nodes in the tree.
+     *
+     * According to the definition of LCA on Wikipedia: “The lowest common ancestor is defined between two nodes p and
+     * q as the lowest node in T that has both p and q as descendants (where we allow a node to be a descendant of itself).”
+     *
+     * Example 1:
+     *
+     *
+     * Input: root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 1
+     * Output: 3
+     * Explanation: The LCA of nodes 5 and 1 is 3.
+     * Example 2:
+     *
+     *
+     * Input: root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 4
+     * Output: 5
+     * Explanation: The LCA of nodes 5 and 4 is 5, since a node can be a descendant of itself according
+     * to the LCA definition.
+     *
+     */
+    class Solution236 {
+        public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+            if (root == null || root == p || root == q) return root;
+            TreeNode left = lowestCommonAncestor(root.left, p, q);
+            TreeNode right = lowestCommonAncestor(root.right, p, q);
+            if (left != null && root != null) return root;
+            return left == null ? right : left;
+        }
+    }
+
+    // 508： Most Frequent subtree sum
+    /**
+     Given the root of a binary tree, return the most frequent subtree sum. If there is a tie, return all the values with the highest frequency in any order.
+
+     The subtree sum of a node is defined as the sum of all the node values formed by the subtree rooted at that node (including the node itself).
+     Example 1:
+
+     Input: root = [5,2,-3]
+     Output: [2,-3,4]
+     Example 2:
+
+     Input: root = [5,2,-5]
+     Output: [2]
+     */
+    class Solution508 {
+
+        int max;  // 最大的值
+        HashMap<Integer, Integer> map;  // 记录出现的sum的次数
+        public int[] findFrequentTreeSum(TreeNode root) {
+            if (root == null) return new int[]{};
+            map = new HashMap<>();
+            max = 0;
+            helper(root);  //  postOrder
+            List<Integer> list = new ArrayList<>();
+            for (int key : map.keySet()){  // 遍历sum的map
+                if (map.get(key) == max) list.add(key);  // 如果找到了最大值的key，添加到结果中
+            }
+            int[] res = new int[list.size()];
+            for (int i = 0 ; i < list.size(); i ++) res[i] = list.get(i);
+
+            return res;
+        }
+
+        public int helper(TreeNode root) {
+            if (root == null) return 0;
+            int left = helper(root.left);
+            int right = helper(root.right);
+
+            int sum = left + right + root.val;
+            int count = map.getOrDefault(sum , 0) + 1;
+            map.put(sum, count);  // 计算这个sum出现的次数
+            max = Math.max(max, count);
+            return sum;
+        }
+    }
+
+    // 273： Binary search tree iterator
+    /**
+     * Implement the BSTIterator class that represents an iterator over the in-order traversal of a binary search tree (BST):
+     *
+     * BSTIterator(TreeNode root) Initializes an object of the BSTIterator class. The root of the BST is given as part
+     * of the constructor. The pointer should be initialized to a non-existent number smaller than any element in the BST.
+     * boolean hasNext() Returns true if there exists a number in the traversal to the right of the pointer, otherwise returns false.
+     * int next() Moves the pointer to the right, then returns the number at the pointer.
+     * Notice that by initializing the pointer to a non-existent smallest number, the first call to next() will return
+     * the smallest element in the BST.
+     *
+     * You may assume that next() calls will always be valid. That is, there will be at least a next number in the in-order
+     * traversal when next() is called.
+     *
+     * Example 1:
+     *
+     * Input
+     * ["BSTIterator", "next", "next", "hasNext", "next", "hasNext", "next", "hasNext", "next", "hasNext"]
+     * [[[7, 3, 15, null, null, 9, 20]], [], [], [], [], [], [], [], [], []]
+     * Output
+     * [null, 3, 7, true, 9, true, 15, true, 20, false]
+     *
+     * Explanation
+     * BSTIterator bSTIterator = new BSTIterator([7, 3, 15, null, null, 9, 20]);
+     * bSTIterator.next();    // return 3
+     * bSTIterator.next();    // return 7
+     * bSTIterator.hasNext(); // return True
+     * bSTIterator.next();    // return 9
+     * bSTIterator.hasNext(); // return True
+     * bSTIterator.next();    // return 15
+     * bSTIterator.hasNext(); // return True
+     * bSTIterator.next();    // return 20
+     * bSTIterator.hasNext(); // return False
+     */
+    class BSTIterator {
+
+        private TreeNode cur;
+        private Stack<TreeNode> stack;
+
+        public BSTIterator(TreeNode root) {
+            cur = root;
+            stack = new Stack<>();
+        }
+
+        public int next() {
+            while(cur != null) {
+                stack.push(cur);
+                cur = cur.left;
+            }
+            cur = stack.pop();
+            int val = cur.val;
+            cur = cur.right;
+            return val;
+        }
+
+        public boolean hasNext() {
+            if (!stack.isEmpty() || cur!= null) return true;
+            return false;
+        }
+    }
+
+    // 538: Convert BST to Greater Tree
+    /**
+     * Given the root of a Binary Search Tree (BST), convert it to a Greater Tree such that every key of the original
+     * BST is changed to the original key plus the sum of all keys greater than the original key in BST.
+     *
+     * As a reminder, a binary search tree is a tree that satisfies these constraints:
+     *
+     * The left subtree of a node contains only nodes with keys less than the node's key.
+     * The right subtree of a node contains only nodes with keys greater than the node's key.
+     * Both the left and right subtrees must also be binary search trees.
+     *
+     *
+     * Example 1:
+     *
+     *
+     * Input: root = [4,1,6,0,2,5,7,null,null,null,3,null,null,null,8]
+     * Output: [30,36,21,36,35,26,15,null,null,null,33,null,null,null,8]
+     * Example 2:
+     *
+     * Input: root = [0,null,1]
+     * Output: [1,null,1]
+     *
+     */
+    class Solution538 {
+
+        private int sum = 0;
+
+        public TreeNode convertBST(TreeNode root) {
+            if (root == null) return null;
+            convertBST(root.right);  // 先遍历大的，从大到小逆序遍历
+            sum += root.val;  // 加上当前的值
+            root.val= sum;
+            convertBST(root.left);
+            return root;
+        }
+    }
 }

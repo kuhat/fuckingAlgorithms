@@ -869,8 +869,188 @@ public class Note11_Backtracking {
             }
 
         }
+    }
 
+    // 582 kill process
 
+    /**
+     * 给你n个进程，每个进程都有一个唯一的PID（process id）和PPID（parent process id）。每个进程最多只有一个父进程，但可能有多个子进程。
+     * 如果一个进程的PPID为0，表示它没有父进程。如果一个进程被杀死，那么它的子进程也会被杀死。输入两个相同长度的整数链表，第一个链表是每个进程的PID，
+     * 第二个链表是对应位置进程的PPID，再输入一个将被杀死的进程的PID，请输出所有将被杀死的进程的PID。
+     *
+     * 例如，输入的PID链表为[1, 3, 10, 5]，PPID链表为[3, 0, 5, 3]，将被杀死的进程的PID为5，那么最终被杀死的进程有两个，PID分别为5和10。这是因为PID为10的进程是PID为5的进程的子进程。
+     *
+     *
+     * time:O(n)
+     * space:O(n)
+     */
+    class Solution582{
+        public List<Integer> killProcess(List<Integer> pid, List<Integer> ppid, int kill) {
+            HashMap<Integer, List<Integer>> map = new HashMap<>();  // Key: 父进程。value: 父进程对应的子进程
+            for (int i = 0; i < ppid.size(); i++) {
+                if (ppid.get(i) > 0) {
+                    List<Integer> list = map.getOrDefault(ppid.get(i), new ArrayList<>());  // 如果没有创建过就弄一个新的list
+                    list.add(pid.get(i));  // 加入pid到当前ppid所对应的list中
+                    map.put(ppid.get(i), list);  //  更新map
+                }
+            }
+            List<Integer> res = new ArrayList<>();
+            res.add(kill);
+            getAllProcess(map, res, kill);
+            return res;
+        }
+
+        private void getAllProcess(HashMap<Integer, List<Integer>> map, List<Integer> res, int kill ) {
+            if (map.containsKey(kill)) {
+                for (int id : map.get(kill)) {
+                    res.add(id);
+                    getAllProcess(map, res, id);
+                }
+            }
+        }
+    }
+
+    // 140: word break II 重要，会出现
+
+    /**
+     * Given a string s and a dictionary of strings wordDict, add spaces in s to construct a sentence where each word
+     * is a valid dictionary word. Return all such possible sentences in any order.
+     *
+     * Note that the same word in the dictionary may be reused multiple times in the segmentation.
+     *
+     * Example 1:
+     *
+     * Input: s = "catsanddog", wordDict = ["cat","cats","and","sand","dog"]
+     * Output: ["cats and dog","cat sand dog"]
+     * Example 2:
+     *
+     * Input: s = "pineapplepenapple", wordDict = ["apple","pen","applepen","pine","pineapple"]
+     * Output: ["pine apple pen apple","pineapple pen apple","pine applepen apple"]
+     * Explanation: Note that you are allowed to reuse a dictionary word.
+     * Example 3:
+     *
+     * Input: s = "catsandog", wordDict = ["cats","dog","sand","and","cat"]
+     * Output: []
+     */
+    class Solution140{
+        /**
+         * c a t s a n d d o g
+         * 0 1 2 3 4 5 6 7 8 9
+         *
+         * start: 0  map: empty
+         * end: 3 -> dfs (找到cat)
+         *     start: 3 map: empty
+         *     end: 7 -> dfs (找到sand)
+         *         start: 7 map: 7 "dog"
+         *
+         * start: 0
+         * end = 4 -> dfs (找到cats)
+         *
+         * start = 0 res: "cat sand dag"
+         *
+         */
+
+        HashMap<Integer, List<String>> map = new HashMap<>();
+        public List<String> wordBreak (String s, List<String> wordDict) {
+            return dfs(s, wordDict, 0);
+        }
+
+        private List<String> dfs(String s, List<String> wordDict, int start) {
+            if (map.containsKey(start)) return map.get(start);  // 如果之前加过了，直接从 map里面get到，防止重复操作
+            List<String> res = new ArrayList<>();
+            if (start == s.length()) res.add("");
+            for (int end =start + 1; end <= s.length(); end ++) {  // 挨着string的每个字母遍历
+                if (wordDict.contains(s.substring(start, end))) {
+                    List<String> list = dfs(s, wordDict, end);  // 如果包含了当前的str,遍历后面的
+                    for (String temp : list) {
+                        res.add(s.substring(start, end) + (temp.equals("") ? "" : " ") + temp);
+                    }
+                }
+            }
+            map.put(start, res);
+            return res;
+        }
+    }
+
+    // 31 next Permutation
+
+    /**
+     * A permutation of an array of integers is an arrangement of its members into a sequence or linear order.
+     *
+     * For example, for arr = [1,2,3], the following are considered permutations of arr: [1,2,3], [1,3,2], [3,1,2], [2,3,1].
+     * The next permutation of an array of integers is the next lexicographically greater permutation of its integer. More
+     * \formally, if all the permutations of the array are sorted in one container according to their lexicographical order,
+     * then the next permutation of that array is the permutation that follows it in the sorted container. If such arrangement
+     * is not possible, the array must be rearranged as the lowest possible order (i.e., sorted in ascending order).
+     *
+     * For example, the next permutation of arr = [1,2,3] is [1,3,2].
+     * Similarly, the next permutation of arr = [2,3,1] is [3,1,2].
+     * While the next permutation of arr = [3,2,1] is [1,2,3] because [3,2,1] does not have a lexicographical larger rearrangement.
+     * Given an array of integers nums, find the next permutation of nums.
+     *
+     * The replacement must be in place and use only constant extra memory.
+     *
+     * Example 1:
+     *
+     * Input: nums = [1,2,3]
+     * Output: [1,3,2]
+     * Example 2:
+     *
+     * Input: nums = [3,2,1]
+     * Output: [1,2,3]
+     */
+    class Solution31 {
+        /**
+         * 找到第一个比它之后的数字小的那个字母，即第一个nums[i] < nums[i + 1]的数，
+         * 然后再找到比之前找到的值大的一个值，他俩进行一个交换
+         * 交换后，再吧第一个找到的数后的数转置
+         *
+         * 1 2 7 4 3 1
+         *   ^
+         * 1 2 7 4 3 1
+         *         ^
+         * 1 3 7 4 2 1
+         *   ^     ^
+         * 1 3 1 2 4 7
+         *     ^ ^ ^ ^
+         *
+         */
+        public void nextPermutation(int[] nums) {
+            if (nums == null || nums.length == 0) return;
+            int firstSmall = -1;
+            for (int i = nums.length - 2; i >= 0; i--) {
+                if (nums[i] < nums[i + 1]) {
+                    firstSmall = i;
+                    break;
+                }
+            }
+            if (firstSmall == -1) {
+                reverse(nums, 0, nums.length - 1);
+                return;
+            }
+            int firstLarge = -1;
+            for(int i = nums.length - 1; i > firstSmall; i --) {
+                if (nums[i] > nums[firstSmall]) {
+                    firstLarge = i;
+                    break;
+                }
+            }
+            swap(nums, firstSmall, firstLarge);
+            reverse(nums, firstSmall + 1, nums.length - 1);
+            return;
+        }
+
+        public void reverse(int[] nums, int i,int j) {
+            while (i < j) {
+                swap(nums, i++, j --);
+            }
+        }
+
+        private void swap(int[] nums, int i, int j) {
+            int temp = nums[i];
+            nums[i++] = nums[j];
+            nums[j++] = temp;
+        }
     }
 
 

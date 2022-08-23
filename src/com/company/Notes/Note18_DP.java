@@ -1435,7 +1435,283 @@ public class Note18_DP {
     }
 
 
+    // 121: best time to buy and sell stock 经常出现
 
+    /**
+     * You are given an array prices where prices[i] is the price of a given stock on the ith day.
+     *
+     * You want to maximize your profit by choosing a single day to buy one stock and choosing a different day in the
+     * future to sell that stock.
+     *
+     * Return the maximum profit you can achieve from this transaction. If you cannot achieve any profit, return 0.
+     *
+     * Example 1:
+     *
+     * Input: prices = [7,1,5,3,6,4]
+     * Output: 5
+     * Explanation: Buy on day 2 (price = 1) and sell on day 5 (price = 6), profit = 6-1 = 5.
+     * Note that buying on day 2 and selling on day 1 is not allowed because you must buy before you sell.
+     * Example 2:
+     *
+     * Input: prices = [7,6,4,3,1]
+     * Output: 0
+     * Explanation: In this case, no transactions are done and the max profit = 0.
+     */
+    class Solution121 {
+        public int maxProfit(int[] prices) {
+            int min = Integer.MAX_VALUE;
+            int maxProfit = 0;
+            for (int i = 0; i < prices.length; i++) {
+                min = Math.min(prices[i], min);
+                maxProfit = Math.max(maxProfit, prices[i] - min);
+
+            }
+            return maxProfit;
+        }
+    }
+
+    // 122 Best time to buy and sell stock II
+
+    /**
+     * You are given an integer array prices where prices[i] is the price of a given stock on the ith day.
+     *
+     * On each day, you may decide to buy and/or sell the stock. You can only hold at most one share of the stock at
+     * any time. However, you can buy it then immediately sell it on the same day.
+     *
+     * Find and return the maximum profit you can achieve.
+     *
+     * Example 1:
+     *
+     * Input: prices = [7,1,5,3,6,4]
+     * Output: 7
+     * Explanation: Buy on day 2 (price = 1) and sell on day 3 (price = 5), profit = 5-1 = 4.
+     * Then buy on day 4 (price = 3) and sell on day 5 (price = 6), profit = 6-3 = 3.
+     * Total profit is 4 + 3 = 7.
+     * Example 2:
+     *
+     * Input: prices = [1,2,3,4,5]
+     * Output: 4
+     * Explanation: Buy on day 1 (price = 1) and sell on day 5 (price = 5), profit = 5-1 = 4.
+     * Total profit is 4.
+     * Example 3:
+     *
+     * Input: prices = [7,6,4,3,1]
+     * Output: 0
+     * Explanation: There is no way to make a positive profit, so we never buy the stock to achieve the maximum profit of 0.
+     */
+    class Solution122 {
+        public int maxProfit(int[] prices) {
+            if (prices == null || prices.length < 2) return 0;
+            int profit = 0;
+            for (int i = 1; i < prices.length; i++) {
+                if (prices[i] > prices[ i - 1]) profit += prices[i] - prices[i - 1];  // 最后的差值都是恒定不变的
+            }
+            return profit;
+        }
+    }
+
+    // 123 Best Time to buy and sale stock III
+
+    /**
+     * You are given an array prices where prices[i] is the price of a given stock on the ith day.
+     *
+     * Find the maximum profit you can achieve. You may complete at most two transactions.
+     *
+     * Note: You may not engage in multiple transactions simultaneously (i.e., you must sell the stock before you buy again).
+     *
+     * Example 1:
+     *
+     * Input: prices = [3,3,5,0,0,3,1,4]
+     * Output: 6
+     * Explanation: Buy on day 4 (price = 0) and sell on day 6 (price = 3), profit = 3-0 = 3.
+     * Then buy on day 7 (price = 1) and sell on day 8 (price = 4), profit = 4-1 = 3.
+     * Example 2:
+     *
+     * Input: prices = [1,2,3,4,5]
+     * Output: 4
+     * Explanation: Buy on day 1 (price = 1) and sell on day 5 (price = 5), profit = 5-1 = 4.
+     * Note that you cannot buy on day 1, buy on day 2 and sell them later, as you are engaging multiple transactions at
+     * the same time. You must sell before buying again.
+     */
+    class Solution123 {
+        public int maxProfit(int[] prices) {
+            int buy1 = Integer.MIN_VALUE, buy2 = Integer.MIN_VALUE;  // 第一次买和第二次买
+            int sell1 = 0, sell2 = 0;  // 第一次卖和第二次卖
+            for (int price: prices){
+                sell2 = Math.max(sell2, buy2 + price);  // 第二次卖，算最大利润
+                buy2 = Math.max(buy2, sell1 - price);  // 第二次买是第一次的利润减去price
+                sell1 = Math.max(sell1, buy1 + price);  // 卖第一次，算最大利润
+                buy1 = Math.max(buy1, - price);  // 第一次买，是负数，花钱
+            }
+            return sell2;
+        }
+    }
+
+
+    // 188 Best Time to Buy and sell stock IV
+
+    /**
+     * You are given an integer array prices where prices[i] is the price of a given stock on the ith day, and an integer k.
+     *
+     * Find the maximum profit you can achieve. You may complete at most k transactions.
+     *
+     * Note: You may not engage in multiple transactions simultaneously (i.e., you must sell the stock before you buy again).
+     *
+     *
+     *
+     * Example 1:
+     *
+     * Input: k = 2, prices = [2,4,1]
+     * Output: 2
+     * Explanation: Buy on day 1 (price = 2) and sell on day 2 (price = 4), profit = 4-2 = 2.
+     * Example 2:
+     *
+     * Input: k = 2, prices = [3,2,6,5,0,3]
+     * Output: 7
+     * Explanation: Buy on day 2 (price = 2) and sell on day 3 (price = 6), profit = 6-2 = 4. Then buy on day 5 (price = 0)
+     * and sell on day 6 (price = 3), profit = 3-0 = 3.
+     */
+    class Solution188 {
+
+        /**
+         *
+         * dp[i][j]: 当前第j天可以最多进行i次交易，最大的利润是多少
+         * @param k
+         * @param prices
+         * @return
+         */
+        public int maxProfit(int k, int[] prices) {
+            int len = prices.length;
+            if (len >= len / 2) return helper(prices);  // 如果k大于长度的一半，可以随便进行买卖
+            int[][] dp = new int[k + 1][len];
+            for (int i = 1; i <= k; i++) {
+                int tempMax = -prices[0];  // 第一步是买，买的话是负数
+                for (int j = 1; j < len; j++) {
+                    dp[i][j] = Math.max(dp[i][j - 1], prices[j] + tempMax);  // j-1是前一天的
+                    tempMax = Math.max(tempMax, dp[i - 1][j - 1]- prices[j]);  // 前一天的状态中进行买的操作
+                }
+            }
+            return dp[k][len - 1];
+        }
+
+        private int helper(int[] prices) {
+            int len = prices.length;
+            int res = 0;
+            for (int i = 1; i < prices[i - 1]; i++) {
+                if (prices[i] > prices[i - 1]) {
+                    res += prices[i] - prices[i - 1];
+                }
+            }
+            return res;
+        }
+
+    }
+
+    // 198 house robber
+
+    /**
+     * You are a professional robber planning to rob houses along a street. Each house has a certain amount of money
+     * stashed, the only constraint stopping you from robbing each of them is that adjacent houses have security systems
+     * connected and it will automatically contact the police if two adjacent houses were broken into on the same night.
+     *
+     * Given an integer array nums representing the amount of money of each house, return the maximum amount of money
+     * you can rob tonight without alerting the police.
+     *
+     * Example 1:
+     *
+     * Input: nums = [1,2,3,1]
+     * Output: 4
+     * Explanation: Rob house 1 (money = 1) and then rob house 3 (money = 3).
+     * Total amount you can rob = 1 + 3 = 4.
+     * Example 2:
+     *
+     * Input: nums = [2,7,9,3,1]
+     * Output: 12
+     * Explanation: Rob house 1 (money = 2), rob house 3 (money = 9) and rob house 5 (money = 1).
+     * Total amount you can rob = 2 + 9 + 1 = 12.
+     *
+     */
+
+
+
+    class Solution198 {
+
+
+        /**
+         * dp[i][0]=max(dp[i-1][0],dp[i-1][1])
+         * 他表示如果第i+1个没有接，那么第i个有没有接都是可以的，我们取最大值即可。
+         *
+         * dp[i][1]=dp[i-1][0]+nums[i]
+         * 他表示的是如果第i+1个接了，那么第i个必须要没接，这里nums[i]表示的是第i+1个预约的时间。
+         */
+
+        public int robDp(int[] nums) {
+            // 边界
+            if (nums == null || nums.length == 0) return 0;
+            int len = nums.length;
+            int[][] dp = new int[len][2];
+            dp[0][0] = 0;  // 第一个没有偷
+            dp[0][1] = nums[0];  // 第一个偷了
+            for(int i = 1; i < len; i ++) {
+                dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1]);  // 这个没有偷，可以获得的最大值是上一次么有偷和偷了的之间的最大值
+                dp[i][1] = dp[i - 1][0] + nums[i];  // 这个偷了，上一个只能没有偷，最大是上一个的值加上这个的值
+            }
+            return Math.max(dp[len - 1][0], dp[len - 1][1]);
+        }
+
+        public int rob(int[] nums) {
+            int preNo = 0, preYes = 0;  // 之前的房子没被偷和偷了
+            for (int num: nums) {
+                int temp = preNo;  // 暂存没被偷的结果
+                preNo = Math.max(preNo, preYes);  // 更新当前没有偷的结果为之前没有偷和偷了的最大值
+                preYes = num + temp;
+            }
+            return Math.max(preNo, preYes);
+        }
+    }
+
+    // 213： House Robber II
+
+    /**
+     * You are a professional robber planning to rob houses along a street. Each house has a certain amount of money
+     * stashed. All houses at this place are arranged in a circle. That means the first house is the neighbor of the
+     * last one. Meanwhile, adjacent houses have a security system connected, and it will automatically contact the
+     * police if two adjacent houses were broken into on the same night.
+     *
+     * Given an integer array nums representing the amount of money of each house, return the maximum amount of money
+     * you can rob tonight without alerting the police.
+     *
+     * Example 1:
+     *
+     * Input: nums = [2,3,2]
+     * Output: 3
+     * Explanation: You cannot rob house 1 (money = 2) and then rob house 3 (money = 2), because they are adjacent houses.
+     * Example 2:
+     *
+     * Input: nums = [1,2,3,1]
+     * Output: 4
+     * Explanation: Rob house 1 (money = 1) and then rob house 3 (money = 3).
+     * Total amount you can rob = 1 + 3 = 4.
+     *
+     */
+
+    class Solution213 {
+        public int rob2(int[] nums) {
+            if (nums.length == 1) return nums[0];
+            return Math.max(rob(nums, 0, nums.length - 2), rob(nums, 1, nums.length - 1));
+        }
+
+        public int rob(int[] nums, int lo, int hi) {
+            // 边界
+            int preNo = 0, preYes = 0;  // 之前的房子没被偷和偷了
+            for (int i = lo; i <= hi; i++) {
+                int temp = preNo;  // 暂存没被偷的结果
+                preNo = Math.max(preNo, preYes);  // 更新当前没有偷的结果为之前没有偷和偷了的最大值
+                preYes = nums[i] + temp;
+            }
+            return Math.max(preNo, preYes);
+        }
+    }
     public static void main(String[] args) {
         System.out.println(Arrays.toString(new int[5]));
     }

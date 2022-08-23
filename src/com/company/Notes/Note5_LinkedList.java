@@ -928,7 +928,147 @@ public class Note5_LinkedList {
         }
     }
 
-    //21
+    // 148：Sort list
+
+    /**
+     * Given the head of a linked list, return the list after sorting it in ascending order.
+     *
+     * Example 1:
+     *
+     * Input: head = [4,2,1,3]
+     * Output: [1,2,3,4]
+     * Example 2:
+     *
+     *
+     * Input: head = [-1,5,3,4,0]
+     * Output: [-1,0,3,4,5]
+     * Example 3:
+     *
+     * Input: head = []
+     * Output: []
+     */
+    /**
+     * Definition for singly-linked list.
+     * public class ListNode {
+     *     int val;
+     *     ListNode next;
+     *     ListNode() {}
+     *     ListNode(int val) { this.val = val; }
+     *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+     * }
+     */
+    class Solution {
+        public ListNode sortList(ListNode head) {
+            if (head == null || head.next == null) return head;
+            ListNode middle = getMiddle(head);
+            ListNode next = middle.next;
+            middle.next = null;
+            return merge(sortList(head), sortList(next));
+        }
+
+        public ListNode getMiddle(ListNode head) {
+            ListNode slow = head;
+            ListNode fast = head;
+            while(slow.next != null && fast.next != null) {
+                slow = slow.next;
+                fast = fast.next.next;
+            }
+            return slow;
+        }
+
+        public ListNode merge(ListNode a, ListNode b) {
+            ListNode dummy = new ListNode(0);
+            ListNode cur = dummy;
+            while(a != null && b != null) {
+                if (a.val <= b.val) {
+                    cur.next = a;
+                    a = a.next;
+                } else {
+                    cur.next = b;
+                    b = b.next;
+                }
+                cur = cur.next;
+            }
+            if (a == null) cur.next = b;
+            else cur.next = a;
+            return dummy.next;
+        }
+
+    }
+
+    //143： rotate list
+
+    /**
+     * You are given the head of a singly linked-list. The list can be represented as:
+     *
+     * L0 → L1 → … → Ln - 1 → Ln
+     * Reorder the list to be on the following form:
+     *
+     * L0 → Ln → L1 → Ln - 1 → L2 → Ln - 2 → …
+     * You may not modify the values in the list's nodes. Only nodes themselves may be changed.
+     *
+     * Example 1:
+     *
+     *
+     * Input: head = [1,2,3,4]
+     * Output: [1,4,2,3]
+     * Example 2:
+     *
+     * Input: head = [1,2,3,4,5]
+     * Output: [1,5,2,4,3]
+     */
+
+    /**
+     * Definition for singly-linked list.
+     * public class ListNode {
+     *     int val;
+     *     ListNode next;
+     *     ListNode() {}
+     *     ListNode(int val) { this.val = val; }
+     *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+     * }
+     */
+    class Solution143 {
+        public void reorderList(ListNode head) {
+            if(head == null || head.next == null) return;
+            ListNode dummy = new ListNode(0);
+            dummy.next = head;
+            ListNode temp = null;  // temp为后一半
+            ListNode slow = head, fast = head;
+            ListNode l1 = head;  // l1是前一半
+            while(fast != null &&fast.next != null) {  // 找中点
+                temp = slow;
+                slow = slow.next;
+                fast = fast.next.next;
+            }
+            temp.next = null;  // 切断
+            ListNode l2 = reverse(slow);
+            merge(l1, l2);
+        }
+
+        private ListNode reverse(ListNode head) {
+            ListNode pre = null;
+            while (head != null) {
+                ListNode temp = head.next;
+                head.next = pre;
+                pre = head;
+                head = temp;
+            }
+            return pre;
+        }
+
+        public void merge(ListNode l1, ListNode l2) {
+            while (l1 != l2) {
+                ListNode n1 = l1.next;
+                ListNode n2 = l2.next;
+                l1.next = l2;
+                if (n1 == null) break;
+                l2.next = n1;
+                l1 = n1;
+                l2= n2;
+            }
+        }
+    }
 
     public static void main(String[] args) {
         String s = "aaa";
