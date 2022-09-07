@@ -1155,6 +1155,7 @@ public class Note8_Strings {
                 char temp = s[i];
                 s[i++] = s[j];
                 s[j--] = temp;
+
             }
         }
     }
@@ -1183,6 +1184,8 @@ public class Note8_Strings {
      */
     class Solution151 {
         public String reverseWords(String s) {
+            HashMap<String, Integer> map = new HashMap<>();
+
             if (s == null || s.length() == 0) return s;
             String[] words = s.trim().split("\\s+");  // 去掉前后的空格，分成string的array
             StringBuilder sb = new StringBuilder();
@@ -2708,7 +2711,205 @@ public class Note8_Strings {
                 return less20[num / 100] + " Hundred " + helper(num % 100);
             }
         }
-
     }
 
+    // 395： longest Substring with at least k repeating characters
+    /**
+     * Given a string s and an integer k, return the length of the longest substring of s such that the frequency of
+     * each character in this substring is greater than or equal to k.
+     *
+     * Example 1:http://localhost:8000
+     *
+     * Input: s = "aaabb", k = 3
+     * Output: 3
+     * Explanation: The longest substring is "aaa", as 'a' is repeated 3 times.
+     * Example 2:
+     *
+     * Input: s = "ababbc", k = 2
+     * Output: 5
+     * Explanation: The longest substring is "ababb", as 'a' is repeated 2 times and 'b' is repeated 3 times.
+     */
+    class Solution395 {
+        public int longestSubstring(String s, int k) {
+            int res = 0;
+            for (int numUniqueTarget = 1; numUniqueTarget <= 26; numUniqueTarget++) {
+                res = Math.max(res, helper(s, k, numUniqueTarget));  // 只有26个字母，遍历26次，每次允许出现多一个字母
+            }
+            return res;
+        }
+
+        public int helper(String s, int k, int numUniqueTarget) {
+            int [] count = new int[128];  // 记录出现字母的个数
+            int start = 0, end = 0;  // 头指针和尾指针
+            int numUnique = 0, res = 0, numNoLessThanK = 0;  // 出现不同字母的种类，结果，出现次数比K大的数
+
+            while (end < s.length()) {
+                if (count[s.charAt(end)]++ == 0) numUnique++;  // 如果尾指针的字母出现次数为0，出现的字母种类加一
+                if (count[s.charAt(end++)] == k) numNoLessThanK ++;  // 如果尾指针出现的字母个数等于k了，尾指针向后移（都会执行），numNoLessThanK加一
+                while (numUnique > numUniqueTarget) {  // 当出现不同字母的种类大于允许出现的字母种类时，要尝试start向后走
+                    if(count[s.charAt(start)]-- == k) numNoLessThanK--;  // 如果start指针出现的数量等于k，减小numNoLessThanK的个数
+                    if (count[s.charAt(start++)] == 0) numUnique--;  // 如果start指针的字母出现的数量等于0，出现的字母种类减一
+                }
+                if (numUnique == numUniqueTarget && numUnique == numNoLessThanK) {
+                    res = Math.max(end - start, res);
+                }
+            }
+            return res;
+        }
+    }
+
+    // 1143 Longest Common Subsequence
+    /**
+     * Given two strings text1 and text2, return the length of their longest common subsequence. If there is no
+     * common subsequence, return 0.
+     *
+     * A subsequence of a string is a new string generated from the original string with some characters (can be none)
+     * deleted without changing the relative order of the remaining characters.
+     *
+     * For example, "ace" is a subsequence of "abcde".
+     * A common subsequence of two strings is a subsequence that is common to both strings.
+     *
+     * Example 1:
+     *
+     * Input: text1 = "abcde", text2 = "ace"
+     * Output: 3
+     * Explanation: The longest common subsequence is "ace" and its length is 3.
+     * Example 2:
+     *
+     * Input: text1 = "abc", text2 = "abc"
+     * Output: 3
+     * Explanation: The longest common subsequence is "abc" and its length is 3.
+     * Example 3:
+     *
+     * Input: text1 = "abc", text2 = "def"
+     * Output: 0
+     * Explanation: There is no such common subsequence, so the result is 0.
+     *
+     */
+    class Solution1143 {
+        public int longestCommonSubsequence(String text1, String text2) {
+            int m=text1.length();
+            int n=text2.length();
+            int[][] dp=new int[m+1][n+1];
+
+            for(int i=1;i<=m;i++){
+                for(int j=1;j<=n;j++){
+                    if(text1.charAt(i-1)==text2.charAt(j-1))
+                        dp[i][j]=dp[i-1][j-1]+1;
+                    else
+                        dp[i][j]=Math.max(dp[i-1][j],dp[i][j-1]);
+                }
+            }
+            return dp[m][n];
+        }
+    }
+
+    public int longestPalindrome(String[] words) {
+        HashMap<String, Integer> same = new HashMap<>();
+        HashMap<String, Integer> dif = new HashMap<>();
+        int res = 0;
+
+        for (int i = 0; i < words.length; i ++) {
+            String s = words[i];
+            if (s.equals("#?")) continue;
+            if (s.charAt(0) == s.charAt(1)) {
+                same.put(s, same.getOrDefault(s, 0)+1);
+                continue;
+            }
+            for (int j = i + 1; j < words.length; j ++) {
+                String t = words[j];
+                if (s.charAt(0) == t.charAt(1) && s.charAt(1) == t.charAt(0)) {
+                    dif.put(s, dif.getOrDefault(s, 0)+1);
+                    words[j] = "#?";
+                    break;
+                }
+            }
+        }
+
+        boolean mid = false;
+        for (Map.Entry<String, Integer> entry : same.entrySet()) {
+            int time = entry.getValue();
+            if (time % 2 == 1) mid = true;
+            res += 2 * (time / 2 * 2);
+        }
+        for (Map.Entry<String, Integer> entry : dif.entrySet()) {
+            res += 4 * entry.getValue();
+        }
+        if (mid) res += 2;
+
+        return res;
+    }
+
+    // 159 Longest Substring with At Most Two Distinct Characters
+
+    /**
+     * Given a string s, return the length of the longest substring that contains at most two distinct characters.
+     *
+     *
+     *
+     * Example 1:
+     *
+     * Input: s = "eceba"
+     * Output: 3
+     * Explanation: The substring is "ece" which its length is 3.
+     * Example 2:
+     *
+     * Input: s = "ccaabbb"
+     * Output: 5
+     * Explanation: The substring is "aabbb" which its length is 5.
+     */
+    class Solution159 {
+        public int lengthOfLongestSubstringTwoDistinct(String s) {
+            int res = 0;
+            if (s == null || s.length() == 0) return res;
+            // 经典滑动窗口
+            int left = 0, right = 0;
+            HashMap<Character, Integer> map = new HashMap<>();
+
+            while (right < s.length()) {
+                map.put(s.charAt(right), right++);  // 先加入右边的字母
+                if (map.size() > 2) {  // 如果存的字母超过2了
+                    int leftMost = s.length();
+                    for (int val : map.values()) {  // 找到最左的字母
+                        leftMost = Math.min(leftMost, val);
+                    }
+                    map.remove(s.charAt(leftMost));  // 移除掉
+                    left = leftMost + 1;
+                }
+                res = Math.max(res, right - left);
+            }
+            return res;
+        }
+    }
+
+    // 243 shortest word distance
+
+    /**
+     * Given an array of strings wordsDict and two different strings that already exist in the array word1 and word2,
+     * return the shortest distance between these two words in the list.
+     *
+     *Input: wordsDict = ["practice", "makes", "perfect", "coding", "makes"], word1 = "coding", word2 = "practice"
+     * Output: 3
+     * Example 2:
+     *
+     * Input: wordsDict = ["practice", "makes", "perfect", "coding", "makes"], word1 = "makes", word2 = "coding"
+     * Output: 1
+     */
+    class Solution243 {
+        public int shortestDistance(String[] wordsDict, String word1, String word2) {
+            int res = wordsDict.length;
+            int a = -1, b = -1;
+            for (int i = 0; i < wordsDict.length; i++) {
+                if (wordsDict[i].equals(word1)) a = i;
+                else if (wordsDict[i].equals(word2)) b = i;
+                if (a != -1 && b != -1) res = Math.min(res, Math.abs(a - b));
+            }
+            return res;
+        }
+    }
+
+    public static void main(String[] args) {
+        String[] words = new String[]{"lc","cl","gg"};
+
+    }
 }

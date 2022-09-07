@@ -248,16 +248,16 @@ public class Note2_Math {
         if (num1 == null || num2 == null ) return "0";
         int[] digits = new int[num1.length() + num2.length()];
         for (int i = num1.length() -1; i >= 0 ; i--) {
-            for (int j = num2.length() -1; j >= 0; j++) {
+            for (int j = num2.length() -1; j >= 0; j--) {
                 int product = (num1.charAt(i) - '0') * (num2.charAt(j) - '0');
-                int p1 = i + j, p2 = i + j + 1;
-                int sum = product + digits[p2];
-                digits[p1] += sum/10;
+                int p1 = i + j, p2 = i + j + 1;  // 相乘之后掉落的位置
+                int sum = product + digits[p2];  // 相乘的数加上之前的进位
+                digits[p1] += sum/10;  // 进位
                 digits[p2] = sum % 10;
             }
         }
         StringBuilder res = new StringBuilder();
-        // digits: [0, 0, 1, 0, 3]
+        // digits: [0, 0, 1, 0, 3] 跳过开头的0
         for (int digit : digits){
             if(!(digit == 0 && res.length() == 0)) {
                 res.append(digit);
@@ -553,6 +553,75 @@ public class Note2_Math {
                 else n = squareSum;
             }
             return false;
+        }
+    }
+
+    // 65： Valid number
+
+    /**
+     * A valid number can be split up into these components (in order):
+     *
+     * A decimal number or an integer.
+     * (Optional) An 'e' or 'E', followed by an integer.
+     * A decimal number can be split up into these components (in order):
+     *
+     * (Optional) A sign character (either '+' or '-').
+     * One of the following formats:
+     * One or more digits, followed by a dot '.'.
+     * One or more digits, followed by a dot '.', followed by one or more digits.
+     * A dot '.', followed by one or more digits.
+     * An integer can be split up into these components (in order):
+     *
+     * (Optional) A sign character (either '+' or '-').
+     * One or more digits.
+     * For example, all the following are valid numbers: ["2", "0089", "-0.1", "+3.14", "4.", "-.9", "2e10", "-90E3",
+     * "3e+7", "+6e-1", "53.5e93", "-123.456e789"], while the following are not valid numbers: ["abc", "1a", "1e", "e3",
+     * "99e2.5", "--6", "-+3", "95a54e53"].
+     *
+     * Given a string s, return true if s is a valid number.
+     *
+     * Example 1:
+     *
+     * Input: s = "0"
+     * Output: true
+     * Example 2:
+     *
+     * Input: s = "e"
+     * Output: false
+     * Example 3:
+     *
+     * Input: s = "."
+     * Output: false
+     * @param args
+     */
+
+    class Solution {
+        public boolean isNumber(String s) {
+            s = s.toLowerCase().trim();
+            boolean numberSeen = false;  // 数字的出现
+            boolean pointSeen = false;  // 小数点的出现
+            boolean eSeen = false;  // e的出现
+            boolean numberAfterE = true;  // e之后的数字出现, 一开始位true, 可以没有e. 但是如果出现e, numberAfterE比位false
+            for (int i = 0; i < s.length(); i++) {
+                if (s.charAt(i) >= '0' && s.charAt(i) <= '9') {
+                    numberSeen = true;
+                    numberAfterE = true;
+                } else if (s.charAt(i) == '.') {
+                    // 在. 之前出现.或者出现了e都非法
+                    if (eSeen || pointSeen) return false;
+                    pointSeen = true;
+                } else if (s.charAt(i) == 'e') {
+                    // 如果在e之前出现了e或者没有出现数字非法
+                    if(eSeen || !numberSeen) return false;
+                    eSeen = true;
+                    numberAfterE = false;
+                } else if (s.charAt(i) == '+' || s.charAt(i) == '-') {
+                    if (i != 0 && s.charAt(i - 1) != 'e') return false;
+                } else {
+                    return false;
+                }
+            }
+            return numberSeen &&  numberAfterE;
         }
     }
 

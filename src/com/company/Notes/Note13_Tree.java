@@ -5,7 +5,7 @@ import com.sun.source.tree.Tree;
 import java.util.*;
 
 public class Note13_Tree {
-    public class TreeNode{
+    public static class TreeNode{
         int val;
         TreeNode left;
         TreeNode right;
@@ -1284,7 +1284,7 @@ public class Note13_Tree {
         }
     }
 
-    // 273： Binary search tree iterator
+    // 173： Binary search tree iterator
     /**
      * Implement the BSTIterator class that represents an iterator over the in-order traversal of a binary search tree (BST):
      *
@@ -1332,10 +1332,10 @@ public class Note13_Tree {
             while(cur != null) {
                 stack.push(cur);
                 cur = cur.left;
-            }
-            cur = stack.pop();
+            }  // 相当于中序遍历，先走到最左边
+            cur = stack.pop();  // 再处理当前的值
             int val = cur.val;
-            cur = cur.right;
+            cur = cur.right;  // 最后指针向右走
             return val;
         }
 
@@ -1380,5 +1380,42 @@ public class Note13_Tree {
             convertBST(root.left);
             return root;
         }
+    }
+
+    // 108： Convert Sorted Array to Binary Search Tree
+
+    /**
+     * Given an integer array nums where the elements are sorted in ascending order, convert it to a height-balanced
+     * binary search tree.
+     *
+     * A height-balanced binary tree is a binary tree in which the depth of the two subtrees of every node
+     * never differs by more than one.
+     *
+     * Input: nums = [-10,-3,0,5,9]
+     * Output: [0,-3,9,-10,null,5]
+     * Explanation: [0,-10,5,null,-3,null,9] is also accepted:
+     */
+    /**
+     * 二叉搜索树的性质为中间节点大于左边孩子，小于右边孩子，排完序的数组是可以用二分法找到中间节点的
+     */
+    class Solution108 {
+        public TreeNode sortedArrayToBST(int[] nums) {
+            if (nums == null || nums.length == 0) return null;
+            return helper(nums, 0, nums.length - 1);
+        }
+
+        public TreeNode helper(int[] nums, int left, int right) {
+            if (left > right) return null;
+            int mid = (right - left) / 2 + left;
+            TreeNode node = new TreeNode(nums[mid]);
+            node.left = helper(nums, left, mid - 1);
+            node.right = helper(nums, mid + 1, right);
+            return node;
+        }
+    }
+
+
+    public static void main(String[] args) {
+        TreeNode root = new TreeNode(0);
     }
 }

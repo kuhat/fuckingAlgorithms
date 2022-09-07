@@ -1001,8 +1001,10 @@ public class Note18_DP {
 
         /**
          *
-         * 如果s[i]不为0，则可以单独解码s[i]，由于求的是方案数，如果确定了第i个数字的翻译方式，那么解码前i个数字和解码前i - 1个数的方案数就是相同的，即f[i] = f[i - 1]。(s[]数组下标从1开始)
-         * 将s[i]和s[i - 1]组合起来解码（ 组合的数字范围在10 ~ 26之间 ）。如果确定了第i个数和第i - 1个数的解码方式，那么解码前i个数字和解码前i - 2个数的方案数就是相同的，即f[i] = f[i - 2]。(s[]数组下标从1开始)
+         * 如果s[i]不为0，则可以单独解码s[i]，由于求的是方案数，如果确定了第i个数字的翻译方式，那么解码前i个数字和解码前i - 1个数的方案数就是相同的，
+         * 即f[i] = f[i - 1]。(s[]数组下标从1开始)
+         * 将s[i]和s[i - 1]组合起来解码（ 组合的数字范围在10 ~ 26之间 ）。如果确定了第i个数和第i - 1个数的解码方式，那么解码前i个数字
+         * 和解码前i - 2个数的方案数就是相同的，即f[i] = f[i - 2]。(s[]数组下标从1开始)
          *
          * @param s
          * @return
@@ -1629,10 +1631,7 @@ public class Note18_DP {
      * Output: 12
      * Explanation: Rob house 1 (money = 2), rob house 3 (money = 9) and rob house 5 (money = 1).
      * Total amount you can rob = 2 + 9 + 1 = 12.
-     *
      */
-
-
 
     class Solution198 {
 
@@ -1712,6 +1711,277 @@ public class Note18_DP {
             return Math.max(preNo, preYes);
         }
     }
+
+    // 256： paint house
+
+    /**
+     * 假如有一排房子，共 n 个，每个房子可以被粉刷成红色、蓝色或者绿色这三种颜色中的一种，你需要粉刷所有的房子并且使其相邻的两个房子颜色不能相同。
+     *
+     * 当然，因为市场上不同颜色油漆的价格不同，所以房子粉刷成不同颜色的花费成本也是不同的。每个房子粉刷成不同颜色的花费是以一个 n x 3 的矩阵来表示的。
+     *
+     * 注意：
+     *
+     * 所有花费均为正整数。
+     *
+     * 示例：
+     *
+     * 输入: [[17,2,17],[16,16,5],[14,3,19]]
+     * 输出: 10
+     * 解释: 将 0 号房子粉刷成蓝色，1 号房子粉刷成绿色，2 号房子粉刷成蓝色。
+     *      最少花费: 2 + 5 + 3 = 10。
+     */
+    class paintHouse{
+
+        // cost[i][j]
+        // i: house
+        // j: color
+        public int minCost(int[][] costs) {
+            if (costs == null || costs[0].length == 0) return 0;
+            for (int i = 1; i < costs.length; i++) {
+                // 当前的房子如果选择涂了红色，花费为前一个房子涂成绿色或者蓝色的最小值（不能为一样的颜色）
+                costs[i][0] += Math.min(costs[i - 1][1], costs[i - 1][2]);
+                costs[i][1] += Math.min(costs[i - 1][0], costs[i - 1][2]);
+                costs[i][2] += Math.min(costs[i - 1][1], costs[i - 1][0]);
+            }
+            return Math.min(Math.min(costs[costs.length - 1][0], costs[costs.length - 1][1]), costs[costs.length][2]);
+        }
+    }
+
+    // 486: predict the winner
+
+    /**
+     * You are given an integer array nums. Two players are playing a game with this array: player 1 and player 2.
+     *
+     * Player 1 and player 2 take turns, with player 1 starting first. Both players start the game with a score of 0.
+     * At each turn, the player takes one of the numbers from either end of the array (i.e., nums[0] or nums[nums.length - 1])
+     * which reduces the size of the array by 1. The player adds the chosen number to their score. The game ends when
+     * there are no more elements in the array.
+     *
+     * Return true if Player 1 can win the game. If the scores of both players are equal, then player 1 is still the
+     * winner, and you should also return true. You may assume that both players are playing optimally.
+     *
+     * Example 1:
+     *
+     * Input: nums = [1,5,2]
+     * Output: false
+     * Explanation: Initially, player 1 can choose between 1 and 2.
+     * If he chooses 2 (or 1), then player 2 can choose from 1 (or 2) and 5. If player 2 chooses 5, then player 1 will
+     * be left with 1 (or 2).
+     * So, final score of player 1 is 1 + 2 = 3, and player 2 is 5.
+     * Hence, player 1 will never be the winner and you need to return false.
+     * Example 2:
+     *
+     * Input: nums = [1,5,233,7]
+     * Output: true
+     * Explanation: Player 1 first chooses 1. Then player 2 has to choose between 5 and 7. No matter which number player
+     * 2 choose, player 1 can choose 233.
+     * Finally, player 1 has more score (234) than player 2 (12), so you need to return True representing player1 can win.
+     */
+    class Solution486 {
+        public boolean PredictTheWinner(int[] nums) {
+            return helper(nums, 0, nums.length - 1) >= 0;
+        }
+
+        private int helper(int[] nums, int start, int end) {
+            if (start == end ) return nums[start];
+            // 返回第一个人的和第二个人的差值，如果大于0，第一个人可以赢
+            return Math.max(nums[start] - helper(nums, start + 1, end), nums[end] - helper(nums, start, end - 1));
+        }
+
+        // memorization recursion
+        public boolean predictTheWinner1(int[] nums) {
+            return helper(nums, 0, nums.length - 1, new Integer[nums.length][nums.length]) >= 0;
+        }
+
+        public int helper(int[] nums, int start, int end ,Integer[][] dp) {
+            if (dp[start][end] == null) {
+                if (start == end ) return nums[start];
+                return dp[start][end] = Math.max(nums[start] - helper(nums, start + 1, end), nums[end] - helper(nums, start, end - 1));
+            }
+            return dp[start][end];
+        }
+
+        // DP
+//        public boolean
+
+    }
+
+    // 464: Can I win
+
+    /**
+     * In the "100 game" two players take turns adding, to a running total, any integer from 1 to 10. The player who
+     * first causes the running total to reach or exceed 100 wins.
+     *
+     * What if we change the game so that players cannot re-use integers?
+     *
+     * For example, two players might take turns drawing from a common pool of numbers from 1 to 15 without replacement
+     * until they reach a total >= 100.
+     *
+     * Given two integers maxChoosableInteger and desiredTotal, return true if the first player to move can force a win,
+     * otherwise, return false. Assume both players play optimally.
+     *
+     * Example 1:
+     *
+     * Input: maxChoosableInteger = 10, desiredTotal = 11
+     * Output: false
+     * Explanation:
+     * No matter which integer the first player choose, the first player will lose.
+     * The first player can choose an integer from 1 up to 10.
+     * If the first player choose 1, the second player can only choose integers from 2 up to 10.
+     * The second player will win by choosing 10 and get a total = 11, which is >= desiredTotal.
+     * Same with other integers chosen by the first player, the second player will always win.
+     * Example 2:
+     *
+     * Input: maxChoosableInteger = 10, desiredTotal = 0
+     * Output: true
+     * Example 3:
+     *
+     * Input: maxChoosableInteger = 10, desiredTotal = 1
+     * Output: true
+     */
+    class Solution464 {
+        public boolean canIWin(int maxChoosableInteger, int desiredTotal) {
+            if (desiredTotal <= 0) return true;
+            if (maxChoosableInteger * (1 +maxChoosableInteger) / 2 < desiredTotal) return false;
+            return true;
+        }
+    }
+
+    //44 : wildcard matching 非常非常重要，facebook经常出现
+
+    /**
+     * Given an input string (s) and a pattern (p), implement wildcard pattern matching with support for '?' and '*' where:
+     *
+     * '?' Matches any single character.
+     * '*' Matches any sequence of characters (including the empty sequence).
+     * The matching should cover the entire input string (not partial).
+     *
+     * Example 1:
+     *
+     * Input: s = "aa", p = "a"
+     * Output: false
+     * Explanation: "a" does not match the entire string "aa".
+     * Example 2:
+     *
+     * Input: s = "aa", p = "*"
+     * Output: true
+     * Explanation: '*' matches any sequence.
+     * Example 3:
+     *
+     * Input: s = "cb", p = "?a"
+     * Output: false
+     * Explanation: '?' matches 'c', but the second letter is 'a', which does not match 'b'.
+     */
+
+    class Solution44 {
+
+        /*
+         s: bbacc  match = 0 sp = 0 | match = 1, sp = 1
+         p: *c     star = 0, pp = 1 | pp = 1
+
+
+         */
+        public boolean isMatch(String s, String p) {
+            int sp = 0;
+            int pp = 0;
+            int match = 0;  // 当前匹配到的位置
+            int star = -1;  // * 出现的位置
+            while (sp < s.length()) {
+                // 如果都匹配或者？可以代表任何一个字母可以进行匹配
+                if ( pp < p.length() && (s.charAt(sp) == p.charAt(pp) || p.charAt(pp) == '?')) {
+                    sp++;
+                    pp++;
+                } else if (pp < p.length() && p.charAt(pp) == '*') {
+                    // 只要是 *可以匹配0个或多个
+                    star = pp;  // 记录当前*的起始位置
+                    match = sp;  // match等于s的位置
+                    pp++;  // 移动到下一个位置
+                } else if (star != -1) {
+                    // 如果有star了，可以直接跳过当前的s，match++，
+                    pp = star + 1;
+                    match++;
+                    sp = match;
+                } else return false;
+            }
+            // sp 一定会走到头 pp 不一定走到头
+            while (pp < p.length() && p.charAt(pp) == '*') pp++;
+            return pp == p.length();
+        }
+    }
+
+    // 472： Concatenated words
+
+    /**
+     * Given an array of strings words (without duplicates), return all the concatenated words in the given list of words.
+     *
+     * A concatenated word is defined as a string that is comprised entirely of at least two shorter words in the given array.
+     *
+     * Example 1:
+     *
+     * Input: words = ["cat","cats","catsdogcats","dog","dogcatsdog","hippopotamuses","rat","ratcatdogcat"]
+     * Output: ["catsdogcats","dogcatsdog","ratcatdogcat"]
+     * Explanation: "catsdogcats" can be concatenated by "cats", "dog" and "cats";
+     * "dogcatsdog" can be concatenated by "dog", "cats" and "dog";
+     * "ratcatdogcat" can be concatenated by "rat", "cat", "dog" and "cat".
+     * Example 2:
+     *
+     * Input: words = ["cat","dog","catdog"]
+     * Output: ["catdog"]
+     */
+    class Solution472 {
+
+        TrieNode root = new TrieNode();
+
+        class TrieNode {
+            boolean isWord;
+            TrieNode[] children;
+            public TrieNode() {
+                isWord = false;
+                children = new TrieNode[26];
+            }
+        }
+
+        public List<String> findAllConcatenatedWordsInADict(String[] words) {
+            List<String> res = new ArrayList<>();
+            build(words);  // 构建字典树
+            for (String word : words) {   // 每个单词都遍历寻找
+                if (search(word, 0, 0)) res.add(word);
+            }
+            return res;
+        }
+
+        // 构建trie树子
+        public void build(String[] dict) {
+            for (String word : dict) {  // 每个单词都遍历
+                if (word == null || word.length() == 0) continue;
+                TrieNode cur = root;  // 从根节点开始
+                for (int i = 0; i < word.length(); i ++) {  // 一个字母一个字母的走
+                    char c = word.charAt(i);
+                    // 如果当前字母的节点是空，新建一个节点
+                    if (cur.children[c - 'a'] == null) cur.children[c - 'a'] = new TrieNode();
+                    cur = cur.children[c - 'a'];  // cur向下走一格
+                }
+                cur.isWord = true;
+            }
+        }
+
+        public boolean search(String word, int index, int count) {
+            TrieNode cur = root;
+            for (int i = index; i < word.length(); i++) {
+                if (cur.children[word.charAt(i) - 'a'] == null) return false;  // 单词没有这个分支，跳过
+                cur = cur.children[word.charAt(i) - 'a'];  // 向下走
+                // 当前这个地方是单词的时候 再从下一个单词的起始位置开始搜索，同时count + 1
+                if (cur.isWord && search(word, i + 1, count + 1)) {
+                    return true;
+                }
+            }
+            return count >= 1 && cur.isWord;
+        }
+
+    }
+
+
+
     public static void main(String[] args) {
         System.out.println(Arrays.toString(new int[5]));
     }

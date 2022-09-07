@@ -41,6 +41,8 @@ public class Note14_Trie {
                 }
                 cur = cur.children[c - 'a'];
             }
+
+
             return cur.isWord;
         }
 
@@ -81,10 +83,12 @@ public class Note14_Trie {
      * or vertically neighboring. The same letter cell may not be used more than once in a word.
      * <p>
      * <p>
-     * Input: board = [["o","a","a","n"],
-     * ["e","t","a","e"],
-     * ["i","h","k","r"],
-     * ["i","f","l","v"]],
+     * Input:
+     * board = [["o","a","a","n"],
+     *          ["e","t","a","e"],
+     *          ["i","h","k","r"],
+     *          ["i","f","l","v"]],
+     *
      * words = ["oath","pea","eat","rain"]
      * Output: ["eat","oath"]
      */
@@ -224,5 +228,32 @@ public class Note14_Trie {
             }
         }
     }
+
+    // 472： Concatenated words
+
+    /**
+     * Given an array of strings words (without duplicates), return all the concatenated words in the given list of words.
+     *
+     * A concatenated word is defined as a string that is comprised entirely of at least two shorter words in the given array.
+     *
+     * Example 1:
+     *
+     * Input: words = ["cat","cats","catsdogcats","dog","dogcatsdog","hippopotamuses","rat","ratcatdogcat"]
+     * Output: ["catsdogcats","dogcatsdog","ratcatdogcat"]
+     * Explanation: "catsdogcats" can be concatenated by "cats", "dog" and "cats";
+     * "dogcatsdog" can be concatenated by "dog", "cats" and "dog";
+     * "ratcatdogcat" can be concatenated by "rat", "cat", "dog" and "cat".
+     * Example 2:
+     *
+     * Input: words = ["cat","dog","catdog"]
+     * Output: ["catdog"]
+     */
+    class Solution472 {
+
+
+
+
+    }
+
 
 }

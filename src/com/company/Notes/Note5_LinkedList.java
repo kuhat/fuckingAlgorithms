@@ -969,7 +969,7 @@ public class Note5_LinkedList {
         public ListNode getMiddle(ListNode head) {
             ListNode slow = head;
             ListNode fast = head;
-            while(slow.next != null && fast.next != null) {
+            while(fast.next != null && fast.next.next != null) {
                 slow = slow.next;
                 fast = fast.next.next;
             }
@@ -1067,6 +1067,50 @@ public class Note5_LinkedList {
                 l1 = n1;
                 l2= n2;
             }
+        }
+    }
+
+    // 25: Reverse Nodes in K group
+
+    /**
+     *
+     * Given the head of a linked list, reverse the nodes of the list k at a time, and return the modified list.
+     *
+     * k is a positive integer and is less than or equal to the length of the linked list. If the number of nodes is
+     * not a multiple of k then left-out nodes, in the end, should remain as it is.
+     *
+     * You may not alter the values in the list's nodes, only nodes themselves may be changed.
+     *
+     * Example 1:
+     *
+     * Input: head = [1,2,3,4,5], k = 2
+     * Output: [2,1,4,3,5]
+     * Example 2:
+     *
+     * Input: head = [1,2,3,4,5], k = 3
+     * Output: [3,2,1,4,5]
+     */
+    class Solution25 {
+        public ListNode reverseKGroup(ListNode head, int k) {
+            if (head == null || head.next == null) return head;
+            int count = 0;
+            ListNode cur = head;
+
+            while(cur != null && count != k) {
+                cur = cur.next;
+                count ++;
+            }
+            if (count == k) {
+                cur = reverseKGroup(cur, k);
+                while (count -- > 0) {
+                    ListNode tmp = head.next;
+                    head.next = cur;
+                    cur = head;
+                    head = tmp;
+                }
+                head =cur;
+            }
+            return head;
         }
     }
 

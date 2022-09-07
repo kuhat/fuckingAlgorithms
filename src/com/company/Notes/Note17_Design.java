@@ -1,7 +1,6 @@
 package com.company.Notes;
 
-import java.util.HashMap;
-import java.util.Random;
+import java.util.*;
 
 public class Note17_Design {
 
@@ -199,4 +198,118 @@ public class Note17_Design {
         }
     }
 
+    // 588: file system : Amazon Trie Tree
+    /**
+     * Design a data structure that simulates an in-memory file system.
+     *
+     * Implement the FileSystem class:
+     *
+     * FileSystem() Initializes the object of the system.
+     * List<String> ls(String path)
+     * If path is a file path, returns a list that only contains this file's name.
+     * If path is a directory path, returns the list of file and directory names in this directory.
+     * The answer should in lexicographic order.
+     * void mkdir(String path) Makes a new directory according to the given path. The given directory path does not exist.
+     * If the middle directories in the path do not exist, you should create them as well.
+     * void addContentToFile(String filePath, String content)
+     * If filePath does not exist, creates that file containing given content.
+     * If filePath already exists, appends the given content to original content.
+     * String readContentFromFile(String filePath) Returns the content in the file at filePath.
+     *
+     * Example 1:
+     *
+     * Input
+     * ["FileSystem", "ls", "mkdir", "addContentToFile", "ls", "readContentFromFile"]
+     * [[], ["/"], ["/a/b/c"], ["/a/b/c/d", "hello"], ["/"], ["/a/b/c/d"]]
+     * Output
+     * [null, [], null, null, ["a"], "hello"]
+     *
+     * Explanation
+     * FileSystem fileSystem = new FileSystem();
+     * fileSystem.ls("/");                         // return []
+     * fileSystem.mkdir("/a/b/c");
+     * fileSystem.addContentToFile("/a/b/c/d", "hello");
+     * fileSystem.ls("/");                         // return ["a"]
+     * fileSystem.readContentFromFile("/a/b/c/d"); // return "hello"
+     */
+    /*
+    用Trie 树来解决。
+    有两种类型，文件和文件夹，用isFile来判断当前节点是否为文件，还需要content来存储类容
+    不知道有多少个节点，用hashMap来存储节点
+     */
+
+    class FileSystem588 {
+
+        Node root;
+
+        public FileSystem588() {
+            root = new Node("/");
+        }
+
+        public List<String> ls(String path) {
+            Node node = traverse(path);
+            List<String> res = new ArrayList<>();
+            if (node.isFile) {
+                res.add(node.name);
+            } else {
+                for (String child : node.children.keySet()) res.add(child);
+            }
+            Collections.sort(res);
+            return res;
+        }
+
+        public void mkdir(String path) {
+            traverse(path);
+        }
+
+        public void addContentToFile(String filePath, String content) {
+            Node node = traverse(filePath);
+            node.isFile = true;
+            node.content.append(content);
+        }
+
+        public String readContentFromFile(String filePath) {
+            Node node = traverse(filePath);
+            return node.content.toString();
+        }
+
+        public Node traverse(String filePath) {
+            String[] path = filePath.split("/");  // 将当前的文件路径分隔
+            Node cur = root;  // 从根节点开始遍历
+            for (int i = 1; i < path.length; i++) {
+                if (!cur.children.containsKey(path[i])) {  // 如果当前的孩子节点没有这个key, 加入
+                    Node node =new Node(path[i]);
+                    cur.children.put(path[i], node);
+                }
+                cur = cur.children.get(path[i]);  // cur向下走
+            }
+            return cur;
+        }
+
+        class Node{
+
+            boolean isFile;  // 判断当前节点是否为一个文件
+            String name;   // 当前节点的名字
+            HashMap<String, Node> children;  // 当前节点的孩子, key为名字， value为节点
+            StringBuilder content;  // 节点的内容
+
+            public Node(String name) {
+                this.name = name;
+                isFile = false;
+                children = new HashMap<>();
+                content = new StringBuilder();
+            }
+        }
+
+
+    }
+
+/**
+ * Your FileSystem object will be instantiated and called as such:
+ * FileSystem obj = new FileSystem();
+ * List<String> param_1 = obj.ls(path);
+ * obj.mkdir(path);
+ * obj.addContentToFile(filePath,content);
+ * String param_4 = obj.readContentFromFile(filePath);
+ */
 }

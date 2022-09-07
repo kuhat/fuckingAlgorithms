@@ -2,10 +2,7 @@ package com.company.Notes;
 
 import jdk.jshell.execution.Util;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class Note11_Backtracking {
     // LeetCode 869: Reorder of power 2
@@ -332,6 +329,69 @@ public class Note11_Backtracking {
         }
     }
 
+    // 52: N-QueensII
+    /**
+     * The n-queens puzzle is the problem of placing n queens on an n x n chessboard such that no two queens attack each other.
+     *
+     * Given an integer n, return all distinct solutions to the n-queens puzzle. You may return the answer in any order.
+     *
+     * Each solution contains a distinct board configuration of the n-queens' placement, where 'Q' and '.' both indicate a queen and an empty space, respectively.
+     *
+     * Example 1:
+     *
+     *
+     * Input: n = 4
+     * Output: [[".Q..","...Q","Q...","..Q."],["..Q.","Q...","...Q",".Q.."]]
+     * Explanation: There exist two distinct solutions to the 4-queens puzzle as shown above
+     * Example 2:
+     *
+     * Input: n = 1
+     * Output: [["Q"]]
+     */
+    class Solution52{
+        /**
+         *
+         * .Q.. [0,1]  5  col - row + n 相等的话，他们属于从左上到右下这个对角线上
+         * ..Q. [1,2]  5
+         * ..Q. [2,2]  4  row + col这两个值相等，他们属于左下到右上这个对角线
+         * .Q.. [3,1]  4
+         *
+         */
+
+
+        int res = 0;
+        public int totalNQueens(int n) {
+            boolean[] cols = new boolean[n];
+            boolean[] d1 = new boolean[2 * n];  // \ 左上到右下
+            boolean[] d2 = new boolean[2 * n];  // / 左下到右上
+            helper(0, cols, d1, d2, n);
+            return res;
+        }
+
+        public void helper(int row, boolean[] cols, boolean[] d1, boolean[] d2, int n) {
+            if (row == n) {
+                res++;
+                return;
+            }
+            for (int col = 0 ; col < n; col++) {
+                int id1 = col - row + n;
+                int id2 = col + row;
+                if (cols[col] || d1[id1] || d2[id2]) continue;  // 在同一列上之前有了就不行，在同意个对角线
+                cols[col] = true;
+                d1[id1] = true;
+                d2[id2] = true;
+                helper(row + 1, cols, d1, d2, n);
+                cols[col] = false;
+                d1[id1] = false;
+                d2[id2] = false;
+
+            }
+
+        }
+
+    }
+
+
     // 46: Permutation
 
     /**
@@ -478,7 +538,7 @@ public class Note11_Backtracking {
             }
         }
 
-        // 17
+        // 17 Letter Combinations of a phone number 重要
 
         /**
          * Given a string containing digits from 2-9 inclusive, return all possible letter combinations that the number
@@ -502,13 +562,13 @@ public class Note11_Backtracking {
             }
 
             public void helper(List<String> res, String s, String digits, int index) {
-                if (s.length() == digits.length()) {
+                if (index == digits.length()) {  // 返回条件是当s的长度等于输入的digits的长度时
                     res.add(s);
                     return;
                 }
                 String letters = mapping[digits.charAt(index) - '0'];
                 for (int i = 0; i < letters.length(); i++) {
-                    helper(res, digits, s + letters.charAt(i), index + 1);
+                    helper(res, s + letters.charAt(i), digits, index + 1);
                 }
             }
         }
@@ -1051,6 +1111,85 @@ public class Note11_Backtracking {
             nums[i++] = nums[j];
             nums[j++] = temp;
         }
+    }
+
+
+    // 491: Increasing Subsequence
+
+    /**
+     * Given an integer array nums, return all the different possible increasing subsequences of the given array with
+     * at least two elements. You may return the answer in any order.
+     *
+     * The given array may contain duplicates, and two equal integers should also be considered a special case of increasing sequence.
+     *
+     * Example 1:
+     *
+     * Input: nums = [4,6,7,7]
+     * Output: [[4,6],[4,6,7],[4,6,7,7],[4,7],[4,7,7],[6,7],[6,7,7],[7,7]]
+     * Example 2:
+     *
+     * Input: nums = [4,4,3,2,1]
+     * Output: [[4,4]]
+     */
+    class Solution491 {
+        public List<List<Integer>> findSubsequences(int[] nums) {
+            HashSet<List<Integer>> res = new HashSet<>();
+            if (nums == null || nums.length == 0) return new ArrayList<>();
+            helper(res, new ArrayList<>(), nums, 0);
+            return new ArrayList<>(res);
+        }
+
+        public void helper(HashSet<List<Integer>> res, List<Integer> list, int[] nums, int start) {
+            if (list.size() >= 2) {  // 返回的条件是list的长度至少大于2
+                res.add(new ArrayList<>(list));
+            }
+            for (int i = start; i < nums.length; i++) {
+                if (list.size() == 0 || list.get(list.size() - 1) <= nums[i]) {
+                    // list的长度为0或者最后一个元素比正在遍历的元素小就可以加入
+                    list.add(nums[i]);
+                    helper(res, list, nums, i + 1);
+                    list.remove(list.size() - 1);
+                }
+            }
+        }
+    }
+
+    // 320: 列举单词的全部缩写
+
+    /**
+     * 示例：
+     * 输入: "word"
+     * 输出:
+     * ["word", "1ord", "w1rd", "wo1d", "wor1", "2rd", "w2d",
+     * "wo2", "1o1d", "1or1", "w1r1", "1o2", "2r1", "3d", "w3", "4"]
+     *
+     */
+    class Solution320{
+        /**
+         * 有两种情况：1. 保留当前的字母
+         *           2. 变成数字count
+         *
+         *
+         * @param word
+         * @return
+         */
+        public List<String> generateAbbreviation(String word) {
+            List<String> res = new ArrayList<>();
+            helper(res, word, 0, "", 0);
+            //            pos: 遍历到哪里的位置, cur: 当前的字母内容
+            return res;
+        }
+
+        public void helper(List<String> res, String word, int pos, String cur, int count) {
+            if (pos == word.length()) {
+                if (count > 0) cur += count;
+                res.add(cur);
+            } else  {
+                helper(res, word, pos + 1, cur, count + 1);  // Pos: 每次遍历都需要把位置向前进一位，count+1: 把字母变成数字了
+                helper(res, word, pos + 1, cur + (count > 0 ? count: "") + word.charAt(pos), 0);  // 保留数字，如果count有，就保留count，然后加上当前的数字
+            }
+        }
+
     }
 
 

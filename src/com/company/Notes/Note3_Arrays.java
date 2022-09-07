@@ -2381,13 +2381,655 @@ public class Note3_Arrays {
 
     }
 
+    // 54: Spiral Matrix
 
-    public static void main(String[] args) {
-//        Solution347.topKFrequent(new int[]{1, 1, 1, 2, 2, 3}, 2);
-//        Solution26.removeDuplicates(new int[]{0, 0, 1, 1, 1, 2, 2, 3, 3, 4});
-        pivotIndex(new int[]{1,7,3,6,5,6});
+    /**
+     * Given an m x n matrix, return all elements of the matrix in spiral order.
+     *
+     *
+     *
+     * Example 1:
+     *
+     *
+     * Input: matrix = [[1,2,3],[4,5,6],[7,8,9]]
+     * Output: [1,2,3,6,9,8,7,4,5]
+     * Example 2:
+     *
+     *
+     * Input: matrix = [[1,2,3,4],[5,6,7,8],[9,10,11,12]]
+     * Output: [1,2,3,4,8,12,11,10,9,5,6,7]
+     */
+
+    class Solution54 {
+        public List<Integer> spiralOrder(int[][] matrix) {
+            List<Integer> res = new ArrayList<>();
+            if (matrix == null || matrix.length == 0 || matrix[0] == null || matrix[0].length == 0) return res;
+
+            int rowEnd = matrix.length - 1, colEnd = matrix[0].length - 1;
+            int rowBegin = 0, colBegin = 0;
+            while (rowBegin <= rowEnd && colBegin <= colEnd) {
+                for (int i = colBegin; i < colEnd; i++) res.add(matrix[rowBegin][i]);
+                rowBegin++;
+                for (int i = rowBegin; i <= rowEnd; i++) res.add(matrix[i][colEnd]);
+                colEnd--;
+                if (rowBegin <= rowEnd) {
+                    for (int i = colEnd; i >= rowBegin; i--) res.add(matrix[rowEnd][i]);
+                }
+                rowEnd--;
+                if (colBegin <= colEnd) {
+                    for (int i = rowEnd; i >= rowBegin; i--) res.add(matrix[i][colBegin]);
+                }
+                colBegin++;
+            }
+            return res;
+        }
     }
 
+    // 1706: Where will the ball fall
+
+    /**
+     * You have a 2-D grid of size m x n representing a box, and you have n balls. The box is open on the top and bottom sides.
+     *
+     * Each cell in the box has a diagonal board spanning two corners of the cell that can redirect a ball to the right or to the left.
+     *
+     * A board that redirects the ball to the right spans the top-left corner to the bottom-right corner and is represented in the grid as 1.
+     * A board that redirects the ball to the left spans the top-right corner to the bottom-left corner and is represented in the grid as -1.
+     * We drop one ball at the top of each column of the box. Each ball can get stuck in the box or fall out of the bottom.
+     * A ball gets stuck if it hits a "V" shaped pattern between two boards or if a board redirects the ball into either wall of the box.
+     *
+     * Return an array answer of size n where answer[i] is the column that the ball falls out of at the bottom after
+     * dropping the ball from the ith column at the top, or -1 if the ball gets stuck in the box.
+     *
+     * Example 1:
+     *
+     *
+     *
+     * Input: grid = [[1,1,1,-1,-1],[1,1,1,-1,-1],[-1,-1,-1,1,1],[1,1,1,1,-1],[-1,-1,-1,-1,-1]]
+     * Output: [1,-1,-1,-1,-1]
+     * Explanation: This example is shown in the photo.
+     * Ball b0 is dropped at column 0 and falls out of the box at column 1.
+     * Ball b1 is dropped at column 1 and will get stuck in the box between column 2 and 3 and row 1.
+     * Ball b2 is dropped at column 2 and will get stuck on the box between column 2 and 3 and row 0.
+     * Ball b3 is dropped at column 3 and will get stuck on the box between column 2 and 3 and row 0.
+     * Ball b4 is dropped at column 4 and will get stuck on the box between column 2 and 3 and row 1.
+     * Example 2:
+     *
+     * Input: grid = [[-1]]
+     * Output: [-1]
+     * Explanation: The ball gets stuck against the left wall.
+     * Example 3:
+     *
+     * Input: grid = [[1,1,1,1,1,1],[-1,-1,-1,-1,-1,-1],[1,1,1,1,1,1],[-1,-1,-1,-1,-1,-1]]
+     * Output: [0,1,2,3,4,-1]
+     * @param args
+     */
+
+    class Solution1706 {
+        public int[] findBall(int[][] grid) {
+            int n = grid[0].length;
+            int[] ans = new int[n];
+            for (int j = 0; j < n; j++) {
+                int col = j;  // 球的初始列
+                for (int[] row : grid) {
+                    int dir = row[col];
+                    col += dir;  // 移动球
+                    if (col < 0 || col == n || row[col] != dir) {  // 到达侧边或 V 形
+                        col = -1;
+                        break;
+                    }
+                }
+                ans[j] = col;  // col >= 0 为成功到达底部
+            }
+            return ans;
+        }
+    }
+
+    // 532 K-diff pairs in an array
+
+    /**
+     * Given an array of integers nums and an integer k, return the number of unique k-diff pairs in the array.
+     *
+     * A k-diff pair is an integer pair (nums[i], nums[j]), where the following are true:
+     *
+     * 0 <= i, j < nums.length
+     * i != j
+     * nums[i] - nums[j] == k
+     * Notice that |val| denotes the absolute value of val.
+     *
+     *
+     *
+     * Example 1:
+     *
+     * Input: nums = [3,1,4,1,5], k = 2
+     * Output: 2
+     * Explanation: There are two 2-diff pairs in the array, (1, 3) and (3, 5).
+     * Although we have two 1s in the input, we should only return the number of unique pairs.
+     * Example 2:
+     *
+     * Input: nums = [1,2,3,4,5], k = 1
+     * Output: 4
+     * Explanation: There are four 1-diff pairs in the array, (1, 2), (2, 3), (3, 4) and (4, 5).
+     */
+    class Solution532 {
+        public int findPairs(int[] nums, int k) {
+            if (nums == null || nums.length == 0 || k < 0) return 0;
+            HashMap<Integer, Integer> map = new HashMap<>();
+            int res = 0;
+            for (int num : nums) {
+                map.put(num, map.getOrDefault(num, 0) + 1);
+            }
+
+            for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+                if (k == 0) {
+                    if (entry.getValue() >= 2) {
+                        res++;
+                    }
+                } else {
+                    if (map.containsKey(entry.getKey() + k) ) res++;
+                }
+            }
+            return res;
+        }
+    }
+
+    // 554: Brick wall
+
+    /**
+     * There is a rectangular brick wall in front of you with n rows of bricks. The ith row has some number of bricks each of the same height (i.e., one unit) but they can be of different widths. The total width of each row is the same.
+     *
+     * Draw a vertical line from the top to the bottom and cross the least bricks. If your line goes through the edge of a brick, then the brick is not considered as crossed. You cannot draw a line just along one of the two vertical edges of the wall, in which case the line will obviously cross no bricks.
+     *
+     * Given the 2D array wall that contains the information about the wall, return the minimum number of crossed bricks after drawing such a vertical line.
+     *
+     *
+     *
+     * Example 1:
+     *
+     *
+     * Input: wall = [[1,2,2,1],[3,1,2],[1,3,2],[2,4],[3,1,2],[1,3,1,1]]
+     * Output: 2
+     * Example 2:
+     *
+     * Input: wall = [[1],[1],[1]]
+     * Output: 3
+     */
+    class Solution554 {
+
+        // 找缝隙出现次数最大的
+        // hashmap的key存砖头到哪里的位置， value存出现的次数，在value出现次数最大的地方一刀切
+        public int leastBricks(List<List<Integer>> wall) {
+            HashMap<Integer, Integer> map = new HashMap<>();
+            for (List<Integer> list : wall) {
+                int sum = 0;
+                for (int i = 0 ; i < list.size() - 1; i++) {  // 在最后一个元素之前一个停止
+                    sum += list.get(i);
+                    map.put(sum, map.getOrDefault(sum, 0) + 1);
+                }
+            }
+            int res= wall.size();
+            for (int key: map.keySet()) {
+                res = Math.min(res, wall.size() - map.get(key));
+            }
+            return res;
+        }
+    }
+
+    // 599： minimum index sum of two lists
+
+    /**
+     * Suppose Andy and Doris want to choose a restaurant for dinner, and they both have a list of favorite restaurants
+     * represented by strings.
+     *
+     * You need to help them find out their common interest with the least list index sum. If there is a choice tie
+     * between answers, output all of them with no order requirement. You could assume there always exists an answer.
+     *
+     * Example 1:
+     *
+     * Input: list1 = ["Shogun","Tapioca Express","Burger King","KFC"], list2 = ["Piatti","The Grill at Torrey Pines",
+     * "Hungry Hunter Steakhouse","Shogun"]
+     * Output: ["Shogun"]
+     * Explanation: The only restaurant they both like is "Shogun".
+     * Example 2:
+     *
+     * Input: list1 = ["Shogun","Tapioca Express","Burger King","KFC"], list2 = ["KFC","Shogun","Burger King"]
+     * Output: ["Shogun"]
+     * Explanation: The restaurant they both like and have the least index sum is "Shogun" with index sum 1 (0+1).
+     *
+     */
+    class Solution599 {
+        public String[] findRestaurant(String[] list1, String[] list2) {
+            HashMap<String, Integer> map=  new HashMap<>();
+            for (int i = 0 ; i < list1.length; i++) {
+                map.put(list1[i], i);
+            }
+
+            List<String> res= new LinkedList<>();
+            int min = Integer.MAX_VALUE;
+            for (int i = 0; i < list2.length; i ++) {
+                Integer j = map.get(list2[i]);
+                if (j != null && i + j <= min) {  // 不一定只有一个结果
+                    if (i + j < min) {
+                        res.clear();  // 之前的结果不能要了
+                        min = i + j;  // 更新最小值
+                    }
+                    res.add(list2[i]);
+                }
+            }
+            return res.toArray(new String[res.size()]);
+        }
+    }
+
+
+    // 442： Find all duplicates in an array
+
+    /**
+     * Given an integer array nums of length n where all the integers of nums are in the range [1, n] and each integer
+     * appears once or twice, return an array of all the integers that appears twice.
+     *
+     * You must write an algorithm that runs in O(n) time and uses only constant extra space.
+     *
+     * Example 1:
+     *
+     * Input: nums = [4,3,2,7,8,2,3,1]
+     * Output: [2,3]
+     * Example 2:
+     *
+     * Input: nums = [1,1,2]
+     * Output: [1]
+     * Example 3:
+     *
+     * Input: nums = [1]
+     * Output: []
+     */
+    class Solution442 {
+        public List<Integer> findDuplicates(int[] nums) {
+            List<Integer> res= new ArrayList<>();
+            if (nums == null || nums.length == 0) return res;
+            for (int i = 0; i < nums.length; i++) {
+                int index = Math.abs(nums[i]) -1 ;
+                if (nums[index] < 0) res.add(Math.abs(index + 1));  // 如果找到了负数，代表之前已经找过了，加入结果
+                nums[index] = -nums[index];  // 用负数表示当前的数已经查找过一次
+            }
+            return res;
+        }
+    }
+
+    // 414： Third Maximum Number
+
+    /**
+     * Given an integer array nums, return the third distinct maximum number in this array. If the third maximum does
+     * not exist, return the maximum number.
+     *
+     * Example 1:
+     *
+     * Input: nums = [3,2,1]
+     * Output: 1
+     * Explanation:
+     * The first distinct maximum is 3.
+     * The second distinct maximum is 2.
+     * The third distinct maximum is 1.
+     * Example 2:
+     *
+     * Input: nums = [1,2]
+     * Output: 2
+     * Explanation:
+     * The first distinct maximum is 2.
+     * The second distinct maximum is 1.
+     * The third distinct maximum does not exist, so the maximum (2) is returned instead.
+     * Example 3:
+     *
+     * Input: nums = [2,2,3,1]
+     * Output: 1
+     * Explanation:
+     * The first distinct maximum is 3.
+     * The second distinct maximum is 2 (both 2's are counted together since they have the same value).
+     * The third distinct maximum is 1.
+     */
+    class Solution414 {
+        public int thirdMax(int[] nums) {
+            Integer max1 = null;
+            Integer max2 = null;
+            Integer max3 = null;
+            for (Integer num : nums) {
+                if (nums.equals(max1) || num.equals(max2) || num.equals(max3)) continue;
+                if (max1 == null || num > max1) {
+                    max3 = max2;
+                    max2 = max1;
+                    max1 = num;
+                } else if (max2 == null || num > max2) {
+                    max3= max2;
+                    max2 = num;
+                } else if (max3 == null || num > max3) {
+                    max3 = num;
+                }
+            }
+            return max3 == null ? max1 : max3;
+        }
+
+
+        public int thirdMax2(int[] nums) {
+            PriorityQueue<Integer> pq = new PriorityQueue<>();
+            HashSet<Integer> set = new HashSet<>();
+            for (int num : nums) {
+                if (set.add(num)) {
+                    pq.offer(num);
+                    if (pq.size() > 3) pq.poll();
+                }
+            }
+            if (pq.size() == 2) pq.poll();
+            return pq.peek();
+        }
+    }
+
+    // 448: Find all numbers Disappeared in an array
+
+    /**
+     * Given an array nums of n integers where nums[i] is in the range [1, n], return an array of all the integers in the range [1, n] that do not appear in nums.
+     *
+     * Example 1:
+     *
+     * Input: nums = [4,3,2,7,8,2,3,1]
+     * Output: [5,6]
+     * Example 2:
+     *
+     * Input: nums = [1,1]
+     * Output: [2]
+     */
+
+    class Solution448 {
+        public List<Integer> findDisappearedNumbers(int[] nums) {
+            List<Integer> res= new ArrayList<>();
+            for (int i = 0 ; i < nums.length; i ++) {
+                int index = Math.abs(nums[i]) - 1;  // 将index对应的数变为负数
+                if (nums[index] > 0) nums[index] = -nums[index];  // 如果数字最后没有变成负数，那就是没有出现的
+            }
+            for (int i = 0; i < nums.length; i ++) {
+                if (nums[i] > 0) res.add(i + 1);
+            }
+            return res;
+        }
+    }
+
+    // 621: Task Scheduler
+
+    /**
+     * Given a characters array tasks, representing the tasks a CPU needs to do, where each letter represents a different
+     * task. Tasks could be done in any order. Each task is done in one unit of time. For each unit of time, the CPU
+     * could complete either one task or just be idle.
+     *
+     * However, there is a non-negative integer n that represents the cooldown period between two same tasks (the same
+     * letter in the array), that is that there must be at least n units of time between any two same tasks.
+     *
+     * Return the least number of units of times that the CPU will take to finish all the given tasks.
+     *
+     *
+     *
+     * Example 1:
+     *
+     * Input: tasks = ["A","A","A","B","B","B"], n = 2
+     * Output: 8
+     * Explanation:
+     * A -> B -> idle -> A -> B -> idle -> A -> B
+     * There is at least 2 units of time between any two same tasks.
+     * Example 2:
+     *
+     * Input: tasks = ["A","A","A","B","B","B"], n = 0
+     * Output: 6
+     * Explanation: On this case any permutation of size 6 would work since n = 0.
+     * ["A","A","A","B","B","B"]
+     * ["A","B","A","B","A","B"]
+     * ["B","B","B","A","A","A"]
+     * ...
+     * And so on.
+     * Example 3:
+     *
+     * Input: tasks = ["A","A","A","A","A","A","B","C","D","E","F","G"], n = 2
+     * Output: 16
+     * Explanation:
+     * One possible solution is
+     * A -> B -> C -> A -> D -> E -> A -> F -> G -> A -> idle -> idle -> A -> idle -> idle -> A
+     *
+     */
+
+    class Solution621 {
+        /**
+         * 假设所给任务列表当中所需执行次数最多的是任务A，那么我们可以用一个矩阵来展现执行任务A的时间点。由于CPU执行相同种类的任务之间必须至少有
+         * 长度为 n 的冷却时间，为了让冷却时间最短，该矩阵的宽度就应该设置为 n+1，而该矩阵的高度就是任务A所需执行的次数
+         *
+         *      n = 2
+         *
+         *      n + 1
+         *      A * *
+         *      A * *
+         *      A * *
+         *      A * *
+         *      A * *
+         *      A * *
+         *
+         * 如果任务列表当中只有任务A，那么该矩阵中除了执行任务A的位置之外，其他位置所对应的就是 “待命状态”，并且当执行完最后一个任务A时，
+         * 所有任务就都已经执行完毕了，因此矩阵最后一行当中剩下的 n−1 位置此时不算入完成任务的所需时间
+         *
+         *  A idle idle
+         *  A idle idle
+         *  A idle idle
+         *  A idle idle
+         *  A idle idle
+         *  A X    X
+         *
+         *  此时完成所有任务所需的时间就是： (MaxExec − 1) × (n + 1) + 1
+         * 如果任务列表当中除了任务A之外还有其他种类的任务，那么这些任务就可以添加到图中 “待命状态” 的位置，如果这些任务能够全部被安排在 “待命状态”
+         * 当中，那么此时完成所有任务所需的时间与之前是相同的。
+         *
+         * A B C
+         * A B C
+         * A B C
+         * A B idle
+         * A B idle
+         * A X X
+         *
+         * 任务A是所需执行次数最多的任务，因此不会有比任务A所需执行次数更多的任务，但我们无法保证没有所需执行次数与任务A相同的任务。如果出现了这种情况，
+         * 我们就需要在矩阵的最后一行添加位置来执行该任务。
+         *
+         * 因此，如果任务列表当中所需执行次数等于 MaxExec 的任务个数为 num，那么完成所有任务所需的时间就是：(MaxExec−1)×(n+1)+num
+         *
+         * 现在我们就是将其他种类的任务添加到矩阵当中 “待命状态” 的位置，如果该任务所需执行的次数与 M a x E x e c MaxExec MaxExec
+         * 相等，那么我们需要在矩阵的最后一行添加对应的位置。但如果矩阵当中的 “待命状态” 的位置都被填满了呢？此时任务列表当中剩余的任务应该怎么办？
+         *
+         * 此时我们可以将矩阵中某些行的宽度进行扩充，然后将任务插入到这些扩展的位置当中即可。因为在矩阵没有扩充时，
+         * 矩阵中同种任务之间执行的间隔时间恰好是 n n n，既然现在矩阵当中 “待命状态” 的位置被填满了，那么我们可以直接将剩下的任务插入到矩阵的行后面，
+         * 插入后原矩阵当中的任务没有违反 “同种任务之间执行的间隔时间至少是 n n n ” 的规定，并且新插入的任务也是满足冷却要求的。
+         *
+         * 因此，如果任务列表当中所需执行任务的总数大于我们计算得到的矩阵的大小，那么此时完成所有任务所需的时间就是任务列表当中任务的个数
+         *
+         *
+         * A B C E
+         * A B C E
+         * A B D
+         * A B D
+         * A B X
+         */
+        public int leastInterval(char[] tasks, int n) {
+            int[] count = new int[26];
+            for (char c : tasks) {
+                count[c - 'A']++;  // 统计每个字母出现次数
+            }
+            Arrays.sort(count);  // 词频升序排列，count25是最高的
+            int maxCount = 0;  // 统计有多少个频率最高的字母
+            for (int i = 25; i >= 0; i--) {
+                if (count[i] != count[25]) {
+                    break;
+                }
+                maxCount++;
+            }
+            // n小于种类的时候，会比长度小
+            return Math.max((count[25] - 1) * (n + 1) + maxCount, tasks.length);
+        }
+    }
+
+    // 277：Find Celebrity 谷歌考过
+
+    /**
+     * 假设你是一个专业的狗仔，参加了一个 n 人派对，其中每个人被从 0 到 n - 1 标号。在这个派对人群当中可能存在一位 “名人”。所谓 “名人”
+     * 的定义是：其他所有 n - 1 个人都认识他/她，而他/她并不认识其他任何人。
+     * 现在你想要确认这个 “名人” 是谁，或者确定这里没有 “名人”。而你唯一能做的就是问诸如 “A 你好呀，请问你认不认识 B呀？” 的问题，以确定 A
+     * 是否认识 B。你需要在（渐近意义上）尽可能少的问题内来确定这位 “名人” 是谁（或者确定这里没有 “名人”）。
+     * 在本题中，你可以使用辅助函数 bool knows(a, b) 获取到 A 是否认识 B。请你来实现一个函数 int findCelebrity(n)。
+     *
+     * 派对最多只会有一个 “名人” 参加。若 “名人” 存在，请返回他/她的编号；若 “名人” 不存在，请返回 -1。
+     */
+    class Solution277 {
+        public int findCelebrity(int n){
+            if (n < 2) return -1;
+            int possible = 0;
+            for (int i = 0; i < n; i++) {
+                if (knows(possible, i)) possible = i;  // 如果这个人认识了 i，possible 肯定不是名人， i可能是名人
+            }
+            for (int i = 0 ; i < n; i ++) {
+                // possible 认识其中一个人，或者任何人不认识possible都返回-1
+                if (possible != i && (knows(possible, i) || !knows(i, possible))) return -1;
+            }
+            return possible;
+        }
+
+        public boolean knows(int a, int b) {
+            return true;
+        }
+    }
+
+    // 495:Temo attacking
+
+    /**
+     * Our hero Teemo is attacking an enemy Ashe with poison attacks! When Teemo attacks Ashe, Ashe gets poisoned for a
+     * exactly duration seconds. More formally, an attack at second t will mean Ashe is poisoned during the inclusive
+     * time interval [t, t + duration - 1]. If Teemo attacks again before the poison effect ends, the timer for it is
+     * reset, and the poison effect will end duration seconds after the new attack.
+     *
+     * You are given a non-decreasing integer array timeSeries, where timeSeries[i] denotes that Teemo attacks Ashe
+     * at second timeSeries[i], and an integer duration.
+     *
+     * Return the total number of seconds that Ashe is poisoned.
+     *
+     * Example 1:
+     *
+     * Input: timeSeries = [1,4], duration = 2
+     * Output: 4
+     * Explanation: Teemo's attacks on Ashe go as follows:
+     * - At second 1, Teemo attacks, and Ashe is poisoned for seconds 1 and 2.
+     * - At second 4, Teemo attacks, and Ashe is poisoned for seconds 4 and 5.
+     * Ashe is poisoned for seconds 1, 2, 4, and 5, which is 4 seconds in total.
+     * Example 2:
+     *
+     * Input: timeSeries = [1,2], duration = 2
+     * Output: 3
+     * Explanation: Teemo's attacks on Ashe go as follows:
+     * - At second 1, Teemo attacks, and Ashe is poisoned for seconds 1 and 2.
+     * - At second 2 however, Teemo attacks again and resets the poison timer. Ashe is poisoned for seconds 2 and 3.
+     * Ashe is poisoned for seconds 1, 2, and 3, which is 3 seconds in total.
+     *
+     */
+
+    class Solution495 {
+        public int findPoisonedDuration(int[] timeSeries, int duration) {
+            if (timeSeries == null || timeSeries.length == 0) return 0;
+            int sum = 0;
+            for (int i = 0;  i< timeSeries.length; i++) {
+                sum += Math.min(timeSeries[i] - timeSeries[ i - 1], duration);
+            }
+            return sum + duration;
+        }
+    }
+
+    // 370: Range Addition
+
+    /**
+     * 假设你有一个长度为 n 的数组，初始情况下所有的数字均为 0，你将会被给出 k 个更新的操作。
+     *
+     * 其中，每个操作会被表示为一个三元组：[startIndex, endIndex, inc]，你需要将子数组 A[startIndex … endIndex]（包括 startIndex 和 endIndex）增加 inc。
+     *
+     * 请你返回 k 次操作后的数组。
+     */
+    class Solution370{
+        // O（K+ N）
+        public int[] getModifiedArray(int length, int [][] updates) {
+            int[] res = new int[length];
+            for (int[] update: updates) {
+                int value = update[2];
+                int start = update[0];
+                int end  = update[1];
+                res[start] += value;  // 把开始的位置设为value, 把最后的位置的后一个位置变成负的，相当于一个终止符
+                if (end + 1 < length) res[end  + 1] -= value;
+            }
+            for (int i = 0; i < length; i++) {
+                res[i] += res[i - 1];
+            }
+            return res;
+        }
+    }
+
+    // 296: best Meeging point
+
+    /**
+     * 有一队人，（两人或以上）想要在一个地方碰面，他们希望能够最小化他们的总行走距离
+     *
+     * 给你一个2D网格，其中各个格子内的值要么是0，要么是1
+     *
+     * 1表示某个人的家所处的位置，这里，我们将用曼哈顿距离来计算，其中Distance(p1, p2) = |p2.x - p1.x| + |p2.y - p1.y|
+     *
+     * 1 - 0 - 0 - 0 - 1
+     * |   |   |   |   |
+     * 0 - 0 - 0 - 0 - 0
+     * |   |   |   |   |
+     * 0 - 0 - 1 - 0 - 0
+     *
+     * return 6
+     *
+     */
+    class Solution266{
+        /**
+         * 1. 降维
+         *     横向：
+         *     A      C  E       F   D         B
+         *     将横坐标降维后需要找一个点到ABCDEF的距离和最小，肯定在 EF 之间，距离为 |B - A| + |D - c| + |F - E|
+         *     纵向一样的
+         */
+        public int minTotalDistance(int[][] grid) {
+            // time： O（MN）
+            // space: O(N)
+            int m  = grid.length;
+            int n = grid[0].length;
+            List<Integer> I = new ArrayList<>();
+            List<Integer> J = new ArrayList<>();
+            for (int i = 0; i < m; i++) {  // 按行去扫，
+                for (int j = 0; j < n; j++) {
+                    if (grid[i][j] == 1) {
+                        I.add(i);   //  从小到大添加
+                    }
+                }
+            }
+
+            for (int j = 0; j < n; j++) {
+                for (int i = 0; i < m; i++) {
+                    if (grid[i][j] == 1) {
+                        J.add(j);  // 按列从小到大添加
+                    }
+                }
+            }
+            return min(I) + min(J);
+        }
+
+        private int min(List<Integer> list) {
+            int i = 0, j = list.size();
+            int sum = 0;
+            while(i < j) sum+= list.get(j--) - list.get(i++);  // 计算尾部减去头部的差值
+            return sum;
+        }
+
+    }
+
+
+    public static void main(String[] args) {
+
+    }
 
 }
 

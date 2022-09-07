@@ -5057,9 +5057,74 @@ for (int i = 1; i < m; i ++) {
        return memo[N - 1][C];
    }
    ```
-   
-     
 
+## 18.9 Longest Common SubSequence and Longest SubString
 
-​     
+### 18.9.1 最长公共子串
+假如有两个字符串，s1="people"和s2="eplm"，我们要求他俩最长的公共子串。我们一眼就能看
+出他们的最长公共子串是"pl"，长度是2。但如果字符串特别长的话就不容易那么观察了。
+
++ 动态规划：我们用一个二维数组`dp[i][j]`表示第一个字符串前i个字符和第二个字符串前j个字符 组成的最长公共字符串的长度。那么我们在计算dp[i][j]的时候，
+  我们首先要判断s1.charAt(i)是否等于`s2.charAt(j)`，如果不相等，说明当前字符无法构成公共子串，所以`dp[i][j]=0`。如果相等，说 明可以构成公共子串， 
+  我们还要加上他们前一个字符构成的最长公共子串长度，也就是`dp[i-1][j-1]`。所以我们很容易找到递推公式
+  ````java
+  if(s1.charAt(i) == s2.charAr(j)) 
+    dp[i][j] = dp[i-1][j-1] + 1;
+  else
+    dp[i][j] = 0;
+  ````
+    ![img.png](img.png)
+  <center>Graph For Longest Common SubString</center>
+  
+    ```java
+    public static int maxLong(String str1, String str2) {
+        if (str1 == null || str2 == null || str1.length() == 0 || str2.length() == 0)return 0;
+        int max = 0;
+        int[][] dp = new int[str1.length() + 1][str2.length() + 1];
+        for (int i = 1; i <= str1.length(); i++) {
+            for (int j = 1; j <= str2.length(); j++) {
+                if (str1.charAt(i - 1) == str2.charAt(j - 1)) dp[i][j] = dp[i - 1][j - 1] + 1;
+                else dp[i][j] = 0;
+                max = Math.max(max, dp[i][j]);
+            }
+        }
+        Util.printTwoIntArrays(dp); //这一行是打印测试数据的，也可以去掉
+        return max;
+    }
+    ```
+  
+### 18.9.2 最长公共子序列
+
+子序列不是 连续的。我们还来看上面的两个字符串`s1="people"，s2="eplm"`，我们可以很明显看到他们的最
+长公共子序列是"epl"，我们先来画个图再来找一下他的递推公式。
+
+![img_1.png](img_1.png)
+<center>Longest Common SubSequence</center>
+
+```java
+    if (s1.charAt(i) == s2.charAr(j)) dp[i][j] = dp[i-1][j-1] + 1;
+    else dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+```
+有了上面的递推公式，代码就很容易写出来了，我们来看下
+
+```java
+
+class Solution {
+    public int longestCommonSubsequence(String text1, String text2) {
+        int m=text1.length();
+        int n=text2.length();
+        int[][] dp=new int[m+1][n+1];
+
+        for(int i=1;i<=m;i++){
+            for(int j=1;j<=n;j++){
+                if(text1.charAt(i-1)==text2.charAt(j-1))
+                    dp[i][j]=dp[i-1][j-1]+1;
+                else
+                    dp[i][j]=Math.max(dp[i-1][j],dp[i][j-1]);
+            }
+        }
+        return dp[m][n];
+    }
+}
+```
 

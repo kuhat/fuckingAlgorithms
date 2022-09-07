@@ -481,5 +481,210 @@ public class Note12_Graph {
         }
     }
 
+    // leetcode 994: rotting oranges
+
+    /**
+     * You are given an m x n grid where each cell can have one of three values:
+     *
+     * 0 representing an empty cell,
+     * 1 representing a fresh orange, or
+     * 2 representing a rotten orange.
+     * Every minute, any fresh orange that is 4-directionally adjacent to a rotten orange becomes rotten.
+     *
+     * Return the minimum number of minutes that must elapse until no cell has a fresh orange. If this is impossible, return -1.
+     *
+     * Example 1:
+     *
+     *
+     * Input: grid = [[2,1,1],[1,1,0],[0,1,1]]
+     * Output: 4
+     * Example 2:
+     *
+     * Input: grid = [[2,1,1],[0,1,1],[1,0,1]]
+     * Output: -1
+     * Explanation: The orange in the bottom left corner (row 2, column 0) is never rotten, because rotting only happens 4-directionally.
+     * Example 3:
+     *
+     * Input: grid = [[0,2]]
+     * Output: 0
+     * Explanation: Since there are already no fresh oranges at minute 0, the answer is just 0.
+     */
+
+    class Solution994 {
+
+        private int rotedCnt   = 0;
+        private int orangeCnt  = 0;
+
+        public int orangesRotting(int[][] grid) {
+
+            // 统计共有多少橘子
+            for(int i=0; i<grid.length; ++i){
+                for(int j=0; j<grid[i].length; ++j){
+                    if(grid[i][j] > 0){
+                        orangeCnt += 1;
+                    }
+                }
+            }
+            //System.out.println("oranges " + orangeCnt);
+            // rotting(grid) 返回这一分钟有多少橘子会腐败
+            int minutes = 0;
+            while(rotting(grid) > 0){
+                minutes ++;
+            }
+            //System.out.println("minutes " + minutes);
+            //System.out.println("rotedCnt " + rotedCnt);
+
+            // 腐败过程结束，查看结果
+            if(rotedCnt == orangeCnt){
+                return minutes;
+            }else{
+                return -1;
+            }
+        }
+        public int rotting(int[][] grid){
+
+            int rottingCnt = 0;
+            rotedCnt       = 0;
+            // 这一秒钟腐败的
+            int[][] directions = {{1,0},{-1,0},{0,1},{0,-1}};
+            for(int i=0; i<grid.length; ++i){
+                for(int j=0; j<grid[i].length; ++j){
+                    if(grid[i][j] == 2){
+                        rotedCnt += 1;
+                        for(int[] direction : directions){
+                            int xx = i + direction[0];
+                            int yy = j + direction[1];
+                            if(xx >=0 && xx < grid.length && yy >= 0 && yy < grid[i].length && grid[xx][yy] == 1){
+                                grid[xx][yy] = 3;  // 把这一分钟要腐败的先标记为 3 防止与之前已经腐败的混淆
+                                rottingCnt ++;
+                            }
+                        }
+                    }
+                }
+            }
+            for(int i=0; i<grid.length; ++i){
+                for(int j=0; j<grid[i].length; ++j){
+                    if(grid[i][j] == 3){
+                        grid[i][j] = 2;
+                    }
+                }
+            }
+            // 这一分钟的腐败过程结束，标记重置为2
+            return rottingCnt;
+        }
+    }
+
+    // 417 Pacific Atlantic Water Flow
+    /**
+     * There is an m x n rectangular island that borders both the Pacific Ocean and Atlantic Ocean. The Pacific Ocean
+     * touches the island's left and top edges, and the Atlantic Ocean touches the island's right and bottom edges.
+     *
+     * The island is partitioned into a grid of square cells. You are given an m x n integer matrix heights where
+     * heights[r][c] represents the height above sea level of the cell at coordinate (r, c).
+     *
+     * The island receives a lot of rain, and the rain water can flow to neighboring cells directly north, south,
+     * east, and west if the neighboring cell's height is less than or equal to the current cell's height. Water
+     * can flow from any cell adjacent to an ocean into the ocean.
+     *
+     * Return a 2D list of grid coordinates result where result[i] = [ri, ci] denotes that rain water can flow
+     * from cell (ri, ci) to both the Pacific and Atlantic oceans.
+     *
+     * Example 1:
+     *
+     * Input: heights = [[1,2,2,3,5],[3,2,3,4,4],[2,4,5,3,1],[6,7,1,4,5],[5,1,1,2,4]]
+     * Output: [[0,4],[1,3],[1,4],[2,2],[3,0],[3,1],[4,0]]
+     * Explanation: The following cells can flow to the Pacific and Atlantic oceans, as shown below:
+     * [0,4]: [0,4] -> Pacific Ocean
+     *        [0,4] -> Atlantic Ocean
+     * [1,3]: [1,3] -> [0,3] -> Pacific Ocean
+     *        [1,3] -> [1,4] -> Atlantic Ocean
+     * [1,4]: [1,4] -> [1,3] -> [0,3] -> Pacific Ocean
+     *        [1,4] -> Atlantic Ocean
+     * [2,2]: [2,2] -> [1,2] -> [0,2] -> Pacific Ocean
+     *        [2,2] -> [2,3] -> [2,4] -> Atlantic Ocean
+     * [3,0]: [3,0] -> Pacific Ocean
+     *        [3,0] -> [4,0] -> Atlantic Ocean
+     * [3,1]: [3,1] -> [3,0] -> Pacific Ocean
+     *        [3,1] -> [4,1] -> Atlantic Ocean
+     * [4,0]: [4,0] -> Pacific Ocean
+     *        [4,0] -> Atlantic Ocean
+     * Note that there are other possible paths for these cells to flow to the Pacific and Atlantic oceans.
+     * Example 2:
+     *
+     * Input: heights = [[1]]
+     * Output: [[0,0]]
+     * Explanation: The water can flow from the only cell to the Pacific and Atlantic oceans.
+     */
+    class Solution417 {
+
+        int m , n;
+        int dir[][] = new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+
+        public List<List<Integer>> pacificAtlantic(int[][] heights) {
+            List<List<Integer>> res = new ArrayList<>();
+            m = heights.length;
+            if (m == 0) return res;
+            n = heights[0].length;
+
+            boolean[][] pac = new boolean[m][n];
+            boolean[][] atl = new boolean[m][n];
+
+            for (int i= 0 ; i < m; i ++) {  // 从第一行开始遍历
+                helper(heights, pac, i, 0);  // 太平洋是第一行
+                helper(heights, atl, i, n -1);  // 大西洋是最后一行
+            }
+            for (int i = 0; i < n; i ++) {  // 从第一列开始遍历
+                helper(heights, pac, 0, i);
+                helper(heights, atl, m - 1, i);
+            }
+            for (int i = 0; i < m; i++) {  // 当大西洋和太平洋都是true时说明水可以留到两边
+                for (int j = 0; j < n; j++) {
+                    if (pac[i][j] && atl[i][j]) res.add(Arrays.asList(i, j));
+                }
+            }
+            return res;
+        }
+
+        public void helper(int[][] heights, boolean[][] isVisited, int i, int j) {
+            isVisited[i][j] = true;
+            for (int[] d : dir) {
+                int x = i + d[0];
+                int y = j + d[1];
+                // 如果下一个数字小于之前的数字，或者越界或者已经访问了，跳过
+                if (x < 0 || y < 0 || x >= m || y >= n || isVisited[x][y] || heights[i][j] > heights[x][y]) continue;
+                helper(heights, isVisited, x, y);  // 否则遍历到下一个位置
+            }
+        }
+    }
+
+    // 207： course schedule
+    /**
+     * There are a total of numCourses courses you have to take, labeled from 0 to numCourses - 1. You are given an
+     * array prerequisites where prerequisites[i] = [ai, bi] indicates that you must take course bi first if you want to take course ai.
+     *
+     * For example, the pair [0, 1], indicates that to take course 0 you have to first take course 1.
+     * Return true if you can finish all courses. Otherwise, return false.
+     *
+     * Example 1:
+     *
+     * Input: numCourses = 2, prerequisites = [[1,0]]
+     * Output: true
+     * Explanation: There are a total of 2 courses to take.
+     * To take course 1 you should have finished course 0. So it is possible.
+     * Example 2:
+     *
+     * Input: numCourses = 2, prerequisites = [[1,0],[0,1]]
+     * Output: false
+     * Explanation: There are a total of 2 courses to take.
+     * To take course 1 you should have finished course 0, and to take course 0 you should also have finished course 1. So it is impossible.
+     */
+    /*
+    有环的话返回false
+     */
+    class Solution207 {
+        public boolean canFinish(int numCourses, int[][] prerequisites) {
+            return true;
+        }
+    }
 
 }
