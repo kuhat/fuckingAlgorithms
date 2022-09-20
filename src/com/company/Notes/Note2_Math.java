@@ -244,6 +244,26 @@ public class Note2_Math {
     }
 
     //LeetCode 43: Multiply Strings
+
+    /**
+     * Given two non-negative integers num1 and num2 represented as strings, return the product of num1 and num2, also represented as a string.
+     *
+     * Note: You must not use any built-in BigInteger library or convert the inputs to integer directly.
+     *
+     *
+     *
+     * Example 1:
+     *
+     * Input: num1 = "2", num2 = "3"
+     * Output: "6"
+     * Example 2:
+     *
+     * Input: num1 = "123", num2 = "456"
+     * Output: "56088"
+     * @param num1
+     * @param num2
+     * @return
+     */
     public static String multiplyStrings(String num1, String num2) {
         if (num1 == null || num2 == null ) return "0";
         int[] digits = new int[num1.length() + num2.length()];

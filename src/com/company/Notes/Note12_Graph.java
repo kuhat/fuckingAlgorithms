@@ -161,7 +161,7 @@ public class Note12_Graph {
         }
     }
 
-    // 127 word ladder
+    // 127 word ladder  要考
 
     /**
      * A transformation sequence from word beginWord to word endWord using a dictionary wordList is a sequence of
@@ -260,6 +260,35 @@ public class Note12_Graph {
                 this.word = word;
                 this.neighbors = new ArrayList<>();
             }
+        }
+
+        // BFS
+        public int ladderlength1(String beginWord, String endWord, List<String> wordList) {
+            HashSet<String> set = new HashSet<>(wordList);
+            if (set.contains( beginWord)) set.remove(beginWord);
+            Queue<String> queue = new LinkedList<>();
+            HashMap<String, Integer> map = new HashMap<>();
+            map.put(beginWord, 1);  // map的 key值是当前的单词，value是level,也就是第几次遍历
+            queue.offer(beginWord);
+            while (!queue.isEmpty()) {
+                String word = queue.poll();
+                int curLevel = map.get(word);
+                for (int i =0; i < word.length(); i++) {  // word的每个位置进行替换
+                    char[] wordUnit = word.toCharArray();
+                    for (char j = 'a'; j <= 'z'; j++) {  // 将a到z一个一个去填充当前的位置
+                        wordUnit[i] = j;
+                        String temp = new String(wordUnit);  // 替换成新的string
+                        if (set.contains(temp)){
+                            // 如果set里面有当前替换过的单词
+                            if(temp.equals(endWord)) return curLevel + 1;  // 如果当前遍历到最后一个单词，直接return level + 1
+                            map.put(temp, curLevel + 1);
+                            queue.offer(temp);
+                            set.remove(temp);
+                        }
+                    }
+                }
+            }
+            return 0;
         }
     }
 
@@ -685,6 +714,313 @@ public class Note12_Graph {
         public boolean canFinish(int numCourses, int[][] prerequisites) {
             return true;
         }
+    }
+
+    //133 ：clone graph
+    /**
+     * Given a reference of a node in a connected undirected graph.
+     *
+     * Return a deep copy (clone) of the graph.
+     *
+     * Each node in the graph contains a value (int) and a list (List[Node]) of its neighbors.
+     *
+     * class Node {
+     *     public int val;
+     *     public List<Node> neighbors;
+     * }
+     *
+     * Test case format:
+     *
+     * For simplicity, each node's value is the same as the node's index (1-indexed). For example, the first node with
+     * val == 1, the second node with val == 2, and so on. The graph is represented in the test case using an adjacency list.
+     *
+     * An adjacency list is a collection of unordered lists used to represent a finite graph. Each list describes the
+     * set of neighbors of a node in the graph.
+     *
+     * The given node will always be the first node with val = 1. You must return the copy of the given node as a reference to the cloned graph.
+     *
+     * Example 1:
+     *
+     * Input: adjList = [[2,4],[1,3],[2,4],[1,3]]
+     * Output: [[2,4],[1,3],[2,4],[1,3]]
+     * Explanation: There are 4 nodes in the graph.
+     * 1st node (val = 1)'s neighbors are 2nd node (val = 2) and 4th node (val = 4).
+     * 2nd node (val = 2)'s neighbors are 1st node (val = 1) and 3rd node (val = 3).
+     * 3rd node (val = 3)'s neighbors are 2nd node (val = 2) and 4th node (val = 4).
+     * 4th node (val = 4)'s neighbors are 1st node (val = 1) and 3rd node (val = 3).
+     */
+    class Node {
+        public int val;
+        public List<Node> neighbors;
+        public Node() {
+            val = 0;
+            neighbors = new ArrayList<Node>();
+        }
+        public Node(int _val) {
+            val = _val;
+            neighbors = new ArrayList<Node>();
+        }
+        public Node(int _val, ArrayList<Node> _neighbors) {
+            val = _val;
+            neighbors = _neighbors;
+        }
+    }
+    class Solution133 {
+        public Node cloneGraph(Node node) {
+            if (node == null) return node;
+            List<Node> nodes = getNodes(node);  // 获取所有的node
+            HashMap<Node, Node> map = new HashMap<>();
+            for (Node cur : nodes) {  // 将新的节点和旧的节点对应
+                map.put(cur, new Node(cur.val));
+            }
+
+            for (Node cur : nodes) {
+                Node newNode = map.get(cur);  // 将新节点的neighbor连起来
+                for (Node neighbor : cur.neighbors) {
+                    newNode.neighbors.add(map.get(neighbor));  // neighbor为旧的节点对应的新的节点
+                }
+            }
+            return map.get(node);
+        }
+
+        public List<Node> getNodes(Node node) {
+            Queue<Node> queue = new LinkedList<>();
+            HashSet<Node> set = new HashSet<>();
+
+            queue.offer(node);
+            set.add(node);
+            while (!queue.isEmpty()) {
+                Node cur = queue.poll();
+                for (Node neighbor : cur.neighbors) {
+                    if (!set.contains(neighbor)) {
+                        queue.offer(neighbor);
+                        set.add(neighbor);
+                    }
+                }
+            }
+            return new ArrayList<>(set);
+        }
+    }
+
+    // 399 : Evaluate Division
+    /**
+     * You are given an array of variable pairs equations and an array of real numbers values, where equations[i] = [Ai, Bi]
+     * and values[i] represent the equation Ai / Bi = values[i]. Each Ai or Bi is a string that represents a single variable.
+     *
+     * You are also given some queries, where queries[j] = [Cj, Dj] represents the jth query where you must find the answer for Cj / Dj = ?.
+     *
+     * Return the answers to all queries. If a single answer cannot be determined, return -1.0.
+     *
+     * Note: The input is always valid. You may assume that evaluating the queries will not result in division by
+     * zero and that there is no contradiction.
+     *
+     * Example 1:
+     *
+     * Input: equations = [["a","b"],["b","c"]], values = [2.0,3.0], queries = [["a","c"],["b","a"],["a","e"],["a","a"],["x","x"]]
+     * Output: [6.00000,0.50000,-1.00000,1.00000,-1.00000]
+     * Explanation:
+     * Given: a / b = 2.0, b / c = 3.0
+     * queries are: a / c = ?, b / a = ?, a / e = ?, a / a = ?, x / x = ?
+     * return: [6.0, 0.5, -1.0, 1.0, -1.0 ]
+     * Example 2:
+     *
+     * Input: equations = [["a","b"],["b","c"],["bc","cd"]], values = [1.5,2.5,5.0], queries = [["a","c"],["c","b"],["bc","cd"],["cd","bc"]]
+     * Output: [3.75000,0.40000,5.00000,0.20000]
+     * Example 3:
+     *
+     * Input: equations = [["a","b"]], values = [0.5], queries = [["a","b"],["b","a"],["a","c"],["x","y"]]
+     * Output: [0.50000,2.00000,-1.00000,-1.00000]
+     */
+    class Solution399 {
+
+        class GraphNode {
+            String den;
+            double val;
+            public GraphNode(String den, double val) {
+                this.den = den;
+                this.val = val;
+            }
+        }
+        /*
+        每个元素后面对应有几个除数 比如说 a : b, 2.0
+                                    b : a, 1/ 2.0
+                                    c : b, 1/ 3.0
+         a -- b -- c
+         */
+
+        HashMap<String, List<GraphNode>> map = new HashMap<>();  // 每个元素后面对应有几个除数 比如说 a : b, 2.0
+
+
+        public double[] calcEquation(List<List<String>> equations, double[] values, List<List<String>> queries) {
+            map = new HashMap<>();
+            for (int i = 0; i < equations.size(); i++) {
+                List<String> equation = equations.get(i);
+                if (!map.containsKey(equation.get(0))) {
+                    map.put(equation.get(0), new ArrayList<>());
+                }
+                map.get(equation.get(0)).add(new GraphNode(equation.get(1), values[i]));  //  将  a/b加入
+                if (!map.containsKey(equation.get(1))) {
+                    map.put(equation.get(1), new ArrayList<>());
+                }
+                map.get(equation.get(1)).add(new GraphNode(equation.get(0), 1 / values[i]));  // 将 b/a加入
+            }
+
+            double[] res = new double[queries.size()];
+            for (int i =0; i < res.length; i++) {
+                res[i] = find(queries.get(i).get(0), queries.get(i).get(1), 1, new HashSet<>());
+            }
+            return res;
+        }
+
+        private double find(String start, String end, double value, HashSet<String> visited) {
+            if (visited.contains(start)) return -1;  // 如果之前找过了，返回-1
+            if (!map.containsKey(start)) return -1;  // 如果map里没有这个值，返回-1
+
+            if(start.equals(end)) return value;   // 如果start和end 相等了，返回value
+            visited.add(start);  // visited加入这个数
+            for (GraphNode next: map.get(start)) {
+                double sub = find(next.den, end, value * next.val, visited);  //  遍历下一个相连的元素
+                if (sub != -1.0) return sub;
+            }
+            visited.remove(start);
+            return -1;
+        }
+    }
+
+    // 332： Reconstruct Itinerary
+    /**
+     * you are given a list of airline tickets where tickets[i] = [fromi, toi] represent the departure and the arrival
+     * airports of one flight. Reconstruct the itinerary in order and return it.
+     *
+     * All of the tickets belong to a man who departs from "JFK", thus, the itinerary must begin with "JFK". If there
+     * are multiple valid itineraries, you should return the itinerary that has the smallest lexical order when read
+     * as a single string.
+     *
+     * For example, the itinerary ["JFK", "LGA"] has a smaller lexical order than ["JFK", "LGB"].
+     * You may assume all tickets form at least one valid itinerary. You must use all the tickets once and only once.
+     *
+     * Example 1:
+     *
+     * Input: tickets = [["MUC","LHR"],["JFK","MUC"],["SFO","SJC"],["LHR","SFO"]]
+     * Output: ["JFK","MUC","LHR","SFO","SJC"]
+     * Example 2:
+     *
+     *                    // JFK 可以到SFO和ATL, 优先选择ATL
+     * Input: tickets = [["JFK","SFO"],["JFK","ATL"],["SFO","ATL"],["ATL","JFK"],["ATL","SFO"]]
+     * Output: ["JFK","ATL","JFK","SFO","ATL","SFO"]
+     * Explanation: Another possible reconstruction is ["JFK","SFO","ATL","JFK","ATL","SFO"] but it is larger in lexical
+     *
+     */
+    class Solution332 {
+        /*
+        用到QriorityQueue 进行排序，用到DFS（HashMap）进行深度优先遍历
+         */
+        HashMap<String, PriorityQueue<String>> map;
+        List<String> res;
+
+        public List<String> findItinerary(List<List<String>> tickets) {
+            map = new HashMap<>();
+            res = new LinkedList<>();
+            for (List<String> ticket : tickets) {
+                // 将map进行构建，所有的ticket对应一个priorityQueue, 按照字母顺序排列
+                map.computeIfAbsent(ticket.get(0), k -> new PriorityQueue<>()).add(ticket.get(1));
+            }
+            helper("JFK");
+            return res;
+        }
+
+        public void helper(String airport){
+            // 起点或者中点不为空
+            while (map.containsKey(airport) && !map.get(airport).isEmpty()) {
+                helper(map.get(airport).poll());  // 按照字母排序出来最小的
+            }
+            //  如果正常的dfs是逆序的添加，这里需要将所有元素放在第一位
+            res.add(0, airport);
+        }
+    }
+
+    // 305 : number of islands 2
+
+    /**
+     * You are given an empty 2D binary grid grid of size m x n. The grid represents a map where 0's represent water
+     * and 1's represent land. Initially, all the cells of grid are water cells (i.e., all the cells are 0's).
+     *
+     * We may perform an add land operation which turns the water at position into a land. You are given an array
+     * positions where positions[i] = [ri, ci] is the position (ri, ci) at which we should operate the ith operation.
+     *
+     * Return an array of integers answer where answer[i] is the number of islands after turning the cell (ri, ci) into a land.
+     *
+     * An island is surrounded by water and is formed by connecting adjacent lands horizontally or vertically. You
+     * may assume all four edges of the grid are all surrounded by water.
+     *
+     * Example 1:
+     *
+     * Input: m = 3, n = 3, positions = [[0,0],[0,1],[1,2],[2,1]]
+     * Output: [1,1,2,3]
+     * Explanation:
+     * Initially, the 2d grid is filled with water.
+     * - Operation #1: addLand(0, 0) turns the water at grid[0][0] into a land. We have 1 island.
+     * - Operation #2: addLand(0, 1) turns the water at grid[0][1] into a land. We still have 1 island.
+     * - Operation #3: addLand(1, 2) turns the water at grid[1][2] into a land. We have 2 islands.
+     * - Operation #4: addLand(2, 1) turns the water at grid[2][1] into a land. We have 3 islands.
+     * Example 2:
+     *
+     * Input: m = 1, n = 1, positions = [[0,0]]
+     * Output: [1]
+     */
+
+    class Solution305 {
+        // union find 261 323
+        int[][] dirs = {{0, 1}, {1, 0},{-1, 0}, {0, -1}};
+        public List<Integer> numIslands2(int m, int n, int[][] positions) {
+            List<Integer> res = new ArrayList<>();
+            if (m <= 0 || n <= 0) return res;
+            int count = 0;
+            int[] root = new int[m * n];  //  union find root，二维化为一维
+            Arrays.fill(root, -1);
+
+            for (int[] pair: positions) {
+                int position = n * pair[0] + pair[1];  //  二维化一维的position
+                if(root[position] != -1) {
+                    res.add(count);
+                    continue;
+                }
+                root[position] = position;
+                count++;  //  有几个连着的
+
+                for (int[] dir: dirs) {  // 遍历上下左右的位置
+                    int x = pair[0] + dir[0];
+                    int y = pair[1] + dir[1];
+                    int curPos = n * x + y;  // 一维对应的位置
+                    if (x < 0 || x >= n || y < 0 || y >= n || root[curPos] == -1) {
+                        continue;  // 越界了就跳过
+                    }
+                    int anoIsland = find(root, curPos);  // 找到另外的岛
+                    if (position != anoIsland) {
+                        root[position] = anoIsland;
+                        position = anoIsland;
+                        count --;
+                    }
+                }
+                res.add(count);
+            }
+        return res;
+        }
+        public int find(int[] roots, int i) {
+            while (i != roots[i]) i = roots[i];
+            return i;
+        }
+    }
+
+
+
+    public static void main(String[] args) {
+        char[] ar = new char[3];
+        ar[0] = 's';
+        ar[1] = 'g';
+        ar[2] = '3';
+
+        System.out.println(Arrays.toString(ar));
     }
 
 }

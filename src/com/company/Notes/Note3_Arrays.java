@@ -2461,7 +2461,6 @@ public class Note3_Arrays {
      *
      * Input: grid = [[1,1,1,1,1,1],[-1,-1,-1,-1,-1,-1],[1,1,1,1,1,1],[-1,-1,-1,-1,-1,-1]]
      * Output: [0,1,2,3,4,-1]
-     * @param args
      */
 
     class Solution1706 {
@@ -2984,7 +2983,7 @@ public class Note3_Arrays {
      * return 6
      *
      */
-    class Solution266{
+    class Solution296{
         /**
          * 1. 降维
          *     横向：
@@ -3026,6 +3025,204 @@ public class Note3_Arrays {
 
     }
 
+
+    // 1122 : Relative sort array
+
+    /**
+     * Given two arrays arr1 and arr2, the elements of arr2 are distinct, and all elements in arr2 are also in arr1.
+     *
+     * Sort the elements of arr1 such that the relative ordering of items in arr1 are the same as in arr2. Elements
+     * that do not appear in arr2 should be placed at the end of arr1 in ascending order.
+     *
+     *
+     *
+     * Example 1:
+     *
+     * Input: arr1 = [2,3,1,3,2,4,6,7,9,2,19], arr2 = [2,1,4,3,9,6]
+     * Output: [2,2,2,1,4,3,3,9,6,7,19]
+     * Example 2:
+     *
+     * Input: arr1 = [28,6,22,8,44,17], arr2 = [22,28,8,6]
+     * Output: [22,28,8,6,17,44]
+     */
+    class Solution1122 {
+        public int[] relativeSortArray(int[] arr1, int[] arr2) {
+            HashMap<Integer, Integer> map = new HashMap<>();
+            List<Integer> others = new ArrayList<>();
+            int[] res = new int[arr1.length];
+
+            for (int i : arr2) {  // 将arr2的数字全部放入map
+                map.put(i, 0);
+            }
+
+            for (int i : arr1) {  // 数arr1中的数字，在map中的直接加加数量， 不在的加入tmp
+                if (map.containsKey(i)) {
+                    map.put(i, map.get(i) + 1);
+                } else {
+                    others.add(i);
+                }
+            }
+
+            int start = 0;
+            for (int i : arr2) {
+                int times = map.get(i);
+                for (int j = 0;  j< times; j++) {  // 将map中的数字按顺序加入
+                    res[start++] = i;
+                }
+            }
+
+            if (start < arr1.length) {
+                Collections.sort(others);  // others中的数字排序后加入
+                for (int i = 0; i < others.size(); i++) {
+                    res[start++] = others.get(i);
+                }
+            }
+
+            return res;
+        }
+    }
+
+    // 163: Missing ranges
+
+    /**
+     * You are given an inclusive range [lower, upper] and a sorted unique integer array nums, where all elements are in
+     * the inclusive range.
+     *
+     * A number x is considered missing if x is in the range [lower, upper] and x is not in nums.
+     *
+     * Return the smallest sorted list of ranges that cover every missing number exactly. That is, no element of nums is
+     * in any of the ranges, and each missing number is in one of the ranges.
+     *
+     * Each range [a,b] in the list should be output as:
+     *
+     * "a->b" if a != b
+     * "a" if a == b
+     *
+     * Example 1:
+     *
+     * Input: nums = [0,1,3,50,75], lower = 0, upper = 99
+     * Output: ["2","4->49","51->74","76->99"]
+     * Explanation: The ranges are:
+     * [2,2] --> "2"
+     * [4,49] --> "4->49"
+     * [51,74] --> "51->74"
+     * [76,99] --> "76->99"
+     * Example 2:
+     *
+     * Input: nums = [-1], lower = -1, upper = -1
+     * Output: []
+     * Explanation: There are no missing ranges since there are no missing numbers.
+     */
+    class solution163{
+
+        // 小心越界：
+        // [2147483647] 0 2147483647
+        // [0 -> 2147483646]
+        public List<String> findMissingRanges(int[] nums, int lower, int upper){
+            List<String> res = new ArrayList<>();
+            long alower = (long) lower, aupper = (long)upper;
+            for (int num : nums) {
+                if (num == alower) {
+                    alower++;  // 是否是下界
+                } else if (alower < num){
+                    if (alower + 1 == num) res.add(String.valueOf(alower));
+                    else {
+                        res.add(alower + "->" + (num - 1));
+                    }
+                    alower = (long)num + 1;
+                }
+            }
+            if (alower == aupper) res.add(String.valueOf(alower));
+            else if (alower < aupper) res.add(alower + "->" + aupper);
+            return res;
+        }
+    }
+
+    // 719: Find K-th smallest pair Distance
+
+    /**
+     * The distance of a pair of integers a and b is defined as the absolute difference between a and b.
+     *
+     * Given an integer array nums and an integer k, return the kth smallest distance among all the pairs nums[i]
+     * and nums[j] where 0 <= i < j < nums.length.
+     *
+     * Example 1:
+     *
+     * Input: nums = [1,3,1], k = 1
+     * Output: 0
+     * Explanation: Here are all the pairs:
+     * (1,3) -> 2
+     * (1,1) -> 0
+     * (3,1) -> 2
+     * Then the 1st smallest distance pair is (1,1), and its distance is 0.
+     * Example 2:
+     *
+     * Input: nums = [1,1,1], k = 2
+     * Output: 0
+     * Example 3:
+     *
+     * Input: nums = [1,6,1], k = 3
+     * Output: 5
+     */
+    class Solution719{
+        // PriorityQueue: Time limit exceed
+        public int smallestDistancePair(int[] nums, int k) {
+            if (nums == null || nums.length == 0) return 0;
+            List<Integer> list = new ArrayList<>();
+            for (int i =0; i < nums.length - 1; i++) {
+                for (int j = i + 1; j < nums.length; j++) {
+                    list.add(Math.abs(nums[j] - nums[i]));
+                }
+            }
+            PriorityQueue<Integer> pq = new PriorityQueue<>((a, b)->b - a);
+            for (int idx : list) {
+                pq.offer(idx);
+                if (pq.size() > k) {
+                    pq.poll();
+                }
+            }
+            return pq.poll();
+        }
+
+        // 二分法
+        // 题目要求数组中两两数字之间第 k 小的数对距离，需求就是两个：计算数对距离、找到第 k 小个距离。那么我们就根据题目分析，
+        // 数对距离的范围是在从 0 到数组最大值减数组最小值，即 [0, max(nums)-min(nums)] 这个范围上。那么我们就可以转换一下思路，
+        // 将原题改成在 [0, max(nums)-min(nums)] 这个范围上寻找数组中的第 k 小数对距离。
+        //思考到这一步之后这道题就容易多了，我们首先对数组按照从小到大进行排序，主体使用二分查找进行，在每一次计算 mid 之后，在数组中计算小于等于
+        // mid 的数堆个数，如果大于 k ，则向左半区域继续查找；如果小于等于 k，则向右半区域继续查找，直到 left 等于 right ，最后返回 left 或 right 。
+        //以题目示例 3 为例再对过程进行分析：
+        //数组为 [1, 6, 1]，k 为 3，此时对数组排序后数组变为 [1, 1, 6]，那么我们的查找范围就是 [0, 5]
+        public int smallestDistancePair1(int[] nums, int k) {
+            Arrays.sort(nums);
+            int left = 0;
+            int right = nums[nums.length - 1] - nums[0];
+            while (left < right) {
+                int mid = (left + right) / 2;
+                int countPairs = countPairs(nums, mid);
+                if (countPairs < k) {
+                    left = mid + 1;
+                } else {
+                    right = mid;
+                }
+            }
+            return left;
+        }
+
+        // 查找数组中两数距离小于mid的对数
+        public int countPairs(int[] nums, int mid) {
+            int l = 0;
+            int r = 0;
+            int count = 0;
+            while (r < nums.length) {
+                while (l < r && nums[r] - nums[l] > mid) {
+                    l++;
+                }
+                count += r - l;
+                r++;
+            }
+            return count;
+        }
+    }
 
     public static void main(String[] args) {
 

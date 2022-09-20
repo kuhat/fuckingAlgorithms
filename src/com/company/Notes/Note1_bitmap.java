@@ -495,6 +495,13 @@ public class Note1_bitmap {
         }
     }
 
+    // 260： single number 3
+
+    /**
+     *
+     * @param args
+     */
+
 
 
     public static void main(String[] args) {

@@ -331,8 +331,9 @@ public class Note4_BinarySearch {
         }
 
         public int guess(int i) {return 0;}
-
     }
+
+
 
 }
 

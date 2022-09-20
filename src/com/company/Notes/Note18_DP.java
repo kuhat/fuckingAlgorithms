@@ -1743,7 +1743,7 @@ public class Note18_DP {
                 costs[i][1] += Math.min(costs[i - 1][0], costs[i - 1][2]);
                 costs[i][2] += Math.min(costs[i - 1][1], costs[i - 1][0]);
             }
-            return Math.min(Math.min(costs[costs.length - 1][0], costs[costs.length - 1][1]), costs[costs.length][2]);
+            return Math.min(Math.min(costs[costs.length - 1][0], costs[costs.length - 1][1]), costs[costs.length - 1][2]);
         }
     }
 
@@ -1878,12 +1878,10 @@ public class Note18_DP {
         /*
          s: bbacc  match = 0 sp = 0 | match = 1, sp = 1
          p: *c     star = 0, pp = 1 | pp = 1
-
-
          */
         public boolean isMatch(String s, String p) {
-            int sp = 0;
-            int pp = 0;
+            int sp = 0;  // s的pointer
+            int pp = 0;  // p的pointer
             int match = 0;  // 当前匹配到的位置
             int star = -1;  // * 出现的位置
             while (sp < s.length()) {
@@ -1898,8 +1896,8 @@ public class Note18_DP {
                     pp++;  // 移动到下一个位置
                 } else if (star != -1) {
                     // 如果有star了，可以直接跳过当前的s，match++，
-                    pp = star + 1;
-                    match++;
+                    pp = star + 1;  // 如果已经有*了，pp等于*的下一个位置
+                    match++;  // match的位置++
                     sp = match;
                 } else return false;
             }
@@ -1980,7 +1978,175 @@ public class Note18_DP {
 
     }
 
+    // 416： Partition equal subset sum
 
+    /**
+     * Given a non-empty array nums containing only positive integers, find if the array can be partitioned into two
+     * subsets such that the sum of elements in both subsets is equal.
+
+     * Example 1:
+     *
+     * Input: nums = [1,5,11,5]
+     * Output: true
+     * Explanation: The array can be partitioned as [1, 5, 5] and [11].
+     * Example 2:
+     *
+     * Input: nums = [1,2,3,5]
+     * Output: false
+     * Explanation: The array cannot be partitioned into equal sum subsets.
+     */
+    /*
+          0 1 2 3 4 5 6 7 8 9 10 11
+     0  0 1 0 0 0 0 0 0 0 0 0 0  0
+     1  1 1 1 0 0 0 0 0 0 0 0 0  0
+     5  2 1 1 0 0 0 1 1 0 0 0 0  0
+     11 3 1 1 0 0 0 1 1 0 0 0 0  1
+     5  4 1 1 0 0 0 1 1 0 0 0 1  1
+
+    if nums[i - 1] <= j
+        dp[i][j] = dp[i - 1][j] || dp[i - 1][j - nums[i-1]]
+    else dp[i] = dp[i - 1][j]
+     */
+    class Solution416 {
+        public boolean canPartition(int[] nums) {
+            if (nums == null || nums.length == 0) return true;
+            int sum = 0;
+            for (int i : nums) {
+                sum += i;
+            }
+            if (sum % 2 != 0) return false;  // 和必然可以整除二
+            sum /= 2;
+            boolean[][] dp = new boolean[nums.length + 1][sum + 1];
+            dp[0][0] = true;
+            for (int i = 1; i < nums.length + 1; i++) {
+                for (int j = 0; j < sum + 1; j++) {
+                    if (nums[i - 1] <= j) dp[i][j] = dp[i - 1][j] || dp[i - 1][j - nums[i - 1]];
+                    else dp[i][j] = dp[i - 1][j];
+                }
+            }
+            return dp[nums.length][sum];
+        }
+
+        // 滚动数组
+        public boolean canPartirion1(int[] nums) {
+            if (nums == null || nums.length == 0) return true;
+            int sum = 0;
+            for (int i : nums) sum += i;
+            if (sum % 2 != 0) return false;  // 和必然可以整除二
+            sum /= 2;
+            boolean dp[] = new boolean[nums.length + 1];
+            dp[0] = true;
+            for (int i = 1; i < nums.length + 1; i ++) {
+                for (int j = sum; j >=nums[i-1]; j--) {
+                    dp[j] = dp[j] || dp[j - nums[i-1]];
+                }
+            }
+            return dp[nums.length];
+        }
+    }
+
+    // 1155 ： Number of Dice Rolls With Target Sum
+
+    /**
+     * ou have n dice and each die has k faces numbered from 1 to k.
+     *
+     * Given three integers n, k, and target, return the number of possible ways (out of the kn total ways) to roll the
+     * dice so the sum of the face-up numbers equals target. Since the answer may be too large, return it modulo 109 + 7.
+     *
+     * Example 1:
+     *
+     * Input: n = 1, k = 6, target = 3
+     * Output: 1
+     * Explanation: You throw one die with 6 faces.
+     * There is only one way to get a sum of 3.
+     * Example 2:
+     *
+     * Input: n = 2, k = 6, target = 7
+     * Output: 6
+     * Explanation: You throw two dice, each with 6 faces.
+     * There are 6 ways to get a sum of 7: 1+6, 2+5, 3+4, 4+3, 5+2, 6+1.
+     * Example 3:
+     *
+     * Input: n = 30, k = 30, target = 500
+     * Output: 222616187
+     * Explanation: The answer must be returned modulo 109 + 7
+     */
+    class Solution1155 {
+        public int numRollsToTarget(int n, int k, int target) {
+                int[][] dp = new int[n + 1][target + 1];
+                int mod = (int)Math.pow(10,9) + 7;
+                dp[0][0] = 1;
+                for(int i = 1;i <= n;i++){
+                    for(int j = 1;j <= target;j++){
+                        for(int q = 1;q <= k;q++){
+                            if(j >= q)
+                                dp[i][j] = (dp[i][j] + dp[i - 1][j - q]) % mod;
+                        }
+                    }
+                }
+                return dp[n][target];
+        }
+    }
+
+    // 265: paint house 2
+
+    /**
+     * There are a row of n houses, each house can be painted with one of the k colors. The cost of painting each house with a certain color is different. You have to paint all the houses such that no two adjacent houses have the same color.
+     *
+     * The cost of painting each house with a certain color is represented by an n x k cost matrix costs.
+     *
+     * For example, costs[0][0] is the cost of painting house 0 with color 0; costs[1][2] is the cost of painting house 1 with color 2, and so on...
+     * Return the minimum cost to paint all houses.
+     *
+     *
+     *
+     * Example 1:
+     *
+     * Input: costs = [[1,5,3],[2,9,4]]
+     * Output: 5
+     * Explanation:
+     * Paint house 0 into color 0, paint house 1 into color 2. Minimum cost: 1 + 4 = 5;
+     * Or paint house 0 into color 2, paint house 1 into color 0. Minimum cost: 3 + 2 = 5.
+     * Example 2:
+     *
+     * Input: costs = [[1,3],[2,4]]
+     * Output: 5
+     */
+
+
+    // 297： Perfect Squares
+
+    /**
+     * Given an integer n, return the least number of perfect square numbers that sum to n.
+     *
+     * A perfect square is an integer that is the square of an integer; in other words, it is the product of some integer with itself. For example, 1, 4, 9, and 16 are perfect squares while 3 and 11 are not.
+     *
+     *
+     *
+     * Example 1:
+     *
+     * Input: n = 12
+     * Output: 3
+     * Explanation: 12 = 4 + 4 + 4.
+     * Example 2:
+     *
+     * Input: n = 13
+     * Output: 2
+     * Explanation: 13 = 4 + 9.
+     */
+    class Solution297 {
+        public int numSquares(int n) {
+            int[] res = new int[n + 1];
+            Arrays.fill(res, Integer.MAX_VALUE);
+            res[0] = 0;
+            for (int i = 0; i <= n; i++) {
+                for (int j = 1; j * j <= i; j++) {
+                    res[i] = Math.min(res[i], res[i - j * j] + 1);
+                }
+            }
+            return res[n];
+        }
+    }
 
     public static void main(String[] args) {
         System.out.println(Arrays.toString(new int[5]));

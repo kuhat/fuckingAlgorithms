@@ -1010,7 +1010,7 @@ public class Note11_Backtracking {
          *
          */
 
-        HashMap<Integer, List<String>> map = new HashMap<>();
+        HashMap<Integer, List<String>> map = new HashMap<>();  // Integer: 单词开始的位置
         public List<String> wordBreak (String s, List<String> wordDict) {
             return dfs(s, wordDict, 0);
         }
@@ -1189,11 +1189,59 @@ public class Note11_Backtracking {
                 helper(res, word, pos + 1, cur + (count > 0 ? count: "") + word.charAt(pos), 0);  // 保留数字，如果count有，就保留count，然后加上当前的数字
             }
         }
+    }
+
+    // 254: Backtracking
+
+    /**
+     * Numbers can be regarded as the product of their factors.
+     *
+     * For example, 8 = 2 x 2 x 2 = 2 x 4.
+     * Given an integer n, return all possible combinations of its factors. You may return the answer in any order.
+     *
+     * Note that the factors should be in the range [2, n - 1].
+     *
+     * Example 1:
+     *
+     * Input: n = 1
+     * Output: []
+     * Example 2:
+     *
+     * Input: n = 12
+     * Output: [[2,6],[3,4],[2,2,3]]
+     * Example 3:
+     *
+     * Input: n = 37
+     * Output: []
+     */
+    class Solution254 {
+        public List<List<Integer>> getFactors(int n) {
+            List<List<Integer>> res = new ArrayList<>();
+            helper(res, new ArrayList<>(), n, 2);
+            return res;
+        }
+
+        public void helper(List<List<Integer>> res, List<Integer> list, int n, int start) {
+            if (n == 1) {
+                if (list.size() > 1) {
+                    res.add(new ArrayList<>(list));
+                    return;
+                }
+            }
+            for (int i = start; i <= n; i++) {
+                if (n % i == 0) {
+                    list.add(i);
+                    helper(res, list, n / i, i);
+                    list.remove(list.size() - 1);
+                }
+            }
+        }
 
     }
 
 
     public static void main(String[] args) {
+        System.out.println(Integer.valueOf('1'));
         String s = "123456";
         System.out.println(s.substring(1, 3));
     }

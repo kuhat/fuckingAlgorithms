@@ -291,6 +291,52 @@ public class Note7_Stack {
 
      */
     class Solution42 {
+
+        public int trap1(int[] height) {
+            if (height == null || height.length <= 2) return 0;
+            int left = 0, right = height.length - 1;
+            //最开始的时候确定left和right的边界，这里的left和right是下标，如果一直是递增的不能装水
+            while (left < right && height[left] < height[++left]) left++;
+            while (left < right && height[right] < height[--right]) right--;
+
+            int water = 0;
+            while (left < right) {
+                // 确定左边和右边的木桶高度
+                int leftValue = height[left], rightValue = height[right];
+                if (leftValue < rightValue) {
+                    // //如果左边柱子高度小于等于右边柱子的高度，根据木桶原理，
+                    // 桶的高度就是左边柱子的高度
+                    while (left < right && height[leftValue] >= height[++left]) {
+                        water += leftValue - height[left];
+                    }
+                } else {
+                    //如果左边柱子高度大于右边柱子的高度，根据木桶原理，
+                    // 桶的高度就是右边柱子的高度
+                    while (right > left && height[rightValue] >= height[--right]) {
+                        water += rightValue - height[right];
+                    }
+                }
+            }
+            return water;
+        }
+
+        // 简化代码
+        public int trap2(int[] height) {
+            if (height.length <= 2) return 0;
+            int leftMax = 0, rightMax = 0, left = 0, right = height.length - 1;
+            int water = 0;
+            while (left < right) {
+                leftMax = Math.max(leftMax, height[left]);
+                rightMax = Math.max(rightMax, height[right]);
+                if (leftMax < rightMax) {
+                    water += leftMax - height[left++];
+                } else {
+                    water += rightMax - height[right--];
+                }
+            }
+            return water;
+        }
+
         public int trap(int[] height) {
             if (height == null || height.length == 0) {
                 return 0;

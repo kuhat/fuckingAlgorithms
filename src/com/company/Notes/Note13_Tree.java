@@ -1414,6 +1414,382 @@ public class Note13_Tree {
         }
     }
 
+    //285 ： Inorder Successor
+
+    /**
+     * Given the root of a binary search tree and a node p in it, return the in-order successor of that node in the BST.
+     * If the given node has no in-order successor in the tree, return null.
+     *
+     * The successor of a node p is the node with the smallest key greater than p.val.
+     *
+     * Example 1:
+     *
+     *
+     * Input: root = [2,1,3], p = 1
+     * Output: 2
+     * Explanation: 1's in-order successor node is 2. Note that both p and the return value is of TreeNode type.
+     * Example 2:
+     *
+     *
+     * Input: root = [5,3,6,2,4,null,null,1], p = 6
+     * Output: null
+     * Explanation: There is no in-order successor of the current node, so the answer is null.
+     */
+    class Solution285 {
+        public TreeNode inorderSuccessor(TreeNode root, TreeNode p) {
+            if (root == null) return null;
+            TreeNode res=  null;
+            while (root != null) {
+                if (root.val <= p.val) {  // 要找的值肯定是在p节点的右边，如果右边的节点还有左子树，就是那个左子树
+                    root = root.right;
+                } else {
+                    res = root;
+                    root = root.left;
+                }
+
+            }
+            return res;
+        }
+    }
+
+    // 545： Boundary of Binary Tree
+    /**
+     * The boundary of a binary tree is the concatenation of the root, the left boundary, the leaves ordered from
+     * left-to-right, and the reverse order of the right boundary.
+     *
+     * The left boundary is the set of nodes defined by the following:
+     *
+     * The root node's left child is in the left boundary. If the root does not have a left child, then the left boundary is empty.
+     * If a node in the left boundary and has a left child, then the left child is in the left boundary.
+     * If a node is in the left boundary, has no left child, but has a right child, then the right child is in the left boundary.
+     * The leftmost leaf is not in the left boundary.
+     * The right boundary is similar to the left boundary, except it is the right side of the root's right subtree. Again,
+     * the leaf is not part of the right boundary, and the right boundary is empty if the root does not have a right child.
+     *
+     * The leaves are nodes that do not have any children. For this problem, the root is not a leaf.
+     *
+     * Given the root of a binary tree, return the values of its boundary.
+     *
+     * Example 1:
+     *
+     *
+     * Input: root = [1,null,2,3,4]
+     * Output: [1,3,4,2]
+     * Explanation:
+     * - The left boundary is empty because the root does not have a left child.
+     * - The right boundary follows the path starting from the root's right child 2 -> 4.
+     *   4 is a leaf, so the right boundary is [2].
+     * - The leaves from left to right are [3,4].
+     * Concatenating everything results in [1] + [] + [3,4] + [2] = [1,3,4,2].
+     * Example 2:
+     *
+     *
+     * Input: root = [1,2,3,4,5,6,null,null,null,7,8,9,10]
+     * Output: [1,2,4,7,8,9,10,6,3]
+     * Explanation:
+     * - The left boundary follows the path starting from the root's left child 2 -> 4.
+     *   4 is a leaf, so the left boundary is [2].
+     * - The right boundary follows the path starting from the root's right child 3 -> 6 -> 10.
+     *   10 is a leaf, so the right boundary is [3,6], and in reverse order is [6,3].
+     * - The leaves from left to right are [4,7,8,9,10].
+     * Concatenating everything results in [1] + [2] + [4,7,8,9,10] + [6,3] = [1,2,4,7,8,9,10,6,3].
+     */
+    class Solution545 {
+
+        List<Integer> res = new ArrayList<>();
+        public List<Integer> boundaryOfBinaryTree(TreeNode root) {
+            if (root == null) return res;
+            res.add(root.val);
+            leftBoundary(root.left);
+            leaves(root.left);
+            leaves(root.right);
+            rightBoundary(root.right);
+            return res;
+        }
+
+        // 只走左边的一侧
+        public void leftBoundary(TreeNode root) {
+            // 如果是叶子节点直接return
+            if (root == null || (root.left == null && root.right == null)) return;
+            res.add(root.val);
+            if (root.left == null) leftBoundary(root.right);
+            else leftBoundary(root.left);
+        }
+
+        public void rightBoundary(TreeNode root) {
+            if (root == null || (root.left == null && root.right == null)) return;
+            if (root.right == null) rightBoundary(root.left);
+            else rightBoundary(root.right);
+            res.add(root.val);  // 右边是后加入的，相当于后序
+        }
+
+        // 叶子节点遍历
+        public void leaves(TreeNode root) {
+            if (root == null) return;
+            if (root.left == null && root.right == null) {
+                res.add(root.val);
+                return;
+            }
+            leaves(root.left);
+            leaves(root.right);
+        }
+    }
+
+    // 297: Serialize and Deserialize Binary Tree 很重要！！
+
+    /**
+     * Serialization is the process of converting a data structure or object into a sequence of bits so that it can be
+     * stored in a file or memory buffer, or transmitted across a network connection link to be reconstructed later in
+     * the same or another computer environment.
+     *
+     * Design an algorithm to serialize and deserialize a binary tree. There is no restriction on how your
+     * serialization/deserialization algorithm should work. You just need to ensure that a binary tree can
+     * be serialized to a string and this string can be deserialized to the original tree structure.
+     *
+     * Clarification: The input/output format is the same as how LeetCode serializes a binary tree. You do
+     * not necessarily need to follow this format, so please be creative and come up with different approaches yourself.
+     *
+     * Example 1:
+     *
+     * Input: root = [1,2,3,null,null,4,5]
+     * Output: [1,2,3,null,null,4,5]
+     * Example 2:
+     *
+     * Input: root = []
+     * Output: []
+     */
+
+    public class Codec {
+
+        // Encodes a tree to a single string.
+        public String serialize(TreeNode root) {
+            if (root == null) return "";
+            Queue<TreeNode> queue = new LinkedList<>();
+            StringBuilder sb = new StringBuilder();
+            queue.offer(root);
+            while (!queue.isEmpty()) {
+                TreeNode cur = queue.poll();
+                if (cur == null) {
+                    sb.append("null ");
+                    continue;
+                }
+                sb.append(cur.val + " ");
+                queue.offer(cur.left);
+                queue.offer(cur.right);
+            }
+            return sb.toString();
+        }
+
+        // Decodes your encoded data to tree.
+        public TreeNode deserialize(String data) {
+            if (data == "") return null;
+            String[] str = data.split(" ");
+            TreeNode root = new TreeNode(Integer.parseInt(str[0]));
+            Queue<TreeNode> queue = new LinkedList<>();
+            queue.offer(root);
+            for (int i = 0; i < str.length; i++) {
+                TreeNode cur= queue.poll();
+                if (!str[i].equals("null")) {
+                    cur.left = new TreeNode(Integer.parseInt(str[i]));
+                    queue.offer(cur.left);
+                }
+                if (!str[++i].equals("null")) {
+                    cur.right = new TreeNode(Integer.parseInt(str[i]));
+                    queue.offer(cur.right);
+                }
+            }
+            return root;
+        }
+    }
+
+    // 449: SerializeAndDeserializeBST
+
+    /**
+     *
+     * Serialization is converting a data structure or object into a sequence of bits so that it can be stored in a
+     * file or memory buffer, or transmitted across a network connection link to be reconstructed later in the same or another computer environment.
+     *
+     * Design an algorithm to serialize and deserialize a binary search tree. There is no restriction on how your
+     * serialization/deserialization algorithm should work. You need to ensure that a binary search tree can be serialized to a string, and this string can be deserialized to the original tree structure.
+     *
+     * The encoded string should be as compact as possible.
+     *
+     * Example 1:
+     *
+     * Input: root = [2,1,3]
+     * Output: [2,1,3]
+     * Example 2:
+     *
+     * Input: root = []
+     * Output: []
+     */
+    public class Codec1 {
+
+        // Encodes a tree to a single string.
+        public String serialize(TreeNode root) {
+            if (root == null) return "";
+            StringBuilder res = new StringBuilder();
+            Stack<TreeNode> stack = new Stack<>();
+            stack.push(root);
+
+            while (!stack.isEmpty()) {
+                TreeNode cur = stack.pop();
+                res.append(cur.val + " ");
+                if (cur.right != null) stack.push(cur.right);
+                if (cur.left != null) stack.push(cur.left);
+            }
+            return res.toString();
+        }
+
+        // Decodes your encoded data to tree.
+        public TreeNode deserialize(String data) {
+            if (data == "") return null;
+            String[] str = data.split(" ");
+            Queue<Integer> qu = new LinkedList<>();
+            for (String s: str) {
+                qu.offer(Integer.parseInt(s));
+            }
+            return getNode(qu);
+        }
+        public TreeNode getNode(Queue<Integer> queue) {
+            if (queue.isEmpty()) return null;
+            TreeNode root = new TreeNode(queue.poll());
+            Queue<Integer> smallerQ = new LinkedList<>();  //  存放左节点
+            while (!queue.isEmpty() && queue.peek() < root.val) {
+                smallerQ.offer(queue.poll());  // 所有左节点放入（小于root的）
+            }
+            root.left = getNode(smallerQ);
+            root.right = getNode(queue);  // queue存放大于的
+            return root;
+        }
+    }
+
+    // 510：Inorder Successor in BST II
+
+    /**
+     * Given a node in a binary search tree, return the in-order successor of that node in the BST. If that node has
+     * no in-order successor, return null.
+     *
+     * The successor of a node is the node with the smallest key greater than node.val.
+     *
+     * You will have direct access to the node but not to the root of the tree. Each node will have a reference to
+     * its parent node. Below is the definition for Node:
+     *
+     * class Node {
+     *     public int val;
+     *     public Node left;
+     *     public Node right;
+     *     public Node parent;
+     * }
+     *
+     *
+     * Example 1:
+     *
+     *
+     * Input: tree = [2,1,3], node = 1
+     * Output: 2
+     * Explanation: 1's in-order successor node is 2. Note that both the node and the return value is of Node type.
+     * Example 2:
+     *
+     *
+     * Input: tree = [5,3,6,2,4,null,null,1], node = 6
+     * Output: null
+     * Explanation: There is no in-order successor of the current node, so the answer is null.
+     */
+    class Solution510 {
+        class Node {
+            public int val;
+            public Node left;
+            public Node right;
+            public Node parent;
+            public Node(int val) {
+                this.val = val;
+            }
+        };
+        public Node inorderSuccessor(Node node) {
+            if (node.right != null) {
+                node = node.right;
+                while (node.left != null) node = node.left;
+                return node;
+            }
+            while (node.parent != null && node == node.parent.right) {
+                node = node.parent;
+            }
+            return node.parent;
+        }
+    }
+
+    // 250: Count Univalue SubTrees
+
+    /**
+     *
+     * Given the root of a binary tree, return the number of uni-value subtrees.
+     *
+     * A uni-value subtree means all nodes of the subtree have the same value.
+     *
+     * Input: root = [5,1,5,5,5,null,5]
+     * Output: 4
+     * Example 2:
+     *
+     * Input: root = []
+     * Output: 0
+     * Example 3:
+     *
+     * Input: root = [5,5,5,5,5,null,5]
+     * Output: 6
+     */
+    class Solution250 {
+        int res;
+        public int countUnivalSubtrees(TreeNode root) {
+            res = 0;
+            helper(root);
+            return res;
+        }
+
+        public boolean helper(TreeNode root) {
+            if (root == null) return true;
+
+            boolean left = helper(root.left);
+            boolean right = helper(root.right);
+            if (left && right) {
+                if (root.left != null && root.val != root.left.val) return false;
+                if (root.right != null && root.val != root.right.val) return false;
+                res++;
+                return true;
+            }
+           return false;
+        }
+    }
+
+    // 255:
+
+    /**
+     * Given an array of unique integers preorder, return true if it is the correct preorder traversal sequence of a binary search tree.
+     *
+     * Example 1:
+     *
+     *
+     * Input: preorder = [5,2,1,3,6]
+     * Output: true
+     * Example 2:
+     *
+     * Input: preorder = [5,2,6,1,3]
+     * Output: false
+     */
+    class Solution255 {
+        public boolean verifyPreorder(int[] preorder) {
+            Stack<Integer> stack = new Stack<>();  // stack存的是递减的序列,为当前取出的最小值
+            int min = Integer.MIN_VALUE;  // 保存当前的最小值（前序遍历的子树都小于当前的节点）
+            for (int num : preorder) {
+                if (num < min) {  // 如果发现当前的值小于最小值的直接返回false
+                    return false;
+                }
+                while (!stack.isEmpty() && num > stack.peek()) min = stack.pop();
+                stack.push(num);
+            }
+            return true;
+        }
+    }
 
     public static void main(String[] args) {
         TreeNode root = new TreeNode(0);

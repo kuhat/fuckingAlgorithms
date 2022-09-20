@@ -137,6 +137,28 @@ public class Note8_Strings {
         }
         return "";
     }
+
+    public String solu76(String s, String t){
+        int[] map = new int[256];
+        int left = 0, right = 0, strStart = 0;
+        int minLen = Integer.MAX_VALUE, count = t.length();
+        for (char ch : t.toCharArray()) {
+            map[ch] ++;
+        }
+
+        while(right < s.length()) {
+            if(map[s.charAt(right++)]-- > 0) count--;
+            while(count == 0) {
+                if(right - left < minLen) {
+                    minLen = right - left;
+                    strStart = left;
+                }
+                if (map[s.charAt(left++)]++ == 0) count ++;
+            }
+        }
+        return minLen != Integer.MAX_VALUE ? s.substring(strStart, strStart +minLen) : "";
+    }
+
     /*
     总结：滑动窗口类型的题也是最常见的，一般会有两个指针，分别指向窗口的左边界和右边界，
     如果窗口不满足条件我们就移动右边界来扩大窗口，如果满足条件我们可以移动左边界来
@@ -2079,6 +2101,7 @@ public class Note8_Strings {
 
     class Solution49 {
         public List<List<String>> groupAnagrams(String[] strs) {
+
             HashMap<String, List<String>> map = new HashMap<>();
             for (String str : strs) {
                 int[] count = new int[26];
@@ -2235,14 +2258,14 @@ public class Note8_Strings {
         }
     }
 
-    // 299：palindrome permutation
+    // 266：palindrome permutation
 
     /**
      * Given a string, determine if a permutations of the string could form a palindrome
      * 出现一次的字母有一个，其他的都是两个
      * 或者都是偶数个
      */
-    class Solution299{
+    class Solution266{
         // HashSet:space: o(n)
         public boolean canPermutePalindrome(String s) {
             HashSet<Character> set = new HashSet<>();
@@ -2598,7 +2621,6 @@ public class Note8_Strings {
                     used[i] = false;
                     sb.deleteCharAt(sb.length() - 1);
                 }
-
             }
         }
     }
@@ -2906,6 +2928,145 @@ public class Note8_Strings {
             }
             return res;
         }
+    }
+
+
+    // 246: Strobogrammatic Number
+
+    /**
+     * Given a string num which represents an integer, return true if num is a strobogrammatic number.
+     *
+     * A strobogrammatic number is a number that looks the same when rotated 180 degrees (looked at upside down).
+     *
+     * Example 1:
+     *
+     * Input: num = "69"
+     * Output: true
+     * Example 2:
+     *
+     * Input: num = "88"
+     * Output: true
+     * Example 3:
+     *
+     * Input: num = "962"
+     * Output: false
+     */
+
+    class Solution246 {
+
+        HashMap<Character, Character> map = new HashMap<>();
+
+        public boolean isStrobogrammatic(String num) {
+            map.put('6', '9');
+            map.put('8', '8');
+            map.put('1', '1');
+            map.put('9', '6');
+            map.put('0', '0');
+            int left = 0, right = num.length() - 1;
+            while (left < right) {
+                if (!map.containsKey(num.charAt(left))) return false;
+                if (map.get(num.charAt(left)) != num.charAt(right)) return false;
+                left++;
+                right--;
+            }
+            return true;
+        }
+    }
+
+    // 248: Strobogrammatic Number II
+
+    /**
+     * Given an integer n, return all the strobogrammatic numbers that are of length n. You may return the answer in any order.
+     *
+     * A strobogrammatic number is a number that looks the same when rotated 180 degrees (looked at upside down).
+     *
+     *
+     *
+     * Example 1:
+     *
+     * Input: n = 2
+     * Output: ["11","69","88","96"]
+     * Example 2:
+     *
+     * Input: n = 1
+     * Output: ["0","1","8"]
+     *
+     * 00 010 0110 不合法
+     * %010%可以
+     *
+     */
+    class solution248{
+        public List<String> findStroboggrammatic(int n) {
+            return helper(n, n);
+        }
+
+        public List<String> helper(int n, int m) {
+            if (n == 0) return new ArrayList<>(Arrays.asList(""));
+            if (n == 1) return new ArrayList<>(Arrays.asList("0", "1", "8"));
+
+            List<String> list = helper(n -2, m);  // n: 当前backtracking进行到了哪里
+            List<String> res = new ArrayList<>();
+
+            for (int i = 0; i < list.size(); i++) {
+                String s= list.get(i);
+                if (n != m) {
+                    res.add("0" + s + "0");
+                }
+                res.add("1" + s + "1");
+                res.add("6" + s + "9");
+                res.add("9" + s + "6");
+                res.add("8" + s + "8");
+            }
+            return res;
+        }
+
+    }
+
+    // 249: group shifted Strings
+
+    /**
+     * We can shift a string by shifting each of its letters to its successive letter.
+     *
+     * For example, "abc" can be shifted to be "bcd".
+     * We can keep shifting the string to form a sequence.
+     *
+     * For example, we can keep shifting "abc" to form the sequence: "abc" -> "bcd" -> ... -> "xyz".
+     * Given an array of strings strings, group all strings[i] that belong to the same shifting sequence. You may
+     * return the answer in any order.
+     *
+     * Example 1:
+     *
+     * Input: strings = ["abc","bcd","acef","xyz","az","ba","a","z"]
+     * Output: [["acef"],["a","z"],["abc","bcd","xyz"],["az","ba"]]
+     * Example 2:
+     *
+     * Input: strings = ["a"]
+     * Output: [["a"]]
+     */
+    class Solution249 {
+        public List<List<String>> groupStrings(String[] strings) {
+            List<List<String>> res = new ArrayList<>();
+            HashMap<String, List<String>> map = new HashMap<>();
+            for (String s : strings) {
+                String idx = getIdx(s);
+                List<String> pre = map.getOrDefault(idx, new ArrayList<>());
+                pre.add(s);
+                map.put(idx, pre);
+            }
+            return new ArrayList<>(map.values());
+        }
+
+        public String getIdx(String s) {
+            String res = "";
+            char[] arr = s.toCharArray();
+            for (int i = 1; i < arr.length; i++) {
+                int diff = arr[i] - arr[i - 1];  // 计算当前的字母与上一个字母的差值
+                res += diff < 0 ? diff + 26 : diff;  // 如果差值小于0就加上26
+                res += ",";  // 最后是以 比如说 abf就是 1,4 这种
+            }
+            return res;
+        }
+
     }
 
     public static void main(String[] args) {
