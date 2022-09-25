@@ -387,7 +387,7 @@ public class Note8_Strings {
         int[] count = new int[26];  // 用一个26位的数组来记录当前index的最大循环子串
         int curMax = 0;
         for (int i = 0; i < p.length(); i++) {
-            if (i > 0 && (p.charAt(i) - p.charAt(i - 1) == 1) || (p.charAt(i - 1) - p.charAt(i) == 25)) {
+            if (i > 0 && (p.charAt(i) - p.charAt(i - 1) == 1 || (p.charAt(i - 1) - p.charAt(i) == 25))) {
                 curMax++;  // 如果相邻的两个字母的ascii码相差了1（挨着的）或者25（za这种）就将curMax++
             } else {
                 curMax = 1;
@@ -463,8 +463,28 @@ public class Note8_Strings {
      *
      * @param args
      */
+    class Solution567{
+        public boolean checkInclusion(String s1, String s2) {
+            int [] count = new int[128];
+            for (char c : s1.toCharArray()) {
+                count[c]++;  // 记录s1中每个字母出现的次数
+            }
+            //  左右指针，i为右
+            for (int i = 0, j = 0; i < s2.length(); i++) {
+                if (-- count[s2.charAt(i)] < 0) {
+                    while (count[s2.charAt(i)] != 0) {
+                        count[s2.charAt(j++)]++;  // 左指针向右走
+                    }
+                } else if (i - j + 1 == s1.length()) {
+                    return true;
+                }
+            }
+            return false;
+        }
 
-    // 76: min Window 重要！！！
+    }
+
+    // 76: min Window 重要！！！ 背下来
 
     /**
      * Given two strings s and t of lengths m and n respectively,
@@ -501,83 +521,87 @@ public class Note8_Strings {
      * s = "aaabc", k = 3
      * result: ""
      */
-
-    public static String rearrangeString(String s, int k) {
-        if (s == null || s.length() == 0) return s;
-        int[] count = new int[26];
-        int[] valid = new int[26];
-        for (char c : s.toCharArray()) {
-            count[c - 'a']++;
-        }
-        StringBuilder res = new StringBuilder();
-        for (int i = 0; i < s.length(); i++) {
-            int nextLetter = findNext(count, valid, i);
-            if (nextLetter == -1) return "";
-            res.append((char) ('a' + nextLetter));
-            valid[nextLetter] = i + k;
-            count[nextLetter]--;
-        }
-        return res.toString();
-    }
-
-    private static int findNext(int[] count, int[] valid, int index) {
-        int max = 0, res = -1;
-        for (int i = 0; i < count.length; i++) {
-            if (count[i] > max && valid[i] <= index) {  // 找到出现次数最大的一个
-                res = i;
-                max = count[i];
+    class Solution358 {
+        public static String rearrangeString(String s, int k) {
+            if (s == null || s.length() == 0) return s;
+            int[] count = new int[26];
+            int[] valid = new int[26];
+            for (char c : s.toCharArray()) {
+                count[c - 'a']++;  // 统计每个字母出现的次数
             }
-        }
-        return res;
-    }
-
-    /**
-     * s = "aabbcc", k = 3
-     * <p>
-     * pq: (a,2)(b,2)(c,2)
-     * <p>
-     * cur = (a,2) -> (a,1）
-     * res = a
-     * queue = (a,1)
-     * <p>
-     * cur = (b,2) -> (b,1）
-     * res = ab
-     * queue = (a,1)(b,1)
-     * <p>
-     * cur = (c,2) -> (c,1）
-     * res = abc
-     * queue = (a,1)(b,1)(c,1)
-     *
-     * @param s
-     * @param k
-     * @return
-     */
-
-    public static String rearrangeString2(String s, int k) {
-        HashMap<Character, Integer> map = new HashMap<>();
-        for (char c : s.toCharArray()) {
-            map.put(c, map.getOrDefault(c, 0) + 1);
-        }  // Count the number of appearance of all characters in the string s
-        PriorityQueue<Map.Entry<Character, Integer>> pq =
-                new PriorityQueue<>((a, b) -> Integer.compare(b.getValue(), a.getValue()));
-        pq.addAll(map.entrySet());  // 将s中的字母按照出现次数从高到低排列
-
-        Queue<Map.Entry<Character, Integer>> queue = new LinkedList<>();  // 控制是否进行了大小为k的轮回
-        StringBuilder res = new StringBuilder();
-
-        while (!pq.isEmpty()) {
-            Map.Entry<Character, Integer> cur = pq.poll();  // 取出出现次数最多的一个键值对
-            res.append(cur.getKey());  // 加入到result中
-            cur.setValue(cur.getValue() - 1);  // 减去一次出现次数
-            queue.offer(cur);  // 加入到轮回控制queue中
-            if (queue.size() < k) continue;
-            Map.Entry<Character, Integer> front = queue.poll();  // 如果一个轮回装满了，将头元素装入pq中
-            if (front.getValue() > 0) {
-                pq.offer(front);
+            StringBuilder res = new StringBuilder();
+            for (int i = 0; i < s.length(); i++) {
+                int nextLetter = findNext(count, valid, i);  //  找到下一个字母该放什么
+                if (nextLetter == -1) return "";  // 如果找不到返回-1
+                res.append((char) ('a' + nextLetter));
+                valid[nextLetter] = i + k;
+                count[nextLetter]--;
             }
+            return res.toString();
         }
-        return res.length() == s.length() ? s.toString() : "";
+
+        private static int findNext(int[] count, int[] valid, int index) {
+            int max = 0, res = -1;
+            for (int i = 0; i < count.length; i++) {
+                if (count[i] > max && valid[i] <= index) {  // 找到出现次数最大的一个先处理
+                    res = i;
+                    max = count[i];
+                }
+            }
+            return res;
+        }
+        /**
+         * s = "aabbcc", k = 3
+         * <p>
+         * pq: (a,2)(b,2)(c,2)
+         * <p>
+         * cur = (a,2) -> (a,1）
+         * res = a
+         * queue = (a,1)
+         * <p>
+         * cur = (b,2) -> (b,1）
+         * res = ab
+         * queue = (a,1)(b,1)
+         * <p>
+         * cur = (c,2) -> (c,1）
+         * res = abc
+         * queue = (a,1)(b,1)(c,1)
+         *
+         * @param s
+         * @param k
+         * @return
+         */
+
+        // O(nlogn)
+        public static String rearrangeString2(String s, int k) {
+            HashMap<Character, Integer> map = new HashMap<>();
+            for (char c : s.toCharArray()) {
+                map.put(c, map.getOrDefault(c, 0) + 1);
+            }  // Count the number of appearance of all characters in the string s
+            PriorityQueue<Map.Entry<Character, Integer>> pq =
+                    new PriorityQueue<>((a, b) -> Integer.compare(b.getValue(), a.getValue()));
+            pq.addAll(map.entrySet());  // 将s中的字母按照出现次数从高到低排列
+
+            Queue<Map.Entry<Character, Integer>> queue = new LinkedList<>();  // 控制是否进行了大小为k的轮回
+            StringBuilder res = new StringBuilder();
+
+            while (!pq.isEmpty()) {
+                Map.Entry<Character, Integer> cur = pq.poll();  // 取出出现次数最多的一个键值对
+                res.append(cur.getKey());  // 加入到result中
+                cur.setValue(cur.getValue() - 1);  // 减去一次出现次数
+                queue.offer(cur);  // 加入到轮回控制queue中
+                if (queue.size() < k) continue;
+                Map.Entry<Character, Integer> front = queue.poll();  // 如果一个轮回装满了，将头元素装入pq中
+                if (front.getValue() > 0) {
+                    pq.offer(front);
+                }
+            }
+            return res.length() == s.length() ? res.toString() : "";
+        }
     }
+
+
+
 
     // 205. Isomorphic Strings
 

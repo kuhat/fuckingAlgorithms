@@ -955,6 +955,16 @@ public class Note3_Arrays {
      */
     // o(nlogn)
     class Solution274{
+        /*
+        3 0 6 1 5
+        0 1 3 5 6
+        res 0 -> 1
+            6
+            1 -> 2
+            5
+            2 -> 3
+            3
+         */
         public int hIndex(int[] citations) {
             Arrays.sort(citations);
             int res = 0;
@@ -966,7 +976,8 @@ public class Note3_Arrays {
 
     // 451 sort characters by frequency
     /**
-     * Given a string s, sort it in decreasing order based on the frequency of the characters. The frequency of a character is the number of times it appears in the string.
+     * Given a string s, sort it in decreasing order based on the frequency of the characters. The frequency of a
+     * character is the number of times it appears in the string.
      *
      * Return the sorted string. If there are multiple answers, return any of them.
      *
@@ -991,7 +1002,7 @@ public class Note3_Arrays {
             }
 
             // 一个装了不同频数的桶，每个位置装了出现次数相同的字母，频数从小到大排列
-            List<Character>[] bucket = new List[s.length() + 1];
+            List<Character>[] bucket = new List[s.length() + 1];  // 0 的位置没有
             for (char c : map.keySet()) {
                 int freq = map.get(c);  // 当前字母出现的次数
                 if (bucket[freq] == null) bucket[freq] = new LinkedList<>();  // 如果桶对应的频率处为空，新建一个list
@@ -3222,6 +3233,390 @@ public class Note3_Arrays {
             }
             return count;
         }
+    }
+
+    // 289: game of life
+
+    /**
+     *
+     * According to Wikipedia's article: "The Game of Life, also known simply as Life, is a cellular automaton devised
+     * by the British mathematician John Horton Conway in 1970."
+     *
+     * The board is made up of an m x n grid of cells, where each cell has an initial state: live (represented by a 1)
+     * or dead (represented by a 0). Each cell interacts with its eight neighbors (horizontal, vertical, diagonal)
+     * using the following four rules (taken from the above Wikipedia article):
+     *
+     * Any live cell with fewer than two live neighbors dies as if caused by under-population.
+     * Any live cell with two or three live neighbors lives on to the next generation.
+     * Any live cell with more than three live neighbors dies, as if by over-population.
+     * Any dead cell with exactly three live neighbors becomes a live cell, as if by reproduction.
+     * The next state is created by applying the above rules simultaneously to every cell in the current state,
+     * where births and deaths occur simultaneously. Given the current state of the m x n grid board, return the next state.
+     *
+     *
+     *
+     * Example 1:
+     *
+     *
+     * Input: board = [[0,1,0],[0,0,1],[1,1,1],[0,0,0]]
+     * Output: [[0,0,0],[1,0,1],[0,1,1],[0,1,0]]
+     * Example 2:
+     *
+     *
+     * Input: board = [[1,1],[1,0]]
+     * Output: [[1,1],[1,1]]
+     */
+    class Solution289 {
+
+        // 00: 死  下一轮： 10 >> 01
+        // 01： 活  下一轮: 11 >> 01
+
+        /*
+        下一轮如果是活着的话，通过移位的运算可以变成下一个状态
+        01 00 01
+        01 00 00
+        00 00 01
+
+         */
+        public void gameOfLife(int[][] board) {
+            if (board == null || board.length == 0) return;
+            int m = board.length;
+            int n = board[0].length;
+            for (int i = 0; i < m; i++) {
+                for (int j = 0; j < n; j++) {
+                    // 算周围有多少存活的
+                    int count = countNeighbor(board, i, j);
+                    if (board[i][j] == 1) {  // 如果当前是活细胞
+                        if (count == 2 || count == 3) board[i][j] += 2; // +2相当于在00的第一位加一
+                    } else if (count == 3) board[i][j] += 2;  // 如果是死细胞，变活
+                }
+
+            }
+            for (int i = 0; i < m; i++) {
+                for (int j = 0; j < n; j++) {
+                    board[i][j] = board[i][j] >> 1;  //  整体向右移动一位
+                }
+            }
+        }
+
+        private int countNeighbor(int[][] board, int i, int j) {
+            int count = 0;
+            // 算九宫格里的
+            for (int row = Math.max(0, i - 1); row <= Math.min(i + 1, board.length - 1); row ++) {
+                for (int col = Math.max(0, j - 1); col <= Math.min(j + 1, board[0].length - 1); col++) {
+                    if (row == i && col == j) continue;
+                    // 这里&算的是当前的状态比如说00和10, 第一位是下一刻的第二位是此刻的状态
+                    if ((board[row][col] & 1) == 1) count++;
+                }
+            }
+            return count;
+        }
+    }
+
+    // 128： Longest consecutive subsequence
+
+    /**
+     * Given an unsorted array of integers nums, return the length of the longest consecutive elements sequence.
+     *
+     * You must write an algorithm that runs in O(n) time.
+     *
+     * Example 1:
+     *
+     * Input: nums = [100,4,200,1,3,2]
+     * Output: 4
+     * Explanation: The longest consecutive elements sequence is [1, 2, 3, 4]. Therefore its length is 4.
+     * Example 2:
+     *
+     * Input: nums = [0,3,7,2,5,8,4,6,0,1]
+     * Output: 9
+     */
+    class Solution128 {
+        public int longestConsecutive(int[] nums) {
+            if (nums == null || nums.length == 0) return 0;
+            HashSet<Integer> set = new HashSet<>();
+            int res = 0;
+            for (int i : nums) {
+                set.add(i);  // 加入set中，之后查看有没有连续的
+            }
+            for (int i = 0; i < nums.length; i++) {
+                int down = nums[i] - 1;  // down等于下一个数字
+                while (set.contains(down)) {
+                    set.remove(down);  // 如果set里有下一个数字，继续找
+                    down --;
+                }
+                int up = nums[i] + 1;
+                while(set.contains(up)) {
+                    set.remove(up);
+                    up++;
+                }
+                res = Math.max(res, up - down - 1);
+            }
+            return res;
+        }
+    }
+
+    // 561: Array Partition
+
+    /**
+     *
+     * Given an integer array nums of 2n integers, group these integers into n pairs (a1, b1), (a2, b2), ..., (an, bn)
+     * such that the sum of min(ai, bi) for all i is maximized. Return the maximized sum.
+     *
+     * Example 1:
+     *
+     * Input: nums = [1,4,3,2]
+     * Output: 4
+     * Explanation: All possible pairings (ignoring the ordering of elements) are:
+     * 1. (1, 4), (2, 3) -> min(1, 4) + min(2, 3) = 1 + 2 = 3
+     * 2. (1, 3), (2, 4) -> min(1, 3) + min(2, 4) = 1 + 2 = 3
+     * 3. (1, 2), (3, 4) -> min(1, 2) + min(3, 4) = 1 + 3 = 4
+     * So the maximum possible sum is 4.
+     * Example 2:
+     *
+     * Input: nums = [6,2,6,5,1,2]
+     * Output: 9
+     * Explanation: The optimal pairing is (2, 1), (2, 5), (6, 6). min(2, 1) + min(2, 5) + min(6, 6) = 1 + 2 + 6 = 9.
+     */
+    class Solution561{
+        public int arrayPairSum(int[] nums) {
+            Arrays.sort(nums);
+            int res = 0;
+            for (int i = 0; i < nums.length; i+= 2) {
+                res += nums[i];  // 贪心的添加，最大值为排外序后的技术位的数字
+            }
+            return res;
+        }
+    }
+
+    // 376: wiggle Subsequence
+
+    /**
+     *
+     * A wiggle sequence is a sequence where the differences between successive numbers strictly alternate between
+     * positive and negative. The first difference (if one exists) may be either positive or negative. A sequence
+     * with one element and a sequence with two non-equal elements are trivially wiggle sequences.
+     *
+     * For example, [1, 7, 4, 9, 2, 5] is a wiggle sequence because the differences (6, -3, 5, -7, 3) alternate between
+     * positive and negative.
+     * In contrast, [1, 4, 7, 2, 5] and [1, 7, 4, 5, 5] are not wiggle sequences. The first is not because its first two
+     * differences are positive, and the second is not because its last difference is zero.
+     * A subsequence is obtained by deleting some elements (possibly zero) from the original sequence, leaving the
+     * remaining elements in their original order.
+     *
+     * Given an integer array nums, return the length of the longest wiggle subsequence of nums.
+     *
+     * Example 1:
+     *
+     * Input: nums = [1,7,4,9,2,5]
+     * Output: 6
+     * Explanation: The entire sequence is a wiggle sequence with differences (6, -3, 5, -7, 3).
+     * Example 2:
+     *
+     * Input: nums = [1,17,5,10,13,15,10,5,16,8]
+     * Output: 7
+     * Explanation: There are several subsequences that achieve this length.
+     * One is [1, 17, 10, 13, 10, 16, 8] with differences (16, -7, 3, -3, 6, -8).
+     */
+    class Solution376{
+        // DP
+        public int wiggleMaxLength(int[] nums) {
+            if (nums == null || nums.length == 0) return 0;
+            int[] up = new int[nums.length];
+            int[] down = new int[nums.length];
+
+            up[0] = 1;
+            down[0] = 1;
+            for (int i = 1; i < nums.length; i++) {
+                if (nums[i] > nums[i - 1]) {
+                    up[i] = down[i - 1] + 1;
+                    down[i] = down[i - 1];
+                } else if (nums[i] < nums[i - 1]) {
+                    down[i] = up[i - 1] + 1;
+                    up[i] = up[i - 1];
+                } else {
+                    down[i] = down[i - 1];
+                    up[i] = up[i - 1];
+                }
+            }
+            return Math.max(down[nums.length - 1], up[nums.length - 1]);
+        }
+    }
+
+    // 463: Island Perimeter
+
+    /**
+     *
+     * You are given row x col grid representing a map where grid[i][j] = 1 represents land and grid[i][j] = 0 represents water.
+     *
+     * Grid cells are connected horizontally/vertically (not diagonally). The grid is completely surrounded by water,
+     * and there is exactly one island (i.e., one or more connected land cells).
+     *
+     * The island doesn't have "lakes", meaning the water inside isn't connected to the water around the island.
+     * One cell is a square with side length 1. The grid is rectangular, width and height don't exceed 100. Determine the perimeter of the island.
+     *
+     * Example 1:
+     *
+     * Input: grid = [[0,1,0,0],[1,1,1,0],[0,1,0,0],[1,1,0,0]]
+     * Output: 16
+     * Explanation: The perimeter is the 16 yellow stripes in the image above.
+     * Example 2:
+     *
+     * Input: grid = [[1]]
+     * Output: 4
+     * Example 3:
+     *
+     * Input: grid = [[1,0]]
+     * Output: 4
+     */
+    class Solution463 {
+        public int islandPerimeter(int[][] grid) {
+            int islands = 0;
+            int neighbor = 0;
+            for (int i = 0; i < grid.length; i++) {
+                for (int j = 0; j < grid[i].length; j++) {
+                    if (grid[i][j] == 1) {
+                        islands++;
+                        if (i < grid.length - 1 && grid[i + 1][j] == 1) {
+                            neighbor++;
+                        }
+                        if (j < grid[i].length - 1 && grid[i][j + 1] == 1) {
+                            neighbor++;
+                        }
+                    }
+                }
+            }
+            return islands * 4 - neighbor * 2;
+        }
+    }
+
+    // whole minute dilemma
+
+    /**
+     * find the pairs which add up to form a multiple fo 60
+     *
+     * [40, 20, 60]
+     * return 1
+     *
+     * [10, 50, 90 ,30]
+     * return 2
+     *
+     */
+
+    public long wholedilemma(ArrayList<Integer> len){
+        long res = 0;
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for (int i : len) {
+            if (map.containsKey((60 - i % 60) % 60)) {
+                res += map.get((60 - i % 60) % 60);
+            }
+            map.put(i, map.getOrDefault(60 - i % 60, 0) + 1);
+        }
+        return res;
+    }
+
+    // 164 ： Maximum gap
+
+    /**
+     * Given an integer array nums, return the maximum difference between two successive elements in its sorted form.
+     * If the array contains less than two elements, return 0.
+     *
+     * You must write an algorithm that runs in linear time and uses linear extra space.
+     *
+     * Example 1:
+     *
+     * Input: nums = [3,6,9,1]
+     * Output: 3
+     * Explanation: The sorted form of the array is [1,3,6,9], either (3,6) or (6,9) has the maximum difference 3.
+     * Example 2:
+     *
+     * Input: nums = [10]
+     * Output: 0
+     * Explanation: The array contains less than 2 elements, therefore return 0.
+     */
+    class Solution164 {
+        public int maximumGap(int[] nums) {
+            if (nums == null || nums.length < 2) return 0;
+            int len = nums.length;
+            int max = nums[0], min = nums[0];
+            for (int i = 0; i < nums.length; i ++) {
+                max = Math.max(max, nums[i]);
+                min = Math.min(min, nums[i]);
+            }
+            //  最大的间隔是多少
+            int  gap = (int) Math.ceil((double) (max - min) / (len - 1));
+            int[] backetsMin = new int[len - 1];  // 有n个数就有n-1个区间，把区间的最大值和最小值表示
+            int[] backetsMax = new int[len - 1];
+            Arrays.fill(backetsMax, Integer.MIN_VALUE);
+            Arrays.fill(backetsMin, Integer.MAX_VALUE);
+            for (int num: nums) {
+                if (num == min || num == max) continue;
+                int bucket = (num - min) / gap;  // 当前数是属于什么区间
+                backetsMin[bucket] = Math.min(backetsMin[bucket], num);
+                backetsMax[bucket] = Math.max(num, backetsMax[bucket]);
+            }
+            int res = 0;
+            int pre = min;
+            for (int i = 0; i < len - 1; i++) {
+                if (backetsMin[i] == Integer.MAX_VALUE && backetsMax[i] == Integer.MIN_VALUE){
+                    continue;
+                }
+                res = Math.max(res, backetsMin[i] - pre);  // 我们的做法是要将数组中的数放到一个个桶里面，不断更新更大的
+                // （后一个桶内元素的最小值 - 前一个桶内元素的最大值），最后就得到了答案。
+                pre = backetsMax[i];
+            }
+            res = Math.max(res, max - pre);
+            return res;
+
+        }
+    }
+
+    // 487： Max Consecutive ones
+
+    /**
+     * Given a binary array nums, return the maximum number of consecutive 1's in the array if you can flip at most one 0.
+     *
+     * Example 1:
+     *
+     * Input: nums = [1,0,1,1,0]
+     * Output: 4
+     * Explanation:
+     * - If we flip the first zero, nums becomes [1,1,1,1,0] and we have 4 consecutive ones.
+     * - If we flip the second zero, nums becomes [1,0,1,1,1] and we have 3 consecutive ones.
+     * The max number of consecutive ones is 4.
+     * Example 2:
+     *
+     * Input: nums = [1,0,1,1,0,1]
+     * Output: 4
+     * Explanation:
+     * - If we flip the first zero, nums becomes [1,1,1,1,0,1] and we have 4 consecutive ones.
+     * - If we flip the second zero, nums becomes [1,0,1,1,1,1] and we have 4 consecutive ones.
+     * The max number of consecutive ones is 4.
+     */
+
+    class Solution487{
+
+        // Follow up: 可以翻转 K 次
+        //  sliding window
+
+        public int findConsecutiveOnes(int[] nums) {
+            int res = 0;
+            int k = 1;
+            Queue<Integer> queue = new LinkedList<>();
+            int left = 0, right = 0;
+
+            while (right < nums.length) {
+                if (nums[right] == 0) queue.offer(right);  // 记录窗口右边的位置
+                if (queue.size() > k) {
+                    left = queue.poll() + 1;  // 左指针等于第一个0的右边一个位置
+                }
+                res = Math.max(res, right - left + 1);
+                right++;
+            }
+            return res;
+
+
+        }
+
     }
 
     public static void main(String[] args) {

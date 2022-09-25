@@ -1,5 +1,9 @@
 package com.company.Notes;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class Note4_BinarySearch {
 
     // 递归二分查找 time: O(logn) space: O(logn)
@@ -333,6 +337,65 @@ public class Note4_BinarySearch {
         public int guess(int i) {return 0;}
     }
 
+    // 315： Count of smaller after self: 递减
+    /**
+     * Given an integer array nums, return an integer array counts where counts[i] is the number of smaller elements
+     * to the right of nums[i].
+     *
+     * Example 1:
+     *
+     * Input: nums = [5,2,6,1]
+     * Output: [2,1,1,0]
+     * Explanation:
+     * To the right of 5 there are 2 smaller elements (2 and 1).
+     * To the right of 2 there is only 1 smaller element (1).
+     * To the right of 6 there is 1 smaller element (1).
+     * To the right of 1 there is 0 smaller element.
+     * Example 2:
+     *
+     * Input: nums = [-1]
+     * Output: [0]
+     * Example 3:
+     *
+     * Input: nums = [-1,-1]
+     * Output: [0,0]
+     */
+    class Solution315 {
+        /*
+        正常将数组排序：[5, 2, 6, 1]
+        从后往前遍历
+            list: 1    6    1 2 6   1 2 5 6
+
+        插入的idx: 0    1    0 1 1   0 1 1 2
+
+        要返回一个List, 要倒着来Arrays.asList()只能放对象, 用Integer来初始化
+         */
+        public List<Integer> countSmaller(int[] nums) {
+            Integer[] res = new Integer[nums.length];  // Arrays.asList只能接受对象
+            List<Integer> list = new ArrayList<>();
+            for (int i = nums.length - 1; i >= 0; i--) {  // 从后往前遍历
+                int index = findIndex(list, nums[i]);  // 二分法找到当前数应该在那个位置插入
+                res[i] = index;  // 从后往前更新res数组
+                list.add(index, nums[i]);  // 插入，排序
+            }
+            return Arrays.asList(res);
+        }
+
+        public int findIndex(List<Integer> list, int target) {
+            if (list.size() == 0) return 0;
+            int start= 0;
+            int end = list.size() - 1;
+            if (list.get(end) < target) return end + 1;  // 如果list的最后一个数字比target小直接放在最后一位
+            if (list.get(start) > target) return 0;
+            while (start + 1 < end) {  //  binary search
+                int mid = (end - start) / 2 + start;
+                if (list.get(mid) < target) start = mid + 1;
+                else end = mid;
+            }
+            if (list.get(start) >= target) return start;
+            return end;
+        }
+    }
 
 
 }

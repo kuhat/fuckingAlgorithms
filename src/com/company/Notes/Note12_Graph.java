@@ -272,7 +272,7 @@ public class Note12_Graph {
             queue.offer(beginWord);
             while (!queue.isEmpty()) {
                 String word = queue.poll();
-                int curLevel = map.get(word);
+                int curLevel = map.get(word);  // 当前的层数
                 for (int i =0; i < word.length(); i++) {  // word的每个位置进行替换
                     char[] wordUnit = word.toCharArray();
                     for (char j = 'a'; j <= 'z'; j++) {  // 将a到z一个一个去填充当前的位置
@@ -281,7 +281,7 @@ public class Note12_Graph {
                         if (set.contains(temp)){
                             // 如果set里面有当前替换过的单词
                             if(temp.equals(endWord)) return curLevel + 1;  // 如果当前遍历到最后一个单词，直接return level + 1
-                            map.put(temp, curLevel + 1);
+                            map.put(temp, curLevel + 1);  // 否则进行下次
                             queue.offer(temp);
                             set.remove(temp);
                         }
@@ -290,6 +290,103 @@ public class Note12_Graph {
             }
             return 0;
         }
+    }
+
+    // 126: word ladder2
+    /**
+     * A transformation sequence from word beginWord to word endWord using a dictionary wordList is a sequence of words
+     * beginWord -> s1 -> s2 -> ... -> sk such that:
+     *
+     * Every adjacent pair of words differs by a single letter.
+     * Every si for 1 <= i <= k is in wordList. Note that beginWord does not need to be in wordList.
+     * sk == endWord
+     * Given two words, beginWord and endWord, and a dictionary wordList, return all the shortest transformation sequences
+     * from beginWord to endWord, or an empty list if no such sequence exists. Each sequence should be returned as a list of the words [beginWord, s1, s2, ..., sk].
+     *
+     * Example 1:
+     *
+     * Input: beginWord = "hit", endWord = "cog", wordList = ["hot","dot","dog","lot","log","cog"]
+     * Output: [["hit","hot","dot","dog","cog"],["hit","hot","lot","log","cog"]]
+     * Explanation: There are 2 shortest transformation sequences:
+     * "hit" -> "hot" -> "dot" -> "dog" -> "cog"
+     * "hit" -> "hot" -> "lot" -> "log" -> "cog"
+     * Example 2:
+     *
+     * Input: beginWord = "hit", endWord = "cog", wordList = ["hot","dot","dog","lot","log"]
+     * Output: []
+     * Explanation: The endWord "cog" is not in wordList, therefore there is no valid transformation sequence.
+     */
+    class Solution126 {
+        /*
+        转化成无向图 -> BFS -> 树 -> DFS -> 结果
+         */
+        public List<List<String>> findLadders(String beginWord, String endWord, List<String> wordList) {
+            List<List<String>> res = new ArrayList<>();
+            if (wordList.size() == 0) return res;
+            int curNum = 1;
+            int nextNum = 0;
+            boolean found = false;
+            Queue<String> queue = new LinkedList<>();
+            HashSet<String> unvisited = new HashSet<>();  // 访问过后就不能再访问了
+            HashSet<String> visited = new HashSet<>();  // 将访问的点和没有访问的区分
+
+            HashMap<String, List<String>> map = new HashMap<>();
+
+            queue.offer(beginWord);
+            while (!queue.isEmpty()) {
+                String word = queue.poll();
+                curNum --;
+                for (int i = 0; i < word.length(); i++) {
+                    StringBuilder builder = new StringBuilder(word);
+                    for (char ch = 'a'; ch <= 'z'; ch++) {
+                        builder.setCharAt(i, ch);
+                        String newWord = builder.toString();  // 对单词的预处理，将每个位置替换成a到z的字母，
+                        if(unvisited.contains(newWord)) {
+                            if (visited.add(newWord)) {  // 如果可以加入, 代表没有找过
+                                nextNum++;
+                                queue.offer(newWord);
+                            }
+                            if (map.containsKey(newWord)){
+                                map.get(newWord).add(word);
+                            } else {
+                                List<String> list = new ArrayList<>();
+                                list.add(word);
+                                map.put(newWord, list);
+                            }
+                            if (newWord.equals(endWord)) {
+                                found = true;
+                            }
+                        }
+                    }
+                }
+                if (curNum == 0) {  //  curNum: 当前的层数
+                    if (found) break;
+                    curNum = nextNum;
+                    nextNum = 0;
+                    unvisited.removeAll(visited);
+                    visited.clear();
+                }
+            }
+            dfs(res, new ArrayList<>(), map, endWord, beginWord);
+            return res;
+        }
+
+        public void dfs(List<List<String>> res, List<String> list, HashMap<String, List<String>> map, String word, String start) {
+            if (word.equals(start)) {
+                list.add(0, start);
+                res.add(new ArrayList<>(list));
+                list.remove(0);
+                return;
+            }
+            list.add(0, word);
+            if (map.get(word) != null) {
+                for (String s: map.get(word)) {
+                    dfs(res, list, map, s, start);
+                }
+            }
+            list.remove(0);
+        }
+
     }
 
     // 匈牙利算法
@@ -709,10 +806,34 @@ public class Note12_Graph {
      */
     /*
     有环的话返回false
+
+    用bfs
+    拓扑排序：找入度为0的课，删掉
+
      */
     class Solution207 {
         public boolean canFinish(int numCourses, int[][] prerequisites) {
-            return true;
+            int[] indegree = new int[numCourses];
+            int res = numCourses;
+            for (int[] pair: prerequisites) {
+                indegree[pair[0]] ++;  // 找出每个点的入度
+            }
+            Queue<Integer> queue = new LinkedList<>();
+            for (int i = 0; i < indegree.length; i++) {
+                if (indegree[i] == 0) queue.offer(i);  // 将入度为0的元素加入queue
+            }
+            while(!queue.isEmpty()) {
+                int pre = queue.poll();  // 删除入度为0的元素
+                res--;  // 有一个课程已经用过了
+                for (int[] pair: prerequisites) {  // 找出当前入度为0的先修课
+                    if (pair[1] == pre) {
+                        indegree[pair[0]]--;
+                        if (indegree[pair[0]] == 0) queue.offer(pair[0]);
+                    }
+                }
+            }
+
+            return res == 0;
         }
     }
 
@@ -856,7 +977,7 @@ public class Note12_Graph {
             for (int i = 0; i < equations.size(); i++) {
                 List<String> equation = equations.get(i);
                 if (!map.containsKey(equation.get(0))) {
-                    map.put(equation.get(0), new ArrayList<>());
+                    map.put(equation.get(0), new ArrayList<>());  //  将每个equation以及对应的值加入map
                 }
                 map.get(equation.get(0)).add(new GraphNode(equation.get(1), values[i]));  //  将  a/b加入
                 if (!map.containsKey(equation.get(1))) {
@@ -872,17 +993,26 @@ public class Note12_Graph {
             return res;
         }
 
-        private double find(String start, String end, double value, HashSet<String> visited) {
+        /*
+        start = "a" end = "c" value = 1 set(empty)
+            sub = start = "b" end = "c" value = 2.0 set("a")
+                sub = start = "a" return -1; (X)
+                sub = start = "c" end = "c" value = 6.0 set("a", "b")
+         */
+
+
+        private double find(String start, String end, double value, HashSet<String> visited) {  //  visited: 防止死循环
             if (visited.contains(start)) return -1;  // 如果之前找过了，返回-1
             if (!map.containsKey(start)) return -1;  // 如果map里没有这个值，返回-1
 
             if(start.equals(end)) return value;   // 如果start和end 相等了，返回value
             visited.add(start);  // visited加入这个数
             for (GraphNode next: map.get(start)) {
+                // 计算除数
                 double sub = find(next.den, end, value * next.val, visited);  //  遍历下一个相连的元素
-                if (sub != -1.0) return sub;
+                if (sub != -1.0) return sub;  // 如果碰到之前按访问过的返回-1
             }
-            visited.remove(start);
+            visited.remove(start);  // 走下一条路时要更新
             return -1;
         }
     }
@@ -1010,6 +1140,100 @@ public class Note12_Graph {
             while (i != roots[i]) i = roots[i];
             return i;
         }
+    }
+
+    // 261: Graph valid tree
+
+    /**
+     * You have a graph of n nodes labeled from 0 to n - 1. You are given an integer n and a list of edges where
+     * edges[i] = [ai, bi] indicates that there is an undirected edge between nodes ai and bi in the graph.
+     *
+     * Return true if the edges of the given graph make up a valid tree, and false otherwise.
+     *
+     * Example 1:
+     *
+     * 2 - 0 - 1 - 4
+     *     |
+     *     3
+     * Input: n = 5, edges = [[0,1],[0,2],[0,3],[1,4]]
+     * Output: true
+     * Example 2:
+     *     4
+     *     |
+     * 0 - 1 - 2
+     *     \  /
+     *      3
+     * Input: n = 5, edges = [[0,1],[1,2],[2,3],[1,3],[1,4]]
+     * Output: false
+     */
+    class Solution261 {
+        /*
+        判断有没有环
+        通过dfs判断当前节点访问过与否，若访问过则说明有环
+         */
+        public boolean validTree(int n, int[][] edges) {
+            List<List<Integer>> graph = new ArrayList<>();
+            for (int i = 0; i < n; i ++) {
+                graph.add(new ArrayList<>());  // 初始化list
+            }
+            // 比如说例二，将图转化为：0: 1
+            //                     1: 0, 2, 3, 4,
+            //                     2: 1, 3
+            //                     3: 1, 2
+            //                     4: 1
+            for (int i = 0; i < edges.length; i++) {
+                graph.get(edges[i][0]).add(edges[i][1]);
+                graph.get(edges[i][1]).add(edges[i][0]);
+            }
+
+            HashSet<Integer> visited = new HashSet<>(); // 判断当前节点访问过没
+            visited.add(0);
+            boolean res = helper(graph, visited, 0, -1);
+            if (res == false) return false;
+            return visited.size() == n ? true : false;
+        }
+
+        private boolean helper(List<List<Integer>> graph, HashSet<Integer> visited, int node, int parent) {
+            List<Integer> sub = graph.get(node);
+            for (int v : sub) {
+                if (v == parent ) continue;
+                if (visited.contains(v)) return false;
+                visited.add(v);
+                boolean res = helper(graph, visited, v, node);
+                if (res == false) return false;
+            }
+            return true;
+        }
+
+        // union find
+        /*
+        *             4
+                *     |
+                * 0 - 1 - 2
+                *     \  /
+                *      3
+                *
+         */
+        public boolean validTree2(int n, int[][] edges) {
+            if (n == 1 && edges.length == 0) return true;
+            if (n < 1 || edges == null || edges.length != n - 1) return false;
+
+            int[] roots = new int[n];
+            Arrays.fill(roots, -1);  // 初始化所有值为-1
+            for (int[] pair : edges) {
+                int x = find(roots, pair[0]);
+                int y = find(roots, pair[1]);
+                if (x == y) return false;
+                roots[x] = y;
+            }
+            return true;
+        }
+
+        private int find(int[] roots, int i) {
+            while (roots[i] != -1) i = roots[i];
+            return i;
+        }
+
     }
 
 
