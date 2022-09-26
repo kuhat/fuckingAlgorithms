@@ -1,5 +1,7 @@
 package com.company.Notes;
 
+import com.company.leetCode.NestedInteger;
+
 import java.util.*;
 
 public class Note12_Graph {
@@ -832,7 +834,6 @@ public class Note12_Graph {
                     }
                 }
             }
-
             return res == 0;
         }
     }
@@ -1232,6 +1233,331 @@ public class Note12_Graph {
         private int find(int[] roots, int i) {
             while (roots[i] != -1) i = roots[i];
             return i;
+        }
+    }
+
+    // 339：nested list weight sum
+
+    /**
+     * You are given a nested list of integers nestedList. Each element is either an integer or a list whose elements
+     * may also be integers or other lists.
+     *
+     * The depth of an integer is the number of lists that it is inside of. For example, the nested list [1,[2,2],[[3],2],1]
+     * has each integer's value set to its depth.
+     *
+     * Return the sum of each integer in nestedList multiplied by its depth.
+     *
+     * Example 1:
+     *
+     *
+     * Input: nestedList = [[1,1],2,[1,1]]
+     * Output: 10
+     * Explanation: Four 1's at depth 2, one 2 at depth 1. 1*2 + 1*2 + 2*1 + 1*2 + 1*2 = 10.
+     * Example 2:
+     *
+     *
+     * Input: nestedList = [1,[4,[6]]]
+     * Output: 27
+     * Explanation: One 1 at depth 1, one 4 at depth 2, and one 6 at depth 3. 1*1 + 4*2 + 6*3 = 27.
+     */
+    class Solution339{
+
+        // dfs
+        public int depthSum(List<NestedInteger> nestedList) {
+            if (nestedList == null) return 0;
+            return helper(nestedList, 1);
+        }
+
+        public int helper(List<NestedInteger> nestedList, int depth) {
+            int res = 0;
+            for (NestedInteger nest: nestedList) {
+                if (nest.isInteger()) {  // 如果当前遍历的是个数字
+                    res += nest.getInteger() * depth;  //res+
+                } else {  // 如果是一个list就继续往下走
+                    res += helper(nest.getList(), depth + 1);
+                }
+            }
+            return res;
+        }
+
+        // bfd
+        public int depthSum2(List<NestedInteger> nestedList) {
+            if (nestedList == null) return 0;
+            int depth = 1;
+            int res = 0;
+            Queue<NestedInteger> queue = new LinkedList<>(nestedList);
+            while (!queue.isEmpty()) {
+                int size = queue.size();
+                for (int i =0 ; i < size; i++) {
+                    NestedInteger nest = queue.poll();
+                    if (nest.isInteger()) {
+                        res += nest.getInteger() * depth;
+                    } else {
+                        queue.addAll(nest.getList());
+                    }
+                }
+            }
+            return res;
+        }
+    }
+
+    // 364: nested list weight sum2
+
+    /**
+     * You are given a nested list of integers nestedList. Each element is either an integer or a list whose elements
+     * may also be integers or other lists.
+     *
+     * The depth of an integer is the number of lists that it is inside of. For example, the nested list [1,[2,2],[[3],2],1]
+     * has each integer's value set to its depth. Let maxDepth be the maximum depth of any integer.
+     *
+     * The weight of an integer is maxDepth - (the depth of the integer) + 1.
+     *
+     * Return the sum of each integer in nestedList multiplied by its weight.
+     *
+     * Example 1:
+     *
+     *
+     * Input: nestedList = [[1,1],2,[1,1]]
+     * Output: 8
+     * Explanation: Four 1's with a weight of 1, one 2 with a weight of 2.
+     * 1*1 + 1*1 + 2*2 + 1*1 + 1*1 = 8
+     * Example 2:
+     *
+     *
+     * Input: nestedList = [1,[4,[6]]]
+     * Output: 17
+     * Explanation: One 1 at depth 3, one 4 at depth 2, and one 6 at depth 1.
+     * 1*3 + 4*2 + 6*1 = 17
+     */
+    class Solution364 {
+        // 和上一题比没什么区别，是到这来的
+        public int depthSumInverse(List<NestedInteger> nestedList) {
+            if (nestedList == null) return 0;
+            return helper(nestedList, 0);
+        }
+
+        public int helper(List<NestedInteger> nestedList, int res) {
+            List<NestedInteger> nextList = new LinkedList<>();
+            for (NestedInteger nest : nestedList) {
+                if (nest.isInteger()) {
+                    res += nest.getInteger();
+                } else {
+                    nextList.addAll(nest.getList());
+                }
+            }
+            res += nextList.isEmpty() ? 0 : helper(nextedList, res);
+            return res;
+        }
+    }
+
+    // 323: Number of Connected Compunents in an Undirected Graph
+
+    /**
+     * You have a graph of n nodes. You are given an integer n and an array edges where edges[i] = [ai, bi] indicates
+     * that there is an edge between ai and bi in the graph.
+     *
+     * Return the number of connected components in the graph.
+     *
+     * Example 1:
+     *
+     *
+     * Input: n = 5, edges = [[0,1],[1,2],[3,4]]
+     * Output: 2
+     * Example 2:
+     *
+     *
+     * Input: n = 5, edges = [[0,1],[1,2],[2,3],[3,4]]
+     * Output: 1
+     */
+    // Union find
+    class Solution323 {
+        public int countComponents(int n, int[][] edges) {
+            return 0;
+        }
+    }
+
+    // 482: Robot Room Cleaner
+
+    /**
+     * You are controlling a robot that is located somewhere in a room. The room is modeled as an m x n binary grid where
+     * 0 represents a wall and 1 represents an empty slot.
+     *
+     * The robot starts at an unknown location in the room that is guaranteed to be empty, and you do not have access
+     * to the grid, but you can move the robot using the given API Robot.
+     *
+     * You are tasked to use the robot to clean the entire room (i.e., clean every empty cell in the room). The robot
+     * with the four given APIs can move forward, turn left, or turn right. Each turn is 90 degrees.
+     *
+     * When the robot tries to move into a wall cell, its bumper sensor detects the obstacle, and it stays on the current cell.
+     *
+     * Design an algorithm to clean the entire room using the following APIs:
+     *
+     * interface Robot {
+     *   // returns true if next cell is open and robot moves into the cell.
+     *   // returns false if next cell is obstacle and robot stays on the current cell.
+     *   boolean move();
+     *
+     *   // Robot will stay on the same cell after calling turnLeft/turnRight.
+     *   // Each turn will be 90 degrees.
+     *   void turnLeft();
+     *   void turnRight();
+     *
+     *   // Clean the current cell.
+     *   void clean();
+     * }
+     * Note that the initial direction of the robot will be facing up. You can assume all four edges of the grid are all
+     * surrounded by a wall.
+     *
+     * Custom testing:
+     *
+     * The input is only given to initialize the room and the robot's position internally. You must solve this problem
+     * "blindfolded". In other words, you must control the robot using only the four mentioned APIs without knowing the room layout and the initial robot's position.
+     *
+     * Example 1:
+     *
+     * Input: room = [[1,1,1,1,1,0,1,1],[1,1,1,1,1,0,1,1],[1,0,1,1,1,1,1,1],[0,0,0,1,0,0,0,0],[1,1,1,1,1,1,1,1]], row = 1, col = 3
+     * Output: Robot cleaned all rooms.
+     * Explanation: All grids in the room are marked by either 0 or 1.
+     * 0 means the cell is blocked, while 1 means the cell is accessible.
+     * The robot initially starts at the position of row=1, col=3.
+     * From the top left corner, its position is one row below and three columns right.
+     * Example 2:
+     *
+     * Input: room = [[1]], row = 0, col = 0
+     * Output: Robot cleaned all rooms.
+     */
+    class Solution489 {
+
+        int[][] dirs = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+        public void cleanRoom(Robot robot) {
+            backtracking(robot, 0, 0, 0, new HashSet<>());
+        }
+
+        public void backtracking(Robot robot, int x, int y, int curDir, HashSet<String> visited) {
+            visited.add(x + "-" + y);
+            robot.clean();
+            for(int i = 0; i < 4; i++) {
+                int nextDir = (curDir + i) % 4;
+                int newX = x + dirs[nextDir][0];
+                int newY = y + dirs[nextDir][1];
+                if (!visited.contains(newX + "-" + newY) && robot.move()) {
+                    backtracking(robot, newX, newY, nextDir, visited);
+                }
+                robot.turnRight();
+            }
+            robot.turnRight();
+            robot.turnRight();
+            robot.move();
+            robot.turnRight();
+            robot.turnRight();
+        }
+
+        interface Robot {
+        // Returns true if the cell in front is open and robot moves into the cell.
+              // Returns false if the cell in front is blocked and robot stays in the current cell.
+              public boolean move();
+
+              // Robot will stay in the same cell after calling turnLeft/turnRight.
+              // Each turn will be 90 degrees.
+              public void turnLeft();
+              public void turnRight();
+
+              // Clean the current cell.
+              public void clean();
+        }
+    }
+
+    // 529: Minesweeper
+
+    /**
+     * Let's play the minesweeper game (Wikipedia, online game)!
+     *
+     * You are given an m x n char matrix board representing the game board where:
+     *
+     * 'M' represents an unrevealed mine,
+     * 'E' represents an unrevealed empty square,
+     * 'B' represents a revealed blank square that has no adjacent mines (i.e., above, below, left, right, and all 4 diagonals),
+     * digit ('1' to '8') represents how many mines are adjacent to this revealed square, and
+     * 'X' represents a revealed mine.
+     * You are also given an integer array click where click = [clickr, clickc] represents the next click position among
+     * all the unrevealed squares ('M' or 'E').
+     *
+     * Return the board after revealing this position according to the following rules:
+     *
+     * If a mine 'M' is revealed, then the game is over. You should change it to 'X'.
+     * If an empty square 'E' with no adjacent mines is revealed, then change it to a revealed blank 'B' and all of its
+     * adjacent unrevealed squares should be revealed recursively.
+     * If an empty square 'E' with at least one adjacent mine is revealed, then change it to a digit ('1' to '8')
+     * representing the number of adjacent mines.
+     * Return the board when no more squares will be revealed.
+     *
+     * Example 1:
+     *
+     *
+     * Input: board = [["E","E","E","E","E"],
+     *                 ["E","E","M","E","E"],
+     *                 ["E","E","E","E","E"],
+     *                 ["E","E","E","E","E"]], click = [3,0]
+     * Output: [["B","1","E","1","B"],
+     *          ["B","1","M","1","B"],
+     *          ["B","1","1","1","B"],
+     *          ["B","B","B","B","B"]]
+     * Example 2:
+     *
+     *
+     * Input: board = [["B","1","E","1","B"],
+     *                 ["B","1","M","1","B"],
+     *                 ["B","1","1","1","B"],
+     *                 w["B","B","B","B","B"]], click = [1,2]
+     * Output: [["B","1","E","1","B"],
+     *          ["B","1","X","1","B"],
+     *          ["B","1","1","1","B"],
+     *          ["B","B","B","B","B"]]
+     */
+    class Solution529 {
+        public char[][] updateBoard(char[][] board, int[] click) {
+            int x = click[0];
+            int y = click[1];  // 找到坐标
+            if (board[x][y] == 'M') {
+                board[x][y] = 'X';  //点到地雷
+                return board;
+            }
+            dfs(board, x, y);
+            return board;
+        }
+
+        public void dfs(char[][] board, int x, int y) {
+            if (x < 0 || y < 0 || x >= board.length || y >= board[0].length || board[x][y] != 'E') {
+                return;  // 如果越界或者当前的位置是空的直接返回
+            }
+            int mine = findMines(board, x, y);  // 找当前地雷的数量
+            if (mine == 0) {  // 如果当前位置四周没有雷
+                board[x][y] = 'B';  // 把当前位置变成blank
+                for (int i = -1; i <= 1; i++) {
+                    for (int j = -1; j <= 1; j++) {
+                        dfs(board, x + i, y + j);  // 四周进行dfs遍历
+                    }
+                }
+            } else {
+                board[x][y] = (char) ('0' + mine);  // 如果四周有雷，变成雷的个数
+            }
+
+        }
+
+        // 找地雷
+        public int findMines(char[][] board, int x,int y) {
+            int count = 0;
+            for (int i = -1; i <= 1; i++) {
+                for (int j = -1; j <= 1; j++) {
+                    int x1 = x + i;
+                    int y1 = y + j;
+                    if (x1 < 0 || y1 < 0 || x1 >= board.length || y1 >= board[0].length) {
+                        continue;
+                    }
+                    if (board[x1][y1] == 'M') count++;
+                }
+            }
+            return count;
         }
 
     }
