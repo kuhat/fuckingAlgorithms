@@ -520,20 +520,21 @@ public class Note12_Graph {
      */
     class Solution490{
         public boolean hasPath(int[][] maze, int[] start, int[] destination) {
-            boolean[][] visited = new boolean[maze.length][maze[0].length];
+            boolean[][] visited = new boolean[maze.length][maze[0].length];  // 走过的点
             int[][] directions = {{1,0}, {-1,0}, {0,1},{0, -1}};
 
             Queue<Point> queue = new LinkedList<>();
             queue.offer(new Point(start[0], start[1]));
             while (!queue.isEmpty()) {
                 Point cur = queue.poll();
-                visited[cur.x][cur.y] = true;
-                if (cur.x == destination[0] && cur.y == destination[1]) {
+                visited[cur.x][cur.y] = true;  // 当前的位置设为访问过
+                if (cur.x == destination[0] && cur.y == destination[1]) {  // 判断是否到终点
                     return true;
                 }
                 for (int[] direction: directions) {
                     int newX = cur.x;
                     int newY = cur.y;
+                    // 如果当前的方向是可以通过的
                     while(isValid(maze, newX + direction[0], newY + direction[1])) {
                         newX += direction[0];
                         newY += direction[1];
@@ -548,7 +549,7 @@ public class Note12_Graph {
             return x>= 0 && y >=0 && x<maze.length && y <maze[0].length && maze[x][y] == 0;
         }
 
-        class Point{
+        class Point {
             int x;
             int y;
 
@@ -557,6 +558,12 @@ public class Note12_Graph {
                 this.y = y;
             }
         }
+
+
+        public boolean isValis(int[][] maze, int x, int y) {
+            return x>= 0 && y >=0 && x<maze.length && y <maze[0].length && maze[x][y] == 0;
+        }
+
     }
 
     // 79: word search
@@ -1345,7 +1352,7 @@ public class Note12_Graph {
                     nextList.addAll(nest.getList());
                 }
             }
-            res += nextList.isEmpty() ? 0 : helper(nextedList, res);
+            res += nextList.isEmpty() ? 0 : helper(nextList, res);
             return res;
         }
     }
@@ -1559,7 +1566,199 @@ public class Note12_Graph {
             }
             return count;
         }
+    }
 
+    // 505 the maze 2
+
+        /**
+         *There is a ball in a maze with empty spaces (represented as 0) and walls (represented as 1). The ball can go
+         * through the empty spaces by rolling up, down, left or right, but it won't stop rolling until hitting a wall.
+         * When the ball stops, it could choose the next direction.
+         *
+         * Given the m x n maze, the ball's start position and the destination, where start = [startrow, startcol] and
+         * destination = [destinationrow, destinationcol], return the shortest distance for the ball to stop at the destination. If the ball cannot stop at destination, return -1.
+         *
+         * The distance is the number of empty spaces traveled by the ball from the start position (excluded) to the
+         * destination (included).
+         *
+         * You may assume that the borders of the maze are all walls (see examples).
+         *
+         *
+         *
+         * Example 1:
+         *
+         *
+         * Input: maze = [[0,0,1,0,0],[0,0,0,0,0],[0,0,0,1,0],[1,1,0,1,1],[0,0,0,0,0]], start = [0,4], destination = [4,4]
+         * Output: 12
+         * Explanation: One possible way is : left -> down -> left -> down -> right -> down -> right.
+         * The length of the path is 1 + 1 + 3 + 1 + 2 + 2 + 2 = 12.
+         * Example 2:
+         *
+         *
+         * Input: maze = [[0,0,1,0,0],[0,0,0,0,0],[0,0,0,1,0],[1,1,0,1,1],[0,0,0,0,0]], start = [0,4], destination = [3,2]
+         * Output: -1
+         * Explanation: There is no way for the ball to stop at the destination. Notice that you can pass through the
+         * destination but you cannot stop there.
+         * Example 3:
+         *
+         * Input: maze = [[0,0,0,0,0],[1,1,0,0,1],[0,0,0,0,0],[0,1,0,0,1],[0,1,0,0,0]], start = [4,3], destination = [0,1]
+         * Output: -1
+         *
+         */
+        class Solution505 {
+            public int shortestDistance(int[][] maze, int[] start, int[] destination) {
+                // 用一个dists数组来表示到每个点的距离
+                int[][] dists = new int[maze.length][maze[0].length];
+                int[][] directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+
+                for (int[] dist: dists) {
+                    Arrays.fill(dist, -1);  // 每个位置都初始化为-1
+                }
+                dists[start[0]][start[1]] = 0;  // start点距离为0
+
+                Queue<Point> queue = new LinkedList<>();
+                queue.offer(new Point(start[0], start[1]));
+                while (!queue.isEmpty()) {  // BFS
+                    Point cur = queue.poll();
+                    for (int[] direction : directions) {  // 四个方向都去走
+                        int newX = cur.x;
+                        int newY = cur.y;
+                        int dist = dists[newX][newY];
+                        // 如果当前的方向是可以通过的, 相应位置的dist+1
+                        while (isValid(maze, newX + direction[0], newY + direction[1])) {
+                            newX += direction[0];
+                            newY += direction[1];
+                            dist ++;
+                        }
+                        // 如果dist大于了新的点的dist值，不执行（不倒回去）
+                        if (dists[newX][newY] == -1 || dist < dists[newX][newY]) {
+                            queue.offer(new Point(newX, newY));
+                            dists[newX][newY] = dist;
+                        }
+                    }
+                }
+                return dists[destination[0]][destination[1]];
+            }
+
+            private boolean isValid(int[][] maze, int x, int y) {
+                return x >= 0 && y >= 0 && x < maze.length && y < maze[0].length && maze[x][y] == 0;
+            }
+
+            class Point {
+                int x;
+                int y;
+
+                public Point(int x, int y) {
+                    this.x = x;
+                    this.y = y;
+                }
+            }
+        }
+
+    // 499：
+
+    /**
+     * There is a ball in a maze with empty spaces (represented as 0) and walls (represented as 1). The ball can go
+     * through the empty spaces by rolling up, down, left or right, but it won't stop rolling until hitting a wall.
+     * When the ball stops, it could choose the next direction. There is also a hole in this maze. The ball will drop
+     * into the hole if it rolls onto the hole.
+     *
+     * Given the m x n maze, the ball's position ball and the hole's position hole, where ball = [ballrow, ballcol]
+     * and hole = [holerow, holecol], return a string instructions of all the instructions that the ball should follow
+     * to drop in the hole with the shortest distance possible. If there are multiple valid instructions, return the
+     * lexicographically minimum one. If the ball can't drop in the hole, return "impossible".
+     *
+     * If there is a way for the ball to drop in the hole, the answer instructions should contain the characters 'u'
+     * (i.e., up), 'd' (i.e., down), 'l' (i.e., left), and 'r' (i.e., right).
+     *
+     * The distance is the number of empty spaces traveled by the ball from the start position (excluded) to the
+     * destination (included).
+     *
+     * You may assume that the borders of the maze are all walls (see examples).
+     *
+     * Example 1:
+     *
+     *
+     * Input: maze = [[0,0,0,0,0],[1,1,0,0,1],[0,0,0,0,0],[0,1,0,0,1],[0,1,0,0,0]], ball = [4,3], hole = [0,1]
+     * Output: "lul"
+     * Explanation: There are two shortest ways for the ball to drop into the hole.
+     * The first way is left -> up -> left, represented by "lul".
+     * The second way is up -> left, represented by 'ul'.
+     * Both ways have shortest distance 6, but the first way is lexicographically smaller because 'l' < 'u'. So the output is "lul".
+     * Example 2:
+     *
+     *
+     * Input: maze = [[0,0,0,0,0],[1,1,0,0,1],[0,0,0,0,0],[0,1,0,0,1],[0,1,0,0,0]], ball = [4,3], hole = [3,0]
+     * Output: "impossible"
+     * Explanation: The ball cannot reach the hole.
+     * Example 3:
+     *
+     * Input: maze = [[0,0,0,0,0,0,0],[0,0,1,0,0,1,0],[0,0,0,0,1,0,0],[0,0,0,0,0,0,1]], ball = [0,4], hole = [3,5]
+     * Output: "dldr"
+     */
+    class Solution499 {
+        public String findShortestWay(int[][] maze, int[] ball, int[] hole) {
+            // 用一个dists数组来表示到每个点的距离
+            int[][] dists = new int[maze.length][maze[0].length];
+            int[][] directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+            String[] ori = new String[]{"d", "u", "r", "L"};  // 四个方向
+
+            for (int[] dist: dists) {
+                Arrays.fill(dist, Integer.MAX_VALUE);  // 每个位置都初始化为MAX_VALUE
+            }
+            dists[ball[0]][ball[1]] = 0;  // start点距离为0
+            String[][] res = new String[maze.length][maze[0].length];
+            for (String[] s: res) {
+                Arrays.fill(s, "impossible");  // 每个点都初始化为不可能
+            }
+            res[ball[0]][ball[1]] = "";
+
+            Queue<Point> queue = new LinkedList<>();
+            queue.offer(new Point(ball[0], ball[1]));
+            while (!queue.isEmpty()) {  // BFS
+                Point cur = queue.poll();
+                for (int i = 0; i < 4; i++) {  // 四个方向都去走
+                    int newX = cur.x;
+                    int newY = cur.y;
+                    int dist = dists[newX][newY];
+                    String curOri = res[newX][newY];
+                    curOri += ori[i];
+                    // 如果当前的方向是可以通过的, 相应位置的dist+1
+                    while (isValid(maze, newX + directions[i][0], newY + directions[i][1])) {
+                        if (newX == hole[0] && newY == hole[1]) {
+                           break;
+                        }
+                        newX += directions[i][0];
+                        newY += directions[i][1];
+                        dist ++;
+                    }
+                    if (dist <= dists[newX][newY]) {
+                        if (dist < dists[newX][newY]) {
+                            dists[newX][newY] = dist;
+                            res[newX][newY] = curOri;
+                        } else if (curOri.compareTo(res[newX][newY]) < 0) {
+                            res[newX][newY] = curOri;
+                        }
+                        queue.offer(new Point(newX, newY));
+                    }
+                    }
+                }
+            return res[hole[0]][hole[1]];
+        }
+
+        private boolean isValid(int[][] maze, int x, int y) {
+            return x >= 0 && y >= 0 && x < maze.length && y < maze[0].length && maze[x][y] == 0;
+        }
+
+        class Point {
+            int x;
+            int y;
+
+            public Point(int x, int y) {
+                this.x = x;
+                this.y = y;
+            }
+        }
     }
 
 
