@@ -1762,6 +1762,72 @@ public class Note12_Graph {
     }
 
 
+    // 329
+
+    /**
+     * 329. Longest Increasing Path in a Matrix
+     * Hard
+     *
+     * 7247
+     *
+     * 111
+     *
+     * Add to List
+     *
+     * Share
+     * Given an m x n integers matrix, return the length of the longest increasing path in matrix.
+     *
+     * From each cell, you can either move in four directions: left, right, up, or down. You may not move diagonally or move outside the boundary (i.e., wrap-around is not allowed).
+     *
+     *
+     *
+     * Example 1:
+     *
+     *
+     * Input: matrix = [[9,9,4],[6,6,8],[2,1,1]]
+     * Output: 4
+     * Explanation: The longest increasing path is [1, 2, 6, 9].
+     * Example 2:
+     *
+     *
+     * Input: matrix = [[3,4,5],[3,2,6],[2,2,1]]
+     * Output: 4
+     * Explanation: The longest increasing path is [3, 4, 5, 6]. Moving diagonally is not allowed.
+     * Example 3:
+     *
+     * Input: matrix = [[1]]
+     * Output: 1
+     */
+    class Solution329 {
+        public int longestIncreasingPath(int[][] matrix) {
+            if (matrix == null || matrix.length == 0 || matrix[0].length == 0) return 0;
+            int m = matrix.length;
+            int n = matrix[0].length;
+            int[][] cache = new int[m][n];  // 使用cache来存储当前位置的最小值，避免重复计算
+            int res = 0;
+            for (int i = 0; i < m; i++) {
+                for (int j = 0;j < m; j++) {
+                    res = Math.max(res, dfs(matrix, Integer.MIN_VALUE, cache, m, n, i, j));
+                }
+            }
+            return res;
+        }
+
+        public int dfs(int[][] matrix,int min, int[][] cache, int m, int n, int i,int j) {
+            if (i < 0 || i >= m || j < 0 || j >= n || matrix[i][j] <= min) return 0;
+            if (cache[i][j] != 0) return cache[i][j];  // 如果当前位置值之前计算过直接返回cache
+            min = matrix[i][j];  // 更新最小值
+            int left = dfs(matrix, min, cache, m, n, i - 1, j) + 1;  // dfs
+            int right = dfs(matrix, min, cache, m, n, i + 1, j) + 1;
+            int up = dfs(matrix, min, cache, m, n, i, j + 1) + 1;
+            int down = dfs(matrix, min, cache, m, n, i, j - 1) + 1;
+            int max = Math.max(left, Math.max(right, Math.max(up, down)));
+            cache[i][j] = max;  // 更新当前位置的cache
+            return max;
+        }
+
+
+    }
 
     public static void main(String[] args) {
         char[] ar = new char[3];

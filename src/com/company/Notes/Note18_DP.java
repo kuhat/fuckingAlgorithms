@@ -650,7 +650,8 @@ public class Note18_DP {
             //从下往上走
             for (int i = triangle.size() - 1; i >= 0; i--) {
                 for (int j = 0; j < triangle.get(i).size(); j++) {
-                    res[j] = Math.min(res[j], res[j + 1])+ triangle.get(i).get(j);  // 上一层的第j个数字对应数字的最小值是这一层的第j和第j+1个
+                    // 上一层的第j个数字对应数字的最小值是这一层的第j和第j+1个
+                    res[j] = Math.min(res[j], res[j + 1])+ triangle.get(i).get(j);
                 }
             }
             return res[0];
@@ -2145,6 +2146,54 @@ public class Note18_DP {
                 }
             }
             return res[n];
+        }
+    }
+
+    //
+
+    /**
+     * You are given an array prices where prices[i] is the price of a given stock on the ith day.
+     *
+     * Find the maximum profit you can achieve. You may complete as many transactions as you like (i.e.,
+     * buy one and sell one share of the stock multiple times) with the following restrictions:
+     *
+     * After you sell your stock, you cannot buy stock on the next day (i.e., cooldown one day).
+     * Note: You may not engage in multiple transactions simultaneously (i.e., you must sell the stock before you buy again).
+     *
+     *
+     *
+     * Example 1:
+     *
+     * Input: prices = [1,2,3,0,2]
+     * Output: 3
+     * Explanation: transactions = [buy, sell, cooldown, buy, sell]
+     * Example 2:
+     *
+     * Input: prices = [1]
+     * Output: 0
+     */
+    class Solution309 {
+        /*
+        buy[i] = max(res[i - 1] - price, but[i - 1])
+        sell[i] = max(buy[i - 1] + price, sell[i -1])
+        rest[i] = max(sell[i - 1], buy[i - 1], rest[i - 1])
+         在买之前有冷冻期，买之前要卖掉之前的股票【buy, rest, buy】的情况不会出现
+         由于buy[i] <= rest[i], 那rest[i] = max(sell[i - 1], rest[i - 1])
+         由于有冷冻期，rest[i] = sell[i - 1]. 三个递推公式变成了两个
+
+         buy[i] = max(sell[i - 2] - price, buy[i - 1]);
+         sell[i] = max(buy[i - 1] + price, sell[i - 1])
+         */
+        public int maxProfit(int[] prices) {
+            int sell = 0, preSell = 0;
+            int buy = Integer.MIN_VALUE, preBuy = 0;
+            for (int price : prices) {
+                preBuy = buy;
+                buy = Math.max(preSell - price, preBuy);
+                preSell = sell;
+                sell = Math.max(preBuy + price, preSell);
+            }
+            return sell;
         }
     }
 

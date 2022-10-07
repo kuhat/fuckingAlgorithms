@@ -2414,21 +2414,35 @@ public class Note3_Arrays {
     class Solution54 {
         public List<Integer> spiralOrder(int[][] matrix) {
             List<Integer> res = new ArrayList<>();
-            if (matrix == null || matrix.length == 0 || matrix[0] == null || matrix[0].length == 0) return res;
+            if (matrix == null || matrix.length ==0 || matrix[0] == null || matrix[0].length == 0) {
+                return res;
+            }
+            int rowBegin = 0;
+            int rowEnd = matrix.length -1;
+            int colBegin = 0;
+            int colEnd = matrix[0].length - 1;
 
-            int rowEnd = matrix.length - 1, colEnd = matrix[0].length - 1;
-            int rowBegin = 0, colBegin = 0;
             while (rowBegin <= rowEnd && colBegin <= colEnd) {
-                for (int i = colBegin; i < colEnd; i++) res.add(matrix[rowBegin][i]);
-                rowBegin++;
-                for (int i = rowBegin; i <= rowEnd; i++) res.add(matrix[i][colEnd]);
-                colEnd--;
-                if (rowBegin <= rowEnd) {
-                    for (int i = colEnd; i >= rowBegin; i--) res.add(matrix[rowEnd][i]);
+                for(int i = colBegin; i <= colEnd; i ++) {
+                    res.add(matrix[rowBegin][i]);
                 }
-                rowEnd--;
-                if (colBegin <= colEnd) {
-                    for (int i = rowEnd; i >= rowBegin; i--) res.add(matrix[i][colBegin]);
+                rowBegin ++;
+                for(int i = rowBegin; i <= rowEnd; i ++) {
+                    res.add(matrix[i][colEnd]);
+                }
+                colEnd--;
+
+                if(rowBegin <= rowEnd) {
+                    for(int i = colEnd; i >= colBegin; i --) {
+                        res.add(matrix[rowEnd][i]);
+                    }
+                }
+                rowEnd --;
+
+                if(colBegin <= colEnd){
+                    for (int i = rowEnd; i >= rowBegin; i --) {
+                        res.add(matrix[i][colBegin]);
+                    }
                 }
                 colBegin++;
             }
@@ -3666,6 +3680,295 @@ public class Note3_Arrays {
     }
 
     public static void main(String[] args) {
+        int[][] matrix = new int[][]{{29, 8, 37},{15, 41, 3}, {1, 10, 14}};
+        List<Integer> res = new ArrayList<>();
+        int rowEnd = matrix.length - 1, colEnd = matrix[0].length - 1;
+        int rowBegin = 0; int colBegin = 0;
+        while (rowBegin <= rowEnd && colBegin <= colEnd) {
+            for (int i = rowBegin; i <= rowEnd; i++) {
+                res.add(matrix[i][colBegin]);
+            }
+            colBegin++;
+            for (int i = colBegin; i < colEnd; i++) {
+                res.add(matrix[rowEnd][i]);
+            }
+            rowEnd--;
+            for(int i = rowEnd; i >= rowBegin; i--) {
+                res.add(matrix[i][colEnd]);
+            }
+            colEnd--;
+            for (int i = colEnd; i >= colBegin; i--) {
+                res.add(matrix[rowBegin][i]);
+            }
+            rowBegin++;
+        }
+        for (int i : res) {
+            System.out.print(i + " ");
+        }
+        if (res.size() % 2 == 1) System.out.println(res.get(res.size() - 1));
+        else System.out.println(res.get(res.size() - 2));
+    }
+
+    // new year chaotic
+    /**
+     * It is New Year's Day and people are in line for the Wonderland rollercoaster ride. Each person wears a sticker
+     * indicating their initial position in the queue from  to . Any person can bribe the person directly in front of
+     * them to swap positions, but they still wear their original sticker. One person can bribe at most two others.
+     *
+     * Determine the minimum number of bribes that took place to get to a given queue order. Print the number of bribes
+     * , or, if anyone has bribed more than two people, print Too chaotic.
+     *
+     * Example
+     *
+     *
+     * If person  bribes person , the queue will look like this: . Only  bribe is required. Print 1.
+     *
+     *
+     * Person  had to bribe  people to get to the current position. Print Too chaotic.
+     *
+     * Function Description
+     *
+     * Complete the function minimumBribes in the editor below.
+     *
+     * minimumBribes has the following parameter(s):
+     *
+     * int q[n]: the positions of the people after all bribes
+     * Returns
+     *
+     * No value is returned. Print the minimum number of bribes necessary or Too chaotic if someone has bribed more than  people.
+     * Input Format
+     *
+     * The first line contains an integer , the number of test cases.
+     *
+     * Each of the next  pairs of lines are as follows:
+     * - The first line contains an integer , the number of people in the queue
+     * - The second line has  space-separated integers describing the final state of the queue.
+     *
+     * Constraints
+     *
+     * Subtasks
+     *
+     * For  score
+     * For  score
+     *
+     * Sample Input
+     *
+     * STDIN       Function
+     * -----       --------
+     * 2           t = 2
+     * 5           n = 5
+     * 2 1 5 3 4   q = [2, 1, 5, 3, 4]
+     * 5           n = 5
+     * 2 5 1 3 4   q = [2, 5, 1, 3, 4]
+     * Sample Output
+     *
+     * 3
+     * Too chaotic
+     */
+
+    class newYearChaotic {
+
+        /*
+         * Complete the 'minimumBribes' function below.
+         *
+         * The function accepts INTEGER_ARRAY q as parameter.
+         */
+
+        public static void minimumBribes(List<Integer> q) {
+            // Write your code here
+            if (q.size() == 0) System.out.println(0);
+            int res = 0;
+            for (int i = q.size() - 1; i > 0; i--) {
+                if (q.get(i) != i + 1) {
+                    if (q.get(i - 1) == i + 1) {
+                        res++;
+                        swap(q, i, i - 1);
+                    } else if (q.get(i-2) == i + 1) {
+                        res += 2;
+                        swap(q, i - 1, i - 2);
+                        swap(q,i, i -1);
+                    } else {
+                        System.out.println("Too chaotic");
+                        return;
+                    }
+                }
+            }
+            System.out.println(res);
+        }
+
+        public static void swap(List<Integer> list, int i, int j) {
+            int tmpi = list.get(i);
+            int tmpj = list.get(j);
+            list.set(i, tmpj);
+            list.set(j, tmpi);
+        }
+    }
+
+
+    // 73： set matrix zeros
+
+    /**
+     * Given an m x n integer matrix matrix, if an element is 0, set its entire row and column to 0's.
+     *
+     * You must do it in place.
+     *
+     *
+     *
+     * Example 1:
+     *
+     *
+     * Input: matrix = [[1,1,1],[1,0,1],[1,1,1]]
+     * Output: [[1,0,1],[0,0,0],[1,0,1]]
+     * Example 2:
+     *
+     *
+     * Input: matrix = [[0,1,2,0],[3,4,5,2],[1,3,1,5]]
+     * Output: [[0,0,0,0],[0,4,5,0],[0,3,1,0]]
+     */
+    class Solution73{
+
+        class Solution {
+            public void setZeroes(int[][] matrix) {
+                if (matrix == null || matrix.length == 0) return;
+                boolean ro = false, co = false;
+                int row = matrix.length, col = matrix[0].length;
+                for (int i = 0; i < row; i++) {
+                    for (int j = 0; j < col; j++) {
+                        if (matrix[i][j] == 0) {
+                            matrix[0][j] = 0;  // 把有0的哪一列的第一个设成0
+                            matrix[i][0] = 0;  // 把有0的那一行的第一个设成0
+                            if (i == 0) ro = true;
+                            if (j == 0) co = true;
+                        }
+                    }
+                }
+                for (int i = 1; i < row; i++) {  //
+                    if (matrix[i][0] == 0) {
+                        for (int j = 1; j < col; j++) {
+                            matrix[i][j] = 0;
+                        }
+                    }
+                }
+                for (int j = 1; j < col; j++) {
+                    if (matrix[0][j]== 0) {
+                        for (int i = 1; i < row; i++) {
+                            matrix[i][j] = 0;
+                        }
+                    }
+                }
+                if (ro) {
+                    for (int i = 0;i < col; i++) {
+                        matrix[0][i] = 0;
+                    }
+                }
+                if (co) {
+                    for (int i = 0; i < row; i++) {
+                        matrix[i][0] = 0;
+                    }
+                }
+            }
+        }
+    }
+
+    // 134: Gas Station
+    /**
+     *
+     * There are n gas stations along a circular route, where the amount of gas at the ith station is gas[i].
+     *
+     * You have a car with an unlimited gas tank and it costs cost[i] of gas to travel from the ith station to its next
+     * (i + 1)th station. You begin the journey with an empty tank at one of the gas stations.
+     *
+     * Given two integer arrays gas and cost, return the starting gas station's index if you can travel around the
+     * circuit once in the clockwise direction, otherwise return -1. If there exists a solution, it is guaranteed to be unique
+     *
+     *
+     *
+     * Example 1:
+     *
+     * Input: gas = [1,2,3,4,5], cost = [3,4,5,1,2]
+     * Output: 3
+     * Explanation:
+     * Start at station 3 (index 3) and fill up with 4 unit of gas. Your tank = 0 + 4 = 4
+     * Travel to station 4. Your tank = 4 - 1 + 5 = 8
+     * Travel to station 0. Your tank = 8 - 2 + 1 = 7
+     * Travel to station 1. Your tank = 7 - 3 + 2 = 6
+     * Travel to station 2. Your tank = 6 - 4 + 3 = 5
+     * Travel to station 3. The cost is 5. Your gas is just enough to travel back to station 3.
+     * Therefore, return 3 as the starting index.
+     * Example 2:
+     *
+     * Input: gas = [2,3,4], cost = [3,4,3]
+     * Output: -1
+     * Explanation:
+     * You can't start at station 0 or 1, as there is not enough gas to travel to the next station.
+     * Let's start at station 2 and fill up with 4 unit of gas. Your tank = 0 + 4 = 4
+     * Travel to station 0. Your tank = 4 - 3 + 2 = 3
+     * Travel to station 1. Your tank = 3 - 3 + 3 = 3
+     * You cannot travel back to station 2, as it requires 4 unit of gas but you only have 3.
+     * Therefore, you can't travel around the circuit once no matter where you start.
+    */
+    class Solution134 {
+        public int canCompleteCircuit(int[] gas, int[] cost) {
+            if (gas== null || gas.length == 0 || gas.length != cost.length) return -1;
+            int total = 0, sum = 0, start = 0;
+            for (int i = 0; i < gas.length; i++) {
+                total += (gas[i] - cost[i]);
+                if (sum < 0) {  // 如果当前的和小于0了，直接从当前的位置重新开始找
+                    sum = gas[i] - cost[i];
+                    start = i;
+                } else {
+                    sum += (gas[i] - cost[i]);
+                }
+            }
+            return total < 0 ? -1 : start;  // if total 小于0， 油量没法支持跑完全程
+
+        }
+    }
+
+    // 1031: max sum two non overlap
+    /**
+     * Given an integer array nums and two integers firstLen and secondLen, return the maximum sum of elements in two
+     * non-overlapping subarrays with lengths firstLen and secondLen.
+     *
+     * The array with length firstLen could occur before or after the array with length secondLen, but they have to be non-overlapping.
+     *
+     * A subarray is a contiguous part of an array.
+     *
+     *
+     *
+     * Example 1:
+     *
+     * Input: nums = [0,6,5,2,2,5,1,9,4], firstLen = 1, secondLen = 2
+     * Output: 20
+     * Explanation: One choice of subarrays is [9] with length 1, and [6,5] with length 2.
+     * Example 2:
+     *
+     * Input: nums = [3,8,1,3,2,1,8,9,0], firstLen = 3, secondLen = 2
+     * Output: 29
+     * Explanation: One choice of subarrays is [3,8,1] with length 3, and [8,9] with length 2.
+     * Example 3:
+     *
+     * Input: nums = [2,1,5,6,0,9,5,0,3,8], firstLen = 4, secondLen = 3
+     * Output: 31
+     * Explanation: One choice of subarrays is [5,6,0,9] with length 4, and [0,3,8] with length
+     */
+    class Solution1031{
+        // https://leetcode.com/problems/maximum-sum-of-two-non-overlapping-subarrays/discuss/279221/JavaPython-3-two-easy-DP-codes-w-comment-time-O(n)-NO-change-of-input
+        public int maxSumTwoNoOverlap(int[] A, int L, int M) {
+            int[] prefixSum = new int[A.length + 1];
+            for (int i = 0; i < A.length; ++i) {  // 计算前缀和
+                prefixSum[i + 1] = prefixSum[i] + A[i];
+            }
+            return Math.max(maxSum(prefixSum, L, M), maxSum(prefixSum, M, L));
+        }
+        private int maxSum(int[] p, int L, int M) {
+            int ans = 0;
+            for (int i = L + M, maxL = 0; i < p.length; ++i) {
+                maxL = Math.max(maxL, p[i - M] - p[i - M - L]); // update max of L-length subarray.
+                ans = Math.max(ans, maxL + p[i] - p[i - M]); // update max of the sum of L-length & M-length subarrays.
+            }
+            return ans;
+        }
 
     }
 

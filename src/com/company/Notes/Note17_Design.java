@@ -123,6 +123,7 @@ public class Note17_Design {
             return size() > capacity;
         }
     }
+
     /*
     HashMap + Double Linked List
      */
@@ -226,6 +227,110 @@ public class Note17_Design {
                 tail = newNode;  // tail指向newNode
                 map.put(key, newNode);
                 capacity--;
+            }
+        }
+
+        public class LRUCache3 {
+
+            class DLinkedNode {
+                int key;
+                int value;
+                DLinkedNode prev;
+                DLinkedNode next;
+            }
+
+            private void addNode(DLinkedNode node) {
+                /**
+                 * Always add the new node right after head.
+                 */
+                node.prev = head;
+                node.next = head.next;
+
+                head.next.prev = node;
+                head.next = node;
+            }
+
+            private void removeNode(DLinkedNode node){
+                /**
+                 * Remove an existing node from the linked list.
+                 */
+                DLinkedNode prev = node.prev;
+                DLinkedNode next = node.next;
+
+                prev.next = next;
+                next.prev = prev;
+            }
+
+            private void moveToHead(DLinkedNode node){
+                /**
+                 * Move certain node in between to the head.
+                 */
+                removeNode(node);
+                addNode(node);
+            }
+
+            private DLinkedNode popTail() {
+                /**
+                 * Pop the current tail.
+                 */
+                DLinkedNode res = tail.prev;
+                removeNode(res);
+                return res;
+            }
+
+            private Map<Integer, DLinkedNode> cache = new HashMap<>();
+            private int size;
+            private int capacity;
+            private DLinkedNode head, tail;
+
+            public LRUCache3(int capacity) {
+                this.size = 0;
+                this.capacity = capacity;
+
+                head = new DLinkedNode();
+                // head.prev = null;
+
+                tail = new DLinkedNode();
+                // tail.next = null;
+
+                head.next = tail;
+                tail.prev = head;
+            }
+
+            public int get(int key) {
+                DLinkedNode node = cache.get(key);
+                if (node == null) return -1;
+
+                // move the accessed node to the head;
+                moveToHead(node);
+
+                return node.value;
+            }
+
+            public void put(int key, int value) {
+                DLinkedNode node = cache.get(key);
+
+                if(node == null) {
+                    DLinkedNode newNode = new DLinkedNode();
+                    newNode.key = key;
+                    newNode.value = value;
+
+                    cache.put(key, newNode);
+                    addNode(newNode);
+
+                    ++size;
+
+                    if(size > capacity) {
+                        // pop the tail
+                        DLinkedNode tail = popTail();
+                        cache.remove(tail.key);
+                        --size;
+                    }
+                } else {
+                    // update the value.
+                    node.value = value;
+                    moveToHead(node);
+                }
             }
         }
     }
@@ -575,5 +680,90 @@ public class Note17_Design {
         }
     }
 
+    // 539: Minimum Time Difference
+    /**
+     * Given a list of 24-hour clock time points in "HH:MM" format, return the minimum minutes difference between any two time-points in the list.
+     *
+     *
+     * Example 1:
+     *
+     * Input: timePoints = ["23:59","00:00"]
+     * Output: 1
+     * Example 2:
+     *
+     * Input: timePoints = ["00:00","23:59","00:00"]
+     * Output: 0
+     */
+    class Solution539 {
+        // Bucket index 24 * 60 个分钟数， 把小时和分钟加起来对应到1440个坑位上
+        public int findMinDifference(List<String> timePoints) {
+
+            boolean[] bucket = new boolean[24 * 60];
+            for (String s : timePoints) {
+                String[] time = s.split(":");
+                int hour = Integer.parseInt(time[0]);
+                int min = Integer.parseInt(time[1]);
+                if (bucket[hour * 60 + min]) return 0;
+                bucket[60 * hour + min] = true;
+            }
+
+            int res = Integer.MAX_VALUE;
+            int first = -1;
+            int pre = -1;
+            // 遍历桶，寻找差值最小的两个位置
+            for (int i = 0; i < bucket.length;i++) {
+                if (bucket[i]) {
+                    if (first == -1) {
+                        first = i;
+                    } else {
+                        res = Math.min(res, i - pre);
+                    }
+                    pre = i;
+                }
+            }
+            res = Math.min(res, (first + 24 * 60 - pre));
+            return res;
+        }
+    }
+
+    // new time class
+    class Time{
+        int hour;
+        int min;
+        public Time(int hour, int min) {
+            this.hour = hour;
+            this.min = min;
+        }
+
+        public int getDiff(Time other) {
+            return (this.hour - other.hour) * 60 + (this.min - other.min);
+        }
+    }
+    public int findMinDifference(List<String> timePoints){
+        List<Time> timeList = new ArrayList<>();
+        for (String s: timePoints) {
+            String[] time = s.split(":");
+            int hour = Integer.parseInt(time[0]);
+            int min = Integer.parseInt(time[1]);
+            timeList.add(new Time(hour, min));
+        }
+        Collections.sort(timeList, (a, b) -> {
+            if (a.hour == b.hour) {
+                return a.min - b.min;
+            } else {
+                return a.hour - b.hour;
+            }
+        });
+        int res = Integer.MAX_VALUE;
+        Time first = timeList.get(0);
+        timeList.add(new Time(first.hour + 24, first.min));
+        for (int i = 0; i < timeList.size(); i++) {
+            int dif = Math.abs(timeList.get(i).getDiff(timeList.get(i + 1)));
+            res = Math.min(res, dif);
+        }
+        return res;
+
+
+    }
 
 }
