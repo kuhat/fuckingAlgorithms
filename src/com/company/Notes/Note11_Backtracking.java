@@ -1236,7 +1236,6 @@ public class Note11_Backtracking {
                 }
             }
         }
-
     }
 
 
@@ -1244,6 +1243,8 @@ public class Note11_Backtracking {
         System.out.println(Integer.valueOf('1'));
         String s = "123456";
         System.out.println(s.substring(1, 3));
+        System.out.println((35 ^ 8) + (35 & 8) * 2);
+
     }
 }
 

@@ -762,8 +762,6 @@ public class Note17_Design {
             res = Math.min(res, dif);
         }
         return res;
-
-
     }
 
 }
