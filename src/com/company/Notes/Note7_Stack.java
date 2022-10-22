@@ -1,5 +1,7 @@
 package com.company.Notes;
 
+import com.company.leetCode.NestedInteger;
+
 import java.util.*;
 
 public class Note7_Stack {
@@ -1042,13 +1044,172 @@ public class Note7_Stack {
                 }
             }
             return sb.reverse().toString();
-
         }
     }
 
-    public static void main(String[] args) {
-        System.out.println(String.valueOf("asd"));
-        System.out.println(String.valueOf("3"));
+    // flatten nested list iterator
+
+    /**
+     * You are given a nested list of integers nestedList. Each element is either an integer or a list whose elements may also be integers or other lists. Implement an iterator to flatten it.
+     *
+     * Implement the NestedIterator class:
+     *
+     * NestedIterator(List<NestedInteger> nestedList) Initializes the iterator with the nested list nestedList.
+     * int next() Returns the next integer in the nested list.
+     * boolean hasNext() Returns true if there are still some integers in the nested list and false otherwise.
+     * Your code will be tested with the following pseudocode:
+     *
+     * initialize iterator with nestedList
+     * res = []
+     * while iterator.hasNext()
+     *     append iterator.next() to the end of res
+     * return res
+     * If res matches the expected flattened list, then your code will be judged as correct.
+     *
+     *
+     *
+     * Example 1:
+     *
+     * Input: nestedList = [[1,1],2,[1,1]]
+     * Output: [1,1,2,1,1]
+     * Explanation: By calling next repeatedly until hasNext returns false, the order of elements returned by next
+     * should be: [1,1,2,1,1].
+     * Example 2:
+     *
+     * Input: nestedList = [1,[4,[6]]]
+     * Output: [1,4,6]
+     * Explanation: By calling next repeatedly until hasNext returns false, the order of elements returned by next
+     * should be: [1,4,6].
+     */
+    /**
+     * // This is the interface that allows for creating nested lists.
+     * // You should not implement it, or speculate about its implementation
+     * public interface NestedInteger {
+     *
+     *     // @return true if this NestedInteger holds a single integer, rather than a nested list.
+     *     public boolean isInteger();
+     *
+     *     // @return the single integer that this NestedInteger holds, if it holds a single integer
+     *     // Return null if this NestedInteger holds a nested list
+     *     public Integer getInteger();
+     *
+     *     // @return the nested list that this NestedInteger holds, if it holds a nested list
+     *     // Return empty list if this NestedInteger holds a single integer
+     *     public List<NestedInteger> getList();
+     * }
+     */
+    public class NestedIterator implements Iterator<Integer> {
+
+        Stack<NestedInteger> stack = new Stack<>();
+        public NestedIterator(List<NestedInteger> nestedList) {
+            for (int i = nestedList.size() - 1; i >= 0; i--) {
+                stack.push(nestedList.get(i));  //  从后往前加入，先进后出
+            }
+        }
+
+        @Override
+        public Integer next() {
+            return stack.pop().getInteger();
+        }
+
+        @Override
+        public boolean hasNext() {
+            while (!stack.isEmpty()){
+                NestedInteger cur = stack.peek();
+                if (cur.isInteger()) {
+                    return true;  // 如果当前栈顶是个数字，返回true
+                }
+                stack.pop();  // 如果不是数字，pop出去
+                for (int i = cur.getList().size() - 1; i >= 0; i--) {
+                    stack.push(cur.getList().get(i));  // 遍历当前的list, 从后往前加入元素
+                }
+            }
+            return false;
+        }
     }
 
+    /**
+     * Your NestedIterator object will be instantiated and called as such:
+     * NestedIterator i = new NestedIterator(nestedList);
+     * while (i.hasNext()) v[f()] = i.next();
+     */
+    // 385： nested Integer
+    /**
+     * Given a string s represents the serialization of a nested list, implement a parser to
+     * deserialize it and return the deserialized NestedInteger.
+     *
+     * Each element is either an integer or a list whose elements may also be integers or other lists.
+     *
+     * Example 1:
+     *
+     * Input: s = "324"
+     * Output: 324
+     * Explanation: You should return a NestedInteger object which contains a single integer 324.
+     * Example 2:
+     *
+     *
+     * Input: s = "[123,[456,[789]]]"
+     * Output: [123,[456,[789]]]
+     * Explanation: Return a NestedInteger object containing a nested list with 2 elements:
+     * 1. An integer containing value 123.
+     * 2. A nested list containing two elements:
+     *     i.  An integer containing value 456.
+     *     ii. A nested list with one element:
+     *          a. An integer containing value 789
+
+     */
+    public class NestedInteger {
+        // Constructor initializes an empty nested list.
+        public NestedInteger(){}
+        // Constructor initializes a single integer.
+        public NestedInteger(int val){}
+
+        // @return true if this NestedInteger holds a single integer, rather than a nested list.
+              public  boolean isInteger(){return true;}
+
+              // @return the single integer that this NestedInteger holds, if it holds a single integer
+        // Return null if this NestedInteger holds a nested list
+              public  Integer getInteger(){return 0;};
+
+             // Set this NestedInteger to hold a single integer.
+              public  void setInteger(int value){return;}
+
+              // Set this NestedInteger to hold a nested list and adds a nested integer to it.
+              public  void add(NestedInteger ni){return;}
+
+              // @return the nested list that this NestedInteger holds, if it holds a nested list
+             // Return empty list if this NestedInteger holds a single integer
+              public  List<NestedInteger> getList(){return new ArrayList<>();}
+  }
+    class Solution385 {
+        public NestedInteger deserialize(String s) {
+            if (!s.startsWith("[")) return new NestedInteger(Integer.valueOf(s));
+            Stack<NestedInteger> stack = new Stack<>();
+            NestedInteger res = new NestedInteger();
+            stack.push(res);
+            int start = 1;
+            for (int i = 1; i < s.length(); i++) {
+                char c = s.charAt(i);
+                if (c == '[') {  // 如果是[，就把新的nestedInteger加到栈顶的元素里面
+                    NestedInteger nestedInteger = new NestedInteger();
+                    stack.peek().add(nestedInteger);
+                    stack.push(nestedInteger);
+                    start = i + 1;
+                } else if (c == ',' || c == ']') {
+                    if (i > start) {  // 如果当前的是,或者]代表要添加数字进栈顶的nestedInteger
+                        int val = Integer.parseInt(s.substring(start, i));
+                        stack.peek().add(new NestedInteger(val));
+                    }
+                    start = i + 1;
+                    if (c == ']') stack.pop();
+                }
+            }
+            return res;
+        }
+
+        public static void main(String[] args) {
+            System.out.println(String.valueOf("asd"));
+            System.out.println(String.valueOf("3"));
+        }
+    }
 }

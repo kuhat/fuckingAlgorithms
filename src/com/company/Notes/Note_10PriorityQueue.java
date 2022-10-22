@@ -432,7 +432,9 @@ public class Note_10PriorityQueue {
      *
      * Example 1:
      *
-     * Input: matrix = [[1,5,9],[10,11,13],[12,13,15]], k = 8
+     * Input: matrix = [[1,5,9],
+     *                  [10,11,13],
+     *                  [12,13,15]], k = 8
      * Output: 13
      * Explanation: The elements in the matrix are [1,5,9,10,11,12,13,13,15], and the 8th smallest number is 13
      * Example 2:
@@ -548,6 +550,32 @@ public class Note_10PriorityQueue {
             }
             return res;
         }
+    }
+
+
+
+    public static int[] findInt(int n, int k, int[] arr){
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
+        for (int i = 0; i < k; i++) {
+            pq.offer(arr[i]);
+        }
+        List<Integer> res = new ArrayList<>();
+        res.add(pq.peek());
+        for (int i = k; i < n; i++) {
+            pq.offer(arr[i]);
+            pq.poll();
+            res.add(pq.peek());
+        }
+        int[] ret = new int[n - k + 1];
+        for (int i = 0 ; i < ret.length; i++) {
+            ret[i] = res.get(i);
+        }
+        return ret;
+    }
+
+    public static void main(String[] args) {
+        int[] res = findInt(4, 2, new int[]{4, 2, 1, 3});
+        System.out.println(Arrays.toString(res));
     }
 
 }

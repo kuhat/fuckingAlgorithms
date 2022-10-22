@@ -552,12 +552,14 @@ public class Note11_Backtracking {
          * Output: ["ad","ae","af","bd","be","bf","cd","ce","cf"]
          */
         class solution17 {
+
             String[] mapping = new String[]{"0", "1", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
 
             public List<String> letterCombinations(String digits) {
                 List<String> res = new ArrayList<>();
-                if (digits == null || digits.length() == 0) return res;
-                helper(res, "", digits, 0);
+                    if (digits == null || digits.length() == 0) return res;
+
+                    helper(res, "", digits, 0);
                 return res;
             }
 
@@ -1238,7 +1240,125 @@ public class Note11_Backtracking {
         }
     }
 
+    // 241： different ways to Add parenthesis
 
+    /**
+     * Given a string expression of numbers and operators, return all possible results from computing all the different
+     * possible ways to group numbers and operators. You may return the answer in any order.
+     *
+     * The test cases are generated such that the output values fit in a 32-bit integer and the number of different results does not exceed 104.
+     *
+     * Example 1:
+     *
+     * Input: expression = "2-1-1"
+     * Output: [0,2]
+     * Explanation:
+     * ((2-1)-1) = 0
+     * (2-(1-1)) = 2
+     * Example 2:
+     *
+     * Input: expression = "2*3-4*5"
+     * Output: [-34,-14,-10,-10,10]
+     * Explanation:
+     * (2*(3-(4*5))) = -34
+     * ((2*3)-(4*5)) = -14
+     * ((2*(3-4))*5) = -10
+     * (2*((3-4)*5)) = -10
+     * (((2*3)-4)*5) = 10
+     */
+    class Solution241 {
+        public List<Integer> diffWaysToCompute(String input) {
+            List<Integer> ret = new LinkedList<Integer>();
+            for (int i=0; i<input.length(); i++) {
+                if (input.charAt(i) == '-' || input.charAt(i) == '*' || input.charAt(i) == '+' ) {
+                    String part1 = input.substring(0, i);  // 符号左边的部分
+                    String part2 = input.substring(i+1);  // 符号右边的部分
+                    List<Integer> part1Ret = diffWaysToCompute(part1);  // backtracking
+                    List<Integer> part2Ret = diffWaysToCompute(part2);
+                    for (Integer p1 :   part1Ret) {
+                        for (Integer p2 :   part2Ret) {
+                            int c = 0;
+                            switch (input.charAt(i)) {
+                                case '+': c = p1+p2;
+                                    break;
+                                case '-': c = p1-p2;
+                                    break;
+                                case '*': c = p1*p2;
+                                    break;
+                            }
+                            ret.add(c);
+                        }
+                    }
+                }
+            }
+            if (ret.size() == 0) {  // 如果当前的
+                ret.add(Integer.valueOf(input));
+            }
+            return ret;
+        }
+    }
+
+    // 301 Remove Invalid Parenthesis
+
+    /**
+     * 301. Remove Invalid Parentheses
+     * Hard
+     *
+     * 5144
+     *
+     * 251
+     *
+     * Add to List
+     *
+     * Share
+     * Given a string s that contains parentheses and letters, remove the minimum number of invalid parentheses to make the input string valid.
+     *
+     * Return all the possible results. You may return the answer in any order.
+     *
+     * Example 1:
+     *
+     * Input: s = "()())()"
+     * Output: ["(())()","()()()"]
+     * Example 2:
+     *
+     * Input: s = "(a)())()"
+     * Output: ["(a())()","(a)()()"]
+     * Example 3:
+     *
+     * Input: s = ")("
+     * Output: [""]
+     */
+
+    class Solution301 {
+        public List<String> removeInvalidParentheses(String s) {
+            List<String> res = new ArrayList<>();
+            helper(res, s, 0, 0, new char[]{'(', ')'});
+            return res;
+        }
+
+        private void helper(List<String> res,  String s, int last_i, int last_j, char[] pair) {
+            for (int count = 0, i = last_i; i < s.length(); i++) {
+                if (s.charAt(i) == pair[0]) count++;
+                if (s.charAt(i) == pair[1]) count--;
+                if (count >= 0) continue;  // 如果当前（的数量可以抵消）的数量，不是invalid的
+                for (int j = last_j; j <= i; j++) {
+                    // 判断当前是不是）             判断是不是第一个位置 或者之前一个已经不是）（找到当前第一个“）”）
+                    if(s.charAt(j) == pair[1] && (j == last_j || s.charAt(j - 1) != pair[1])) {
+                        //                       将j这个字符删除
+                        helper(res, s.substring(0, j) + s.substring(j + 1), i, j, pair);
+                    }
+                }
+                return;
+            }
+            // 上面的每次都删除的），有时候（会比）多，将整个字符串翻转，原来的左括号变成了右括号
+            String reversed = new StringBuilder(s).reverse().toString();
+            if (pair[0] == '(') {
+                helper(res, reversed, 0, 0, new char[]{')', '('});
+            } else {
+                res.add(reversed);
+            }
+        }
+    }
     public static void main(String[] args) {
         System.out.println(Integer.valueOf('1'));
         String s = "123456";

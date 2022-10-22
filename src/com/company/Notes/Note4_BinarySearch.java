@@ -481,6 +481,73 @@ public class Note4_BinarySearch {
  * int param_1 = obj.pickIndex();
  */
 
+  // 410： Split array Largest sum
+    /**
+     * Given an integer array nums and an integer k, split nums into k non-empty subarrays such that the largest
+     * sum of any subarray is minimized.
+     *
+     * Return the minimized largest sum of the split.
+     *
+     * A subarray is a contiguous part of the array.
+     *
+     *
+     *
+     * Example 1:
+     *
+     * Input: nums = [7,2,5,10,8], k = 2
+     * Output: 18
+     * Explanation: There are four ways to split nums into two subarrays.
+     * The best way is to split it into [7,2,5] and [10,8], where the largest sum among the two subarrays is only 18.
+     * Example 2:
+     *
+     * Input: nums = [1,2,3,4,5], k = 2
+     * Output: 9
+     * Explanation: There are four ways to split nums into two subarrays.
+     * The best way is to split it into [1,2,3] and [4,5], where the largest sum among the two subarrays is only 9.
+     */
+    class Solution410{
+        public int splitArray(int[] nums, int m) {
+            int max = 0;
+            int sum = 0;
+            for (int num : nums) {
+                sum += num;
+                max = Math.max(max, num);
+            }
+            // 分割数组的和的部分最大值的最小值在所有值的和SUM（分割值为0）和最大值（分割数为数组的长度减一）之间
+            if(m == 1) return sum;
+            long left = max;
+            long right = sum;
+            // 从最大值到和进行二分查找，结果一定在这里面
+            while (left <= right) {
+                long mid = (left + right) / 2;
+                // 判断当前的最大值是否可以满足把数组 nums分成m段
+                if (isValid(mid, nums, m)) {  // 可以的话最大值还可以缩小
+                    right = mid -1;
+                } else {
+                    left = mid + 1;
+                }
+            }
+            return (int) left;
+        }
+
+        public boolean isValid(long target, int[] nums, int m) {
+            int count = 1;  // 可以分成的节数
+            long total = 0;  // 当前的和
+            for (int num : nums) {
+                total += num;
+                if (total > target) { // 如果当前的和大于了最大值，可以分的数量加一
+                    total = num;  // 重置total为当前的遍历到的数
+                    count++;
+                    // 如果可以分的数量大于了M，该方案不行
+                    if (count > m) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+    }
 
 }
 

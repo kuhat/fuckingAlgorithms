@@ -1,6 +1,8 @@
 package com.company.Notes;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 public class Note14_Trie {
@@ -250,10 +252,161 @@ public class Note14_Trie {
      */
     class Solution472 {
 
-
-
-
     }
+     // word squares https://leetcode.com/problems/word-squares/
 
+    /**
+     * 425
+     *
+     * Given an array of unique strings words, return all the word squares you can build from words. The same word from words can be used multiple times. You can return the answer in any order.
+     *
+     * A sequence of strings forms a valid word square if the kth row and column read the same string, where 0 <= k < max(numRows, numColumns).
+     *
+     * For example, the word sequence ["ball","area","lead","lady"] forms a word square because each word reads the same both horizontally and vertically.
+     *
+     *
+     * Example 1:
+     *
+     * Input: words = ["area","lead","wall","lady","ball"]
+     * Output: [["ball","area","lead","lady"],["wall","area","lead","lady"]]
+     * Explanation:
+     * The output consists of two word squares. The order of output does not matter (just the order of words in each word square matters).
+     * Example 2:
+     *
+     * Input: words = ["abat","baba","atan","atal"]
+     * Output: [["baba","abat","baba","atal"],["baba","abat","baba","atan"]]
+     * Explanation:
+     * The output consists of two word squares. The order of output does not matter (just the order of words in each word square matters).
+     */
+    class Solution425 {
+        TrieNode root;
+        public List<List<String>> wordSquares(String[] words) {
+            List<List<String>> res = new ArrayList<>();
+            if (words.length == 0) {
+                return res;
+            }
+            root = new TrieNode();
+            buildTrie(words);
+            findSquare(res, new ArrayList<>(), words[0].length());
+            return res;
+        }
+
+        private void findSquare(List<List<String>> res, List<String> candidate, int len) {
+            // 结束条件为当找到的数组等于square的长度
+            if (candidate.size() == len) {
+                res.add(new ArrayList<>(candidate));
+                return;
+            }
+            // 当前遍历到的位置
+            int index = candidate.size();
+            StringBuilder sb = new StringBuilder();
+            for (String s: candidate) {
+                sb.append(s.charAt(index));  // 当前的前缀单词是什么
+            }
+            String s =sb.toString();
+            TrieNode node = root;
+            for (int i = 0; i < s.length(); i++) {
+                if (node.next[s.charAt(i) - 'a'] != null) {
+                    node = node.next[s.charAt(i) - 'a'];
+                } else {
+                    node = null;
+                    break;
+                }
+            }
+
+            // 如果当前的node不是空的，加入node的单词
+            if (node != null) {
+                for (String next : node.words) {
+                   candidate.add(next);
+                   findSquare(res, candidate, len);
+                   candidate.remove(candidate.size() - 1);
+                }
+            }
+        }
+
+        // 每个节点对应加入当前的单词：
+        //       root: wall, area, lead, lady....
+        //       /  \        \
+        //  w:wall a:area  l: lead, lady
+        //    /     \         /      \
+        //  a:wall  r:area  e:lead   a:lady
+        //  /       \          /     \
+        //l:wall    e:area   d:lead   d:lady
+        //   .. ... .. .. ... .. ... ... . ...
+        //
+        private  void buildTrie(String[] words) {
+            for (String word: words) {
+                TrieNode node = root;
+                char[] wordChar = word.toCharArray();
+                for (char c : wordChar) {
+                    node.words.add(word);
+                    if (node.next[c - 'a'] == null) {
+                        node.next[c- 'a'] = new TrieNode();
+                    }
+                    node = node.next[c - 'a'];
+                }
+                node.words.add(word);
+            }
+        }
+
+        // 一个 trie ndoe 下面有26个子节点， 每个子节点下面可能组成很多个单词
+        class TrieNode {
+            TrieNode[] next = new TrieNode[26];
+            List<String> words = new ArrayList<>();
+        }
+
+        // Backtracking without trie
+        public List<List<String>> wordSquaress(String[] words) {
+            //  将每个单词的前缀存起来：
+            // wall: w: wall
+            //      wa: wall
+            //     wal: wall
+            //    wall: wall
+            HashMap<String, HashSet<String>> prefix = new HashMap<>();
+            for (String word : words) {
+                for (int i = 0; i <= word.length(); i++) {
+                    String s = word.substring(0, i);
+                    prefix.putIfAbsent(s, new HashSet<>());
+                    prefix.get(s).add(word);
+                }
+            }
+
+            List<List<String>> res = new ArrayList<>();
+            List<String> candidate;
+            // 将每个单词放在第一行然后去找其它的单词
+            for (String word: words) {
+                candidate = new ArrayList<>();
+                candidate.add(word);
+                dfs(res, candidate, 1, words[0].length(), prefix);
+            }
+            return res;
+        }
+        /*    1     sb: a, 字典里有 a: area
+            w a l l  candidate里加入area，继续走到le，
+            a r e a  字典里有 le: lead, candidate里加入lead
+            l e a d  走到lad, 字典里有lady, candidate加入lady,走完，结束
+            l a d y
+         */
+        private void dfs(List<List<String>> res, List<String> candidate, int pos, int len,
+                         HashMap<String, HashSet<String>> prefix) {
+            if (pos == len) {
+                res.add(new ArrayList<>(candidate));
+                return;
+            }
+            StringBuilder sb = new StringBuilder();
+            // 将目前找到的单词的前缀加入，
+            for (String can : candidate) {
+                sb.append(can.charAt(pos));
+            }
+            // 如果前缀里面没有当前需要找的前缀，返回
+            if(!prefix.containsKey(sb.toString())) return;
+            // 如果前缀map里有需要找的单词，加入candidate, 然后继续下一位置
+            for (String next : prefix.get(sb.toString())) {
+                candidate.add(next);
+                dfs(res, candidate, pos + 1, len, prefix);
+                candidate.remove(candidate.size() - 1);
+            }
+        }
+    }
 
 }

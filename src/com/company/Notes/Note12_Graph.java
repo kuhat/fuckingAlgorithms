@@ -1828,12 +1828,75 @@ public class Note12_Graph {
     }
 
     public static void main(String[] args) {
-        char[] ar = new char[3];
-        ar[0] = 's';
-        ar[1] = 'g';
-        ar[2] = '3';
-
-        System.out.println(Arrays.toString(ar));
+        String s = "hit";
+        for (int i = 0 ; i < s.length(); i++) {
+            StringBuilder sb;
+            for (int j =0; j < 26; j++) {
+                char c = (char)(j + 'a');
+                sb = new StringBuilder(s);
+                sb.replace(i , i + 1, c +"");
+                System.out.println(sb.toString());
+            }
+        }
     }
 
+    // 407 rain water 2:
+    /**
+     * Given an m x n integer matrix heightMap representing the height of each unit cell in a 2D elevation map, return
+     * the volume of water it can trap after raining.
+     * Example 1:
+     *
+     * Input: heightMap = [[1,4,3,1,3,2],[3,2,1,3,2,4],[2,3,3,2,3,1]]
+     * Output: 4
+     * Explanation: After the rain, water is trapped between the blocks.
+     * We have two small ponds 1 and 3 units trapped.
+     * The total volume of water trapped is 4.
+     * Example 2:
+     *
+     *
+     * Input: heightMap = [[3,3,3,3,3],[3,2,2,2,3],[3,2,1,2,3],[3,2,2,2,3],[3,3,3,3,3]]
+     * Output: 10
+     */
+    class Solution407 {
+        // 相比之前的trapping rain water 变成了三维的数组
+        public int trapRainWater(int[][] heightMap) {
+            if(heightMap == null || heightMap.length <= 1 || heightMap[0].length <= 1) return 0;
+            int m = heightMap.length;
+            int n = heightMap[0].length;
+            boolean[][] visited = new boolean[m][n];
+            // pq里存的是每个位置的index: i, j, 和高度height
+            PriorityQueue<int[]> pq = new PriorityQueue<>((a,b)->a[2] - b[2]);
+            // 把四周加入priorityQueue, 因为四周永远装不了水
+            for (int i = 0; i < m; i++) {
+                for (int j = 0; j < n; j++) {
+                    if (i == 0 || j == 0 || i == m - 1 || j == n - 1) {
+                        pq.offer(new int[]{i, j, heightMap[i][j]});
+                        visited[i][j] = true;
+                    }
+
+                }
+            }
+            int res = 0;
+            int[][] dirs = new int[][]{{1, 0}, {-1, 0}, {0, -1}, {0, 1}};
+            while (!pq.isEmpty()) {
+                // 将当前最短的柱子拿出来
+                int[] cell = pq.poll();
+                // 上下左右进行遍历
+                for (int[] dir: dirs) {
+                    int x = cell[0] + dir[0];
+                    int y = cell[1] + dir[1];
+                    // 如果没有越界或者之前没有遍历过
+                    if (x >= 0 && x < m && y >= 0 && y < n && !visited[x][y]) {
+                        visited[x][y] = true;
+                        // cell[2] - heightMap[x][y] 指当前最短的柱子和新柱子的高度差
+                        // 如果小于0就不加，大于0就加
+                        res += Math.max(0 , cell[2] - heightMap[x][y]);
+                        // 将当前高的柱子的高度加入pq, 因为当前位置已经装了水，之后的高度和装了水的高度一样高了
+                        pq.offer(new int[]{x, y, Math.max(cell[2], heightMap[x][y])});
+                    }
+                }
+            }
+            return res;
+        }
+    }
 }

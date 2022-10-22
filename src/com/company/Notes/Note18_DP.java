@@ -2197,6 +2197,29 @@ public class Note18_DP {
         }
     }
 
+    // binary game:
+    /**
+    zero_group: 连续0的个数为多少个
+    one_group：连续1 的个数为多少个
+    要求zero_group和one_group只能一组一组的出现，求当给字符串长度为n时有多少种STRIng可以组成这样要求的string
+     */
+    /*
+    比如我们想求当string的长度是i时, 此时有多少个good string. 我们可以让前zero_group个位置都是0, 此时剩下i - zero_group个位置需要填,
+    这就转化为了求当string的长度是i - zero_group时, 有多少个good string. 类似地, 我们也可以让前one_group个元素都是1, 此时剩下i - one_group个位置需要填,
+    这就转化为了求当string的长度是i - one_group时, 有多少个good string. 这就把一个大问题转化为了两个小问题, 两个小问题的形式和大问题的形式一模一样,
+    只是一个参数也就是string的长度在变. 于是我们想到可以用一维dp, 因为变化的参数个数只有一个.
+    我们可以用一个一维int数组, 称它为dp. dp[j]表示当string长度是j的时候, 有多少个good string. 此时根据我们上面讨论的逻辑, dp[j] = dp[j - zero_group] + dp[j - one_group].
+    但是有可能zero_group或者one_group大于此时的j, 这表示此时string中不能出现0或者1, 否则就会不满足题目要求, 遇到这种情况我们直接跳过. 还有就是如果zero_group或者one_group等于j时,
+    我们会需要dp[0]的值, 那么dp[0]这个base case的值应该是多少? 其实当zero_group或者one_group等于j时, 我们很容易就知道此时的good string就一种: 当zero_group等于j时,
+    那string全部填0; 当one_group等于j时,  那string全部填1, 当二者都等于j时, string要么全填0, 要么全填1. 于是为了让这种情况满足我们上面得出的dp状态转移方程, dp[0]需要等于1.
+     */
+
+    public void goodPair(int min_len, int max_len, int zero_group, int one_group) {
+
+
+
+    }
+
     public static void main(String[] args) {
         System.out.println(Arrays.toString(new int[5]));
     }

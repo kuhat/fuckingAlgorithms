@@ -1,9 +1,6 @@
 package com.company.Notes;
 
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 public class Note1_bitmap {
     public static void baseType() {
@@ -504,15 +501,84 @@ public class Note1_bitmap {
 
 
 
+    // complementary group
+
+    /**
+     * 验证list里面有字符串那些组合可以通过重新排列字母顺序来形成palindrome
+     *
+     * 比如：
+     * nput: N = 6, A[ ] = {aab, abcac, dffe, ed, aa, aade}
+     * Output: 6
+     * Explanation:
+     * All possible pairs of strings which generates a palindromic string:
+     * {aab, abcac} = aabccbaa
+     * {aab, aa} = aabaa
+     * {abcac, aa} = aacbcaa
+     * {dffe, ed} = fdeedf
+     * {dffe, aade} = edfaafde
+     * {ed, aade} = edaade or aeddea
+     * Hence, total possible pairs = 6
+     *
+     *
+     * Traverse the given array and for every string,  store the frequency of each character.
+     * Assign parity (0 or 1) to each frequency. Assign 0 for even frequency and 1 for odd frequency.
+     * Initialize a map to store the frequencies of each frequency array generated.
+     * Since, rearrangement is allowed, reverse the parity of each character and include the frequency array in map.
+     * Finally, return the total count of similar frequency arrays, which will give the required count of pairs.
+     */
+
+    public static int complementaryPairs(List<String> s) {
+        Map<List<Integer>, Integer> mp = new HashMap<>();
+        // Total number of pairs
+        int ans = 0;
+        for(int i = 0; i < s.size(); i++)
+        {
+            // Initializing array of size 26
+            // to store count of character
+            List<Integer> a = new ArrayList<>(26);
+            for(int k = 0; k < 26; k++)
+                a.add(0);
+            // Counting occurrence of each
+            // character of current string
+            for(int j = 0; j < s.get(i).length(); j++)
+            {
+                a.set((s.get(i).charAt(j) - 'a'),
+                        a.get(s.get(i).charAt(j) - 'a') + 1);
+            }
+            // Convert each count to parity(0 or 1)
+            // on the basis of its frequency
+            for(int j = 0; j < 26; j++)
+            {
+                a.set(j, a.get(j) % 2);
+            }
+            // Adding to answer
+
+            ans += mp.getOrDefault(a, 0);
+            // Frequency of single character
+            // can be possibly changed,
+            // so change its parity
+            for(int j = 0; j < 26; j++)
+            {
+                List<Integer> changedCount = new ArrayList<>();
+                changedCount.addAll(a);
+                if (a.get(j) == 0) changedCount.set(j, 1);
+                else changedCount.set(j, 0);
+
+                ans += mp.getOrDefault(changedCount, 0);
+            }
+            mp.put(a, mp.getOrDefault(a, 0) + 1);
+        }
+        return ans;
+    }
+
     public static void main(String[] args) {
-//        baseType();
-//
-//        int [] nums = null;
-//        temp(nums);
-//
-//        encode();
-        int[] nums = new int[]{1, 2, 2, 3, 4, 3, 1};
-        System.out.println(singleNum(nums));
-        bitSet();
+//        int[] nums = new int[]{1, 2, 2, 3, 4, 3, 1};
+//        System.out.println(singleNum(nums));
+//        bitSet();
+        int res = complementaryPairs(Arrays.asList("aab", "abcac",
+                "dffe", "ed",
+                "aa", "aade"));
+//        res = complementaryPairs(Arrays.asList("aa", "bb"));
+        System.out.println(res);
     }
 }
