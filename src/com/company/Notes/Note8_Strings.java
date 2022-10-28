@@ -2,6 +2,7 @@ package com.company.Notes;
 
 import com.sun.nio.sctp.AbstractNotificationHandler;
 
+import javax.lang.model.type.ArrayType;
 import java.util.*;
 
 public class Note8_Strings {
@@ -3183,13 +3184,28 @@ public class Note8_Strings {
         }
     }
 
-//    public double sum() {
-//        return sum(null);
-//    }
-
-//    public double sum(List<Number> list) {
-//
-//    }
+    /**
+     * Missing words from subsequentString
+     *
+     * s = "I love programming"
+     * t = "love"
+     *
+     * return a ArrayList: I programming
+     */
+    public List<String> missingSubsequence(String s, String t) {
+        if (t.length() == 0) return Arrays.asList(s.split(" "));
+        String[] parts = s.split(" ");
+        String[] otherParts = t.split(" ");
+        List<String> missing = new ArrayList<>();
+        for (int i = 0, j =0; i < parts.length; i++) {
+            if (j < otherParts.length && parts[i].equals(otherParts[j])) {
+                j++;
+            }else{
+                missing.add(parts[i]);
+            }
+        }
+        return missing;
+    }
 
     public static void main(String[] args) {
         String[] words = new String[]{"lc","cl","gg"};

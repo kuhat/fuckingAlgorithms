@@ -3,6 +3,7 @@ package com.company.Notes;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Note2_Math {
 
@@ -680,6 +681,33 @@ public class Note2_Math {
 
         }
     }
+
+    /**
+     * Ideal numbers in a range
+     * An ideal number is a positive integer that has only 3 and 5 as prime divisors. An ideal number can be expressed
+     * int the form of 3^x * 5^y, for example, 15, 45, 75 but 6, 10
+     * find all the ideal numbers within the segment [low, high]
+     */
+    class idealNUm{
+        public int sol(int l, int h) {
+            Set<Integer> set = new HashSet<>();
+            set.add(1);
+            set.add(3);
+            set.add(5);
+            int res = 0;
+            for (int i =9; i <= h; i++) {
+                if (set.contains(i / 3) && i % 3 == 0 || set.contains(i / 5) && i % 5 == 0) {
+                    set.add(i);
+                }
+                for (int  j= l; j <= h; i++) {
+                    if (set.contains(j)) res++;
+                }
+            }
+            return res;
+        }
+    }
+
+
 
 
     public static void main(String[] args) {

@@ -3042,7 +3042,7 @@ public class Note3_Arrays {
         }
 
         private int min(List<Integer> list) {
-            int i = 0, j = list.size();
+            int i = 0, j = list.size() - 1;
             int sum = 0;
             while(i < j) sum+= list.get(j--) - list.get(i++);  // 计算尾部减去头部的差值
             return sum;
@@ -3971,6 +3971,98 @@ public class Note3_Arrays {
         }
     }
 
+    /**
+     * Given an array a[] consisting of N integers and an integer K, the task is to find the minimum cost to reduce
+     * the given array to a single element by choosing any pair of consecutive array elements and replace them by
+     * (a[i] + a[i+1]) for a cost K * (a[i] + a[i+1]).
+     *
+     * Input: a[] = {1, 2, 3}, K = 2
+     * Output: 18
+     * Explanation:
+     * Replacing {1, 2} by 3 modifies the array to {3, 3}. Cost 2 * 3 = 6
+     * Replacing {3, 3} by 6 modifies the array to {6}. Cost 2 * 6 = 12
+     * Therefore, the total cost is 18
+     * Input: a[] = {4, 5, 6, 7}, K = 3
+     * Output: 132
+     */
+    class GFG {
+
+        static int inf = 10000009;
+
+        // Function to minimize the cost to
+        // reduce the array to a single element
+        public static int minCost(int a[], int i, int j, int k) {
+            if (i >= j) {
+                // Base case
+                // If n = 1 or n = 0
+                return 0;
+            }
+            // Initialize cost to maximum value
+            int best_cost = inf;
+            // Iterate through all possible indices
+            // and find the best index
+            // to combine the subproblems
+            for (int pos = i; pos < j; pos++) {
+                // Compute left subproblem
+                int left = minCost(a, i, pos, k);
+                // Compute right subproblem
+                int right = minCost(a, pos + 1, j, k);
+                // Calculate the best  cost
+                best_cost = Math.min(
+                        best_cost,
+                        left + right + k * Combine(a, i, j));
+            }
+            // Return the answer
+            return best_cost;
+        }
+
+        // Function to combine the sum of the two halves
+        public static int Combine(int a[], int i, int j)
+        {
+            int sum = 0;
+
+            // Calculate the sum from i to j
+            for (int l = i; l <= j; l++)
+                sum += a[l];
+
+            return sum;
+        }
+
+        // Driver code
+        public void mainGCG()
+        {
+            int n = 4;
+            int a[] = { 4, 5, 6, 7 };
+            int k = 3;
+
+            System.out.println(minCost(a, 0, n - 1, k));
+        }
+    }
+
+    //Count the number of strictly increasing subarray of a specified size k in an array of size N .
+    //
+    //Eg: Array= [ 5,3,5,7,8] and k=3 , The answer is 2 as [3,5,7] and [5,7,8] are the answer.
+    public int countIncreasing(int[] arr, int k) {
+        int res = 0;
+        int count = 0;
+        int cur=  1;
+        while (cur < arr.length) {
+            if (arr[cur] > arr[cur - 1]) {
+                count++;
+            } else {
+                if (count >= k - 1) {
+                    res += count - k + 1;
+                }
+                count = 0;
+            }
+            cur++;
+        }
+        if (count > k - 1) {
+            res += count - k + 1;
+        }
+
+        return res;
+    }
 
 }
 

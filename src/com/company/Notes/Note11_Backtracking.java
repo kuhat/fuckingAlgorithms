@@ -1359,6 +1359,153 @@ public class Note11_Backtracking {
             }
         }
     }
+
+    // 1239： Maximum length of a concatenated string with unique characters
+
+    /**
+     * You are given an array of strings arr. A string s is formed by the concatenation of a subsequence of arr that has unique characters.
+     *
+     * Return the maximum possible length of s.
+     *
+     * A subsequence is an array that can be derived from another array by deleting some or no elements without
+     * changing the order of the remaining elements.
+     *
+     * Example 1:
+     *
+     * Input: arr = ["un","iq","ue"]
+     * Output: 4
+     * Explanation: All the valid concatenations are:
+     * - ""
+     * - "un"
+     * - "iq"
+     * - "ue"
+     * - "uniq" ("un" + "iq")
+     * - "ique" ("iq" + "ue")
+     * Maximum length is 4.
+     * Example 2:
+     *
+     * Input: arr = ["cha","r","act","ers"]
+     * Output: 6
+     * Explanation: Possible longest valid concatenations are "chaers" ("cha" + "ers") and "acters" ("act" + "ers").
+     * Example 3:
+     *
+     * Input: arr = ["abcdefghijklmnopqrstuvwxyz"]
+     * Output: 26
+     * Explanation: The only string in arr has all 26 characters.
+     */
+    class SOl1239{
+
+        int max = 0;
+        List<Set<Character>> charSet;  // 装所有没有重复字符的字符串的set的list
+        int n;
+        public int maxLength(List<String> arr) {
+            charSet = new ArrayList<>();
+            // 把每个字符串的char都加入charSet
+            for (String s: arr) {
+                boolean add = true;
+                Set<Character> tmp = new HashSet<>();
+                for (char c : s.toCharArray()) {
+                    if (!tmp.add(c)) {
+                        add = false;  // 没有重复字母的字符串才添加
+                        break;
+                    }
+                }
+                if (add) {
+                    charSet.add(tmp);
+                }
+            }
+            n =charSet.size();  // 去除有重复字符的字符串后的list大小
+            backTrack(new HashSet<Character>(), 0);
+            return max;
+        }
+
+        public void backTrack(Set<Character> curSet, int curIndex) {
+            if (curIndex == n) {  // 如果当前的index等于charSet的大小，计算结果
+                max = Math.max(max, curSet.size());
+                return;
+            }
+            backTrack(curSet, curIndex + 1);
+            Set<Character> newSet = charSet.get(curIndex);
+            Set<Character> union = new HashSet<>();
+            union.addAll(curSet);
+            union.addAll(newSet);
+            if (union.size() == curSet.size() + newSet.size()) {
+                // if 两个集合没有重复的字母出现
+                backTrack(union, curIndex + 1);
+            }
+        }
+    }
+
+    // Optima account balancing
+
+    /**
+     * You are given an array of transactions transactions where transactions[i] = [fromi, toi, amounti] indicates
+     * that the person with ID = fromi gave amounti $ to the person with ID = toi.
+     *
+     * Return the minimum number of transactions required to settle the debt.
+     *
+     *Input: transactions = [[0,1,10],[2,0,5]]
+     * Output: 2
+     * Explanation:
+     * Person #0 gave person #1 $10.
+     * Person #2 gave person #0 $5.
+     * Two transactions are needed. One way to settle the debt is person #1 pays person #0 and #2 $5 each.
+     * Example 2:
+     *
+     * Input: transactions = [[0,1,10],[1,0,1],[1,2,5],[2,0,5]]
+     * Output: 1
+     * Explanation:
+     * Person #0 gave person #1 $10.
+     * Person #1 gave person #0 $1.
+     * Person #1 gave person #2 $5.
+     * Person #2 gave person #0 $5.
+     * Therefore, person #1 only need to give person #0 $4, and all debt is settled.
+     */
+    class Solution465{
+
+        int res;
+        public int minTransfer(int[][] transactions) {
+            res = Integer.MAX_VALUE;
+            // 用map来记录每个人的盈亏状态
+            HashMap<Integer,Integer> map = new HashMap<>();
+            for (int[] trans: transactions) {
+                // 第一个人给第二个人钱，第一个人为-，第二个人为+
+                map.put(trans[0], map.getOrDefault(trans[0], 0) - trans[2]);
+                map.put(trans[1], map.getOrDefault(trans[1], 0) + trans[2]);
+            }
+            // 最后只考虑钱的数量，不考虑谁欠谁钱
+            List<Integer> debt = new ArrayList<>();
+            for (int value: map.values()) {
+                if (value != 0) {
+                    // 如果当前的value为0，这个人谁都不欠钱也不差钱，跳过
+                    debt.add(value);
+                }
+            }
+            helper(debt, 0, 0);
+            return res;
+        }
+
+        // Backtracking 列举额所有情况，
+        public void helper(List<Integer> debt, int start, int count) {
+            while (start < debt.size() && debt.get(start) ==0) {
+                start++;
+            }
+            if(start == debt.size()) {
+                res = Math.min(res, count);
+                return;
+            }
+            for (int i = start + 1;i < debt.size(); i++) {
+                if (((debt.get(start) < 0) && debt.get(i) > 0)|| ((debt.get(start)) > 0 && (debt.get(i) < 0))) {
+                    debt.set(i, debt.get(i) + debt.get(start)); //当两个人的钱一个大于0一个小于0时，代表有交易
+                    helper(debt, start + 1, count + 1);
+                    debt.set(i, debt.get(i) - debt.get(start));
+                }
+            }
+
+        }
+
+    }
+
     public static void main(String[] args) {
         System.out.println(Integer.valueOf('1'));
         String s = "123456";

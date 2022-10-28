@@ -1378,8 +1378,44 @@ public class Note12_Graph {
      */
     // Union find
     class Solution323 {
+        /*
+        Create an adjacency list such that adj[v] contains all the adjacent vertices of vertex v.
+        Initialize a hashmap or array, visited, to track the visited vertices.
+        Define a counter variable and initialize it to zero.
+        Iterate over each vertex in edges, and if the vertex is not already in visited, start a DFS from it. Add every vertex visited during the DFS to visited.
+        Every time a new DFS starts, increment the counter variable by one.
+        At the end, the counter variable will contain the number of connected components in the undirected graph.
+         */
+        private void dfs(List<Integer>[] adjList, int[] visited, int startNode) {
+            visited[startNode] = 1;
+            for (int i = 0; i < adjList[startNode].size(); i++) {
+                if (visited[adjList[startNode].get(i)] == 0) {
+                    dfs(adjList, visited, adjList[startNode].get(i));
+                }
+            }
+        }
+
         public int countComponents(int n, int[][] edges) {
-            return 0;
+            int components = 0;
+            int[] visited = new int[n];
+
+            List<Integer>[] adjList = new ArrayList[n];
+            for (int i = 0; i < n; i++) {
+                adjList[i] = new ArrayList<Integer>();
+            }
+
+            for (int i = 0; i < edges.length; i++) {
+                adjList[edges[i][0]].add(edges[i][1]);
+                adjList[edges[i][1]].add(edges[i][0]);
+            }
+
+            for (int i = 0; i < n; i++) {
+                if (visited[i] == 0) {
+                    components++;
+                    dfs(adjList, visited, i);
+                }
+            }
+            return components;
         }
     }
 
@@ -1873,7 +1909,6 @@ public class Note12_Graph {
                         pq.offer(new int[]{i, j, heightMap[i][j]});
                         visited[i][j] = true;
                     }
-
                 }
             }
             int res = 0;
