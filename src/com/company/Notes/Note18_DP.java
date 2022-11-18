@@ -1,9 +1,6 @@
 package com.company.Notes;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 public class Note18_DP {
     // 509 Fibonacci Number
@@ -2218,6 +2215,162 @@ public class Note18_DP {
 
 
 
+    }
+
+    /**
+     * 1969: Jump game 6
+     * You are given a 0-indexed integer array nums and an integer k.
+     *
+     * You are initially standing at index 0. In one move, you can jump at most k steps forward without going outside
+     * the boundaries of the array. That is, you can jump from index i to any index in the range [i + 1, min(n - 1, i + k)] inclusive.
+     *
+     * You want to reach the last index of the array (index n - 1). Your score is the sum of all nums[j] for each index j you visited in the array.
+     *
+     * Return the maximum score you can get.
+     *
+     *
+     *
+     * Example 1:
+     *
+     * Input: nums = [1,-1,-2,4,-7,3], k = 2
+     * Output: 7
+     * Explanation: You can choose your jumps forming the subsequence [1,-1,4,3] (underlined above). The sum is 7.
+     * Example 2:
+     *
+     * Input: nums = [10,-5,-2,4,0,3], k = 3
+     * Output: 17
+     * Explanation: You can choose your jumps forming the subsequence [10,4,3] (underlined above). The sum is 17.
+     * Example 3:
+     *
+     * Input: nums = [1,-5,-20,4,-1,3,-6,-3], k = 2
+     * Output: 0
+     */
+
+    class Solution1969 {
+        public int maxResult(int[] nums, int k) {
+            int n = nums.length;
+            int[] score = new int[n];
+            score[0] = nums[0];
+            Deque<Integer> dq = new LinkedList<>();
+            dq.offerLast(0);
+            for (int i = 1; i < n; i++) {
+                // pop the old index
+                while (dq.peekFirst() != null && dq.peekFirst() < i - k) {
+                    dq.pollFirst();
+                }
+                score[i] = score[dq.peek()] + nums[i];
+                // pop the smaller value
+                while (dq.peekLast() != null && score[i] >= score[dq.peekLast()]) {
+                    dq.pollLast();
+                }
+                dq.offerLast(i);
+            }
+            return score[n - 1];
+        }
+
+        // PriorityQueue DP
+
+        /**
+         * In Approach 1, we got the following transition equation for Dynamic Programming:
+         *
+         * score[i] = max(score[i-k], ..., score[i-1]) + nums[i]
+         *
+         * Step 1: Initialize a dp array score, where score[i] represents the max score starting at nums[0] and ending at nums[i].
+         *
+         * Step 2: Initialize a max-heap priority_queue.
+         *
+         * Step 3: Iterate over nums. For each element nums[i]:
+         *
+         * If the index of top of priority_queue is less than i-k, pop the top. Repeat.
+         * Update score[i] to the sum of corresponding score of the index of top of priority_queue and nums[i]
+         * (i.e., score[priorityQueue.peek()[1]] + nums[i]).
+         * Push pair (score[i], i) into priority_queue.
+         * Step 4: Return the last element of score.
+         */
+        public int maxResult2(int[] nums, int k) {
+            PriorityQueue<int[]> pq = new PriorityQueue<>((a,b)->b[0]-a[0]);  // 小顶堆，从大到小排列
+            int[] dp = new int[nums.length];
+            Arrays.fill(dp, Integer.MIN_VALUE);
+            dp[0] = nums[0];  // dp数组, 每个位置为当前位置可以达到的最大值
+            pq.offer(new int[]{nums[0], 0});  // 第一个位置的最大值就是nums[0]
+
+            for (int i = 1; i < nums.length; i++) {
+                while(!pq.isEmpty() && i - pq.peek()[1] > k) {
+                    pq.poll();  // i减去pq里的最大值的元素（堆顶元素）的位置大于k的话就pop出去
+                }
+                dp[i] = nums[i] + pq.peek()[0];  // 当前位置的最大值等于pq的顶部元素（最大元素）加上当前的值
+                pq.offer(new int[]{dp[i], i});
+            }
+            return dp[nums.length - 1];
+        }
+    }
+
+    // 1567： maximum length of subarray with positive product
+
+    /**
+     * Given an array of integers nums, find the maximum length of a subarray where the product of all its elements is positive.
+     *
+     * A subarray of an array is a consecutive sequence of zero or more values taken out of that array.
+     *
+     * Return the maximum length of a subarray with positive product.
+     *
+     *
+     *
+     * Example 1:
+     *
+     * Input: nums = [1,-2,-3,4]
+     * Output: 4
+     * Explanation: The array nums already has a positive product of 24.
+     * Example 2:
+     *
+     * Input: nums = [0,1,-2,-3,-4]
+     * Output: 3
+     * Explanation: The longest subarray with positive product is [1,-2,-3] which has a product of 6.
+     * Notice that we cannot include 0 in the subarray since that'll make the product 0 which is not positive.
+     * Example 3:
+     *
+     * Input: nums = [-1,-2,-3,0,1]
+     * Output: 2
+     * Explanation: The longest subarray with positive product is [-1,-2] or [-2,-3].
+     * @param args
+     */
+
+    class Solution1567 {
+        /*
+        If we see a 0, we gotta start off things again
+        If we see a positive number :
+            2.1. Increase length of positive mutilpicative result till now.
+        2.2. Increase length of negative mutilpicative result till now, unless we had not encountered any negative before.
+        If we see a negative number:
+        3.1. It's time to swap positive and negative multiplicative results' lengths and do similar task as we did in above case.
+        In each iteration, use the length of positive mutilpicative result to compute answer.
+
+        elements      :   9    5    8    2    -6    4    -3    0    2    -5    15    10    -7    9    -2
+        positive_len  :   1    2    3    4     0    1     7    0    1     0     1     2     5    6     5
+        negative_len  :   0    0    0    0     5    6     2    0    0     2     3     4     3    4     7
+         */
+        // 画图，举例子理解
+        public int getMaxLen(int[] nums) {
+            int positive = 0, negative = 0;    // length of positive and negative results
+            int ans = 0;
+            for(int x : nums) {
+                if(x == 0)  {
+                    positive = 0;
+                    negative = 0;
+                }
+                else if(x > 0) {
+                    positive++;
+                    negative = negative == 0 ? 0  : negative+1;
+                }
+                else {
+                    int temp = positive;
+                    positive = negative == 0 ? 0  : negative+1;
+                    negative = temp+1;
+                }
+                ans = Math.max(ans, positive);
+            }
+            return ans;
+        }
     }
 
     public static void main(String[] args) {

@@ -546,7 +546,73 @@ public class Note4_BinarySearch {
             }
             return true;
         }
+    }
 
+    // Leetcode 875: KOKO eat banana
+    /**
+     * Koko loves to eat bananas. There are n piles of bananas, the ith pile has piles[i] bananas. The guards have
+     * gone and will come back in h hours.
+     *
+     * Koko can decide her bananas-per-hour eating speed of k. Each hour, she chooses some pile of bananas and
+     * eats k bananas from that pile. If the pile has less than k bananas, she eats all of them instead and
+     * will not eat any more bananas during this hour.
+     *
+     * Koko likes to eat slowly but still wants to finish eating all the bananas before the guards return.
+     *
+     * Return the minimum integer k such that she can eat all the bananas within h hours.
+     *
+     * Example 1:
+     *
+     * Input: piles = [3,6,7,11], h = 8
+     * Output: 4
+     * Example 2:
+     *
+     * Input: piles = [30,11,23,4,20], h = 5
+     * Output: 30
+     * Example 3:
+     *
+     * Input: piles = [30,11,23,4,20], h = 6
+     * Output: 23
+     */
+    /*
+    由于Koko在一个小时内把一堆香蕉吃完之后不会再去吃其他的香蕉，那么它一小时能吃掉的香蕉的数目不会超过最多的一堆香蕉的数目（记为M）。同时，
+    它每小时最少会吃1个香蕉，所以最终Koko决定的吃香蕉的速度K应该是在1到M之间。
+    我们可以应用二分查找的思路，先选取1和M的平均数，(1+M)/2，看以这个速度Koko能否在H小时内吃掉所有香蕉。如果不能在H小时内吃掉所有的香蕉，
+    那么它需要尝试更快的速度，也就是K应该在(1+M)/2到M之间，下一次我们尝试(1+M)/2和M的平均值。
+    如果Koko以(1+M)/2的速度能够在H小时内吃完所有的香蕉，那么我们来判断这是不是最慢的速度。可以尝试一下稍微慢一点的速度，(1+m)/2 - 1。
+    如果Koko以这个速度不能在H小时之内吃完所有香蕉，那么(1+M)/2就是最慢的可以在H小时吃完香蕉的速度。如果以(1+m)/2 - 1的速度也能在H小时内吃完香蕉，
+    那么接下来Koko尝试更慢的速度，1和(1+M)/2的平均值。
+    以此类推，我们按照二分查找的思路总能找到让Koko在H小时内吃完所有香蕉的最慢速度K。
+     */
+    class Solution875 {
+        public int minEatingSpeed(int[] piles, int h) {
+            int max = Integer.MIN_VALUE;
+            for (int i : piles) {
+                max = Math.max(max, i);
+            }
+            int left = 1, right = max;
+            while (left <= right) {
+                int mid = (right - left) / 2  + left;
+                int hours = getHours(piles, mid);
+                if (hours > h) {
+                    left = mid + 1;
+                } else {
+                    if (mid == left && getHours(piles, mid - 1) > h) {
+                        return mid;
+                    }
+                    right = mid;
+                }
+            }
+            return -1;
+        }
+
+        private int getHours(int[] piles, int speed) {
+            int res = 0;
+            for (int i : piles) {
+                res += Math.ceil((double) i / speed);
+            }
+            return res;
+        }
     }
 
 }

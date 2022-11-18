@@ -1,5 +1,7 @@
 package com.company.Notes;
 
+import org.junit.Test;
+
 import java.util.*;
 
 import static com.company.Notes.Note3_Arrays.Solution724.pivotIndex;
@@ -1872,7 +1874,7 @@ public class Note3_Arrays {
             return -1;
         }
 
-        
+
         // 前缀和解法
         public int pivotIndex1(int[] nums) {
             int sum = 0, leftsum = 0;
@@ -3679,7 +3681,8 @@ public class Note3_Arrays {
         }
     }
 
-    public static void main(String[] args) {
+    @Test
+    public void test_rotate() {
         int[][] matrix = new int[][]{{29, 8, 37},{15, 41, 3}, {1, 10, 14}};
         List<Integer> res = new ArrayList<>();
         int rowEnd = matrix.length - 1, colEnd = matrix[0].length - 1;
@@ -4060,9 +4063,137 @@ public class Note3_Arrays {
         if (count > k - 1) {
             res += count - k + 1;
         }
-
         return res;
     }
+
+    // tiktok 10.21
+    // Leetcode: 945: minimum Increment to make Array Unique
+    /**
+     You are given an integer array nums. In one move, you can pick an index i where 0 <= i < nums.length and increment nums[i] by 1.
+
+     Return the minimum number of moves to make every value in nums unique.
+
+     The test cases are generated so that the answer fits in a 32-bit integer.
+     Example 1:
+
+     Input: nums = [1,2,2]
+     Output: 1
+     Explanation: After 1 move, the array could be [1, 2, 3].
+     Example 2:
+
+     Input: nums = [3,2,1,2,1,7]
+     Output: 6
+     Explanation: After 6 moves, the array could be [3, 4, 1, 2, 5, 7].
+     It can be shown with 5 or less moves that it is impossible for the array to have all unique values.
+     */
+    class Solution954 {
+        public int minIncrementForUnique(int[] ar) {
+            Arrays.sort(ar);
+            int sum = 0;
+            for (int i = 1; i < ar.length; i++) {
+                if (ar[i] <= ar[i - 1]) {
+                    sum += ar[i - 1] - ar[i] + 1;
+                    ar[i] = ar[i - 1] + 1;
+                }
+            }
+            return sum;
+        }
+    }
+
+    /**
+     * TikTok 10/31-11/4
+     *
+     * exchange cups
+     * The store has a lot of cups, numbered 1-N on the shelf, for example, there are 5 cups
+     * 2 1 3 5 4
+     * ask to pick up 2 cups at a time and swap their positions. After several times, the serial number of the cups is made:
+     * 1 2 3 4 5
+     * for such simple case, obviously, at least 2 swaps are required to reset.
+     *
+     */
+    public long eatCandy(List<Long> labels) {
+        int count = 0;
+        List<Long> t = new ArrayList<>(labels);
+        Collections.sort(t);
+        for (int i = 0; i < labels.size(); i++) {
+            if (!labels.get(i).equals(t.get(i))) {
+                count++;
+                Collections.swap(labels, i, labels.indexOf(t.get(i)));
+            }
+        }
+        return count;
+    }
+
+
+    /**
+     * tikTok  10/31-11/4
+     * Eat Candies
+     * There are n candies put from left to right on a table. The candies are numbered from left to right. The i-th candy has weight wi. Alice and Bob eat candies.
+     *
+     * Alice can eat any number of candies from the left (she can't skip candies, she eats them in a row).
+     *
+     * Bob can eat any number of candies from the right (he can't skip candies, he eats them in a row).
+     *
+     * Of course, if Alice ate a candy, Bob can't eat it (and vice versa).
+     *
+     * They want to be fair. Their goal is to eat the same total weight of candies. What is the most number of candies they can eat in total?
+     */
+    /*
+    Example:
+    4
+    3
+    10 20 10
+    6
+    2 1 4 2 4 1
+    5
+    1 2 4 8 16
+    9
+    7 3 20 5 15 1 11 8 10
+    For the first test case, Alice will eat one candy from the left and Bob will eat one candy from the right. There is
+    no better way for them to eat the same total amount of weight. The answer is 2 because they eat two candies in total.
+
+    For the second test case, Alice will eat the first three candies from the left (with total weight 7) and Bob will
+    eat the first three candies from the right (with total weight 7). They cannot eat more candies since all the
+    candies have been eaten, so the answer is 6 (because they eat six candies in total).
+
+    For the third test case, there is no way Alice and Bob will eat the same non-zero weight so the answer is 0.
+
+    For the fourth test case, Alice will eat candies with weights [7,3,20] and Bob will eat candies with weights [10,8,11,1],
+    they each eat 30 weight. There is no better partition so the answer is 7.
+     */
+    public static int maxCandies(int[] candies) {
+        int res = 0;
+        int[] preSum = new int[candies.length];
+        HashMap<Integer, Integer> map = new HashMap<>();
+        int[] postSum = new int[candies.length];
+        preSum[0] = candies[0];
+        for (int i = 1; i < candies.length; i++) {
+            preSum[i] += preSum[i - 1] + candies[i];
+            map.put(preSum[i], i);
+        }
+        postSum[candies.length - 1] = candies[candies.length - 1];
+        for (int i = candies.length - 1; i >= 0; i--) {
+            if (i == candies.length - 1) {
+                postSum[i] = candies[i];
+            } else {
+                postSum[i] += postSum[i + 1] + candies[i];
+            }
+            if (map.containsKey(postSum[i]) && map.get(postSum[i]) < i) {
+                System.out.println("find " + Arrays.toString(postSum));
+                res = Math.max(res, candies.length - i + 1 + map.get(postSum[i]));
+                System.out.println("res: " + res);
+            }
+        }
+        System.out.println(Arrays.toString(postSum));
+        return res;
+    }
+
+    public static void main(String[] args) {
+        int[] candies = new int[]{7, 3, 20, 5, 15, 1, 11, 8, 10};
+        int res = maxCandies(candies);
+        System.out.println(res);
+    }
+
 
 }
 

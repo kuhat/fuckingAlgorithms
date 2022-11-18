@@ -661,7 +661,7 @@ public class Note11_Backtracking {
                 if (size[i] + nums[index] > target || (i > 0 && size[i] == size[i - 1])) continue;
                 // 当前火柴放在size[i]这个边上
                 size[i] += nums[index];
-                helper(nums, target, index - 1, size);
+                if(helper(nums, target, index - 1, size)) return true;
                 size[i] -= nums[index];
             }
             return false;

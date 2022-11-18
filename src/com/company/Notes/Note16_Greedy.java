@@ -1,6 +1,6 @@
 package com.company.Notes;
 
-import java.util.Arrays;
+import java.util.*;
 
 public class Note16_Greedy {
     // 55: Jump Game
@@ -188,7 +188,202 @@ public class Note16_Greedy {
                 res += i;
             }
             return res;
+        }
+    }
+
+    /**
+     * TikTok 2023 10/31 - 11/4
+     * There is a task recorded in the tow-dimensional array tasks in the format [start, end, period], indicating
+     * that the task needs to be completed within the time range start to end, and period indicates the length of thime
+     * required to complete the task
+     *
+     * The computer can handle an unlimited number of tasks at the same time
+     */
+    /*
+    由题易知对于每个区间，尽可能把选择的时间点放在区间末尾比较优，所以以结束时间从小到大排序，然后对于每个区间直接暴力从start到end每个时间点数一数数量够不够，不够就从end倒着往前select即可
+     */
+    public static int process(int[][] tasks) {
+        Set<Integer> set = new HashSet<>();
+        Arrays.sort(tasks, (a, b)->a[1] - b[1]);
+//        for (int[] i: tasks)
+//            System.out.println(Arrays.toString(i));
+        // 贪心，把每个数组从后往前加需要添加的次数，
+        for (int i = tasks[0][1]; i > tasks[0][1] - tasks[0][2]; i--) {
+            set.add(i);
+        }
+        for (int i = 1; i < tasks.length; i++) {
+            int time = tasks[i][2];
+            for (int j = tasks[i][0]; j < tasks[i][1]; j++) {
+                if (set.contains(j)) {
+                    time --;
+                } else break;
+            }
+            for (int j = tasks[i][1]; j > tasks[i][1] - time; j--) {
+                set.add(j);
+            }
+        }
+        System.out.println(set.size());
+        for (int i : set) System.out.print(i);
+        return set.size();
+    }
+
+    // 991: broken calculator
+
+    /**
+     * There is a broken calculator that has the integer startValue on its display initially. In one operation, you can:
+     *
+     * multiply the number on display by 2, or
+     * subtract 1 from the number on display.
+     * Given two integers startValue and target, return the minimum number of operations needed to display target on the calculator.
+     *
+     * Example 1:
+     *
+     * Input: startValue = 2, target = 3
+     * Output: 2
+     * Explanation: Use double operation and then decrement operation {2 -> 4 -> 3}.
+     * Example 2:
+     *
+     * Input: startValue = 5, target = 8
+     * Output: 2
+     * Explanation: Use decrement and then double {5 -> 4 -> 8}.
+     * Example 3:
+     *
+     * Input: startValue = 3, target = 10
+     * Output: 3
+     * Explanation: Use double, decrement and double {3 -> 6 -> 5 -> 10}.
+     */
+    class Solution991 {
+        /**
+         * Instead of multiplying by 2 or subtracting 1 from startValue, we could divide by 2 (when target is even) or add 1 to target.
+         * The motivation for this is that it turns out we always greedily divide by 2:
+         *
+         * While target is larger than startValue, add 1 if it is odd, else divide by 2. After,
+         * we need to do startValue - target additions to reach startValue.
+         */
+        public int brokenCalc(int startValue, int target) {
+            if (startValue > target) return startValue - target;
+            int res = 0;
+
+            while (target > startValue) {
+                res ++;
+                if (target %2 == 1) {
+                    target++;
+                } else {
+                    target/=2;
+                }
+            }
+            return res + startValue - target;
 
         }
+    }
+
+    //460: LFU cache
+
+    /**
+     * Design and implement a data structure for a Least Frequently Used (LFU) cache.
+     *
+     * Implement the LFUCache class:
+     *
+     * LFUCache(int capacity) Initializes the object with the capacity of the data structure.
+     * int get(int key) Gets the value of the key if the key exists in the cache. Otherwise, returns -1.
+     * void put(int key, int value) Update the value of the key if present, or inserts the key if not already present.
+     * When the cache reaches its capacity, it should invalidate and remove the least frequently used key before inserting
+     * a new item. For this problem, when there is a tie (i.e., two or more keys with the same frequency), the least
+     * recently used key would be invalidated.
+     * To determine the least frequently used key, a use counter is maintained for each key in the cache. The key with
+     * the smallest use counter is the least frequently used key.
+     *
+     * When a key is first inserted into the cache, its use counter is set to 1 (due to the put operation).
+     * The use counter for a key in the cache is incremented either a get or put operation is called on it.
+     *
+     * The functions get and put must each run in O(1) average time complexity.
+     * Input
+     * ["LFUCache", "put", "put", "get", "put", "get", "get", "put", "get", "get", "get"]
+     * [[2], [1, 1], [2, 2], [1], [3, 3], [2], [3], [4, 4], [1], [3], [4]]
+     * Output
+     * [null, null, null, 1, null, -1, 3, null, -1, 3, 4]
+     *
+     * Explanation
+     * // cnt(x) = the use counter for key x
+     * // cache=[] will show the last used order for tiebreakers (leftmost element is  most recent)
+     * LFUCache lfu = new LFUCache(2);
+     * lfu.put(1, 1);   // cache=[1,_], cnt(1)=1
+     * lfu.put(2, 2);   // cache=[2,1], cnt(2)=1, cnt(1)=1
+     * lfu.get(1);      // return 1
+     *                  // cache=[1,2], cnt(2)=1, cnt(1)=2
+     * lfu.put(3, 3);   // 2 is the LFU key because cnt(2)=1 is the smallest, invalidate 2.
+     *                  // cache=[3,1], cnt(3)=1, cnt(1)=2
+     * lfu.get(2);      // return -1 (not found)
+     * lfu.get(3);      // return 3
+     *                  // cache=[3,1], cnt(3)=2, cnt(1)=2
+     * lfu.put(4, 4);   // Both 1 and 3 have the same cnt, but 1 is LRU, invalidate 1.
+     *                  // cache=[4,3], cnt(4)=1, cnt(3)=2
+     * lfu.get(1);      // return -1 (not found)
+     * lfu.get(3);      // return 3
+     *                  // cache=[3,4], cnt(4)=1, cnt(3)=3
+     * lfu.get(4);      // return 4
+     *                  // cache=[4,3], cnt(4)=2, cnt(3)=3
+     */
+    class LFUCache {
+
+        HashMap<Integer, Integer> vals;  // 一个map来装key, value
+        HashMap<Integer, Integer> counts;  // 用来装key和对应出现的数量
+        HashMap<Integer, LinkedHashSet<Integer>> list;  //  count有一个先后顺序
+        // linkedhashset, 记录顺序的set
+        int capacity;
+        int min;  //  当前的
+
+        public LFUCache(int capacity) {
+            this.capacity = capacity;
+            vals = new HashMap<>();
+            counts = new HashMap<>();
+            list = new HashMap<>();
+            list.put(1, new LinkedHashSet<>());
+            min = -1;
+        }
+
+        public int get(int key) {
+            if (!vals.containsKey(key)) {
+                return -1;
+            }
+            int count = counts.get(key);
+            counts.put(key, count + 1);
+            // 在list原来的地方加一，再放回去
+            list.get(count).remove(key);
+            if (count == min && list.get(count).size() == 0) min++;
+            if (!list.containsKey(count + 1)) {
+                list.put(count + 1, new LinkedHashSet<>());
+            }
+            list.get(count + 1).add(key);
+            return vals.get(key);
+        }
+
+        public void put(int key, int value) {
+            if (capacity <= 0) return;
+            if (vals.containsKey(key)) {  // 如果之前已经加入过，只需更新值
+                vals.put(key, value);
+                get(key);
+                return;
+            }
+            if (vals.size() >= capacity) {  // 如果装东西的数量大于了容量，弹出来出现次数最小的那个
+                int evit = list.get(min).iterator().next();
+                list.get(min).remove(evit);  // 要拿就全拿走
+                vals.remove(evit);
+            }
+            vals.put(key, value);
+            counts.put(key, 1);
+            min = 1;
+            list.get(1).add(key);
+        }
+    }
+
+    /**
+     * Your LFUCache object will be instantiated and called as such:
+     * LFUCache obj = new LFUCache(capacity);
+     * int param_1 = obj.get(key);
+     * obj.put(key,value);
+     */
+    public static void main(String[] args) {
+        process(new int[][]{{1, 4, 2},{4, 6, 2},{8, 9, 2}, {3, 5, 2}});
     }
 }

@@ -124,6 +124,32 @@ public class Note12_Graph {
      */
 
     public class mazeOfChessBoard {
+
+        private boolean hasPath1(char[][] maze, int[] start, int[] end) {
+            int[][] dirs = new int[][]{{1, 0}, {-1, 0},{0, 1}, {0, -1}};
+            boolean[][] visited = new boolean[maze.length][maze[0].length];
+
+            Queue<int[]> qu = new LinkedList<>();
+            qu.offer(start);
+            visited[start[0]][start[1]] = true;
+
+            while(!qu.isEmpty()) {
+                int[] cur = qu.poll();
+                if (cur[0] == end[0] && cur[1] == end[1]) return true;
+                for (int[] dir: dirs) {
+                    int newX = cur[0] + dir[0];
+                    int newY = cur[1] + dir[1];
+                    if (isValid(maze, newX, newY) && !visited[newX][newY]) {
+                        qu.offer(new int[]{newX, newY});
+                        visited[newX][newY] = true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+
         private boolean hasPath(char[][] maze, int[] start, int[] end) {  // 从七点走到终点
             int[][] directions = new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}};  // 上下左右四个方向
 
