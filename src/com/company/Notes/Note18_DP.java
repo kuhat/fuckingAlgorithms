@@ -2373,6 +2373,51 @@ public class Note18_DP {
         }
     }
 
+    // 361:
+
+    /**
+     * Given an m x n matrix grid where each cell is either a wall 'W', an enemy 'E' or empty '0', return the maximum enemies you can kill using one bomb. You can only place the bomb in an empty cell.
+     *
+     * The bomb kills all the enemies in the same row and column from the planted point until it hits the wall since it is too strong to be destroyed.
+     *
+     * Input: grid = [["0","E","0","0"],["E","0","W","E"],["0","E","0","0"]]
+     * Output: 3
+     * @param args
+     */
+
+    class solution361{
+
+        public int maxKillEnemies(char[][] grid) {
+            if (grid == null || grid.length == 0 || grid[0].length == 0) return 0;
+            int res = 0;
+            int m = grid.length, n = grid[0].length;
+            int rowCount = 0;
+            int[] colCount = new int[n];
+            for (int i = 0;i < m; i++) {
+                for (int j = 0; j < n; j++) {
+                    // 如果碰到起始位置或者左边一个位置是W重新开始计数
+                    if (j == 0 || grid[i][j - 1] == 'W') {
+                        rowCount = 0;
+                        for (int k = j; k < n && grid[i][k] != 'W'; k++) {
+                            rowCount += grid[i][k] == 'E' ? 1 : 0;
+                        }
+                    }
+                    // 如果碰到起始位置或者上面一个位置是W就重新开始计数
+                    if (i == 0 || grid[i - 1][j] == 'W') {
+                        colCount[j] = 0;
+                        for (int k = i;k < m && grid[k][j] != 'W'; k++) {
+                            colCount[j] += grid[k][j] == 'E' ? 1 : 0;
+                        }
+                    }
+                    if (grid[i][j] == '0') {
+                        res = Math.max(res, colCount[j] + rowCount);
+                    }
+                }
+            }
+            return res;
+        }
+
+    }
     public static void main(String[] args) {
         System.out.println(Arrays.toString(new int[5]));
     }
