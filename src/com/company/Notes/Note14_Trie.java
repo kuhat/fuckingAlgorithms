@@ -87,10 +87,10 @@ public class Note14_Trie {
      * <p>
      * Input:
      * board = [["o","a","a","n"],
-     *          ["e","t","a","e"],
-     *          ["i","h","k","r"],
-     *          ["i","f","l","v"]],
-     *
+     * ["e","t","a","e"],
+     * ["i","h","k","r"],
+     * ["i","f","l","v"]],
+     * <p>
      * words = ["oath","pea","eat","rain"]
      * Output: ["eat","oath"]
      */
@@ -235,44 +235,92 @@ public class Note14_Trie {
 
     /**
      * Given an array of strings words (without duplicates), return all the concatenated words in the given list of words.
-     *
+     * <p>
      * A concatenated word is defined as a string that is comprised entirely of at least two shorter words in the given array.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: words = ["cat","cats","catsdogcats","dog","dogcatsdog","hippopotamuses","rat","ratcatdogcat"]
      * Output: ["catsdogcats","dogcatsdog","ratcatdogcat"]
      * Explanation: "catsdogcats" can be concatenated by "cats", "dog" and "cats";
      * "dogcatsdog" can be concatenated by "dog", "cats" and "dog";
      * "ratcatdogcat" can be concatenated by "rat", "cat", "dog" and "cat".
      * Example 2:
-     *
+     * <p>
      * Input: words = ["cat","dog","catdog"]
      * Output: ["catdog"]
      */
     class Solution472 {
+        TrieNode root = new TrieNode();
+
+        class TrieNode {
+            boolean isWord;
+            TrieNode[] children;
+
+            public TrieNode() {
+                isWord = false;
+                children = new TrieNode[26];
+            }
+        }
+
+        public List<String> findAllConcatenatedWordsInADict(String[] words) {
+            List<String> res = new ArrayList<>();
+            build(words);  // 构建字典树
+            for (String word : words) {   // 每个单词都遍历寻找
+                if (search(word, 0, 0)) res.add(word);
+            }
+            return res;
+        }
+
+        // 构建trie树子
+        public void build(String[] dict) {
+            for (String word : dict) {  // 每个单词都遍历
+                if (word == null || word.length() == 0) continue;
+                TrieNode cur = root;  // 从根节点开始
+                for (int i = 0; i < word.length(); i++) {  // 一个字母一个字母的走
+                    char c = word.charAt(i);
+                    // 如果当前字母的节点是空，新建一个节点
+                    if (cur.children[c - 'a'] == null) cur.children[c - 'a'] = new TrieNode();
+                    cur = cur.children[c - 'a'];  // cur向下走一格
+                }
+                cur.isWord = true;
+            }
+        }
+
+        public boolean search(String word, int index, int count) {
+            TrieNode cur = root;
+            for (int i = index; i < word.length(); i++) {
+                if (cur.children[word.charAt(i) - 'a'] == null) return false;
+                cur = cur.children[word.charAt(i) - 'a'];
+                if (cur.isWord && search(word, i + 1, count + 1)) {
+                    return true;
+                }
+            }
+            return count >= 1 && cur.isWord;
+        }
+
 
     }
-     // word squares https://leetcode.com/problems/word-squares/
+    // word squares https://leetcode.com/problems/word-squares/
 
     /**
      * 425
-     *
+     * <p>
      * Given an array of unique strings words, return all the word squares you can build from words. The same word from words can be used multiple times. You can return the answer in any order.
-     *
+     * <p>
      * A sequence of strings forms a valid word square if the kth row and column read the same string, where 0 <= k < max(numRows, numColumns).
-     *
+     * <p>
      * For example, the word sequence ["ball","area","lead","lady"] forms a word square because each word reads the same both horizontally and vertically.
-     *
-     *
+     * <p>
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: words = ["area","lead","wall","lady","ball"]
      * Output: [["ball","area","lead","lady"],["wall","area","lead","lady"]]
      * Explanation:
      * The output consists of two word squares. The order of output does not matter (just the order of words in each word square matters).
      * Example 2:
-     *
+     * <p>
      * Input: words = ["abat","baba","atan","atal"]
      * Output: [["baba","abat","baba","atal"],["baba","abat","baba","atan"]]
      * Explanation:
@@ -280,6 +328,7 @@ public class Note14_Trie {
      */
     class Solution425 {
         TrieNode root;
+
         public List<List<String>> wordSquares(String[] words) {
             List<List<String>> res = new ArrayList<>();
             if (words.length == 0) {
@@ -300,10 +349,10 @@ public class Note14_Trie {
             // 当前遍历到的位置
             int index = candidate.size();
             StringBuilder sb = new StringBuilder();
-            for (String s: candidate) {
+            for (String s : candidate) {
                 sb.append(s.charAt(index));  // 当前的前缀单词是什么
             }
-            String s =sb.toString();
+            String s = sb.toString();
             TrieNode node = root;
             for (int i = 0; i < s.length(); i++) {
                 if (node.next[s.charAt(i) - 'a'] != null) {
@@ -317,9 +366,9 @@ public class Note14_Trie {
             // 如果当前的node不是空的，加入node的单词
             if (node != null) {
                 for (String next : node.words) {
-                   candidate.add(next);
-                   findSquare(res, candidate, len);
-                   candidate.remove(candidate.size() - 1);
+                    candidate.add(next);
+                    findSquare(res, candidate, len);
+                    candidate.remove(candidate.size() - 1);
                 }
             }
         }
@@ -334,14 +383,14 @@ public class Note14_Trie {
         //l:wall    e:area   d:lead   d:lady
         //   .. ... .. .. ... .. ... ... . ...
         //
-        private  void buildTrie(String[] words) {
-            for (String word: words) {
+        private void buildTrie(String[] words) {
+            for (String word : words) {
                 TrieNode node = root;
                 char[] wordChar = word.toCharArray();
                 for (char c : wordChar) {
                     node.words.add(word);
                     if (node.next[c - 'a'] == null) {
-                        node.next[c- 'a'] = new TrieNode();
+                        node.next[c - 'a'] = new TrieNode();
                     }
                     node = node.next[c - 'a'];
                 }
@@ -374,13 +423,14 @@ public class Note14_Trie {
             List<List<String>> res = new ArrayList<>();
             List<String> candidate;
             // 将每个单词放在第一行然后去找其它的单词
-            for (String word: words) {
+            for (String word : words) {
                 candidate = new ArrayList<>();
                 candidate.add(word);
                 dfs(res, candidate, 1, words[0].length(), prefix);
             }
             return res;
         }
+
         /*    1     sb: a, 字典里有 a: area
             w a l l  candidate里加入area，继续走到le，
             a r e a  字典里有 le: lead, candidate里加入lead
@@ -399,7 +449,7 @@ public class Note14_Trie {
                 sb.append(can.charAt(pos));
             }
             // 如果前缀里面没有当前需要找的前缀，返回
-            if(!prefix.containsKey(sb.toString())) return;
+            if (!prefix.containsKey(sb.toString())) return;
             // 如果前缀map里有需要找的单词，加入candidate, 然后继续下一位置
             for (String next : prefix.get(sb.toString())) {
                 candidate.add(next);

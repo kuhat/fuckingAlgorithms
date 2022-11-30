@@ -2382,7 +2382,6 @@ public class Note18_DP {
      *
      * Input: grid = [["0","E","0","0"],["E","0","W","E"],["0","E","0","0"]]
      * Output: 3
-     * @param args
      */
 
     class solution361{
