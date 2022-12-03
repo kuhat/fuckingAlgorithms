@@ -609,7 +609,6 @@ public class Note_10PriorityQueue {
      *
      * Input: buildings = [[0,2,3],[2,5,3]]
      * Output: [[0,3],[5,0]]
-     * @param args
      */
     public List<List<Integer>> getSkyLine(int[][] buildings) {
         List<List<Integer>> res = new ArrayList<>();

@@ -2562,6 +2562,8 @@ public class Note8_Strings {
          * [] cuts
          * 如果子串从[0..i]是回文，就不同分隔，即cuts[i] = 0
          *
+         * i   j
+         * abcba
          * s.charAt(i) == s.charAt(j) && isPalindrome[i + 1][j - 1]
          *
          */
@@ -2576,7 +2578,7 @@ public class Note8_Strings {
                 for (int j = 0; j <= i; j++) {
                     if (s.charAt(i) == s.charAt(j) && (i - j <= 2 || isPalindrome[j + 1][i - 1])) {
                         isPalindrome[j][i] = true;
-                        // 如果前面的字母是回文，
+                        // 如果前面的字母是回文，min直接为0，否则就切一刀
                         min = j == 0 ? 0 : Math.min(min, cuts[j - 1] + 1);
                     }
                 }
@@ -3246,6 +3248,108 @@ public class Note8_Strings {
                 idx = sb.toString().indexOf(part);
             }
             return sb.toString();
+        }
+    }
+
+    // 828. Count Unique Characters of All Substrings of a Given String
+
+    /**
+     * Let's define a function countUniqueChars(s) that returns the number of unique characters on s.
+     *
+     * For example, calling countUniqueChars(s) if s = "LEETCODE" then "L", "T", "C", "O", "D" are the unique characters
+     * since they appear only once in s, therefore countUniqueChars(s) = 5.
+     * Given a string s, return the sum of countUniqueChars(t) where t is a substring of s. The test cases are generated
+     * such that the answer fits in a 32-bit integer.
+     *
+     * Notice that some substrings can be repeated so in this case you have to count the repeated ones too.
+     *
+     * Example 1:
+     *
+     * Input: s = "ABC"
+     * Output: 10
+     * Explanation: All possible substrings are: "A","B","C","AB","BC" and "ABC".
+     * Every substring is composed with only unique letters.
+     * Sum of lengths of all substring is 1 + 1 + 1 + 2 + 2 + 3 = 10
+     * Example 2:
+     *
+     * Input: s = "ABA"
+     * Output: 8
+     * Explanation: The same as example 1, except countUniqueChars("ABA") = 1.
+     * Example 3:
+     *
+     * Input: s = "LEETCODE"
+     * Output: 92
+     */
+    // https://www.jianshu.com/p/fce7dccd0199
+    class Solution828{
+        public int uniqueLetterString(String s) {
+            Map<Character, List<Integer>> map = new HashMap();
+            char[] sc = s.toCharArray();
+            for (int i = 0; i < sc.length; i++) {
+                if (!map.containsKey(sc[i])) map.put(sc[i], new ArrayList());
+                map.get(sc[i]).add(i);
+            }
+
+            int result = 0;
+            for(Map.Entry<Character, List<Integer>> entry : map.entrySet()) {
+                int head = -1, tail = -1;
+                List<Integer> item = entry.getValue();
+                for (int i = 0; i < item.size(); i++) {
+                    tail = (i < item.size() - 1) ? item.get(i + 1) : sc.length;
+                    result += (item.get(i) - head) * (tail - item.get(i));
+                    head = item.get(i);
+                }
+            }
+            return result;
+        }
+    }
+
+    // 2023. Number of Pairs of Strings With Concatenation Equal to Target
+
+    /**
+     * Given an array of digit strings nums and a digit string target, return the number of pairs of indices (i, j) (where i != j) such that the concatenation of nums[i] + nums[j] equals target.
+     *
+     * Example 1:
+     *
+     * Input: nums = ["777","7","77","77"], target = "7777"
+     * Output: 4
+     * Explanation: Valid pairs are:
+     * - (0, 1): "777" + "7"
+     * - (1, 0): "7" + "777"
+     * - (2, 3): "77" + "77"
+     * - (3, 2): "77" + "77"
+     * Example 2:
+     *
+     * Input: nums = ["123","4","12","34"], target = "1234"
+     * Output: 2
+     * Explanation: Valid pairs are:
+     * - (0, 1): "123" + "4"
+     * - (2, 3): "12" + "34"
+     * Example 3:
+     *
+     * Input: nums = ["1","1","1"], target = "11"
+     * Output: 6
+     * Explanation: Valid pairs are:
+     * - (0, 1): "1" + "1"
+     * - (1, 0): "1" + "1"
+     * - (0, 2): "1" + "1"
+     * - (2, 0): "1" + "1"
+     * - (1, 2): "1" + "1"
+     * - (2, 1): "1" + "1"
+     */
+    class Solution2023 {
+        public int numOfPairs(String[] nums, String target) {
+            HashMap<String, Integer> map = new HashMap<>();
+            int count = 0;
+            for (String s: nums) {
+                if (s.length() > target.length()) continue;
+                String right = target.substring(s.length());  // 右边剩下的string
+                String left = target.substring(0, target.length() - s.length());  // 左边剩下的string
+                if ((s + right).equals(target)) count += map.getOrDefault(right, 0 );  // 看看s加上右边剩下的可不可以等于target
+                if ((left + s).equals(target)) count += map.getOrDefault(left, 0);
+                map.put(s, map.getOrDefault(s, 0) + 1);
+            }
+            return count;
         }
     }
 

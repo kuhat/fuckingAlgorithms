@@ -1503,7 +1503,63 @@ public class Note11_Backtracking {
             }
 
         }
+    }
 
+    // 967: Numbers With Same Consecutive Differences
+
+    /**
+     * Given two integers n and k, return an array of all the integers of length n where the difference between every
+     * two consecutive digits is k. You may return the answer in any order.
+     *
+     * Note that the integers should not have leading zeros. Integers as 02 and 043 are not allowed.
+     *
+     * Example 1:
+     *
+     * Input: n = 3, k = 7
+     * Output: [181,292,707,818,929]
+     * Explanation: Note that 070 is not a valid number, because it has leading zeroes.
+     * Example 2:
+     *
+     * Input: n = 2, k = 1
+     * Output: [10,12,21,23,32,34,43,45,54,56,65,67,76,78,87,89,98]
+     */
+    class Solution967 {
+        public int[] numsSameConsecDiff(int n, int k) {
+            List<Integer> res = new ArrayList<>();
+            if (n == 0) return new int[0];
+            for (int i = 1; i <= 9; i++) {
+                // 第一个数字是从1开始
+                solve(i, res, n, k, 1);
+            }
+
+            int[] ret = new int[res.size()];
+            for (int i = 0; i < res.size(); i++) {
+                ret[i] = res.get(i);
+            }
+            return ret;
+        }
+
+        public void solve(int i, List<Integer> res, int n, int k, int idx) {
+            if (idx == n) {
+                res.add(i);
+                return;
+            }
+            int a = i % 10;  // 获取个位
+            if (a + k > 9 && a - k < 0) return;  // 如果个位数字加上 k大于9或者减去k小于0， 不能进行下一个recursion
+            if (k == 0) {  // k==0 要单独拿出来 then should be single recursive call else there will be duplicate values in the result
+                int temp = (i * 10) + a;
+                solve(temp, res, n, k, idx + 1);
+            } else {
+                if (a + k <= 9) {
+                    int tmp = (i * 10) + (a + k);
+                    solve(tmp, res, n, k, idx + 1);
+                }
+                if (a - k >= 0) {
+                    int tmp = (i * 10) + (a - k);
+                    solve(tmp, res, n, k, idx + 1);
+                }
+            }
+        }
     }
 
     public static void main(String[] args) {

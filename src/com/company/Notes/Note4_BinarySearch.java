@@ -1,9 +1,6 @@
 package com.company.Notes;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class Note4_BinarySearch {
 
@@ -445,6 +442,7 @@ public class Note4_BinarySearch {
      * ......
      * and so on.
      */
+
     class Solution528 {
 
         Random rdm;
@@ -614,6 +612,108 @@ public class Note4_BinarySearch {
             return res;
         }
     }
+
+    //4 median of two sorted arrays
+    /**
+     * Given two sorted arrays nums1 and nums2 of size m and n respectively, return the median of the two sorted arrays.
+     *
+     * The overall run time complexity should be O(log (m+n)).
+     *
+     * Example 1:
+     *
+     * Input: nums1 = [1,3], nums2 = [2]
+     * Output: 2.00000
+     * Explanation: merged array = [1,2,3] and median is 2.
+     * Example 2:
+     *
+     * Input: nums1 = [1,2], nums2 = [3,4]
+     * Output: 2.50000
+     * Explanation: merged array = [1,2,3,4] and median is (2 + 3) / 2 = 2.5.
+     */
+    // Naive solution
+    class Solution4 {
+        public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+            List<Integer> list = new ArrayList<>();
+            for (int i = 0; i < nums1.length; i++) {
+                list.add(nums1[i]);
+            }
+
+            for (int i= 0; i < nums2.length; i++) {
+                list.add(nums2[i]);
+            }
+            Collections.sort(list);
+            return list.size() % 2 == 1 ? (double)list.get(list.size() / 2) : (double)(list.get(list.size() / 2) +list.get(list.size() / 2 - 1)) / 2;
+        }
+
+        // binary seach
+        /**
+         * 首先，在一个随机的位置 i 将集合 A 划分为两部分。
+         *
+         *       left_A             |           right_A
+         * A[0], A[1], ..., A[i-1]  |  A[i], A[i+1], ..., A[m-1]
+         *
+         * 由于A有m个元素，所以就有m+1 种分法（i=0~m）。由此可知： len(left_A) = i, len(right_A) = m - i。注意：当i = 0时，left_A为空，而当i = m时，right_A为空。
+         *
+         *
+         * 同样的，在一个随机的位置 j 将集合 B 划分为两部分。：
+         *
+         *      left_B              |        right_B
+         * B[0], B[1], ..., B[j-1]  |  B[j], B[j+1], ..., B[n-1]
+         *
+         *
+         * 将 left_A 和 left_B 放入同一个集合，将 right_A 和 right_B 放入另外一个集合。 分别称他们为 left_part 和 right_part ：
+         *
+         *       left_part          |        right_part
+         * A[0], A[1], ..., A[i-1]  |  A[i], A[i+1], ..., A[m-1]
+         * B[0], B[1], ..., B[j-1]  |  B[j], B[j+1], ..., B[n-1]
+         *
+         *
+         * 如果我们能达成这两个条件：
+         *
+         * 1) len(left_part) == len(right_part)
+         * 2) max(left_part) <= min(right_part)
+         *
+         * 我们就能将 {A, B} 中所有元素分成两个长度相等的部分，并且其中一个部分总是大于另外一个部分。那么中位数就是 median = (max(left_part) + min(right_part))/2。
+         *
+         *
+         * 为了达成这两个条件，我们只需要确保：
+         *
+         * (1) i + j == m - i + n - j (或者: m - i + n - j + 1) 即让左半边元素数量等于与右半边
+         *     对于 n >= m 的情况，我们只需要让 : i = 0 ~ m, j = (m + n + 1)/2 - i
+         * (2) B[j-1] <= A[i] 并且 A[i-1] <= B[j]  即让左边最大元素小于右边最小元素
+         */
+        public double findMedianSortedArrays1(int[] nums1, int[] nums2) {
+            if (nums1.length > nums2.length) return findMedianSortedArrays1(nums2, nums1);
+            int len = nums1.length + nums2.length;
+            int cut1 = 0, cut2 = 0, cutL = 0, cutR = nums1.length;
+            // 在num1里进行binary search, 找到合适的分割点（找到了nums1的分割点后nums2的分割点自然就确定了，为(len(nums2) + len(nums1)) / 2 - cut1）
+            while (cut1 <= nums1.length) {
+                cut1 = (cutR - cutL) / 2 + cutL;
+                cut2 = len / 2 - cut1;
+                double L1 = (cut1 == 0) ? Integer.MIN_VALUE : nums1[cut1 - 1];
+                double L2 = (cut2 == 0) ? Integer.MIN_VALUE : nums2[cut2 - 1];
+                double R1 = (cut1 == nums1.length) ? Integer.MAX_VALUE : nums1[cut1];
+                double R2 = (cut2 == nums2.length) ? Integer.MAX_VALUE : nums2[cut2];
+                if (L1 > R2) {
+                    cutR = cut1 - 1;
+                } else if (L2 > R1) {
+                    cutL = cut1 + 1;
+                } else {
+                    if (len % 2 == 0) {
+                        L1 = L1 > L2 ? L1 : L2;
+                        R1 = R1 < R2 ? R1 : R2;
+                        return (L1 + R1) / 2;
+                    } else {
+                        R1 = (R1 < R2) ? R1: R2;
+                        return R1;
+                    }
+                }
+            }
+            return -1;
+        }
+
+    }
+
 
 }
 
