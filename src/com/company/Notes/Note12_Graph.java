@@ -1,6 +1,7 @@
 package com.company.Notes;
 
 import com.company.leetCode.NestedInteger;
+import org.junit.Test;
 
 import java.util.*;
 
@@ -1268,6 +1269,73 @@ public class Note12_Graph {
             return i;
         }
     }
+
+    class countPythagoreanTriples{
+        static int res = 0;
+        public static int countPythagoreanTriples(int tree_nodes, int[] tree_from, int[] tree_to, int x, int y, int z) {
+
+            List<List<Integer>> graph = new ArrayList<>();
+            for (int i = 0; i < tree_nodes; i ++) graph.add(new ArrayList<>());  // 初始化list
+            for (int i = 0; i < tree_from.length; i++) {
+                graph.get(tree_from[i]).add(tree_to[i]);
+                graph.get(tree_to[i]).add(tree_from[i]);
+            }
+
+            for (int i = 0; i < tree_nodes; i++) {
+                if (i == x || i == y || i == z) continue;
+                find(graph, i, x, y, z);
+            }
+            return res;
+        }
+
+        public static void find(List<List<Integer>> graph, int i, int x, int y, int z) {
+            Queue<Integer> qu = new LinkedList<>();
+            qu.offer(i);
+            int dis = 0;
+            int[] triple = new int[3];
+            int num = 0;
+            System.out.println(i + ": ");
+            Set<Integer> visited = new HashSet<>();
+            while(!qu.isEmpty()) {
+                int cur = qu.poll();
+                if (visited.contains(cur)) continue;
+                System.out.print(cur + " ");
+                visited.add(cur);
+                List<Integer> sub = graph.get(cur);
+                if (sub.size() > 0 && !visited.containsAll(sub)) dis += 1;
+                for (int v : sub) {
+                    if (v == x || v == y || v == z) {
+                        triple[num] = dis;
+                        num++;
+                        dis = 0;
+                        if (num == 3) {
+                            if (isValidTriple(triple)) res ++;
+                            System.out.println(Arrays.toString(triple));
+                            num = 0;
+                            break;
+                        }
+                    }
+                    qu.offer(v);
+                }
+            }
+            System.out.println();
+        }
+
+        private static boolean isValidTriple(int[] triple) {
+            if ((triple[0] ^ 2) + (triple[1] ^ 2)  == (triple[2] ^ 2)) return true;
+            if ((triple[0] ^ 2) + (triple[2] ^ 2)  == (triple[1] ^ 2)) return true;
+            if ((triple[1] ^ 2) + (triple[2] ^ 2)  == (triple[0] ^ 2)) return true;
+            return false;
+        }
+    }
+    @Test
+    public void test_1() {
+        int[] from = new int[]{0,0,1,1,3,3,5,7,8};
+        int[] to = new int[]{4,1,2,3,5,7,6,8,9};
+        int num = countPythagoreanTriples.countPythagoreanTriples(10, from, to, 4, 6, 9);
+        System.out.println(num);
+    }
+
 
     // 339：nested list weight sum
 

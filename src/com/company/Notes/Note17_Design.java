@@ -757,7 +757,7 @@ public class Note17_Design {
         int res = Integer.MAX_VALUE;
         Time first = timeList.get(0);
         timeList.add(new Time(first.hour + 24, first.min));
-        for (int i = 0; i < timeList.size(); i++) {
+        for (int i = 0; i < timePoints.size(); i++) {
             int dif = Math.abs(timeList.get(i).getDiff(timeList.get(i + 1)));
             res = Math.min(res, dif);
         }

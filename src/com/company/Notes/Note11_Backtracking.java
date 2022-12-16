@@ -1032,6 +1032,24 @@ public class Note11_Backtracking {
             map.put(start, res);
             return res;
         }
+
+        public List<String> wordBreakBackTrack (String s, List<String> wordDict) {
+            List<String> res = new ArrayList<>();
+            backtrack(s, wordDict, res, "", 0);
+            return res;
+        }
+
+        private void backtrack(String s, List<String> wordDict, List<String> res, String tmp, int start) {
+            if (start == s.length()) {
+                res.add(tmp.trim());
+            }
+            for (int i = start; i <= s.length(); i++) {
+                if (wordDict.contains(s.substring(start, i))) {
+                    backtrack(s, wordDict, res, tmp + " " + s.substring(start, i), i);
+                }
+            }
+        }
+
     }
 
     // 31 next Permutation

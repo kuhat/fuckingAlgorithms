@@ -2578,7 +2578,7 @@ public class Note8_Strings {
                 for (int j = 0; j <= i; j++) {
                     if (s.charAt(i) == s.charAt(j) && (i - j <= 2 || isPalindrome[j + 1][i - 1])) {
                         isPalindrome[j][i] = true;
-                        // 如果前面的字母是回文，min直接为0，否则就切一刀
+                        // 如果j为0，min直接为0，否则min为它本身和j-1所在位置的cut值加一的最小值
                         min = j == 0 ? 0 : Math.min(min, cuts[j - 1] + 1);
                     }
                 }
@@ -3350,6 +3350,62 @@ public class Note8_Strings {
                 map.put(s, map.getOrDefault(s, 0) + 1);
             }
             return count;
+        }
+    }
+
+    // 763： Partition labels
+
+    /**
+     * You are given a string s. We want to partition the string into as many parts as possible so
+     * that each letter appears in at most one part.
+     *
+     * Note that the partition is done so that after concatenating all the parts in order, the resultant string should be s.
+     *
+     * Return a list of integers representing the size of these parts.
+     *
+     * Example 1:
+     *
+     * Input: s = "ababcbacadefegdehijhklij"
+     * Output: [9,7,8]
+     * Explanation:
+     * The partition is "ababcbaca", "defegde", "hijhklij".
+     * This is a partition so that each letter appears in at most one part.
+     * A partition like "ababcbacadefegde", "hijhklij" is incorrect, because it splits s into less parts.
+     * Example 2:
+     *
+     * Input: s = "eccbbbbdec"
+     * Output: [10]
+     */
+    class Solution763 {
+        /**
+         * 这是一道求最优解的算法题，可以尝试使用贪心算法来解题。
+         *
+         * 本题中没有提供任何数组，只提供了一个字符串，可以将字符串中字符的位置、数量等信息统计成数组形式，以作为解题的数据。
+         *
+         *     将字符在字符串中最后一次出现的位置进行统计，得到每个字符c最后一次出现的位置end c；
+         *     初始化第一个片段的开始索引start = 0，结束索引end = 0；
+         *     对该字符串中的字符进行从左往右的遍历，对于每个字符c，若其最后一次出现的位置为end c ，则其片段的结束索引end一定大于等于end c，因此令end = max(end, end c)；
+         *     当遍历到索引end后，当前片段结束，其长度为end - start + 1；
+         *     令start = end + 1，开始下一片段的访问；
+         *     重复上述步骤，直至遍历完字符。
+         * @param s
+         * @return
+         */
+        public List<Integer> partitionLabels(String s) {
+            int[] pos = new int[26];
+            for (int i = 0; i < s.length(); i ++) {
+                pos[s.charAt(i) - 'a'] = i;
+            }
+            int start = 0, end = 0;
+            List<Integer> res = new ArrayList<>();
+            for (int i = 0; i < s.length(); i ++) {
+                end = Math.max(end, pos[s.charAt(i) - 'a']);
+                if (i == end) {
+                    res.add(end - start + 1);
+                    start = end + 1;
+                }
+            }
+            return res;
         }
     }
 
