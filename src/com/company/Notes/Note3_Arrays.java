@@ -880,6 +880,31 @@ public class Note3_Arrays {
             }
             return res;
         }
+
+        // Deque
+        public int[] maxSlidingWindowDeque(int[] nums, int k) {
+            if(nums.length<=0)
+                throw new RuntimeException("nums是空的!");
+            //创建双端队列存元素索引
+            Deque<Integer> deque = new LinkedList<>();
+            //创建一个结果的ArrayList
+            ArrayList<Integer> resut_array = new ArrayList<>();
+            for(int i=0;i<nums.length;i++){
+                //如果双端队列不为空，而且到了窗口长度
+                if(!deque.isEmpty() && deque.peek() == i-k)
+                    //移除第一个元素
+                    deque.pollFirst();
+                //保证nums【双端队列中的索引】是一个递减数列
+                while(!deque.isEmpty() && nums[deque.getLast()] < nums[i]) deque.pollLast();
+                //把当前元素的索引加到双端队列中
+                deque.offer(i);
+                //如果是窗口大小
+                if(i >= k-1) resut_array.add(nums[deque.peek()]);
+            }
+
+            //ArrayList转换成整型数组
+            return resut_array.stream().mapToInt(Integer::intValue).toArray();
+        }
     }
 
     // 299：bulls and cows
@@ -1764,6 +1789,7 @@ public class Note3_Arrays {
             return res;
         }
 
+        // 类似于 two sum, 前缀和
         public int subArraySum1(int[] nums, int k) {
             int res = 0;
             int sum = 0;

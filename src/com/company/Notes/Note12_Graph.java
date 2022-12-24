@@ -2028,4 +2028,118 @@ public class Note12_Graph {
             return res;
         }
     }
+
+    // 841： Keys and rooms
+    /**
+     * There are n rooms labeled from 0 to n - 1 and all the rooms are locked except for room 0. Your goal is to visit
+     * all the rooms. However, you cannot enter a locked room without having its key.
+     *
+     * When you visit a room, you may find a set of distinct keys in it. Each key has a number on it, denoting which
+     * room it unlocks, and you can take all of them with you to unlock the other rooms.
+     *
+     * Given an array rooms where rooms[i] is the set of keys that you can obtain if you visited room i, return true
+     * if you can visit all the rooms, or false otherwise.
+     *
+     * Example 1:
+     *
+     * Input: rooms = [[1],[2],[3],[]]
+     * Output: true
+     * Explanation:
+     * We visit room 0 and pick up key 1.
+     * We then visit room 1 and pick up key 2.
+     * We then visit room 2 and pick up key 3.
+     * We then visit room 3.
+     * Since we were able to visit every room, we return true.
+     * Example 2:
+     *
+     * Input: rooms = [[1,3],[3,0,1],[2],[0]]
+     * Output: false
+     * Explanation: We can not enter room number 2 since the only key that unlocks it is in that room.
+     */
+    class Solution841 {
+        public boolean canVisitAllRooms(List<List<Integer>> rooms) {
+            Queue<Integer> qu = new LinkedList<>();
+            boolean[] visited = new boolean[rooms.size()];
+            visited[0] = true;
+            qu.offer(0);
+
+            // General BFS
+            while (!qu.isEmpty()) {
+                int cur = qu.poll();
+                for (int i : rooms.get(cur)) {
+                    if (visited[i] == false) {
+                        qu.offer(i);
+                        if (i != cur) visited[i] = true;
+                    }
+                }
+            }
+            for (boolean v: visited) {
+                if (v == false) return false;
+            }
+            return true;
+        }
+    }
+
+    // 886 Possible Partition
+    /**
+     * We want to split a group of n people (labeled from 1 to n) into two groups of any size. Each person may dislike
+     * some other people, and they should not go into the same group.
+     *
+     * Given the integer n and the array dislikes where dislikes[i] = [ai, bi] indicates that the person labeled ai
+     * does not like the person labeled bi, return true if it is possible to split everyone into two groups in this way.
+     *
+     * Example 1:
+     *
+     * Input: n = 4, dislikes = [[1,2],[1,3],[2,4]]
+     * Output: true
+     * Explanation: group1 [1,4] and group2 [2,3].
+     * Example 2:
+     *
+     * Input: n = 3, dislikes = [[1,2],[1,3],[2,3]]
+     * Output: false
+     * Example 3:
+     *
+     * Input: n = 5, dislikes = [[1,2],[2,3],[3,4],[4,5],[1,5]]
+     * Output: false
+     */
+    class Solution886 {
+        public boolean possibleBipartition(int n, int[][] dislikes) {
+            Map<Integer, ArrayList<Integer>> graph = new HashMap<>();
+            for (int[] like: dislikes) {
+                if (!graph.containsKey(like[0])) {
+                    graph.put(like[0], new ArrayList<>());
+                }
+                if (!graph.containsKey(like[1])) {
+                    graph.put(like[1], new ArrayList<>());
+                }
+                graph.get(like[0]).add(like[1]);
+                graph.get(like[1]).add(like[0]);
+            }
+            int[] color = new int[n + 1];
+            Arrays.fill(color, -1);
+            /*
+            最开始的时候每个节点都没有标记颜色。我们逐个扫描图中的节点，如果发现一个节点p没有被标记过颜色，那么给他标记颜色c1。
+            接着我们看这个节点p都有哪些节点和它相邻，如果相邻的节点q之前没有标记过颜色，我们给它们标记成c2。这是因为p和q相邻，
+            表示他们之间相互不喜欢，不能分在同一组，因此不能用相同的颜色标记。如果节点q之前已经被标记过颜色了，那么看之前标记的是什么颜色。
+            如果之前标记的是c2，那么没有必要再重复标记了。如果之前标记的颜色是c1，那么出现冲突了，一个人不能分到两个组里，
+            因此我们不能按照这个分组规则把所有人分成两组。
+             */
+            for (int i = 1; i <= n; ++i) {
+                if (color[i] == -1 && !dfs(color, graph, i, 0)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private boolean dfs(int[] colors, Map<Integer, ArrayList<Integer>> graph, int cur, int color) {
+            if (colors[cur] >= 0) return colors[cur] == color;
+            colors[cur] = color;
+            for (int neighbor : graph.getOrDefault(cur, new ArrayList<>())) {
+                if (!dfs(colors, graph, neighbor, 1 - color)) return false;
+            }
+            return true;
+        }
+    }
+
 }

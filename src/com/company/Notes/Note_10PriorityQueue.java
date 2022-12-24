@@ -420,6 +420,34 @@ public class Note_10PriorityQueue {
         }
     }
 
+    class medianFinder2{
+
+        PriorityQueue<Integer> front;
+        PriorityQueue<Integer> end;
+
+        public medianFinder2() {
+            // 前一半的优先队列应该是从大到小排列的（头元素是前一半数据最大的一个），后一半是从小到大排列（头元素是后一半数据最小的一个）
+            this.front = new PriorityQueue<>((a,b)->b-a);
+            this.end= new PriorityQueue<>();
+        }
+
+        public void addNum(int num) {
+            if (front.size() >= end.size()) {
+                front.add(num);
+                end.add(front.poll());
+            } else {
+                end.add(num);
+                front.add(front.poll());
+            }
+        }
+
+        public double findMedian() {
+            if (front.size() == end.size()) return 0.5 * (front.peek() + end.peek());
+            if (front.size() > end.size()) return front.peek();
+            else return end.peek();
+        }
+    }
+
     // 378: Kth smallest element in a sorted matrix
     /**
      * Given an n x n matrix where each of the rows and columns is sorted in ascending order, return the kth smallest element in the matrix.
