@@ -461,21 +461,21 @@ public class Note7_Stack {
     /**
      * You are given a string s consisting of lowercase English letters. A duplicate removal consists of choosing two
      * adjacent and equal letters and removing them.
-     *
+     * <p>
      * We repeatedly make duplicate removals on s until we no longer can.
-     *
+     * <p>
      * Return the final string after all such duplicate removals have been made. It can be proven that the answer is unique.
-     *
-     *Input: s = "abbaca"
+     * <p>
+     * Input: s = "abbaca"
      * Output: "ca"
      * Explanation:
      * For example, in "abbaca" we could remove "bb" since the letters are adjacent and equal, and this is the only possible move.
      * The result of this move is that the string is "aaca", of which only "aa" is possible, so the final string is "ca".
-     *
+     * <p>
      * Input: s = "azxxzy"
      * Output: "ay"
      */
-    class Solution1047{
+    class Solution1047 {
 
 
         /*
@@ -486,7 +486,7 @@ public class Note7_Stack {
             如果当前字母等于栈顶元素，说明他俩是相邻且相同的，让他俩同时消失。
             如果当前字母不等于栈顶元素，说明他俩是相邻但不相同，直接让当前字母入栈。
          */
-        public String removeDuplicate(String s){
+        public String removeDuplicate(String s) {
             char[] chars = s.toCharArray();
             Stack<Character> stack = new Stack<>();
             for (int i = 0; i < chars.length; i++) {
@@ -509,10 +509,11 @@ public class Note7_Stack {
         }
 
         // LeetCode 503: Next Greater Element
+
         /**
          * Given a circular integer array nums (i.e., the next element of nums[nums.length - 1] is nums[0]),
          * return the next greater number for every element in nums.
-         *
+         * <p>
          * The next greater number of a number x is the first greater number to its traversing-order next in the array,
          * which means you could search circularly to find its next greater number. If it doesn't exist, return -1 for this number.
          */
@@ -524,7 +525,7 @@ public class Note7_Stack {
         The second 1's next greater number needs to search circularly, which is also 2.
          */
 
-        class Solution503{
+        class Solution503 {
             public int[] nextGreaterElement(int[] nums) {
                 int len = nums.length;
                 int[] res = new int[len];
@@ -544,7 +545,7 @@ public class Note7_Stack {
                     }
                     stack.push(index);
                 }
-            return res;
+                return res;
             }
         }
     }
@@ -552,16 +553,16 @@ public class Note7_Stack {
     // LeetCode 496: Next Great Element 1
 
     /**
-     *The next greater element of some element x in an array is the first greater element that is to the right of x
+     * The next greater element of some element x in an array is the first greater element that is to the right of x
      * in the same array.
-     *
+     * <p>
      * You are given two distinct 0-indexed integer arrays nums1 and nums2, where nums1 is a subset of nums2.
-     *
+     * <p>
      * For each 0 <= i < nums1.length, find the index j such that nums1[i] == nums2[j] and determine the next greater
      * element of nums2[j] in nums2. If there is no next greater element, then the answer for this query is -1.
-     *
+     * <p>
      * Return an array ans of length nums1.length such that ans[i] is the next greater element as described above.
-     *
+     * <p>
      * Input: nums1 = [4,1,2], nums2 = [1,3,4,2]
      * Output: [-1,3,-1]
      * Explanation: The next greater element for each value of nums1 is as follows:
@@ -570,8 +571,8 @@ public class Note7_Stack {
      * - 2 is underlined in nums2 = [1,3,4,2]. There is no next greater element, so the answer is -1.
      */
 // 6
-    class Solution496{
-        public int[] nextGreaterElement(int[] nums1, int[] nums2){
+    class Solution496 {
+        public int[] nextGreaterElement(int[] nums1, int[] nums2) {
             Stack<Integer> stack = new Stack<>();   // 单调栈，从栈顶到栈底是递增的
             Map<Integer, Integer> map = new HashMap<>();  // map的key是数组中元素的值， value是这个值遇到的右边比它大的数
             for (int num : nums2) {
@@ -580,7 +581,7 @@ public class Note7_Stack {
                 stack.push(num);
             }
             int[] res = new int[nums1.length];
-            for (int i = 0; i < nums1.length; i ++) {  //  遍历nums1中的值，然后在map中查找，如果没有找到，说明没有遇到右边比它大的值，默认给-1
+            for (int i = 0; i < nums1.length; i++) {  //  遍历nums1中的值，然后在map中查找，如果没有找到，说明没有遇到右边比它大的值，默认给-1
                 res[i] = map.getOrDefault(nums1[i], -1);
             }
             return res;
@@ -592,7 +593,7 @@ public class Note7_Stack {
     /**
      * Given two integer arrays pushed and popped each with distinct values, return true if this could have been the
      * result of a sequence of push and pop operations on an initially empty stack, or false otherwise.
-     *
+     * <p>
      * Input: pushed = [1,2,3,4,5], popped = [4,5,3,2,1]
      * Output: true
      * Explanation: We might do the following sequence:
@@ -600,11 +601,10 @@ public class Note7_Stack {
      * pop() -> 4,
      * push(5),
      * pop() -> 5, pop() -> 3, pop() -> 2, pop() -> 1
-     *
+     * <p>
      * Input: pushed = [1,2,3,4,5], popped = [4,3,5,1,2]
      * Output: false
      * Explanation: 1 cannot be popped before 2.
-     *
      */
     /*
     我们可以把数组pushed中的元素一个个入栈，每入栈一个元素就要拿栈 顶元素和popped中的第一个元素比较，看是否一样，如果一样，就出栈，然后再拿新
@@ -612,12 +612,12 @@ public class Note7_Stack {
     第一个元素 比较……。 最后再判断栈是否为空，如果为空，说明pushed数组通过一系列的出栈和入栈能得到 popped数组，直接返回true。否则就表示没法
     得到popped数组，直接返回false。
      */
-    class Solution946{
+    class Solution946 {
         public boolean validateStackSequences(int[] pushed, int[] popped) {
             Stack<Integer> stack = new Stack<>();
             // 记录poped数组访问到哪一个元素了
             int index = 0;
-            for (int num: pushed) {
+            for (int num : pushed) {
                 stack.push(num);
                 while (!stack.isEmpty() && stack.peek() == popped[index++]) stack.pop();
             }
@@ -628,22 +628,21 @@ public class Note7_Stack {
     // LeetCode 155: minStack
 
     /**
-     *
      * Design a stack that supports push, pop, top, and retrieving the minimum element in constant time.
-     *
+     * <p>
      * Implement the MinStack class:
-     *
-     *      MinStack() initializes the stack object.
-     *      void push(int val) pushes the element val onto the stack.
-     *      void pop() removes the element on the top of the stack.
-     *      int top() gets the top element of the stack.
-     *      int getMin() retrieves the minimum element in the stack.
+     * <p>
+     * MinStack() initializes the stack object.
+     * void push(int val) pushes the element val onto the stack.
+     * void pop() removes the element on the top of the stack.
+     * int top() gets the top element of the stack.
+     * int getMin() retrieves the minimum element in the stack.
      * You must implement a solution with O(1) time complexity for each function.
-     *
      */
     class MinStack {
         private Stack<Integer> stack;
         private Stack<Integer> minStack;  // 两个stack来存储
+
         public MinStack() {
             stack = new Stack<>();
             minStack = new Stack<>();
@@ -675,9 +674,10 @@ public class Note7_Stack {
         }
     }
 
-    class minStack2{  // 用一个栈解决
+    class minStack2 {  // 用一个栈解决
         private Stack<Integer> stack;
         private int min;
+
         public minStack2() {
             stack = new Stack<>();
             min = Integer.MAX_VALUE;
@@ -691,7 +691,7 @@ public class Note7_Stack {
             stack.push(x);
         }
 
-        public void pop(){
+        public void pop() {
             if (stack.pop() == min) min = stack.pop();  // 如果stack的顶部元素正好是min值，就pop两次，第二次让min等于pop出的值
         }
 
@@ -718,16 +718,15 @@ public class Note7_Stack {
 
     /**
      * Given n pairs of parentheses, write a function to generate all combinations of well-formed parentheses.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: n = 3
      * Output: ["((()))","(()())","(())()","()(())","()()()"]
      * Example 2:
-     *
+     * <p>
      * Input: n = 1
      * Output: ["()"]
-     *
      */
     class Solution {
         public List<String> generateParenthesis(int n) {
@@ -740,12 +739,12 @@ public class Note7_Stack {
         public void helper(List<String> res, String s, int left, int right) {
             // left一定要大于right, 一定要先有左括号再有右括号，左括号剩余的数量要比右括号的多的话就return
             if (left > right) return;
-            if (left == 0 && right == 0){
+            if (left == 0 && right == 0) {
                 res.add(s);
                 return;
             }
             if (left > 0) helper(res, s + "(", left - 1, right);
-            if (right > 0) helper(res, s +")", left, right - 1);
+            if (right > 0) helper(res, s + ")", left, right - 1);
         }
     }
 
@@ -753,27 +752,27 @@ public class Note7_Stack {
 
     /**
      * Implement a first in first out (FIFO) queue using only two stacks. The implemented queue should support all the functions of a normal queue (push, peek, pop, and empty).
-     *
+     * <p>
      * Implement the MyQueue class:
-     *
+     * <p>
      * void push(int x) Pushes element x to the back of the queue.
      * int pop() Removes the element from the front of the queue and returns it.
      * int peek() Returns the element at the front of the queue.
      * boolean empty() Returns true if the queue is empty, false otherwise.
      * Notes:
-     *
+     * <p>
      * You must use only standard operations of a stack, which means only push to top, peek/pop from top, size, and is empty operations are valid.
      * Depending on your language, the stack may not be supported natively. You may simulate a stack using a list or deque (double-ended queue) as long as you use only a stack's standard operations.
-     *
-     *
+     * <p>
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input
      * ["MyQueue", "push", "push", "peek", "pop", "empty"]
      * [[], [1], [2], [], [], []]
      * Output
      * [null, null, null, 1, 1, false]
-     *
+     * <p>
      * Explanation
      * MyQueue myQueue = new MyQueue();
      * myQueue.push(1); // queue is: [1]
@@ -833,27 +832,27 @@ public class Note7_Stack {
 
     /**
      * Implement a last-in-first-out (LIFO) stack using only two queues. The implemented stack should support all the functions of a normal stack (push, top, pop, and empty).
-     *
+     * <p>
      * Implement the MyStack class:
-     *
+     * <p>
      * void push(int x) Pushes element x to the top of the stack.
      * int pop() Removes the element on the top of the stack and returns it.
      * int top() Returns the element on the top of the stack.
      * boolean empty() Returns true if the stack is empty, false otherwise.
      * Notes:
-     *
+     * <p>
      * You must use only standard operations of a queue, which means that only push to back, peek/pop from front, size and is empty operations are valid.
      * Depending on your language, the queue may not be supported natively. You may simulate a queue using a list or deque (double-ended queue) as long as you use only a queue's standard operations.
-     *
-     *
+     * <p>
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input
      * ["MyStack", "push", "push", "top", "pop", "empty"]
      * [[], [1], [2], [], [], []]
      * Output
      * [null, null, null, 2, 2, false]
-     *
+     * <p>
      * Explanation
      * MyStack myStack = new MyStack();
      * myStack.push(1);
@@ -871,7 +870,7 @@ public class Note7_Stack {
 
         public void push(int x) {
             queue.add(x);
-            for (int i = 0; i < queue.size(); i ++) {
+            for (int i = 0; i < queue.size(); i++) {
                 queue.add(queue.poll());  // 在queue的内部进行调换顺序
             }
         }
@@ -903,15 +902,15 @@ public class Note7_Stack {
     /**
      * Suppose we have a file system that stores both files and directories. An example of one system is represented
      * in the following picture:
-     *
-     *
-     *
+     * <p>
+     * <p>
+     * <p>
      * Here, we have dir as the only directory in the root. dir contains two subdirectories, subdir1 and subdir2.
      * subdir1 contains a file file1.ext and subdirectory subsubdir1. subdir2 contains a subdirectory subsubdir2,
      * which contains a file file2.ext.
-     *
+     * <p>
      * In text form, it looks like this (with ⟶ representing the tab character):
-     *
+     * <p>
      * dir
      * ⟶ subdir1
      * ⟶ ⟶ file1.ext
@@ -922,26 +921,26 @@ public class Note7_Stack {
      * If we were to write this representation in code, it will look like this:
      * "dir\n\tsubdir1\n\t\tfile1.ext\n\t\tsubsubdir1\n\tsubdir2\n\t\tsubsubdir2\n\t\t\tfile2.ext".
      * Note that the '\n' and '\t' are the new-line and tab characters.
-     *
+     * <p>
      * Every file and directory has a unique absolute path in the file system, which is the order of directories that
      * must be opened to reach the file/directory itself, all concatenated by '/'s. Using the above example, the
      * absolute path to file2.ext is "dir/subdir2/subsubdir2/file2.ext". Each directory name consists of letters,
      * digits, and/or spaces. Each file name is of the form name.extension, where name and extension consist of letters, digits, and/or spaces.
-     *
+     * <p>
      * Given a string input representing the file system in the explained format, return the length of the longest
      * absolute path to a file in the abstracted file system. If there is no file in the system, return 0.
-     *
+     * <p>
      * Note that the testcases are generated such that the file system is valid and no file or directory name has length 0.
-     *
+     * <p>
      * Example 1:
-     *
-     *
+     * <p>
+     * <p>
      * Input: input = "dir\n\tsubdir1\n\tsubdir2\n\t\tfile.ext"
      * Output: 20
      * Explanation: We have only one file, and the absolute path is "dir/subdir2/file.ext" of length 20.
      * Example 2:
-     *
-     *
+     * <p>
+     * <p>
      * Input: input = "dir\n\tsubdir1\n\t\tfile1.ext\n\t\tsubsubdir1\n\tsubdir2\n\t\tsubsubdir2\n\t\t\tfile2.ext"
      * Output: 32
      * Explanation: We have two files:
@@ -949,7 +948,7 @@ public class Note7_Stack {
      * "dir/subdir2/subsubdir2/file2.ext" of length 32.
      * We return 32 since it is the longest absolute path to a file.
      * Example 3:
-     *
+     * <p>
      * Input: input = "a"
      * Output: 0
      * Explanation: We do not have any files, just a single directory named "a".
@@ -957,10 +956,8 @@ public class Note7_Stack {
 
     class Solution388 {
         /**
-         *
          * dir \subdir2 \file.ext
          * 3    7         8      = 20
-         *
          */
         public int lengthLongestPath(String input) {
             Stack<Integer> stack = new Stack<>();
@@ -982,18 +979,18 @@ public class Note7_Stack {
     /**
      * You are given a string s and an integer k, a k duplicate removal consists of choosing k adjacent and equal
      * letters from s and removing them, causing the left and the right side of the deleted substring to concatenate together.
-     *
+     * <p>
      * We repeatedly make k duplicate removals on s until we no longer can.
-     *
+     * <p>
      * Return the final string after all such duplicate removals have been made. It is guaranteed that the answer is unique.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: s = "abcd", k = 2
      * Output: "abcd"
      * Explanation: There's nothing to delete.
      * Example 2:
-     *
+     * <p>
      * Input: s = "deeedbbcccbdaa", k = 3
      * Output: "aa"
      * Explanation:
@@ -1001,17 +998,18 @@ public class Note7_Stack {
      * Then delete "bbb", get "dddaa"
      * Finally delete "ddd", get "aa"
      * Example 3:
-     *
+     * <p>
      * Input: s = "pbbcggttciiippooaais", k = 2
      * Output: "ps"
      */
 
     class Solution1209 {
 
-        class pair{
+        class pair {
             public char ch;
             public int num;
-            public pair(char ch, int num){
+
+            public pair(char ch, int num) {
                 this.ch = ch;
                 this.num = num;
             }
@@ -1085,22 +1083,23 @@ public class Note7_Stack {
      * // This is the interface that allows for creating nested lists.
      * // You should not implement it, or speculate about its implementation
      * public interface NestedInteger {
-     *
-     *     // @return true if this NestedInteger holds a single integer, rather than a nested list.
-     *     public boolean isInteger();
-     *
-     *     // @return the single integer that this NestedInteger holds, if it holds a single integer
-     *     // Return null if this NestedInteger holds a nested list
-     *     public Integer getInteger();
-     *
-     *     // @return the nested list that this NestedInteger holds, if it holds a nested list
-     *     // Return empty list if this NestedInteger holds a single integer
-     *     public List<NestedInteger> getList();
+     * <p>
+     * // @return true if this NestedInteger holds a single integer, rather than a nested list.
+     * public boolean isInteger();
+     * <p>
+     * // @return the single integer that this NestedInteger holds, if it holds a single integer
+     * // Return null if this NestedInteger holds a nested list
+     * public Integer getInteger();
+     * <p>
+     * // @return the nested list that this NestedInteger holds, if it holds a nested list
+     * // Return empty list if this NestedInteger holds a single integer
+     * public List<NestedInteger> getList();
      * }
      */
     public class NestedIterator implements Iterator<Integer> {
 
         Stack<NestedInteger> stack = new Stack<>();
+
         public NestedIterator(List<NestedInteger> nestedList) {
             for (int i = nestedList.size() - 1; i >= 0; i--) {
                 stack.push(nestedList.get(i));  //  从后往前加入，先进后出
@@ -1114,7 +1113,7 @@ public class Note7_Stack {
 
         @Override
         public boolean hasNext() {
-            while (!stack.isEmpty()){
+            while (!stack.isEmpty()) {
                 NestedInteger cur = stack.peek();
                 if (cur.isInteger()) {
                     return true;  // 如果当前栈顶是个数字，返回true
@@ -1134,53 +1133,69 @@ public class Note7_Stack {
      * while (i.hasNext()) v[f()] = i.next();
      */
     // 385： nested Integer
+
     /**
      * Given a string s represents the serialization of a nested list, implement a parser to
      * deserialize it and return the deserialized NestedInteger.
-     *
+     * <p>
      * Each element is either an integer or a list whose elements may also be integers or other lists.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: s = "324"
      * Output: 324
      * Explanation: You should return a NestedInteger object which contains a single integer 324.
      * Example 2:
-     *
-     *
+     * <p>
+     * <p>
      * Input: s = "[123,[456,[789]]]"
      * Output: [123,[456,[789]]]
      * Explanation: Return a NestedInteger object containing a nested list with 2 elements:
      * 1. An integer containing value 123.
      * 2. A nested list containing two elements:
-     *     i.  An integer containing value 456.
-     *     ii. A nested list with one element:
-     *          a. An integer containing value 789
-
+     * i.  An integer containing value 456.
+     * ii. A nested list with one element:
+     * a. An integer containing value 789
      */
     public class NestedInteger {
         // Constructor initializes an empty nested list.
-        public NestedInteger(){}
+        public NestedInteger() {
+        }
+
         // Constructor initializes a single integer.
-        public NestedInteger(int val){}
+        public NestedInteger(int val) {
+        }
 
         // @return true if this NestedInteger holds a single integer, rather than a nested list.
-              public  boolean isInteger(){return true;}
+        public boolean isInteger() {
+            return true;
+        }
 
-              // @return the single integer that this NestedInteger holds, if it holds a single integer
+        // @return the single integer that this NestedInteger holds, if it holds a single integer
         // Return null if this NestedInteger holds a nested list
-              public  Integer getInteger(){return 0;};
+        public Integer getInteger() {
+            return 0;
+        }
 
-             // Set this NestedInteger to hold a single integer.
-              public  void setInteger(int value){return;}
+        ;
 
-              // Set this NestedInteger to hold a nested list and adds a nested integer to it.
-              public  void add(NestedInteger ni){return;}
+        // Set this NestedInteger to hold a single integer.
+        public void setInteger(int value) {
+            return;
+        }
 
-              // @return the nested list that this NestedInteger holds, if it holds a nested list
-             // Return empty list if this NestedInteger holds a single integer
-              public  List<NestedInteger> getList(){return new ArrayList<>();}
-  }
+        // Set this NestedInteger to hold a nested list and adds a nested integer to it.
+        public void add(NestedInteger ni) {
+            return;
+        }
+
+        // @return the nested list that this NestedInteger holds, if it holds a nested list
+        // Return empty list if this NestedInteger holds a single integer
+        public List<NestedInteger> getList() {
+            return new ArrayList<>();
+        }
+    }
+
     class Solution385 {
         public NestedInteger deserialize(String s) {
             if (!s.startsWith("[")) return new NestedInteger(Integer.valueOf(s));
@@ -1212,22 +1227,23 @@ public class Note7_Stack {
         /**
          * Given string num representing a non-negative integer num, and an integer k, return the smallest
          * possible integer after removing k digits from num.
-         *
+         * <p>
          * Example 1:
-         *
+         * <p>
          * Input: num = "1432219", k = 3
          * Output: "1219"
          * Explanation: Remove the three digits 4, 3, and 2 to form the new number 1219 which is the smallest.
          * Example 2:
-         *
+         * <p>
          * Input: num = "10200", k = 1
          * Output: "200"
          * Explanation: Remove the leading 1 and the number is 200. Note that the output must not contain leading zeroes.
          * Example 3:
-         *
+         * <p>
          * Input: num = "10", k = 2
          * Output: "0"
          * Explanation: Remove all the digits from the number and it is left with nothing which is 0.
+         *
          * @param args
          */
         class Solution402 {
@@ -1242,7 +1258,7 @@ public class Note7_Stack {
                     }
                     stack.push(num.charAt(i));
                 }
-                while(k > 0) {
+                while (k > 0) {
                     stack.pop();
                     k--;
                 }
@@ -1252,7 +1268,7 @@ public class Note7_Stack {
                 sb.reverse();
                 // 去掉首位的0
                 int res = 0;
-                while(res < sb.length() && sb.charAt(res) == '0') res++;
+                while (res < sb.length() && sb.charAt(res) == '0') res++;
                 return res == sb.length() ? "0" : sb.substring(res);
             }
         }
@@ -1263,17 +1279,17 @@ public class Note7_Stack {
          * Given an array of integers temperatures represents the daily temperatures, return an array answer such that
          * answer[i] is the number of days you have to wait after the ith day to get a warmer temperature. If there is
          * no future day for which this is possible, keep answer[i] == 0 instead.
-         *
+         * <p>
          * Example 1:
-         *
+         * <p>
          * Input: temperatures = [73,74,75,71,69,72,76,73]
          * Output: [1,1,4,2,1,1,0,0]
          * Example 2:
-         *
+         * <p>
          * Input: temperatures = [30,40,50,60]
          * Output: [1,1,1,0]
          * Example 3:
-         *
+         * <p>
          * Input: temperatures = [30,60,90]
          * Output: [1,1,0]
          */
@@ -1282,12 +1298,13 @@ public class Note7_Stack {
              * On each day, there are two possibilities. If the current day's temperature is not warmer than the
              * temperature on the top of the stack, we can just push the current day onto the stack - since it is
              * not as warm (equal or smaller), this will maintain the sorted property.
-             *
+             * <p>
              * If the current day's temperature is warmer than the temperature on top of the stack, this is significant.
              * It means that the current day is the first day with a warmer temperature than the day associated with the
              * temperature on top of the stack. When we find a warmer temperature, the number of days is the difference
              * between the current index and the index on the top of the stack. We can declare an answer array before
              * iterating through the input and populate answer as we go along.
+             *
              * @param temperatures
              * @return
              */
@@ -1314,28 +1331,28 @@ public class Note7_Stack {
 
         /**
          * Given a string s of '(' , ')' and lowercase English characters.
-         *
+         * <p>
          * Your task is to remove the minimum number of parentheses ( '(' or ')', in any positions ) so that the
          * resulting parentheses string is valid and return any valid string.
-         *
+         * <p>
          * Formally, a parentheses string is valid if and only if:
-         *
+         * <p>
          * It is the empty string, contains only lowercase characters, or
          * It can be written as AB (A concatenated with B), where A and B are valid strings, or
          * It can be written as (A), where A is a valid string.
-         *
-         *
+         * <p>
+         * <p>
          * Example 1:
-         *
+         * <p>
          * Input: s = "lee(t(c)o)de)"
          * Output: "lee(t(c)o)de"
          * Explanation: "lee(t(co)de)" , "lee(t(c)ode)" would also be accepted.
          * Example 2:
-         *
+         * <p>
          * Input: s = "a)b(c)d"
          * Output: "ab(c)d"
          * Example 3:
-         *
+         * <p>
          * Input: s = "))(("
          * Output: ""
          * Explanation: An empty string is also valid.
@@ -1361,6 +1378,64 @@ public class Note7_Stack {
                     }
                 }
                 return res.toString();
+            }
+        }
+
+        // 678： Valid Parenthesis string
+
+        /**
+         * Given a string s containing only three types of characters: '(', ')' and '*', return true if s is valid.
+         * <p>
+         * The following rules define a valid string:
+         * <p>
+         * Any left parenthesis '(' must have a corresponding right parenthesis ')'.
+         * Any right parenthesis ')' must have a corresponding left parenthesis '('.
+         * Left parenthesis '(' must go before the corresponding right parenthesis ')'.
+         * '*' could be treated as a single right parenthesis ')' or a single left parenthesis '(' or an empty string "".
+         * <p>
+         * <p>
+         * Example 1:
+         * <p>
+         * Input: s = "()"
+         * Output: true
+         * Example 2:
+         * <p>
+         * Input: s = "(*)"
+         * Output: true
+         * Example 3:
+         * <p>
+         * Input: s = "(*))"
+         * Output: true
+         */
+        class Solution678 {
+            public boolean checkValidString(String s) {
+                Stack<Integer> brackets, stars;
+                brackets = new Stack<>();
+                stars = new Stack<>();
+
+                for (int i = 0; i < s.length(); i++) {
+                    char bracket = s.charAt(i);
+                    if (bracket == '(') {
+                        brackets.push(i);
+                    } else if (bracket == '*') {
+                        stars.push(i);
+                    } else if (!brackets.isEmpty()) {
+                        brackets.pop();
+                    }
+                    // When ( runs out if there's *, use star', else return false
+                    else if (!stars.isEmpty()) {
+                        stars.pop();
+                    } else {
+                        return false;
+                    }
+                }
+                // If the ( haven't used up, see if * can substitude the )'
+                while (!brackets.isEmpty() && !stars.isEmpty() && brackets.peek() < stars.peek()) {
+                    // Attention, This time, the * must appear after (
+                    brackets.pop();
+                    stars.pop();
+                }
+                return brackets.isEmpty();
             }
         }
 

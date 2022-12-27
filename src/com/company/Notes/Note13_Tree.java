@@ -1960,8 +1960,129 @@ public class Note13_Tree {
                 connect(root.right);
                 return root;
             }
+        }
 
+        //1022 ：sum of root to leaf binary numbers
 
+        /**
+         * You are given the root of a binary tree where each node has a value 0 or 1. Each root-to-leaf path represents
+         * a binary number starting with the most significant bit.
+         *
+         * For example, if the path is 0 -> 1 -> 1 -> 0 -> 1, then this could represent 01101 in binary, which is 13.
+         * For all leaves in the tree, consider the numbers represented by the path from the root to that leaf. Return
+         * the sum of these numbers.
+         *
+         * The test cases are generated so that the answer fits in a 32-bits integer.
+         */
+        class Solution1022 {
+            int sum = 0;
+            public int sumRootToLeaf(TreeNode root) {
+                helper(root, 0);
+                return sum;
+            }
+
+            public void helper(TreeNode root, int cur) {
+                if (root != null) {
+                    cur = cur << 1 | root.val;  // 向左移一位或上当前的值
+                    if (root.left == null && root.right == null) {
+                        sum += cur;
+                    }
+                    helper(root.left, cur);
+                    helper(root.right, cur);
+                }
+            }
+        }
+
+        // 863： All Nodes distance K in a Binary Tree
+
+        /**
+         * Given the root of a binary tree, the value of a target node target, and an integer k, return an array of the
+         * values of all nodes that have a distance k from the target node.
+         *
+         * You can return the answer in any order.
+         */
+        // https://zhuanlan.zhihu.com/p/423095408
+        /**
+         * Definition for a binary tree node.
+         * public class TreeNode {
+         *     int val;
+         *     TreeNode left;
+         *     TreeNode right;
+         *     TreeNode(int x) { val = x; }
+         * }
+         */
+        class Solution863 {
+            /*
+            若将 target 当作树的根结点，我们就能从 target 出发，使用深度优先搜索去寻找与 target 距离为 k 的所有结点，即深度为 k 的所有结点。
+            由于输入的二叉树没有记录父结点，为此，我们从根结点 root 出发，使用深度优先搜索遍历整棵树，同时用一个哈希表记录每个结点的父结点。
+            然后从target 出发，使用深度优先搜索遍历整棵树，除了搜索左右儿子外，还可以顺着父结点向上搜索。
+            代码实现时，由于每个结点值都是唯一的，哈希表的键可以用结点值代替。此外，为避免在深度优先搜索时重复访问结点，递归时额外传入来源结点
+             from，在递归前比较目标结点是否与来源结点相同，不同的情况下才进行递归。
+             */
+
+            // 用hash来记录每个节点的父节点
+            HashMap<TreeNode, TreeNode> par = new HashMap<>();
+            List<Integer> res = new ArrayList<>();
+            public List<Integer> distanceK(TreeNode root, TreeNode target, int k) {
+                findPar(root);
+                Set<TreeNode> visited = new HashSet<>();
+                findAns(target, visited, k, 0);
+                return res;
+            }
+
+            public void findPar(TreeNode root) {
+                if (root.left != null) {
+                    par.put(root.left, root);
+                    findPar(root.left);
+                }
+                if (root.right != null) {
+                    par.put(root.right, root);
+                    findPar(root.right);
+                }
+            }
+
+            public void findAns(TreeNode root, Set<TreeNode> visited, int k, int idx) {
+                if (root == null) return;
+                if (idx == k) {
+                    res.add(root.val);
+                    return;
+                }
+                visited.add(root);
+                if (!visited.contains(root.left)) {
+                    findAns(root.left, visited, k, idx + 1);
+                }
+                if (!visited.contains(root.right)) {
+                    findAns(root.right, visited, k, idx + 1);
+                }
+                if (!visited.contains(par.get(root))) {
+                    findAns(par.get(root), visited, k, idx + 1);
+                }
+            }
+        }
+
+        // 669: Trim a BST
+
+        /**
+         * Given the root of a binary search tree and the lowest and highest boundaries as low and high, trim the
+         * tree so that all its elements lies in [low, high]. Trimming the tree should not change the relative
+         * structure of the elements that will remain in the tree (i.e., any node's descendant should remain a descendant).
+         * It can be proven that there is a unique answer.
+         *
+         * Return the root of the trimmed binary search tree. Note that the root may change depending on the given bounds.
+         */
+        class Solution669 {
+            public TreeNode trimBST(TreeNode root, int low, int high) {
+                if (root == null) return root;
+                // According to the property of a BST, if the value of root is bigger than high, all of its right
+                // children will be greater than high, we need to trim the right
+                if (root.val > high) return trimBST(root.left, low, high);
+                // same as left
+                if (root.val < low) return trimBST(root.right, low, high);
+
+                root.left = trimBST(root.left, low, high);
+                root.right = trimBST(root.right, low, high);
+                return root;
+            }
         }
 
 

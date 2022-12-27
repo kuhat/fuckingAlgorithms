@@ -4214,6 +4214,54 @@ public class Note3_Arrays {
         return res;
     }
 
+    // longest mountain in an array
+
+    /**
+     * You may recall that an array arr is a mountain array if and only if:
+     *
+     * arr.length >= 3
+     * There exists some index i (0-indexed) with 0 < i < arr.length - 1 such that:
+     * arr[0] < arr[1] < ... < arr[i - 1] < arr[i]
+     * arr[i] > arr[i + 1] > ... > arr[arr.length - 1]
+     * Given an integer array arr, return the length of the longest subarray, which is a mountain.
+     * Return 0 if there is no mountain subarray.
+     *
+     * Example 1:
+     *
+     * Input: arr = [2,1,4,7,3,2,5]
+     * Output: 5
+     * Explanation: The largest mountain is [1,4,7,3,2] which has length 5.
+     * Example 2:
+     *
+     * Input: arr = [2,2,2]
+     * Output: 0
+     * Explanation: There is no mountain.
+     */
+    class Solution845 {
+        public int longestMountain(int[] arr) {
+            if (arr.length < 2) return 0;
+            int start = 0, end = 1, res = 0;
+            while (end < arr.length) {
+                if (arr[start] < arr[end]) {
+                    while (end < arr.length - 1 && arr[end] < arr[end + 1]) end++;
+                    if (end < arr.length - 1 && arr[end] > arr[end + 1]) {
+                        while (end < arr.length - 1 && arr[end] > arr[end + 1]) end++;
+                        res = Math.max(res, end - start + 1);
+                        start = end;
+                        end++;
+                    } else {
+                        start ++;
+                        end = start + 1;
+                    }
+                } else {
+                    start++;
+                    end = start + 1;
+                }
+            }
+            return res;
+        }
+    }
+
     public static void main(String[] args) {
         int[] candies = new int[]{7, 3, 20, 5, 15, 1, 11, 8, 10};
         int res = maxCandies(candies);

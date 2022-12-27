@@ -2418,8 +2418,71 @@ public class Note18_DP {
             }
             return res;
         }
+    }
+
+    // 940： distinct subsequence II
+
+    /**
+     * Given a string s, return the number of distinct non-empty subsequences of s. Since the answer may be very large,
+     * return it modulo 109 + 7.
+     *
+     * A subsequence of a string is a new string that is formed from the original string by deleting some (can be none)
+     * of the characters without disturbing the relative positions of the remaining characters. (i.e., "ace" is a subsequence of "abcde" while "aec" is not.
+     *
+     * Example 1:
+     *
+     * Input: s = "abc"
+     * Output: 7
+     * Explanation: The 7 distinct subsequences are "a", "b", "c", "ab", "ac", "bc", and "abc".
+     * Example 2:
+     *
+     * Input: s = "aba"
+     * Output: 6
+     * Explanation: The 6 distinct subsequences are "a", "b", "ab", "aa", "ba", and "aba".
+     */
+    class solution940{
+
+        /*
+        s = "abc"
+        {} {a}
+        {} {a} {b} {ab}
+        {} {a} {b} {ab} {c} {ac} {bc} {abc}
+        若没有重复字母，下一个状态的值等于上一个状态 * 2
+
+        s = “aba”
+        {} {a}
+        {} {a} {b} {ab}
+        {} {a} {b} {ab} {a}(dup) {aa} {ba} {aba}
+        若有重复的字母，则要减去上一次的字母出现的次数
+        The number of distinct subsequences ending at S[k], is twice the distinct subsequences counted by dp[k-1]
+        (all of them, plus all of them with S[k] appended), minus the amount we double counted, which is dp[last[S[k]] - 1].
+         */
+
+        public int distinctsubsequenceII(String S) {
+            int MOD = 1_000_000_007;
+            int N = S.length();
+            int[] dp = new int[N+1];
+            dp[0] = 1;
+
+            int[] last = new int[26];  // record the number of occur of the last char
+            Arrays.fill(last, -1);
+
+            for (int i = 0; i < N; ++i) {
+                int x = S.charAt(i) - 'a';
+                dp[i+1] = dp[i] * 2 % MOD;
+                if (last[x] >= 0) dp[i+1] -= dp[last[x]];
+                dp[i+1] %= MOD;
+                last[x] = i;
+            }
+
+            dp[N]--;
+            if (dp[N] < 0) dp[N] += MOD;
+            return dp[N];
+        }
 
     }
+
+
     public static void main(String[] args) {
         System.out.println(Arrays.toString(new int[5]));
     }
