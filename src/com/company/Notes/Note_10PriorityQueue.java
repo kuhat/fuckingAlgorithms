@@ -656,7 +656,7 @@ public class Note_10PriorityQueue {
         pq.offer(0);
         int prev = 0;
         for (int[] h : heights) {
-            if (h[1] < 0) pq.offer(-h[1]); // 如果当前是大楼的起点（起点的高度都是负数），直接加入堆
+            if (h[1] < 0) pq.offer(-h[1]); // 如果当前是大楼的起点（起点的高度都是负数），直接将高度加入堆
             else pq.remove(h[1]);  // 否则遇到了大楼的终点，移除这个高度
             int cur = pq.peek();  // 取出当前的最高楼层
             // 如果一之前的最高和目前的最高一样的话，说明当前的情况下的楼层最高点没变

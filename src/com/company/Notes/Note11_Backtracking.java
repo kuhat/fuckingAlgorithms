@@ -3,6 +3,7 @@ package com.company.Notes;
 import jdk.jshell.execution.Util;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Note11_Backtracking {
     // LeetCode 869: Reorder of power 2
@@ -1622,6 +1623,79 @@ public class Note11_Backtracking {
             list.remove(list.size() - 1);
         }
     }
+
+    // 93：Restor IP address
+
+    /**
+     * A valid IP address consists of exactly four integers separated by single dots. Each integer is between 0 and 255
+     * (inclusive) and cannot have leading zeros.
+     *
+     * For example, "0.1.2.201" and "192.168.1.1" are valid IP addresses, but "0.011.255.245", "192.168.1.312" and
+     * "192.168@1.1" are invalid IP addresses.
+     * Given a string s containing only digits, return all possible valid IP addresses that can be formed by inserting
+     * dots into s. You are not allowed to reorder or remove any digits in s. You may return the valid IP addresses in any order.
+     * Example 1:
+     *
+     * Input: s = "25525511135"
+     * Output: ["255.255.11.135","255.255.111.35"]
+     * Example 2:
+     *
+     * Input: s = "0000"
+     * Output: ["0.0.0.0"]
+     */
+    class Solution93 {
+        List<String> res = new ArrayList<>();
+
+        public List<String> restoreIpAddresses(String s) {
+            if(s == null || s.length() < 4 || s.length() > 12){
+                return new ArrayList<>();
+            }
+            List<String> path = new ArrayList<>();
+            dfs(s, 0, 0, path);
+            return res;
+        }
+
+        private void dfs(String s, int splitTimes, int left, List<String> path){
+            if(left == s.length()){
+                if(splitTimes == 4){
+                    res.add(path.stream().collect(Collectors.joining(".")));
+                }
+                return;
+            }
+            // 如果剩下的字符不够切（取最小的），或者剩下的字符比需要的还多，则退出
+            if(s.length() - left < (4 - splitTimes) || s.length() - left > 3 * (4 - splitTimes)){
+                return;
+            }
+            // 只会有三个数字
+            for(int i = 0; i < 3; i++){
+                // 都是按照每段3个来处理，万一处理到最后一段，小于3个的情况，如果到2大于 s 的长度，直接退出
+                if(left + i >= s.length()){
+                    continue;
+                }
+
+                // subString 要多加一位
+                String str = s.substring(left, left + i + 1);
+                if(!isValid(str)){
+                    continue;
+                }
+                path.add(str);
+                dfs(s, splitTimes + 1, left + i + 1, path);
+                path.remove(path.size() - 1);
+            }
+        }
+
+        private boolean isValid(String str){
+            if((str.length() > 1 && str.charAt(0) == '0') || str.length() > 3){
+                return false;
+            }
+            int num = Integer.parseInt(str);
+            if(num < 0 || num > 255){
+                return false;
+            }
+            return true;
+        }
+    }
+
 
     public static void main(String[] args) {
         System.out.println(Integer.valueOf('1'));
