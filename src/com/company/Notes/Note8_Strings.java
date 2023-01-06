@@ -2796,7 +2796,7 @@ public class Note8_Strings {
                 if (count[s.charAt(end)]++ == 0) numUnique++;  // 如果尾指针的字母出现次数为0，出现的字母种类加一
                 if (count[s.charAt(end++)] == k) numNoLessThanK ++;  // 如果尾指针出现的字母个数等于k了，尾指针向后移（都会执行），numNoLessThanK加一
                 while (numUnique > numUniqueTarget) {  // 当出现不同字母的种类大于允许出现的字母种类时，要尝试start向后走
-                    if(count[s.charAt(start)]-- == k) numNoLessThanK--;  // 如果start指针出现的数量等于k，减小numNoLessThanK的个数
+                    if (count[s.charAt(start)]-- == k) numNoLessThanK--;  // 如果start指针出现的数量等于k，减小numNoLessThanK的个数
                     if (count[s.charAt(start++)] == 0) numUnique--;  // 如果start指针的字母出现的数量等于0，出现的字母种类减一
                 }
                 if (numUnique == numUniqueTarget && numUnique == numNoLessThanK) {

@@ -707,6 +707,50 @@ public class Note2_Math {
         }
     }
 
+    // 780: Reaching points
+
+    /**
+     * Given four integers sx, sy, tx, and ty, return true if it is possible to convert the point (sx, sy) to the
+     * point (tx, ty) through some operations, or false otherwise.
+     *
+     * The allowed operation on some point (x, y) is to convert it to either (x, x + y) or (x + y, y).
+     *
+     * Example 1:
+     *
+     * Input: sx = 1, sy = 1, tx = 3, ty = 5
+     * Output: true
+     * Explanation:
+     * One series of moves that transforms the starting point to the target is:
+     * (1, 1) -> (1, 2)
+     * (1, 2) -> (3, 2)
+     * (3, 2) -> (3, 5)
+     * Example 2:
+     *
+     * Input: sx = 1, sy = 1, tx = 2, ty = 2
+     * Output: false
+     * Example 3:
+     *
+     * Input: sx = 1, sy = 1, tx = 1, ty = 1
+     * Output: true
+     */
+    /*
+    why (ty-sy)%sx == 0?
+        since
+    sy will translate to ty only by (sx+sy), if they translate then (sx, sy+k*sx) = ty for some k
+        sy+k*sx = ty => (ty-sy) / sx = k.
+    Since sx,sy,tx,ty are all integer, then k has to be a integer which means, there must be a integer k that help us to reach ty. Which makes reminder to be 0
+    Hence (ty-sy) % sx == 0
+    Complexity : O(log(n)) where n = Max(tx,ty)
+     */
+    class Solution780 {
+        public boolean reachingPoints(int sx, int sy, int tx, int ty) {
+            while (sx < tx && sy < ty)
+                if (tx < ty) ty %= tx;
+                else tx %= ty;
+            if(sx == tx && sy <= ty && (ty - sy) % sx == 0) return true;
+            return sy == ty && sx <= tx && (tx - sx) % sy == 0;
+        }
+    }
 
 
 

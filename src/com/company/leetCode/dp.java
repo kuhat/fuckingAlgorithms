@@ -2,6 +2,7 @@ package com.company.leetCode;
 
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class dp {
@@ -105,9 +106,7 @@ public class dp {
         public int lengthOfLIS(int[] nums) {
             if (nums.length == 0) return 0;
             int[] dp = new int[nums.length];
-            for (int i = 0; i < dp.length; i ++) {
-                dp[i] = 1;
-            }
+            Arrays.fill(dp, 1);
             int res = 0;
             for (int i = 0; i < nums.length; i ++) {
                 for (int j = 0; j < i; j ++) {
