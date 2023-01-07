@@ -2753,7 +2753,8 @@ public class Note8_Strings {
         private String helper(int num ) {
             if (num == 0) return "";
             if (num < 20) {
-                return less20[num % 20] + " ";
+                return less
+                20[num % 20] + " ";
             } else if (num < 100) {
                 return tens[num / 10] + " " + helper(num % 10);
             } else {

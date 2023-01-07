@@ -2479,8 +2479,112 @@ public class Note18_DP {
             if (dp[N] < 0) dp[N] += MOD;
             return dp[N];
         }
-
     }
+
+    // 1220： Count vowel permutation
+
+    /**
+     * Given an integer n, your task is to count how many strings of length n can be formed under the following rules:
+     *
+     * Each character is a lower case vowel ('a', 'e', 'i', 'o', 'u')
+     * Each vowel 'a' may only be followed by an 'e'.
+     * Each vowel 'e' may only be followed by an 'a' or an 'i'.
+     * Each vowel 'i' may not be followed by another 'i'.
+     * Each vowel 'o' may only be followed by an 'i' or a 'u'.
+     * Each vowel 'u' may only be followed by an 'a'.
+     * Since the answer may be too large, return it modulo 10^9 + 7.
+     *
+     * Example 1:
+     *
+     * Input: n = 1
+     * Output: 5
+     * Explanation: All possible strings are: "a", "e", "i" , "o" and "u".
+     * Example 2:
+     *
+     * Input: n = 2
+     * Output: 10
+     * Explanation: All possible strings are: "ae", "ea", "ei", "ia", "ie", "io", "iu", "oi", "ou" and "ua".
+     * Example 3:
+     *
+     * Input: n = 5
+     * Output: 68
+     */
+    class Solution1220{
+        /*
+        hat said, if we are given the number of strings of length i that end in each vowel, like aCount, eCount, iCount, oCount, and uCount, we can compute the number of strings of length i + 1 that end in each vowel by simple addition:
+
+        aCountNew = eCount + iCount + uCount
+        eCountNew = aCount + iCount
+        iCountNew = eCount + oCount
+        oCountNew = iCount
+        uCountNew = iCount + oCount
+        Starting from here, we have two approaches:
+
+        Bottom-up: We will initialize the number of strings of size 1 to be 1 for each vowel. As the size grows from 1 to n, we will iteratively increase the count of strings that end in each vowel according to the rules above.
+        Top-down: We can also perform the above idea recursively.
+         */
+        public int countVowelPermutation(int n) {
+            long acount = 1, ecount = 1, icount = 1, ocount = 1, ucount = 1;
+            for (int i = 0; i < n; i++) {
+                long newAcount = ecount + icount + ucount;
+                long newEcount = acount + icount;
+                long newIcount = ecount + ocount;
+                long newOcount = icount;
+                long newUcount = icount + ocount;
+                acount = newAcount;
+                ecount = newEcount;
+                icount = newIcount;
+                ocount = newOcount;
+                ucount = newUcount;
+            }
+            return (int)(acount + ecount + icount + ocount + ucount) % 1000000007;
+        }
+    }
+
+    // leetcode 1027:
+
+    /**
+     *      * 给定一个整数数组 A，返回 A 中最长等差子序列的长度。
+     */
+    class Solution1027{
+        public int longestArithmeticSubsequence(int[] A){
+            if (A.length <= 1) return A.length;
+
+            int longest = 0;
+
+            // Declare a dp array that is an array of hashmaps.
+            // The map for each index maintains an element of the form-
+            //   (difference, length of max chain ending at that index with that difference).
+            HashMap<Integer, Integer>[] dp = new HashMap[A.length];
+            // Initialize the map.
+            for (int i = 1; i < A.length; ++i) {
+                dp[i] = new HashMap<Integer, Integer>();
+                // Iterate over values to the left of i.
+                for (int j = 0; j < i; ++j) {
+                    int d = A[i] - A[j];
+                    // We at least have a minimum chain length of 2 now,
+                    // given that (A[j], A[i]) with the difference d,
+                    // by default forms a chain of length 2.
+                    int len = 2;
+                    if (dp[j].containsKey(d)) {
+                        // At index j, if we had already seen a difference d,
+                        // then potentially, we can add A[i] to the same chain
+                        // and extend it by length 1.
+                        len = dp[j].get(d) + 1;
+                    }
+                    // Obtain the maximum chain length already seen so far at index i
+                    // for the given differene d;
+                    int curr = dp[i].getOrDefault(d, 0);
+                    // Update the max chain length for difference d at index i.
+                    dp[i].put(d, Math.max(curr, len));
+                    // Update the global max.
+                    longest = Math.max(longest, dp[i].get(d));
+                }
+            }
+            return longest;
+        }
+    }
+
 
 
     public static void main(String[] args) {
