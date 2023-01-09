@@ -418,8 +418,6 @@ public class Note8_Strings {
      * <p>
      * input: s1 = "great", s2 = "rgeat"
      * Output: true
-     *
-     * @param args
      */
 
     public static boolean isScramble(String s1, String s2) {
@@ -461,8 +459,6 @@ public class Note8_Strings {
      *Input: s1 = "ab", s2 = "eidbaooo"
      * Output: true
      * Explanation: s2 contains one permutation of s1 ("ba").
-     *
-     * @param args
      */
     class Solution567{
         public boolean checkInclusion(String s1, String s2) {
@@ -2753,8 +2749,7 @@ public class Note8_Strings {
         private String helper(int num ) {
             if (num == 0) return "";
             if (num < 20) {
-                return less
-                20[num % 20] + " ";
+                return less20[num % 20] + " ";
             } else if (num < 100) {
                 return tens[num / 10] + " " + helper(num % 10);
             } else {

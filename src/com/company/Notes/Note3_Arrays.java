@@ -4262,6 +4262,52 @@ public class Note3_Arrays {
         }
     }
 
+    // 930： Binary subarray with sum
+
+    /**
+     * Given a binary array nums and an integer goal, return the number of non-empty subarrays with a sum goal.
+     *
+     * A subarray is a contiguous part of the array.
+     *
+     * Example 1:
+     *
+     * Input: nums = [1,0,1,0,1], goal = 2
+     * Output: 4
+     * Explanation: The 4 subarrays are bolded and underlined below:
+     * [1,0,1,0,1]
+     * [1,0,1,0,1]
+     * [1,0,1,0,1]
+     * [1,0,1,0,1]
+     * Example 2:
+     *
+     * Input: nums = [0,0,0,0,0], goal = 0
+     * Output: 15
+     */
+
+    class Solution930{
+        // 前缀和
+        public int numSubarraysWithSum(int[] nums, int goal) {
+            /*
+            Let P[i] = A[0] + A[1] + ... + A[i-1]. Then P[j+1] - P[i] = A[i] + A[i+1] + ... + A[j], the sum of the subarray [i, j].
+            Hence, we are looking for the number of i < j with P[j] - P[i] = S.
+            Algorithm
+            For each j, let's count the number of i with P[j] = P[i] + S. This is analogous to counting the number of subarrays ending in j with sum S.
+            It comes down to counting how many P[i] + S we've seen before. We can keep this count on the side to help us find the final answer.
+             */
+            int[] preSum = new int[nums.length + 1];
+            int res = 0;
+            for (int i = 0; i < nums.length; i++) {
+                preSum[i + 1] = preSum[i] + nums[i];
+            }
+            HashMap<Integer, Integer> map = new HashMap<>();
+            for (int i : preSum) {
+                res += map.getOrDefault(i, 0);
+                map.put(i + goal, map.getOrDefault(i + goal, 0) + 1);
+            }
+            return res;
+        }
+    }
+
     public static void main(String[] args) {
         int[] candies = new int[]{7, 3, 20, 5, 15, 1, 11, 8, 10};
         int res = maxCandies(candies);
