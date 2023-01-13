@@ -1742,12 +1742,31 @@ public class Note11_Backtracking {
         }
     }
 
+    class CraclePop{
+
+        public static void CrackleAndPop() {
+            for (int i = 1; i <= 100; i++) {
+                if (i % 3 == 0 && i % 5 == 0) {
+                    System.out.println("CracklePop");
+                } else if (i % 5 == 0) {
+                    System.out.println("Pop");
+                } else if (i % 3 == 0) {
+                    System.out.println("Crackle");
+                } else {
+                    System.out.println(i);
+                }
+            }
+        }
+
+        public static void main(String[] args) {
+            CrackleAndPop();
+        }
+
+    }
+
 
     public static void main(String[] args) {
-        System.out.println(Integer.valueOf('1'));
-        String s = "123456";
-        System.out.println(s.substring(1, 3));
-        System.out.println((35 ^ 8) + (35 & 8) * 2);
+       CraclePop.CrackleAndPop();
 
     }
 }

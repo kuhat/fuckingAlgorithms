@@ -1961,57 +1961,57 @@ public class Note13_Tree {
                 return root;
             }
         }
+    }
+    //1022 ：sum of root to leaf binary numbers
 
-        //1022 ：sum of root to leaf binary numbers
-
-        /**
-         * You are given the root of a binary tree where each node has a value 0 or 1. Each root-to-leaf path represents
-         * a binary number starting with the most significant bit.
-         *
-         * For example, if the path is 0 -> 1 -> 1 -> 0 -> 1, then this could represent 01101 in binary, which is 13.
-         * For all leaves in the tree, consider the numbers represented by the path from the root to that leaf. Return
-         * the sum of these numbers.
-         *
-         * The test cases are generated so that the answer fits in a 32-bits integer.
-         */
-        class Solution1022 {
-            int sum = 0;
-            public int sumRootToLeaf(TreeNode root) {
-                helper(root, 0);
-                return sum;
-            }
-
-            public void helper(TreeNode root, int cur) {
-                if (root != null) {
-                    cur = cur << 1 | root.val;  // 向左移一位或上当前的值
-                    if (root.left == null && root.right == null) {
-                        sum += cur;
-                    }
-                    helper(root.left, cur);
-                    helper(root.right, cur);
-                }
-            }
+    /**
+     * You are given the root of a binary tree where each node has a value 0 or 1. Each root-to-leaf path represents
+     * a binary number starting with the most significant bit.
+     *
+     * For example, if the path is 0 -> 1 -> 1 -> 0 -> 1, then this could represent 01101 in binary, which is 13.
+     * For all leaves in the tree, consider the numbers represented by the path from the root to that leaf. Return
+     * the sum of these numbers.
+     *
+     * The test cases are generated so that the answer fits in a 32-bits integer.
+     */
+    class Solution1022 {
+        int sum = 0;
+        public int sumRootToLeaf(TreeNode root) {
+            helper(root, 0);
+            return sum;
         }
 
-        // 863： All Nodes distance K in a Binary Tree
+        public void helper(TreeNode root, int cur) {
+            if (root != null) {
+                cur = cur << 1 | root.val;  // 向左移一位或上当前的值
+                if (root.left == null && root.right == null) {
+                    sum += cur;
+                }
+                helper(root.left, cur);
+                helper(root.right, cur);
+            }
+        }
+    }
 
-        /**
-         * Given the root of a binary tree, the value of a target node target, and an integer k, return an array of the
-         * values of all nodes that have a distance k from the target node.
-         *
-         * You can return the answer in any order.
-         */
-        // https://zhuanlan.zhihu.com/p/423095408
-        /**
-         * Definition for a binary tree node.
-         * public class TreeNode {
-         *     int val;
-         *     TreeNode left;
-         *     TreeNode right;
-         *     TreeNode(int x) { val = x; }
-         * }
-         */
-        class Solution863 {
+    // 863： All Nodes distance K in a Binary Tree
+
+    /**
+     * Given the root of a binary tree, the value of a target node target, and an integer k, return an array of the
+     * values of all nodes that have a distance k from the target node.
+     *
+     * You can return the answer in any order.
+     */
+    // https://zhuanlan.zhihu.com/p/423095408
+    /**
+     * Definition for a binary tree node.
+     * public class TreeNode {
+     *     int val;
+     *     TreeNode left;
+     *     TreeNode right;
+     *     TreeNode(int x) { val = x; }
+     * }
+     */
+    class Solution863 {
             /*
             若将 target 当作树的根结点，我们就能从 target 出发，使用深度优先搜索去寻找与 target 距离为 k 的所有结点，即深度为 k 的所有结点。
             由于输入的二叉树没有记录父结点，为此，我们从根结点 root 出发，使用深度优先搜索遍历整棵树，同时用一个哈希表记录每个结点的父结点。
@@ -2020,107 +2020,104 @@ public class Note13_Tree {
              from，在递归前比较目标结点是否与来源结点相同，不同的情况下才进行递归。
              */
 
-            // 用hash来记录每个节点的父节点
-            HashMap<TreeNode, TreeNode> par = new HashMap<>();
-            List<Integer> res = new ArrayList<>();
-            public List<Integer> distanceK(TreeNode root, TreeNode target, int k) {
-                findPar(root);
-                Set<TreeNode> visited = new HashSet<>();
-                findAns(target, visited, k, 0);
-                return res;
-            }
+        // 用hash来记录每个节点的父节点
+        HashMap<TreeNode, TreeNode> par = new HashMap<>();
+        List<Integer> res = new ArrayList<>();
+        public List<Integer> distanceK(TreeNode root, TreeNode target, int k) {
+            findPar(root);
+            Set<TreeNode> visited = new HashSet<>();
+            findAns(target, visited, k, 0);
+            return res;
+        }
 
-            public void findPar(TreeNode root) {
-                if (root.left != null) {
-                    par.put(root.left, root);
-                    findPar(root.left);
-                }
-                if (root.right != null) {
-                    par.put(root.right, root);
-                    findPar(root.right);
-                }
+        public void findPar(TreeNode root) {
+            if (root.left != null) {
+                par.put(root.left, root);
+                findPar(root.left);
             }
-
-            public void findAns(TreeNode root, Set<TreeNode> visited, int k, int idx) {
-                if (root == null) return;
-                if (idx == k) {
-                    res.add(root.val);
-                    return;
-                }
-                visited.add(root);
-                if (!visited.contains(root.left)) {
-                    findAns(root.left, visited, k, idx + 1);
-                }
-                if (!visited.contains(root.right)) {
-                    findAns(root.right, visited, k, idx + 1);
-                }
-                if (!visited.contains(par.get(root))) {
-                    findAns(par.get(root), visited, k, idx + 1);
-                }
+            if (root.right != null) {
+                par.put(root.right, root);
+                findPar(root.right);
             }
         }
 
-        // 669: Trim a BST
-
-        /**
-         * Given the root of a binary search tree and the lowest and highest boundaries as low and high, trim the
-         * tree so that all its elements lies in [low, high]. Trimming the tree should not change the relative
-         * structure of the elements that will remain in the tree (i.e., any node's descendant should remain a descendant).
-         * It can be proven that there is a unique answer.
-         *
-         * Return the root of the trimmed binary search tree. Note that the root may change depending on the given bounds.
-         */
-        class Solution669 {
-            public TreeNode trimBST(TreeNode root, int low, int high) {
-                if (root == null) return root;
-                // According to the property of a BST, if the value of root is bigger than high, all of its right
-                // children will be greater than high, we need to trim the right
-                if (root.val > high) return trimBST(root.left, low, high);
-                // same as left
-                if (root.val < low) return trimBST(root.right, low, high);
-
-                root.left = trimBST(root.left, low, high);
-                root.right = trimBST(root.right, low, high);
-                return root;
+        public void findAns(TreeNode root, Set<TreeNode> visited, int k, int idx) {
+            if (root == null) return;
+            if (idx == k) {
+                res.add(root.val);
+                return;
+            }
+            visited.add(root);
+            if (!visited.contains(root.left)) {
+                findAns(root.left, visited, k, idx + 1);
+            }
+            if (!visited.contains(root.right)) {
+                findAns(root.right, visited, k, idx + 1);
+            }
+            if (!visited.contains(par.get(root))) {
+                findAns(par.get(root), visited, k, idx + 1);
             }
         }
+    }
 
-        // 617： merge two binary trees
+    // 669: Trim a BST
 
-        /**
-         * You are given two binary trees root1 and root2.
-         *
-         * Imagine that when you put one of them to cover the other, some nodes of the two trees are overlapped
-         * while the others are not. You need to merge the two trees into a new binary tree. The merge rule is that
-         * if two nodes overlap, then sum node values up as the new value of the merged node. Otherwise, the NOT
-         * null node will be used as the node of the new tree.
-         *
-         * Return the merged tree.
-         *
-         * Note: The merging process must start from the root nodes of both trees.
-         *
-         * Input: root1 = [1,3,2,5], root2 = [2,1,3,null,4,null,7]
-         * Output: [3,4,5,5,4,null,7]
-         * Example 2:
-         *
-         * Input: root1 = [1], root2 = [1,2]
-         * Output: [2,2]
-         */
-        class Solution617 {
-            public TreeNode mergeTrees(TreeNode root1, TreeNode root2) {
-                if (root1 == null) return root2;
-                if (root2 == null) return root1;
-                root1.val += root2.val;
-                root1.left = mergeTrees(root1.left, root2.left);
-                root1.right = mergeTrees(root1.right, root2.right);
-                return root1;
-            }
+    /**
+     * Given the root of a binary search tree and the lowest and highest boundaries as low and high, trim the
+     * tree so that all its elements lies in [low, high]. Trimming the tree should not change the relative
+     * structure of the elements that will remain in the tree (i.e., any node's descendant should remain a descendant).
+     * It can be proven that there is a unique answer.
+     *
+     * Return the root of the trimmed binary search tree. Note that the root may change depending on the given bounds.
+     */
+    class Solution669 {
+        public TreeNode trimBST(TreeNode root, int low, int high) {
+            if (root == null) return root;
+            // According to the property of a BST, if the value of root is bigger than high, all of its right
+            // children will be greater than high, we need to trim the right
+            if (root.val > high) return trimBST(root.left, low, high);
+            // same as left
+            if (root.val < low) return trimBST(root.right, low, high);
+
+            root.left = trimBST(root.left, low, high);
+            root.right = trimBST(root.right, low, high);
+            return root;
         }
+    }
 
+    // 617： merge two binary trees
 
-
-        public static void main(String[] args) {
-            TreeNode root = new TreeNode(0);
+    /**
+     * You are given two binary trees root1 and root2.
+     *
+     * Imagine that when you put one of them to cover the other, some nodes of the two trees are overlapped
+     * while the others are not. You need to merge the two trees into a new binary tree. The merge rule is that
+     * if two nodes overlap, then sum node values up as the new value of the merged node. Otherwise, the NOT
+     * null node will be used as the node of the new tree.
+     *
+     * Return the merged tree.
+     *
+     * Note: The merging process must start from the root nodes of both trees.
+     *
+     * Input: root1 = [1,3,2,5], root2 = [2,1,3,null,4,null,7]
+     * Output: [3,4,5,5,4,null,7]
+     * Example 2:
+     *
+     * Input: root1 = [1], root2 = [1,2]
+     * Output: [2,2]
+     */
+    class Solution617 {
+        public TreeNode mergeTrees(TreeNode root1, TreeNode root2) {
+            if (root1 == null) return root2;
+            if (root2 == null) return root1;
+            root1.val += root2.val;
+            root1.left = mergeTrees(root1.left, root2.left);
+            root1.right = mergeTrees(root1.right, root2.right);
+            return root1;
         }
+    }
+
+    public static void main(String[] args) {
+        System.out.println(5 >> 1);
     }
 }

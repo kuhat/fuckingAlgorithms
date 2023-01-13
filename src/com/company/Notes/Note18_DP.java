@@ -923,7 +923,6 @@ public class Note18_DP {
          * time: O(m * n)
          * space: O(m * n)
          *
-         * @param matrix
          * @return
          */
         public int maximalSquare(char[][] matrix) {
@@ -1906,6 +1905,76 @@ public class Note18_DP {
             while (pp < p.length() && p.charAt(pp) == '*') pp++;
             return pp == p.length();
         }
+
+        /*
+        Dynamic programming:
+
+        The idea would be to reduce the problem to simple ones. For example, there is a string adcebdk and pattern *a*b?k,
+        and we want to compute if there is a match for them: D = True/False. One could notice that it seems to be more
+        simple for short strings and patterns and so it would be logical to relate a match D[p_len][s_len] with the
+        lengths p_len and s_len of input pattern and string correspondingly.
+
+        k F F F F F F F T
+        ? F F F F F F T F
+        b F F F F F T F F
+        * F T T T T T T T
+        a F T F F F F F F
+        * T T T T T T T T
+        # T F F F F F F F
+          # a b c e b d k
+
+         */
+        public boolean isMathch1(String s, String p) {
+            int sLen = s.length(), pLen = p.length();
+            // base cases
+            if (p.equals(s)) return true;
+            if (pLen > 0 && p.chars().allMatch(c -> c == '*')) return true;
+            if (p.isEmpty() || s.isEmpty()) return false;
+            // init all matrix except [0][0] element as False
+            boolean[][] d = new boolean[pLen + 1][sLen + 1];
+            d[0][0] = true;
+
+            // DP compute
+            for (int pIdx = 1; pIdx < pLen + 1; pIdx++) {
+                // the current character in the pattern is '*'
+                if (p.charAt(pIdx - 1) == '*') {
+                    int sIdx = 1;
+
+                    // d[p_idx - 1][s_idx - 1] is a string-pattern match
+                    // on the previous step, i.e. one character before.
+                    // Find the first idx in string with the previous math.
+                    while ((!d[pIdx - 1][sIdx - 1]) && (sIdx < sLen + 1)) {
+                        sIdx++;
+                    }
+
+                    // If (string) matches (pattern),
+                    // when (string) matches (pattern)* as well
+                    d[pIdx][sIdx - 1] = d[pIdx - 1][sIdx - 1];
+
+                    // If (string) matches (pattern),
+                    // when (string)(whatever_characters) matches (pattern)* as well
+                    while (sIdx < sLen + 1) {
+                        d[pIdx][sIdx++] = true;
+                    }
+
+                    // the current character in the pattern is '?'
+                } else if (p.charAt(pIdx - 1) == '?') {
+                    for (int sIdx = 1; sIdx < sLen + 1; sIdx++) {
+                        d[pIdx][sIdx] = d[pIdx - 1][sIdx - 1];
+                    }
+                    // the current character in the pattern is not '*' or '?'
+                } else {
+                    for (int sIdx = 1; sIdx < sLen + 1; sIdx++) {
+                        // Match is possible if there is a previous match
+                        // and current characters are the same
+                        d[pIdx][sIdx] = d[pIdx - 1][sIdx - 1] &&
+                                (p.charAt(pIdx - 1) == s.charAt(sIdx - 1));
+                    }
+                }
+            }
+            return d[pLen][sLen];
+        }
+
     }
 
     // 472： Concatenated words
@@ -2120,9 +2189,8 @@ public class Note18_DP {
     /**
      * Given an integer n, return the least number of perfect square numbers that sum to n.
      *
-     * A perfect square is an integer that is the square of an integer; in other words, it is the product of some integer with itself. For example, 1, 4, 9, and 16 are perfect squares while 3 and 11 are not.
-     *
-     *
+     * A perfect square is an integer that is the square of an integer; in other words, it is the product of some
+     * integer with itself. For example, 1, 4, 9, and 16 are perfect squares while 3 and 11 are not.
      *
      * Example 1:
      *
