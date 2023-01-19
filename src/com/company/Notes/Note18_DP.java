@@ -1003,8 +1003,6 @@ public class Note18_DP {
          * 将s[i]和s[i - 1]组合起来解码（ 组合的数字范围在10 ~ 26之间 ）。如果确定了第i个数和第i - 1个数的解码方式，那么解码前i个数字
          * 和解码前i - 2个数的方案数就是相同的，即f[i] = f[i - 2]。(s[]数组下标从1开始)
          *
-         * @param s
-         * @return
          */
         public int numDecodings(String s){
             if (s ==null || s.length() == 0) return 0;
@@ -2688,6 +2686,95 @@ public class Note18_DP {
         }
     }
 
+    // 1463： Cherry pickup 2
+
+    /**
+     * You are given a rows x cols matrix grid representing a field of cherries where grid[i][j] represents the
+     * number of cherries that you can collect from the (i, j) cell.
+     *
+     * You have two robots that can collect cherries for you:
+     *
+     * Robot #1 is located at the top-left corner (0, 0), and
+     * Robot #2 is located at the top-right corner (0, cols - 1).
+     * Return the maximum number of cherries collection using both robots by following the rules below:
+     *
+     * From a cell (i, j), robots can move to cell (i + 1, j - 1), (i + 1, j), or (i + 1, j + 1).
+     * When any robot passes through a cell, It picks up all cherries, and the cell becomes an empty cell.
+     * When both robots stay in the same cell, only one takes the cherries.
+     * Both robots cannot move outside of the grid at any moment.
+     * Both robots should reach the bottom row in grid.
+     */
+    class Solution1463 {
+        // Top Down DP
+        public int cherryPickup(int[][] grid) {
+            int m = grid.length, n = grid[0].length;
+            int[][][] cache = new int[m][n][n];
+            for (int i = 0; i < m; i++) {
+                for (int j = 0; j < n; j++) {
+                    for (int k = 0; k < n; k++) {
+                        cache[i][j][k] = -1;
+                    }
+                }
+            }
+            /*
+            Let's define the DP state as (row1, col1, row2, col2), where (row1, col1) represents the location of robot1,
+             and (row2, col2) represents the location of robot2.
+            If we move them synchronously, robot1 and robot2 will always on the same row. Therefore, row1 == row2.
+            Let row = row1. The DP state is simplified to (row, col1, col2), where (row, col1) represents the location
+            of robot1, and (row, col2) represents the location of robot2.
+             */
+            return dfs(0, 0, n - 1, cache, grid);
+        }
+
+        public int dfs(int row, int col1, int col2, int[][][] cache, int[][] grid) {
+            if (col1 < 0 || col1 >= grid[0].length || col2 < 0 || col2 >= grid[0].length) return 0;
+            if (cache[row][col1][col2] != -1) return cache[row][col1][col2];
+            int res = 0;
+            res += grid[row][col1];
+            if (col2 != col1) res += grid[row][col2];
+            if (row != grid.length - 1) {
+                int max = 0;
+                /*
+                Since we move robots synchronously, and each robot has three different movements for one step,
+                we totally have 3∗3=93*3 = 93∗3=9 possible movements for two robots:
+                 */
+                for (int newCol1 = col1 - 1; newCol1 <= col1 + 1; newCol1++) {
+                    for (int newCol2 = col2 - 1; newCol2 <= col2 + 1; newCol2++) {
+                        max = Math.max(max, dfs(row + 1, newCol1, newCol2, cache, grid));
+                    }
+                }
+                res += max;
+            }
+            cache[row][col1][col2] = res;
+            return res;
+        }
+
+        // bottom up
+        public int cherryPickUp2(int[][] grid) {
+            int m = grid.length, n = grid[0].length;
+            int[][][] dp = new int[m][n][n];
+            for (int i = m - 1; m >= 0; i--) {
+                for (int col1 = 0; col1 < n; col1 ++) {
+                    for (int col2 = 0; col2 < n ;col2++) {
+                        int res = grid[i][col1];
+                        res += col1 != col2 ? grid[i][col2] : 0;
+                        if (i != m - 1) {
+                            int max = 0;
+                            for (int newCol1 = col1 - 1; newCol1 < col1 + 1; newCol1++) {
+                                for (int newCol2 = col2 - 1; newCol2 < col2 + 1; newCol2++) {
+                                    if (newCol1 >= 0 && newCol1 < n && newCol2 >= 0 && newCol2 < n)
+                                        max = Math.max(max, dp[i + 1][newCol1][newCol2]);
+                                }
+                            }
+                            res += max;
+                        }
+                        dp[i][col1][col2] = res;
+                    }
+                }
+            }
+            return dp[0][0][n - 1];
+        }
+    }
 
     public static void main(String[] args) {
         System.out.println(Arrays.toString(new int[5]));

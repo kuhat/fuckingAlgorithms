@@ -1344,7 +1344,7 @@ public class Note3_Arrays {
             while (i < intervals.length) {
                 res.add(intervals[i++]);
             }
-            return res.toArray(new int[res.size()][]);
+            return res.toArray(new int[res.size()][2]);
         }
     }
 
@@ -4305,6 +4305,162 @@ public class Note3_Arrays {
                 map.put(i + goal, map.getOrDefault(i + goal, 0) + 1);
             }
             return res;
+        }
+    }
+
+
+    // leetcode 1838. Frequency of the Most Frequent Element
+    /**
+     * The frequency of an element is the number of times it occurs in an array.
+     *
+     * You are given an integer array nums and an integer k. In one operation, you can choose an index of nums and
+     * increment the element at that index by 1.
+     *
+     * Return the maximum possible frequency of an element after performing at most k operations.
+     *
+     * Example 1:
+     *
+     * Input: nums = [1,2,4], k = 5
+     * Output: 3
+     * Explanation: Increment the first element three times and the second element two times to make nums = [4,4,4].
+     * 4 has a frequency of 3.
+     * Example 2:
+     *
+     * Input: nums = [1,4,8,13], k = 5
+     * Output: 2
+     * Explanation: There are multiple optimal solutions:
+     * - Increment the first element three times to make nums = [4,4,8,13]. 4 has a frequency of 2.
+     * - Increment the second element four times to make nums = [1,8,8,13]. 8 has a frequency of 2.
+     * - Increment the third element five times to make nums = [1,4,13,13]. 13 has a frequency of 2.
+     */
+    class solution1838{
+        public int maxFrequency(int[] nums, int k) {
+            Arrays.sort(nums);
+            int maxFrequency = 0;
+            int leftPointer = 0, rightPointer = 0;
+            long total = 0;
+            while(rightPointer < nums.length){
+                total += nums[rightPointer];
+                while((long)nums[rightPointer]*(rightPointer - leftPointer + 1) > (total + k)){
+                    total -= nums[leftPointer];
+                    leftPointer++;
+                }
+                //now we have a valid window
+                maxFrequency = Math.max(maxFrequency, (rightPointer - leftPointer + 1));
+                rightPointer++;
+            }
+            return maxFrequency;
+        }
+    }
+
+    // 974：Subarray Sums Divisible by K
+
+    /**
+     * Given an integer array nums and an integer k, return the number of non-empty subarrays that have a sum divisible by k.
+     *
+     * A subarray is a contiguous part of an array.
+     *
+     * Example 1:
+     *
+     * Input: nums = [4,5,0,-2,-3,1], k = 5
+     * Output: 7
+     * Explanation: There are 7 subarrays with a sum divisible by k = 5:
+     * [4, 5, 0, -2, -3, 1], [5], [5, 0], [5, 0, -2, -3], [0], [0, -2, -3], [-2, -3]
+     * Example 2:
+     *
+     * Input: nums = [5], k = 9
+     * Output: 0
+     */
+    class Solution974 {
+        /**
+         * 对于这一题，最先开始想到的就是前缀和来解决
+         * 首先使用暴力破解，但是不能ac
+         *
+         * 首先求出前缀和数组
+         * 然后暴力循环数组来进行求解
+         *
+         * 时间复杂度 n*n
+         * 空间复杂度 n
+         * 既然超时，肯定有优化空间
+         *
+         * 接下来就是计算的时刻
+         * 记前缀和数组为A[i]
+         * 那么 A[i] - A[j] = nums[j+1] +nums[j+2] + ... + nums[i]
+         * 如果此时有 (A[i] - A[j])%k = 0
+         * 则有 A[i] % k = A[j] % k
+         * 利用上述规则，我们可以有一个新的思路
+         *
+         * 也就是对每次的前缀和都取模
+         * 例如，对于数组
+         // 原数组
+         nums = [4,5,0,-2,-3,1]
+         // 前缀和
+         pres = [4,9,9,7,4,5]
+         // 我们都对5进行取模
+         // 就可以得到
+         [4,4,4,2,4,0]
+         *
+         * 其中有4个4，那么就是说有4组前缀和的模都是4，那么这4组中随意取出2组就可以组成一个nums的子数组
+         * 也就是C(4,2)=6
+         * 其中有一个前缀和的模是2，那么就没有与之可以匹配的前缀和，也就是没有nums子数组可以满足条件
+         * 其中有一个前缀和的模是0，是不是就跟2的情况一样呢？
+         * 这个当然不是，前缀和的模是0，那么就是这个前缀和所对应的nums数组满足条件
+         * 比如说上面的 pres[5] = 5，也就是nums[0,5] = 5，换言之就是整个nums数组就可以满足条件
+         * 所以对于上述的例子，最后的答案就是 7
+         */
+        public int subarraysDivByK(int[] nums, int k) {
+            int length = nums.length;
+            Map<Integer, Integer> hash = new HashMap<Integer, Integer>();
+            hash.put(0, 1);
+            int sum = 0;
+            int cnt = 0;
+            for(int i = 0; i < length; ++i){
+                sum += nums[i];
+                int modulus = (sum % k + k) % k;
+                hash.put(modulus, hash.getOrDefault(modulus, 0)+1);
+            }
+            // C(N,M)
+            for(Map.Entry<Integer, Integer> entry:hash.entrySet()){
+                cnt += entry.getValue() * (entry.getValue() - 1) / 2;
+            }
+            return cnt;
+        }
+
+        // 1481: Least Number of Unique Integers after K Removals
+        /**
+         * Given an array of integers arr and an integer k. Find the least number of unique integers after removing exactly k elements.
+         *
+         * Example 1:
+         *
+         * Input: arr = [5,5,4], k = 1
+         * Output: 1
+         * Explanation: Remove the single 4, only 5 is left.
+         * Example 2:
+         * Input: arr = [4,3,1,1,3,3,2], k = 3
+         * Output: 2
+         * Explanation: Remove 4, 2 and either one of the two 1s or three 3s. 1 and 3 will be left.
+         */
+        class Solution1481 {
+            public int findLeastNumOfUniqueInts(int[] arr, int k) {
+                Map<Integer, Integer> map = new HashMap<>();
+                for (int i : arr) {
+                    map.put(i, map.getOrDefault(i, 0) + 1);
+                }
+                PriorityQueue<Map.Entry<Integer, Integer>> pq = new PriorityQueue<>((a,b)->a.getValue()-b.getValue());
+                for (Map.Entry<Integer, Integer> entry: map.entrySet()) {
+                    pq.offer(entry);
+                }
+                int res = map.size();
+                while (k > 0 && !pq.isEmpty()) {
+                    Map.Entry<Integer, Integer> tmp = pq.poll();
+                    int time = tmp.getValue();
+                    if (time <= k) {
+                        res--;
+                        k -= time;
+                    }
+                }
+                return res;
+            }
         }
     }
 

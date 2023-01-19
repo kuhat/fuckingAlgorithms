@@ -2117,6 +2117,94 @@ public class Note13_Tree {
         }
     }
 
+    // 894: All possible Binary Trees
+
+    /**
+     * Given an integer n, return a list of all possible full binary trees with n nodes. Each node of each tree in the answer must have Node.val == 0.
+     *
+     * Each element of the answer is the root node of one possible tree. You may return the final list of trees in any order.
+     *
+     * A full binary tree is a binary tree where each node has exactly 0 or 2 children.
+     * Input: n = 7
+     * Output: [[0,0,0,null,null,0,0,null,null,0,0],[0,0,0,null,null,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,null,null,null,null,0,0],[0,0,0,0,0,null,null,0,0]]
+     */
+    class sol894{
+        public List<TreeNode> allPossibleFBT(int n) {
+            List<TreeNode> res = new ArrayList<>();
+            if(n%2==0) return res; // if n is even, no complete B-tree possible
+            if(n == 1){ // if n is 1, only 1 complete B-tree is possible (0 or 2 children)
+                res.add(new TreeNode(0));
+                return res;
+            }
+
+            /*
+            Intution: A complete Binaray tree is a tree which can have either 0 or 2 children. Hence, to get a complete
+             binary tree we need to have n == EVEN digit and the root can only be odd positions .
+            For eg:     if n=7, then roots can be 1,3,5. (This will be better understood if you draw complete Binary tree for
+            a given n, on a piece of paper). Hence, for any given "n", if we loop from i=1 to n, the left child will always
+            be "i(odd values)" and right child will always be "n-i-1" !
+             */
+            for(int i=1; i<n; i+=2){
+                List<TreeNode> left = allPossibleFBT(i); //recursive call for left subtree children
+                List<TreeNode> right = allPossibleFBT(n-i-1); //recursive call for right subtree children
+                for(TreeNode l:left){  //for - each loop of java is used here
+                    for(TreeNode r:right){
+                        TreeNode root = new TreeNode(0); //iterating values, making trees
+                        root.left = l;
+                        root.right = r;
+                        res.add(root); //filling up the results in list
+                    }
+                }
+            }
+            return res;
+        }
+    }
+
+    // 1008. Construct Binary Search Tree from Preorder Traversal
+
+    /**
+     * Given an array of integers preorder, which represents the preorder traversal of a BST (i.e., binary search tree),
+     * construct the tree and return its root.
+     *
+     * It is guaranteed that there is always possible to find a binary search tree with the given requirements for the
+     * given test cases.
+     *
+     * A binary search tree is a binary tree where for every node, any descendant of Node.left has a value strictly less
+     * than Node.val, and any descendant of Node.right has a value strictly greater than Node.val.
+     *
+     * A preorder traversal of a binary tree displays the value of the node first, then traverses Node.left, then
+     * traverses Node.right.
+     */
+    class sol1008{
+        /*
+        1>we create the node
+            2>we traverse the array for values which are less than the current node!-- these values will become our left
+            subtree.we stop whenever we get a value larger than the current root of the subtree!
+                3>we take the rest of the array(values whuch are greater than the value of the current root)-these are
+                the values which will make out right subtree!
+
+        so we make a root!
+        make the left subtree(recursively)
+        then make right subtree(recursively)
+         */
+        public TreeNode bstFromPreorder(int[] preorder) {
+            return construct(preorder, 0, preorder.length - 1);
+        }
+
+        public TreeNode construct(int[] preorder, int start, int end) {
+            if (start > end ) return null;
+            TreeNode node = new TreeNode(preorder[start]);
+            int i = start;
+            while (i <= end) {
+                if (preorder[i] > node.val) break;
+                i++;
+            }
+            node.left = construct(preorder, start+1, i-1);
+            node.right = construct(preorder, i, end);
+            return node;
+        }
+    }
+
     public static void main(String[] args) {
         System.out.println(5 >> 1);
     }
