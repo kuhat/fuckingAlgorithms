@@ -2297,8 +2297,6 @@ public class Note18_DP {
      *
      * Return the maximum score you can get.
      *
-     *
-     *
      * Example 1:
      *
      * Input: nums = [1,-1,-2,4,-7,3], k = 2
@@ -2444,9 +2442,11 @@ public class Note18_DP {
     // 361:
 
     /**
-     * Given an m x n matrix grid where each cell is either a wall 'W', an enemy 'E' or empty '0', return the maximum enemies you can kill using one bomb. You can only place the bomb in an empty cell.
+     * Given an m x n matrix grid where each cell is either a wall 'W', an enemy 'E' or empty '0', return the maximum
+     * enemies you can kill using one bomb. You can only place the bomb in an empty cell.
      *
-     * The bomb kills all the enemies in the same row and column from the planted point until it hits the wall since it is too strong to be destroyed.
+     * The bomb kills all the enemies in the same row and column from the planted point until it hits the wall since
+     * it is too strong to be destroyed.
      *
      * Input: grid = [["0","E","0","0"],["E","0","W","E"],["0","E","0","0"]]
      * Output: 3
