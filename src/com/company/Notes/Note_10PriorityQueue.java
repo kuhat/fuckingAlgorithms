@@ -671,6 +671,56 @@ public class Note_10PriorityQueue {
         return res;
     }
 
+    // 1057: Campus bike
+
+    /**
+     * On a campus represented on the X-Y plane, there are n workers and m bikes, with n <= m.
+     *
+     * You are given an array workers of length n where workers[i] = [xi, yi] is the position of the ith worker.
+     * You are also given an array bikes of length m where bikes[j] = [xj, yj] is the position of the jth bike. All the given positions are unique.
+     *
+     * Assign a bike to each worker. Among the available bikes and workers, we choose the (workeri, bikej) pair with
+     * the shortest Manhattan distance between each other and assign the bike to that worker.
+     *
+     * If there are multiple (workeri, bikej) pairs with the same shortest Manhattan distance, we choose the pair with
+     * the smallest worker index. If there are multiple ways to do that, we choose the pair with the smallest bike index.
+     * Repeat this process until there are no available workers.
+     *
+     * Return an array answer of length n, where answer[i] is the index (0-indexed) of the bike that the ith worker is assigned to.
+     *
+     * The Manhattan distance between two points p1 and p2 is Manhattan(p1, p2) = |p1.x - p2.x| + |p1.y - p2.y|.
+     *
+     *Input: workers = [[0,0],[2,1]], bikes = [[1,2],[3,3]]
+     * Output: [1,0]
+     * Explanation: Worker 1 grabs Bike 0 as they are closest (without ties), and Worker 0 is assigned Bike 1. So the output is [1, 0].
+     */
+    class Solution1057{
+        public int[] assignBikes(int[][] workers, int[][] bikes) {
+            List<int[]> pair = new ArrayList<>();
+            for (int i = 0; i < workers.length; i++) {
+                for (int j = 0; j < bikes.length; j++) {
+                    int x1 = workers[i][0], y1 = workers[i][1];
+                    int x2 = bikes[j][0], y2 = bikes[j][1];
+                    int dist = Math.abs(x1 - x2) + Math.abs(y1 - y2);
+                    pair.add(new int[]{dist, i, j});
+                }
+            }
+            Collections.sort(pair, (a, b)-> a[0] != b[0] ? a[0] - b[0] : a[1] != b[1] ? a[1] - b[1] : a[2] - b[2]);
+            int[] res = new int[workers.length];
+            Arrays.fill(res, -1);
+            boolean[] used = new boolean[bikes.length];
+            for (int[] d : pair) {
+                int idxW = d[1], idxB = d[2];
+                if (!used[idxB] && res[idxW] == -1) {
+                    res[idxW] = idxB;
+                    used[idxB] = true;
+                }
+            }
+
+            return res;
+        }
+    }
+
 
     public static void main(String[] args) {
         int[] res = findInt(4, 2, new int[]{4, 2, 1, 3});

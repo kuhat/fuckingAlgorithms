@@ -95,7 +95,7 @@ public class Note18_DP {
     public boolean wordBreakDP1(String s, List<String> wordDict) {
         boolean[] dp = new boolean[s.length() + 1];  // 初始化为false
         dp[0] = true;
-        for (int i = 1; i < s.length(); i++) {
+        for (int i = 1; i <= s.length(); i++) {
             for (int j = 0; j < i; j++) {  // 从头开始看wordDict里面有没有，如果前面j的为true，后面j到i再dict里面找得到就
                 if (dp[j] && wordDict.contains(s.substring(j, i))) {    // 把i前面的改为true
                     dp[i] = true;
@@ -2182,7 +2182,7 @@ public class Note18_DP {
      */
 
 
-    // 297： Perfect Squares
+    // 279： Perfect Squares
 
     /**
      * Given an integer n, return the least number of perfect square numbers that sum to n.
@@ -2816,6 +2816,66 @@ public class Note18_DP {
         }
     }
 
+    //2272 ： substring with largest variance
+
+    /**
+     * The variance of a string is defined as the largest difference between the number of occurrences of any 2
+     * characters present in the string. Note the two characters may or may not be the same.
+     *
+     * Given a string s consisting of lowercase English letters only, return the largest variance possible among
+     * all substrings of s.
+     *
+     * A substring is a contiguous sequence of characters within a string.
+     *
+     * Example 1:
+     *
+     * Input: s = "aababbb"
+     * Output: 3
+     * Explanation:
+     * All possible variances along with their respective substrings are listed below:
+     * - Variance 0 for substrings "a", "aa", "ab", "abab", "aababb", "ba", "b", "bb", and "bbb".
+     * - Variance 1 for substrings "aab", "aba", "abb", "aabab", "ababb", "aababbb", and "bab".
+     * - Variance 2 for substrings "aaba", "ababbb", "abbb", and "babb".
+     * - Variance 3 for substring "babbb".
+     * Since the largest possible variance is 3, we return it.
+     */
+
+    class Solution2272{
+        /*
+        设出现次数最多的字母为 a，视为 1，出现最少的字母为 b，视为 -1，把其余字母视为 0。这里我们需要几个变量，diff 维护 a 和 b 的出现次数之差，
+        diffWithB 维护包含了 b 的 a 和 b 的出现次数之差，初始化为 -s.length()，因为还没有出现 b。
+
+        开始遍历字符串的时候，
+
+            遇到 a，diff++, diffWithB++
+            遇到 b, diff--, diffWithB = diff。如果 diff < 0，则把 diff 置为 0。因为如果当前这一段子串导致 diff 为负，留着也没用，丢弃即可。
+
+        统计所有 diffWithB 的最大值，即为答案。若 s 只有一种字符则答案为 0。
+        时间O(26 * 25) = O(1)
+         */
+        public int largestVariance(String s) {
+            var res = 0;
+            for (var a = 'a'; a <= 'z'; a++) {
+                for (var b = 'a'; b <= 'z'; b++) {
+                    if (a == b) continue;
+                    var diff=  0;
+                    var diffWithB = -s.length();
+                    for (int i = 0; i < s.length(); i++) {
+                        if (s.charAt(i) == a) {
+                            diff++;
+                            diffWithB++;
+                        } else if (s.charAt(i) == b) {
+                            diff--;
+                            diffWithB = diff;
+                            diff = Math.max(0, diff);
+                        }
+                    }
+                    res = Math.max(diffWithB, res);
+                }
+            }
+            return res;
+        }
+    }
     public static void main(String[] args) {
         System.out.println(Arrays.toString(new int[5]));
     }

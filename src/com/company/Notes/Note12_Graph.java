@@ -942,7 +942,6 @@ public class Note12_Graph {
         public List<Node> getNodes(Node node) {
             Queue<Node> queue = new LinkedList<>();
             HashSet<Node> set = new HashSet<>();
-
             queue.offer(node);
             set.add(node);
             while (!queue.isEmpty()) {
@@ -1225,7 +1224,7 @@ public class Note12_Graph {
             visited.add(0);
             boolean res = helper(graph, visited, 0, -1);
             if (res == false) return false;
-            return visited.size() == n ? true : false;
+            return visited.size() == n;
         }
 
         private boolean helper(List<List<Integer>> graph, HashSet<Integer> visited, int node, int parent) {
@@ -2143,4 +2142,220 @@ public class Note12_Graph {
         }
     }
 
+    // 997: find the town judge
+    /**
+     * In a town, there are n people labeled from 1 to n. There is a rumor that one of these people is secretly the town judge.
+     *
+     * If the town judge exists, then:
+     *
+     * The town judge trusts nobody.
+     * Everybody (except for the town judge) trusts the town judge.
+     * There is exactly one person that satisfies properties 1 and 2.
+     * You are given an array trust where trust[i] = [ai, bi] representing that the person labeled ai trusts the person labeled bi.
+     *
+     * Return the label of the town judge if the town judge exists and can be identified, or return -1 otherwise.
+     *
+     * Example 1:
+     *
+     * Input: n = 2, trust = [[1,2]]
+     * Output: 2
+     * Example 2:
+     *
+     * Input: n = 3, trust = [[1,3],[2,3]]
+     * Output: 3
+     * Example 3:
+     *
+     * Input: n = 3, trust = [[1,3],[2,3],[3,1]]
+     * Output: -1
+     */
+    class Solution997 {
+        public int findJudge(int N, int[][] trust) {
+            if (trust.length < N - 1) {
+                return -1;
+            }
+
+            int[] trustScores = new int[N + 1];
+            // 一个人如果信任另一个人，这个人得分减一
+            // 一个人如果被另一个信任，这个人得分加一
+            for (int[] relation : trust) {
+                trustScores[relation[0]]--;
+                trustScores[relation[1]]++;
+            }
+            // 最后法官的分数一定是N-1， 因为他被其他所有人信任
+            for (int i = 1; i <= N; i++) {
+                if (trustScores[i] == N - 1) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+    }
+
+    // dfs 求解最短城市距离问题
+    /**
+     * intput:
+     * graph: [[1, 3, 5], [1, 4, 6], [2, 4, 5], [6, 1, 3], [3, 1, 2], [2, 4, 1], [6, 1, 2]], 二维数组，其中第一个参数为起点，第二个为
+     * 与这个点相连的点，最后一个是这条路径的权重
+     * int dist: 想要到的目的地
+     * int n: 共有多少个城市
+     * int source: 起点
+     */
+    class dfs{
+        int min = Integer.MAX_VALUE;
+        public int solution(int[][] map, int n, int source, int dist) {
+            int[][] graph = new int[n][n];
+            for (int i = 0; i < graph.length; i++) {
+                Arrays.fill(graph[i], Integer.MAX_VALUE);
+            }
+            for (int i = 0;i < map.length; i++) {
+                graph[map[i][0]][map[i][1]] = map[i][2];
+            }
+            dfs(graph, source, dist, 0, new int[n]);
+            return min;
+        }
+
+        public void dfs(int[][] graph, int cur, int dist, int sum, int[] book) {
+            if (sum > min) return;
+            if (cur == dist) {
+                min = Math.min(min, sum);
+                return;
+            }
+            for (int i = 0; i < graph.length; i++) {
+                if (graph[cur][i] != Integer.MAX_VALUE && book[i] == 0) {
+                    book[i] = 1;
+                    dfs(graph, i, dist, sum + graph[cur][i], book);
+                    book[i] = 0;
+                }
+            }
+        }
+    }
+
+    // leetcode 2359 Find closest Node at given two nodes
+    /**
+     * You are given a directed graph of n nodes numbered from 0 to n - 1, where each node has at most one outgoing edge.
+     *
+     * The graph is represented with a given 0-indexed array edges of size n, indicating that there is a directed edge
+     * from node i to node edges[i]. If there is no outgoing edge from i, then edges[i] == -1.
+     *
+     * You are also given two integers node1 and node2.
+     *
+     * Return the index of the node that can be reached from both node1 and node2, such that the maximum between the
+     * distance from node1 to that node, and from node2 to that node is minimized. If there are multiple answers,
+     * return the node with the smallest index, and if no possible answer exists, return -1.
+     *
+     * Note that edges may contain cycles.
+     *
+     *Input: edges = [2,2,3,-1], node1 = 0, node2 = 1
+     * Output: 2
+     * Explanation: The distance from node 0 to node 2 is 1, and the distance from node 1 to node 2 is 1.
+     * The maximum of those two distances is 1. It can be proven that we cannot get a node with a smaller
+     * maximum distance than 1, so we return node 2.
+     *
+     * Input: edges = [1,2,-1], node1 = 0, node2 = 2
+     * Output: 2
+     * Explanation: The distance from node 0 to node 2 is 2, and the distance from node 2 to itself is 0.
+     * The maximum of those two distances is 2. It can be proven that we cannot get a node with a smaller
+     * maximum distance than 2, so we return node 2.
+     */
+    class Solution2359 {
+        /*
+        In this approach, we begin BFS traversals for both node1 and node2 to compute the shortest distances from node1
+         and node2 to all other nodes. We store the results in arrays labeled dist1 and dist2, respectively. We also set
+         two variables: minDistNode = -1, which is the answer to our problem, and minDistTillNow, which is the maximum
+          between the distances from node1 to minDistNode and from node2 to minDistNode.
+
+        Now, we iterate over all of the nodes from 0 to n - 1. For each node, say currNode we check if the maximum distance
+        from node1 and node2 is smaller than the other nodes previously seen. If minDistTillNow > max(dist1[currNode],
+        dist2[currNode]), we have a node currNode with a smaller maximum value between the distances from node1 to
+        currNode and from node2 to currNode. In this case, we update the minDistTillNow to minDistTillNow = max(dist1[currNode],
+        dist2[currNode]) and update the minDistNode to minDistNode = currNode.
+
+        Otherwise, if minDistTillNow <= max(dist1[currNode], dist2[currNode]) we do not do anything. We return minDistNode
+        at the end of all the iterations over every node. We would never update the variable currNode if we couldn't reach
+        any node that is reachable from node1 and node2. In that case, we'd return the currNode variable with its original value of -1.
+         */
+        public int closestMeetingNode(int[] edges, int node1, int node2) {
+            int n = edges.length;
+            int[] dist1 = new int[n], dist2 = new int[n];  // dist1 and dist2 to store the smallest dist from the node1 and node2 to all the other nodes
+            Arrays.fill(dist1, Integer.MAX_VALUE);
+            Arrays.fill(dist2, Integer.MAX_VALUE);
+            bfs(edges, node1, dist1);
+            bfs(edges, node2, dist2);
+
+            int minNode = -1, minDist = Integer.MAX_VALUE;
+            for (int i = 0; i < n; i++) {
+                if (minDist > Math.max(dist1[i], dist2[i])) {
+                    minDist = Math.max(dist1[i], dist2[i]);
+                    minNode = i;
+                }
+            }
+            return minNode;
+        }
+
+        // run bfs to get the distance from node to all the other nodes
+        public void bfs(int[] edges, int node, int[] dist) {
+            Queue<Integer> qu = new LinkedList<>();
+            Set<Integer> visited = new HashSet<>();
+            qu.offer(node);
+            visited.add(node);
+            dist[node] = 0;
+            while (!qu.isEmpty()) {
+                int cur = qu.poll();
+                if (visited.contains(cur)) continue;
+                visited.add(cur);
+                int neighbor = edges[cur];
+                if (neighbor != -1 && !visited.contains(neighbor)) {
+                    dist[neighbor] = 1 + dist[cur];
+                    qu.offer(neighbor);
+                }
+            }
+        }
+    }
+
+    // 684: redundant connections
+    /**
+     * In this problem, a tree is an undirected graph that is connected and has no cycles.
+     *
+     * You are given a graph that started as a tree with n nodes labeled from 1 to n, with one additional edge added.
+     * The added edge has two different vertices chosen from 1 to n, and was not an edge that already existed. The graph
+     * is represented as an array edges of length n where edges[i] = [ai, bi] indicates that there is an edge between nodes
+     * ai and bi in the graph.
+     *
+     * Return an edge that can be removed so that the resulting graph is a tree of n nodes. If there are multiple answers,
+     * return the answer that occurs last in the input.
+     */
+
+    class Solution684 {
+
+        // 查并集
+        int[] parent;
+        public int[] findRedundantConnection(int[][] edges) {
+            int len = edges.length;
+            // 初始化父节点们 （每个节点的父节点为他自己）
+            parent = new int[len + 1];
+            for (int i = 0; i <= len; i++) {
+                parent[i] = i;
+            }
+            for (int i = 0; i < len; i++) {
+                int[] cur = edges[i];
+                int a = cur[0];
+                int b = cur[1];
+                // if the parents of a and b are not the same, combine them to the same set
+                if(find(a) != find(b)) union(a, b);
+                // 如果两个当前节点的根相同了代表找到环了，返回这个边
+                else return cur;
+            }
+            return new int[2];
+        }
+        public int find(int k) {
+            if(parent[k] != k) parent[k] = find(parent[k]);
+            return parent[k];
+        }
+
+        public void union(int a, int b) {
+            int pa = find(a);  // find the root of a
+            int pb = find(b);  // find the root of b
+            parent[pa] = pb;  // 将a的根的根设为b的根，合并两个集合
+        }
+    }
 }

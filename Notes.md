@@ -3632,7 +3632,49 @@ public class mazeOfChessBoard{
 
 A和1，2相连，B和2，3相连，C和1，2相连，如何形成最大匹配。
 
+## 12.5 查并集
 
+![Union find teplate](https://blog.csdn.net/weixin_42970433/article/details/112554049)
+
+### 684. Redundant Connection
+* Description: n this problem, a tree is an undirected graph that is connected and has no cycles.
+ou are given a graph that started as a tree with n nodes labeled from 1 to n, with one additional edge added. The 
+added edge has two different vertices chosen from 1 to n, and was not an edge that already existed. The graph is represented as an array edges of length n where edges[i] = [ai, bi] indicates that there is an edge between nodes ai and bi in the graph.
+Return an edge that can be removed so that the resulting graph is a tree of n nodes. If there are multiple answers, return the answer that occurs last in the input.
+
+```java
+class Solution {
+      int[] parent;
+        public int[] findRedundantConnection(int[][] edges) {
+            int len = edges.length;
+            // 初始化父节点们 （每个节点的父节点为他自己）
+            parent = new int[len + 1];
+            for (int i = 0; i <= len; i++) {
+                parent[i] = i;
+            }
+            for (int i = 0; i < len; i++) {
+                int[] cur = edges[i];
+                int a = cur[0];
+                int b = cur[1];
+                // if the parents of a and b are not the same, combine them to the same set
+                if(find(a) != find(b)) union(a, b);
+                // 如果两个当前节点的根相同了代表找到环了，返回这个边
+                else return cur;
+            }
+            return new int[2];
+        }
+        public int find(int k) {
+            if(parent[k] != k) parent[k] = find(parent[k]);
+            return parent[k];
+        }
+        
+        public void union(int a, int b) {
+            int pa = find(a);  // find the root of a
+            int pb = find(b);  // find the root of b
+            parent[pa] = pb;  // 将a的根的根设为b的根，合并两个集合
+        }
+}
+```
 
 # 13. Tree
 
