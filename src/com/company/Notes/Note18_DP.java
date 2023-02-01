@@ -417,14 +417,15 @@ public class Note18_DP {
     }
 
     // 63: unique path 2
+
     /**
      * You are given an m x n integer array grid. There is a robot initially located at the top-left corner (i.e., grid[0][0]).
      * The robot tries to move to the bottom-right corner (i.e., grid[m-1][n-1]). The robot can only move either down or right at any point in time.
-     *
+     * <p>
      * An obstacle and space are marked as 1 or 0 respectively in grid. A path that the robot takes cannot include any square that is an obstacle.
-     *
+     * <p>
      * Return the number of possible unique paths that the robot can take to reach the bottom-right corner.
-     *
+     * <p>
      * Input: obstacleGrid = [[0,0,0],[0,1,0],[0,0,0]]
      * Output: 2
      * Explanation: There is one obstacle in the middle of the 3x3 grid above.
@@ -432,7 +433,7 @@ public class Note18_DP {
      * 1. Right -> Right -> Down -> Down
      * 2. Down -> Down -> Right -> Right
      */
-    class Solution63{
+    class Solution63 {
         public int uniquePathsWithObstacles(int[][] obstacleGrid) {
             int length = obstacleGrid[0].length;
             int[] res = new int[length];
@@ -489,8 +490,8 @@ public class Note18_DP {
          * insert: dp[i][j] = dp[i][j - 1] + 1;
          * replace: dp[i][j] = dp[i - 1][j - 1] + 1;
          * delete: dp[i][j] = dp[i - 1][j] + 1;
-         *     a b c d
-         *   0 1 2 3 4
+         * a b c d
+         * 0 1 2 3 4
          * a 1 0 1 2 3
          * e 2 1 1 2 3
          * f 3 2 2 2 3
@@ -623,9 +624,9 @@ public class Note18_DP {
      * Input: triangle = [[2],[3,4],[6,5,7],[4,1,8,3]]
      * Output: 11
      * Explanation: The triangle looks like:
-     *    2
-     *   3 4
-     *  6 5 7
+     * 2
+     * 3 4
+     * 6 5 7
      * 4 1 8 3
      * The minimum path sum from top to bottom is 2 + 3 + 5 + 1 = 11 (underlined above).
      * Example 2:
@@ -648,7 +649,7 @@ public class Note18_DP {
             for (int i = triangle.size() - 1; i >= 0; i--) {
                 for (int j = 0; j < triangle.get(i).size(); j++) {
                     // 上一层的第j个数字对应数字的最小值是这一层的第j和第j+1个
-                    res[j] = Math.min(res[j], res[j + 1])+ triangle.get(i).get(j);
+                    res[j] = Math.min(res[j], res[j + 1]) + triangle.get(i).get(j);
                 }
             }
             return res[0];
@@ -656,16 +657,17 @@ public class Note18_DP {
     }
 
     // 494 target Sum
+
     /**
      * You are given an integer array nums and an integer target.
-     *
+     * <p>
      * You want to build an expression out of nums by adding one of the symbols '+' and '-' before each integer in nums and then concatenate all the integers.
-     *
+     * <p>
      * For example, if nums = [2, 1], you can add a '+' before 2 and a '-' before 1 and concatenate them to build the expression "+2-1".
      * Return the number of different expressions that you can build, which evaluates to target.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: nums = [1,1,1,1,1], target = 3
      * Output: 5
      * Explanation: There are 5 ways to assign symbols to make the sum of nums be target 3.
@@ -675,13 +677,13 @@ public class Note18_DP {
      * +1 + 1 + 1 - 1 + 1 = 3
      * +1 + 1 + 1 + 1 - 1 = 3
      * Example 2:
-     *
+     * <p>
      * Input: nums = [1], target = 1
      * Output: 1
-     *
      */
     class Solution494 {
         int count = 0;
+
         public int findTargetSumWays(int[] nums, int target) {
 
             dfs(nums, target, 0, 0);
@@ -702,18 +704,18 @@ public class Note18_DP {
 
     /**
      * You are climbing a staircase. It takes n steps to reach the top.
-     *
+     * <p>
      * Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: n = 2
      * Output: 2
      * Explanation: There are two ways to climb to the top.
      * 1. 1 step + 1 step
      * 2. 2 steps
      * Example 2:
-     *
+     * <p>
      * Input: n = 3
      * Output: 3
      * Explanation: There are three ways to climb to the top.
@@ -721,7 +723,7 @@ public class Note18_DP {
      * 2. 1 step + 2 steps
      * 3. 2 steps + 1 step
      */
-    class solution70{
+    class solution70 {
         public int climbStairs(int n) {
             if (n <= 2) return n;
             else return climbStairs(n - 1) + climbStairs(n - 2);
@@ -742,16 +744,15 @@ public class Note18_DP {
     // 115 Distinct Subsequences  重要，基础题
 
     /**
-     *
      * Given two strings s and t, return the number of distinct subsequences of s which equals t.
-     *
+     * <p>
      * A string's subsequence is a new string formed from the original string by deleting some (can be none) of the
      * characters without disturbing the remaining characters' relative positions. (i.e., "ACE" is a subsequence of "ABCDE" while "AEC" is not).
-     *
+     * <p>
      * The test cases are generated so that the answer fits on a 32-bit signed integer.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: s = "rabbbit", t = "rabbit"
      * Output: 3
      * Explanation:
@@ -760,26 +761,26 @@ public class Note18_DP {
      * rabbbit
      * rabbbit
      */
-    class Solution115{
+    class Solution115 {
 
         /**
          * S = b a b g b a g
          * t = b a g
-         *
-         *     0 1 2 3 4 5 6 7
-         *       b a b g b a g
+         * <p>
+         * 0 1 2 3 4 5 6 7
+         * b a b g b a g
          * 0   1 1 1 1 1 1 1 1
          * 1 b 0 1 1 2 2 3 3 3
          * 2 a 0 0 1 1 1 1 4 4
          * 3 g 0 0 0 0 1 1 1 5
-         *
+         * <p>
          * 比如说 （6，2）这个位置
          * 当前要匹配b a, 已经走到了 b a b g b a
          * 为什么会得到这个4呢：
          * s的前面已经出现了三个 b，正如dp[i - 1][j - 1]的数值，代表可以组成三个b a了
          * 这时t出现了一个a, 前面已经有了一个a，也就是说前面已经可以组成一个b a了
          * 总的就是3+1=4
-         *
+         * <p>
          * 状态转移方程：
          * 如果字符串t的第i个字符和s的第j个字符一样
          * 当前的值就等于坐上方的那个值加上左边的值
@@ -795,12 +796,12 @@ public class Note18_DP {
             int[][] dp = new int[tlen + 1][slen + 1];
 
             // base case
-            for (int j = 0; j <= slen; j ++) dp[0][j] = 1;
+            for (int j = 0; j <= slen; j++) dp[0][j] = 1;
 
             for (int i = 1; i <= tlen; i++) {
                 for (int j = 1; j <= slen; j++) {
                     // 递推公式
-                    if (t.charAt(i - 1) == s.charAt(j - 1)) dp[i][j] = dp[i - 1][j -1] + dp[i][j - 1];
+                    if (t.charAt(i - 1) == s.charAt(j - 1)) dp[i][j] = dp[i - 1][j - 1] + dp[i][j - 1];
                     else dp[i][j] = dp[i][j - 1];
                 }
             }
@@ -813,9 +814,9 @@ public class Note18_DP {
     /**
      * Given a m x n grid filled with non-negative numbers, find a path from top left to bottom right,
      * which minimizes the sum of all numbers along its path.
-     *
+     * <p>
      * Note: You can only move either down or right at any point in time.
-     *
+     * <p>
      * Input: grid = [[1,3,1],[1,5,1],[4,2,1]]
      * Output: 7
      * Explanation: Because the path 1 → 3 → 1 → 1 → 1 minimizes the sum.
@@ -824,14 +825,14 @@ public class Note18_DP {
     class Solution64 {
         public int minPathSum(int[][] grid) {
             int row = grid.length, col = grid[0].length;
-            for (int i = 0; i < row ; i++) {
-                for (int j = 0; j < col; j ++) {
+            for (int i = 0; i < row; i++) {
+                for (int j = 0; j < col; j++) {
                     if (i == 0 && j != 0) grid[i][j] += grid[i][j - 1];
                     if (i != 0 && j == 0) grid[i][j] += grid[i - 1][j];
-                    if (i != 0 && j!= 0) grid[i][j] += Math.min(grid[i - 1][j], grid[i][j - 1]);
+                    if (i != 0 && j != 0) grid[i][j] += Math.min(grid[i - 1][j], grid[i][j - 1]);
                 }
             }
-            return grid[row - 1][col- 1];
+            return grid[row - 1][col - 1];
         }
     }
 
@@ -841,35 +842,34 @@ public class Note18_DP {
      * The demons had captured the princess and imprisoned her in the bottom-right corner of a dungeon. The dungeon
      * consists of m x n rooms laid out in a 2D grid. Our valiant knight was initially positioned in the top-left room
      * and must fight his way through dungeon to rescue the princess.
-     *
+     * <p>
      * The knight has an initial health point represented by a positive integer. If at any point his health point drops
      * to 0 or below, he dies immediately.
-     *
+     * <p>
      * Some of the rooms are guarded by demons (represented by negative integers), so the knight loses health upon
      * entering these rooms; other rooms are either empty (represented as 0) or contain magic orbs that
      * increase the knight's health (represented by positive integers).
-     *
+     * <p>
      * To reach the princess as quickly as possible, the knight decides to move only rightward or downward in each step.
-     *
+     * <p>
      * Return the knight's minimum initial health so that he can rescue the princess.
-     *
+     * <p>
      * Note that any room can contain threats or power-ups, even the first room the knight enters and the bottom-right room where the princess is imprisoned.
-     *
+     * <p>
      * Input: dungeon =
      * [[-2,-3,3],
      * [-5,-10,1],
      * [10,30,-5]]
-     *
+     * <p>
      * [[-2,-3, 2],
-     *  [-5,-10,5],
-     *  [1,  1, 6]]
-     *
+     * [-5,-10,5],
+     * [1,  1, 6]]
+     * <p>
      * Output: 7
      * Explanation: The initial health of the knight must be at least 7 if he follows the optimal path: RIGHT-> RIGHT -> DOWN -> DOWN.
-     *
      */
 
-    class Solution174{
+    class Solution174 {
 
         // 我们知道最后一格的数值，骑士的血量知道就为最后一个的数值加一
         class Solution {
@@ -878,9 +878,9 @@ public class Note18_DP {
                 int m = dungeon.length, n = dungeon[0].length;
                 int[][] dp = new int[m][n];
                 // 骑士的血量初始值为最后一格的数值加一，或者最后一格为正数的话就为1
-                dp[m - 1][n - 1] = Math.max(1 - dungeon[m - 1][ n - 1], 1);
+                dp[m - 1][n - 1] = Math.max(1 - dungeon[m - 1][n - 1], 1);
                 // 最后一列初始化
-                for (int i = m -2; i >= 0; i--) {
+                for (int i = m - 2; i >= 0; i--) {
                     dp[i][n - 1] = Math.max(dp[i + 1][n - 1] - dungeon[i][n - 1], 1);  // 此格的值等于下一行的数值减去此格的值, 如果为负数，说明骑士的血为1就可以了
                 }
                 // 最后一行初始化
@@ -888,8 +888,8 @@ public class Note18_DP {
                     dp[m - 1][i] = Math.max(dp[m - 1][i + 1] - dungeon[m - 1][i], 1);
                 }
 
-                for (int i = m - 2; i >= 0;i --) {
-                    for(int j = n - 2; j >= 0; j--) {
+                for (int i = m - 2; i >= 0; i--) {
+                    for (int j = n - 2; j >= 0; j--) {
                         int down = Math.max(dp[i + 1][j] - dungeon[i][j], 1);
                         int right = Math.max(dp[i][j + 1] - dungeon[i][j], 1);
                         dp[i][j] = Math.min(down, right);  // 当前的值为向下走和向右走中的最小值
@@ -904,22 +904,22 @@ public class Note18_DP {
 
     /**
      * Given an m x n binary matrix filled with 0's and 1's, find the largest square containing only 1's and return its area.
-     *
+     * <p>
      * Input: matrix = [["1","0","1","0","0"],["1","0","1","1","1"],["1","1","1","1","1"],["1","0","0","1","0"]]
      * Output: 4
-     *
+     * <p>
      * Input: matrix = [["0","1"],["1","0"]]
      * Output: 1
      */
-    class Solution221{
+    class Solution221 {
         /**
          * 判断一个格子是否为正方形需要判断左边上边斜左边是否同时为1
-         * 
+         * <p>
          * 1 0 1 0 0
          * 1 0 1 1 1
-         * 1 1 1 1 1 
+         * 1 1 1 1 1
          * 1 0 0 1 0
-         *
+         * <p>
          * time: O(m * n)
          * space: O(m * n)
          *
@@ -928,12 +928,12 @@ public class Note18_DP {
         public int maximalSquare(char[][] matrix) {
             if (matrix.length == 0) return 0;
             int m = matrix.length, n = matrix[0].length;
-            int res =0;
+            int res = 0;
             int[][] dp = new int[m + 1][n + 1];
             for (int i = 1; i <= m; i++) {
                 for (int j = 1; j <= n; j++) {
-                    if (matrix[i - 1][j - 1]== '1') {  // 当前的格子为1，代表可能形成正方形。如果是0，肯定构成不了正方形
-                        dp[i][j] = Math.min(Math.min(dp[i][j - 1], dp[i - 1][j - 1]), dp[i- 1][j]) + 1;  // 取左方上方和斜上方的最小值，然后再加一
+                    if (matrix[i - 1][j - 1] == '1') {  // 当前的格子为1，代表可能形成正方形。如果是0，肯定构成不了正方形
+                        dp[i][j] = Math.min(Math.min(dp[i][j - 1], dp[i - 1][j - 1]), dp[i - 1][j]) + 1;  // 取左方上方和斜上方的最小值，然后再加一
                         res = Math.max(res, dp[i][j]);
                     }
                 }
@@ -943,43 +943,42 @@ public class Note18_DP {
     }
 
     // 91: Decode ways. 很重要，排名第一位 facebook高频
+
     /**
-     *
      * A message containing letters from A-Z can be encoded into numbers using the following mapping:
-     *
+     * <p>
      * 'A' -> "1"
      * 'B' -> "2"
      * ...
      * 'Z' -> "26"
      * To decode an encoded message, all the digits must be grouped then mapped back into letters using the reverse of
      * the mapping above (there may be multiple ways). For example, "11106" can be mapped into:
-     *
+     * <p>
      * "AAJF" with the grouping (1 1 10 6)
      * "KJF" with the grouping (11 10 6)
      * Note that the grouping (1 11 06) is invalid because "06" cannot be mapped into 'F' since "6" is different from "06".
-     *
+     * <p>
      * Given a string s containing only digits, return the number of ways to decode it.
-     *
+     * <p>
      * The test cases are generated so that the answer fits in a 32-bit integer.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: s = "12"
      * Output: 2
      * Explanation: "12" could be decoded as "AB" (1 2) or "L" (12).
      * Example 2:
-     *
+     * <p>
      * Input: s = "226"
      * Output: 3
      * Explanation: "226" could be decoded as "BZ" (2 26), "VF" (22 6), or "BBF" (2 2 6).
      * Example 3:
-     *
+     * <p>
      * Input: s = "06"
      * Output: 0
      * Explanation: "06" cannot be mapped to "F" because of the leading zero ("6" is different from "06").
-     *
      */
-    class Solution91{
+    class Solution91 {
 
         /*
         1231：
@@ -997,15 +996,13 @@ public class Note18_DP {
          */
 
         /**
-         *
          * 如果s[i]不为0，则可以单独解码s[i]，由于求的是方案数，如果确定了第i个数字的翻译方式，那么解码前i个数字和解码前i - 1个数的方案数就是相同的，
          * 即f[i] = f[i - 1]。(s[]数组下标从1开始)
          * 将s[i]和s[i - 1]组合起来解码（ 组合的数字范围在10 ~ 26之间 ）。如果确定了第i个数和第i - 1个数的解码方式，那么解码前i个数字
          * 和解码前i - 2个数的方案数就是相同的，即f[i] = f[i - 2]。(s[]数组下标从1开始)
-         *
          */
-        public int numDecodings(String s){
-            if (s ==null || s.length() == 0) return 0;
+        public int numDecodings(String s) {
+            if (s == null || s.length() == 0) return 0;
             int len = s.length();
             int[] dp = new int[len + 1];  // 从1开始遍历
             dp[0] = 1;
@@ -1023,41 +1020,40 @@ public class Note18_DP {
             return dp[len];
         }
     }
-    
-   // 97 Interleaving String
+
+    // 97 Interleaving String
 
     /**
      * Given strings s1, s2, and s3, find whether s3 is formed by an interleaving of s1 and s2.
-     *
+     * <p>
      * An interleaving of two strings s and t is a configuration where s and t are divided into n and m non-empty substrings respectively, such that:
-     *
+     * <p>
      * s = s1 + s2 + ... + sn
      * t = t1 + t2 + ... + tm
      * |n - m| <= 1
      * The interleaving is s1 + t1 + s2 + t2 + s3 + t3 + ... or t1 + s1 + t2 + s2 + t3 + s3 + ...
      * Note: a + b is the concatenation of strings a and b.
-     *
+     * <p>
      * Input: s1 = "aabcc", s2 = "dbbca", s3 = "aadbbcbcac"
      * Output: true
      * Explanation: One way to obtain s3 is:
      * Split s1 into s1 = "aa" + "bc" + "c", and s2 into s2 = "dbbc" + "a".
      * Interleaving the two splits, we get "aa" + "dbbc" + "bc" + "a" + "c" = "aadbbcbcac".
      * Since s3 can be obtained by interleaving s1 and s2, we return true.
-     *
+     * <p>
      * Input: s1 = "aabcc", s2 = "dbbca", s3 = "aadbbbaccc"
      * Output: false
      * Explanation: Notice how it is impossible to interleave s2 with any other string to obtain s3.
      */
-    class Solution97{
+    class Solution97 {
 
 
         /**
-         *
          * s1 = "aabcc"
          * s2 = "dbbca"
-         *
+         * <p>
          * s3 = "aadbbcbcac" return true
-         *
+         * <p>
          * [true, true, true, false, false, false]
          * [false, false, true, true, false, false]
          * [false, false true, true, true ,false]
@@ -1068,57 +1064,56 @@ public class Note18_DP {
         public boolean isInterLeave(String s1, String s2, String s3) {
             if (s1.length() + s2.length() != s3.length()) return false;
             boolean[][] dp = new boolean[s2.length() + 1][s1.length() + 1];
-            dp[0][0] =true;
+            dp[0][0] = true;
             // 第一行和第一列初始化
             for (int i = 1; i < dp.length; i++) {
                 dp[i][0] = dp[i - 1][0] && (s2.charAt(i - 1) == s3.charAt(i - 1));  // s2的第i行的值为true当上一行为true和
             }
             for (int i = 1; i < dp[0].length; i++) {
-                dp[0][i] = dp[0][i - 1] && (s1.charAt(i - 1)== s3.charAt(i - 1));
+                dp[0][i] = dp[0][i - 1] && (s1.charAt(i - 1) == s3.charAt(i - 1));
             }
             for (int i = 1; i < dp.length; i++) {
                 for (int j = 1; j < dp[0].length; j++) {
                     // s1 的前 i - 1 个元素和 s2 的前 j 个元素可以交错组合成 s3[0 ： i + j - 1],并且 s1 的第 i 个元素等于 s3 的第 i + j - 1 个元素。
                     // s1 的前 i - 1 个元素和 s2 的前 j 个元素可以交错组合成 s3[0 : i + j - 1],并且 s2 的第 j 个元素等于 s3 的第 i + j - 1 个元素。
                     dp[i][j] = (dp[i - 1][j] && s2.charAt(i - 1) == s3.charAt(i + j - 1)
-                             || dp[i][j - 1] && s1.charAt(j - 1) == s3.charAt(i + j - 1));
+                            || dp[i][j - 1] && s1.charAt(j - 1) == s3.charAt(i + j - 1));
                 }
             }
             return dp[s2.length()][s1.length()];
         }
-   }
+    }
 
-   // 583 Delete Operation for two Strings
+    // 583 Delete Operation for two Strings
 
     /**
      * Given two strings word1 and word2, return the minimum number of steps required to make word1 and word2 the same.
-     *
+     * <p>
      * In one step, you can delete exactly one character in either string.
-     *
+     * <p>
      * example 1:
-     *
+     * <p>
      * Input: word1 = "sea", word2 = "eat"
      * Output: 2
      * Explanation: You need one step to make "sea" to "ea" and another step to make "eat" to "ea".
      */
-    class Solution583{
+    class Solution583 {
         /**
-         *     s e a
-         *   0 1 2 3
+         * s e a
+         * 0 1 2 3
          * e 1 2 1 2
          * a 2 3 2 1
          * t 3 4 3 2
-         *
+         * <p>
          * 两个位置的字母一样时即s.charAt(i) == t.charAt(j)，dp[i][j] = dp[i - 1][j - 1]
          * 两个位置的字母不一样时即s.charAt(i) != t.charAt(j), dp[i][j] = Math.min(dp[i - 1][j], dp[i][j - 1]) + 1
-         *
          */
         public int minDistance(String word1, String word2) {
             int row = word1.length() + 1, col = word2.length() + 1;
             int dp[][] = new int[row][col];
             dp[0][0] = 0;
             //  初始化，相当于两个字符串分别去匹配空字符串，每个位置都等于i值
-            for (int i = 1; i < row; i ++) {  // 第一列初始化
+            for (int i = 1; i < row; i++) {  // 第一列初始化
                 dp[i][0] = i;
             }
             for (int i = 1; i < col; i++) {  // 第一列初始化
@@ -1128,7 +1123,7 @@ public class Note18_DP {
                 for (int j = 1; j < col; j++) {
                     // 两个位置的字母一样时，当前的值等于坐上角的值
                     if (word1.charAt(i - 1) == word2.charAt(j - 1)) dp[i][j] = dp[i - 1][j - 1];
-                    // 两个位置的字母不一样时，等于左边和上边的最小值加一
+                        // 两个位置的字母不一样时，等于左边和上边的最小值加一
                     else dp[i][j] = Math.min(dp[i - 1][j], dp[i][j - 1]) + 1;
                 }
             }
@@ -1140,9 +1135,8 @@ public class Note18_DP {
 
     /**
      *
-     *
      */
-    class solution471{
+    class solution471 {
 
 
     }
@@ -1151,27 +1145,27 @@ public class Note18_DP {
 
     /**
      * You are given an array of binary strings strs and two integers m and n.
-     *
+     * <p>
      * Return the size of the largest subset of strs such that there are at most m 0's and n 1's in the subset.
-     *
+     * <p>
      * A set x is a subset of a set y if all elements of x are also elements of y.
-     *
-     *
-     *
+     * <p>
+     * <p>
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: strs = ["10","0001","111001","1","0"], m = 5, n = 3
      * Output: 4
      * Explanation: The largest subset with at most 5 0's and 3 1's is {"10", "0001", "1", "0"}, so the answer is 4.
      * Other valid but smaller subsets include {"0001", "1"} and {"10", "1", "0"}.
      * {"111001"} is an invalid subset because it contains 4 1's, greater than the maximum of 3.
      * Example 2:
-     *
+     * <p>
      * Input: strs = ["10","0","1"], m = 1, n = 1
      * Output: 2
      * Explanation: The largest subset is {"0", "1"}, so the answer is 2.
      */
-    class Solution474{
+    class Solution474 {
 
         /**
          * dp[i][j]: i代表有多少个0，j代表有多少个1，dp[i][j]代表当前最大的个数 = Max(dp[i][j], 1 + dp[i - 当前0的个数][j - 当前1的个数])
@@ -1193,7 +1187,7 @@ public class Note18_DP {
         public int[] helper(String s) {
             int[] count = new int[2];  // 对应0的个数和1的个数
             for (int i = 0; i < s.length(); i++) {
-                count[s.charAt(i) - '0'] ++;
+                count[s.charAt(i) - '0']++;
             }
             return count;
         }
@@ -1203,53 +1197,53 @@ public class Note18_DP {
 
     /**
      * Given a string s, find the longest palindromic subsequence's length in s.
-     *
+     * <p>
      * A subsequence is a sequence that can be derived from another sequence by deleting some or no elements
      * without changing the order of the remaining elements.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: s = "bbbab"
      * Output: 4
      * Explanation: One possible longest palindromic subsequence is "bbbb".
      * Example 2:
-     *
+     * <p>
      * Input: s = "cbbd"
      * Output: 2
      * Explanation: One possible longest palindromic subsequence is "bb".
      */
-    class Solution516{
+    class Solution516 {
         /**
          * /*
          * 本题是求回文子序列，也就是不要求连续咯~
          * 本题初始化非常特殊，要着重记忆一下。
-         *
+         * <p>
          * 这个类型题中的 dp 数组，需要把一个字符串从两个维度来分析，展成一个二维的，有点不太习惯，需要画图做题适应一下。
-         *
+         * <p>
          * 动态规划五部曲：
-         *
+         * <p>
          * * 1、确定 dp 数组以及下标的含义
-         *   * dp[i] [j]  ： 字符串 s 在 [i, j] 范围内最长的回文子序列的长度 dp[i] [j]
+         * * dp[i] [j]  ： 字符串 s 在 [i, j] 范围内最长的回文子序列的长度 dp[i] [j]
          * * 2、确定递推公式
-         *   * 情况一：s[i] = s[j]
-         *     * dp[i] [j] = dp[i + 1] [j - 1] + 2
-         *     a  b  c  a  c  b  d
-         *     0  1  2  3  4  5  6
-         *        i i+1   j-1 j
-         *   * 情况二：s[i] ！= s[j]
-         *     * 说明s[i]和s[j]的同时加入 并不能增加[i,j]区间回文子串的长度，那么分别加入s[i]、s[j]看看哪一个可以组成最长的回文子序列。
-         *     * 加入s[j]的回文子序列长度为dp[i + 1] [j]。
-         *     * 加入s[i]的回文子序列长度为dp[i] [j - 1]。
-         *     * 所以此时： dp[i] j] = max(dp[i + 1] [j], dp[i] [j - 1]);
+         * * 情况一：s[i] = s[j]
+         * * dp[i] [j] = dp[i + 1] [j - 1] + 2
+         * a  b  c  a  c  b  d
+         * 0  1  2  3  4  5  6
+         * i i+1   j-1 j
+         * * 情况二：s[i] ！= s[j]
+         * * 说明s[i]和s[j]的同时加入 并不能增加[i,j]区间回文子串的长度，那么分别加入s[i]、s[j]看看哪一个可以组成最长的回文子序列。
+         * * 加入s[j]的回文子序列长度为dp[i + 1] [j]。
+         * * 加入s[i]的回文子序列长度为dp[i] [j - 1]。
+         * * 所以此时： dp[i] j] = max(dp[i + 1] [j], dp[i] [j - 1]);
          * * 3、dp 数组初始化
-         *   * 首先要考虑当 i 和 j 相同的情况，从递推公式可以看出，是计算不到 i=j 的情况的，所以需要手动初始化一下，
-         *   *  i=j ，则 dp[i] [j] = 1，也就是一个字符的回文子序列的长度就是 1。
-         *   * 其他情况的 dp[i] [j] 初始化为 0 即可。
-         *   * 这样情况二中的递推公式 dp[i] [j] 才不会被初始值覆盖。
-         *
+         * * 首先要考虑当 i 和 j 相同的情况，从递推公式可以看出，是计算不到 i=j 的情况的，所以需要手动初始化一下，
+         * *  i=j ，则 dp[i] [j] = 1，也就是一个字符的回文子序列的长度就是 1。
+         * * 其他情况的 dp[i] [j] 初始化为 0 即可。
+         * * 这样情况二中的递推公式 dp[i] [j] 才不会被初始值覆盖。
+         * <p>
          * * 4、确定遍历顺序
-         *   * 从递推公式可以看出，dp[i] [j] 依赖于 dp[i + 1] [j - 1] 和 dp[i + 1] [j]
-         *   * 所以遍历顺序一定是从下到上，从左到右，才能保证CIA一行的数据是经过计算的
+         * * 从递推公式可以看出，dp[i] [j] 依赖于 dp[i + 1] [j - 1] 和 dp[i + 1] [j]
+         * * 所以遍历顺序一定是从下到上，从左到右，才能保证CIA一行的数据是经过计算的
          */
         public int longestPalindromeSubsequence(String s) {
             int[][] dp = new int[s.length()][s.length()];
@@ -1270,16 +1264,16 @@ public class Note18_DP {
     /**
      * You are given an integer array coins representing coins of different denominations and
      * an integer amount representing a total amount of money.
-     *
+     * <p>
      * Return the number of combinations that make up that amount. If that amount of money cannot be made up
      * by any combination of the coins, return 0.
-     *
+     * <p>
      * You may assume that you have an infinite number of each kind of coin.
-     *
+     * <p>
      * The answer is guaranteed to fit into a signed 32-bit integer.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: amount = 5, coins = [1,2,5]
      * Output: 4
      * Explanation: there are four ways to make up the amount:
@@ -1287,22 +1281,22 @@ public class Note18_DP {
      * 5=2+2+1
      * 5=2+1+1+1
      * 5=1+1+1+1+1
-     *
+     * <p>
      * Example 2:
-     *
+     * <p>
      * Input: amount = 3, coins = [2]
      * Output: 0
      * Explanation: the amount of 3 cannot be made up just with coins of 2.
      * Example 3:
-     *
+     * <p>
      * Input: amount = 10, coins = [10]
      * Output: 1
-     *
      */
-    class Soution518{
+    class Soution518 {
         /**
          * dp[i]: amount = i时有几种匹配方法
          * dp[i] = dp[i - coin] + dp[i]
+         *
          * @param amount
          * @param coins
          * @return
@@ -1310,8 +1304,8 @@ public class Note18_DP {
         public int change(int amount, int[] coins) {
             int[] dp = new int[amount + 1];
             dp[0] = 1;   // 没有钱的时候为一种
-            for (int coin: coins) {
-                for (int i = coin; i <= amount; i ++) {
+            for (int coin : coins) {
+                for (int i = coin; i <= amount; i++) {
                     dp[i] += dp[i - coin];
                 }
             }
@@ -1324,43 +1318,43 @@ public class Note18_DP {
     /**
      * You are given an integer array coins representing coins of different denominations and an integer amount
      * representing a total amount of money.
-     *
+     * <p>
      * Return the fewest number of coins that you need to make up that amount. If that amount of money cannot be made up
      * by any combination of the coins, return -1.
-     *
+     * <p>
      * You may assume that you have an infinite number of each kind of coin.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: coins = [1,2,5], amount = 11
      * Output: 3
      * Explanation: 11 = 5 + 5 + 1
      * Example 2:
-     *
+     * <p>
      * Input: coins = [2], amount = 3
      * Output: -1
      * Example 3:
-     *
+     * <p>
      * Input: coins = [1], amount = 0
      * Output: 0
      */
     class Solution322 {
         /**
-         *     硬币相当于我们的物品，每种硬币可以选择「无限次」，我们应该很自然的想到「完全背包」。
-         *     如果不能，那么从现在开始就要培养这样的习惯：
-         *     当看到题目是给定一些「物品」，让我们从中进行选择，以达到「最大价值」或者「特定价值」时，我们应该联想到「背包问题」。
-         *     这本质上其实是一个组合问题：被选物品之间不需要满足特定关系，只需要选择物品，以达到「全局最优」或者「特定状态」即可。
-         *     再根据物品的「选择次数限制」来判断是何种背包问题。
-         *     本题每种硬币可以被选择「无限次」，我们可以直接套用「完全背包」的状态定义进行微调：
-         *     定义 dp[i][j] 为考虑前 i 件物品，凑成总和为 j 所需要的最少硬币数量。
-         *     为了方便初始化，我们一般让 dp[0][x] 代表不考虑任何物品的情况。
-         *     因此我们有显而易见的初始化条件：dp[0][0]=0，其余dp[0][x]=INF 。
-         *     代表当没有任何硬币的时候，存在凑成总和为 0 的方案，方案所使用的硬币为 0；凑成其他总和的方案不存在。
-         *     由于我们要求的是「最少」硬币数量，因此我们不希望「无效值」参与转移，可设 INF=INT_MAX。
-         *     当「状态定义」与「基本初始化」有了之后，我们不失一般性的考虑 dp[i][j] 该如何转移。
-         *     对于第 i 个硬币我们有两种决策方案：
-         *     不使用该硬币：dp[i][j]=dp[i-1][j]
-         *     使用该硬币，由于每种硬币可以被选择多次（容量允许的情况下），因此最优解应当是所有方案中的最小值。即dp[i][j]=min(dp[i-1][j-k*coin]+ k)
+         * 硬币相当于我们的物品，每种硬币可以选择「无限次」，我们应该很自然的想到「完全背包」。
+         * 如果不能，那么从现在开始就要培养这样的习惯：
+         * 当看到题目是给定一些「物品」，让我们从中进行选择，以达到「最大价值」或者「特定价值」时，我们应该联想到「背包问题」。
+         * 这本质上其实是一个组合问题：被选物品之间不需要满足特定关系，只需要选择物品，以达到「全局最优」或者「特定状态」即可。
+         * 再根据物品的「选择次数限制」来判断是何种背包问题。
+         * 本题每种硬币可以被选择「无限次」，我们可以直接套用「完全背包」的状态定义进行微调：
+         * 定义 dp[i][j] 为考虑前 i 件物品，凑成总和为 j 所需要的最少硬币数量。
+         * 为了方便初始化，我们一般让 dp[0][x] 代表不考虑任何物品的情况。
+         * 因此我们有显而易见的初始化条件：dp[0][0]=0，其余dp[0][x]=INF 。
+         * 代表当没有任何硬币的时候，存在凑成总和为 0 的方案，方案所使用的硬币为 0；凑成其他总和的方案不存在。
+         * 由于我们要求的是「最少」硬币数量，因此我们不希望「无效值」参与转移，可设 INF=INT_MAX。
+         * 当「状态定义」与「基本初始化」有了之后，我们不失一般性的考虑 dp[i][j] 该如何转移。
+         * 对于第 i 个硬币我们有两种决策方案：
+         * 不使用该硬币：dp[i][j]=dp[i-1][j]
+         * 使用该硬币，由于每种硬币可以被选择多次（容量允许的情况下），因此最优解应当是所有方案中的最小值。即dp[i][j]=min(dp[i-1][j-k*coin]+ k)
          */
         public int coinChange(int[] coins, int amount) {
             if (amount == 0) return 0;
@@ -1383,30 +1377,31 @@ public class Note18_DP {
     /**
      * You are given n balloons, indexed from 0 to n - 1. Each balloon is painted with a number on it represented by an
      * array nums. You are asked to burst all the balloons.
-     *
+     * <p>
      * If you burst the ith balloon, you will get nums[i - 1] * nums[i] * nums[i + 1] coins. If i - 1 or i + 1 goes out
      * of bounds of the array, then treat it as if there is a balloon with a 1 painted on it.
-     *
+     * <p>
      * Return the maximum coins you can collect by bursting the balloons wisely.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: nums = [3,1,5,8]
      * Output: 167
      * Explanation:
      * nums = [3,1,5,8] --> [3,5,8] --> [3,8] --> [8] --> []
      * coins =  3*1*5    +   3*5*8   +  1*3*8  + 1*8*1 = 167
      * Example 2:
-     *
+     * <p>
      * Input: nums = [1,5]
      * Output: 10
      */
-    class Solution312{
+    class Solution312 {
         /**
          * dp[i][j] 为打破的气球为i~j之间的最大值
          * 为了方便计算我们 还是来申请一个临时数组，他的长度比原数组长度大2，那么这题就可以变成求戳破开区间(0, length+1)中所有气球所获得的最大硬币数
-         *                                          左指针的前一个 扎的这个气球 右指针的后一个
+         * 左指针的前一个 扎的这个气球 右指针的后一个
          * dp[i][j] = max(dp[i][j], dp[i][x - 1] + nums[i - 1] * nums[x] * nums[j + 1] + dp[x + 1][j]);
+         *
          * @param nums
          * @return
          */
@@ -1439,20 +1434,20 @@ public class Note18_DP {
 
     /**
      * You are given an array prices where prices[i] is the price of a given stock on the ith day.
-     *
+     * <p>
      * You want to maximize your profit by choosing a single day to buy one stock and choosing a different day in the
      * future to sell that stock.
-     *
+     * <p>
      * Return the maximum profit you can achieve from this transaction. If you cannot achieve any profit, return 0.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: prices = [7,1,5,3,6,4]
      * Output: 5
      * Explanation: Buy on day 2 (price = 1) and sell on day 5 (price = 6), profit = 6-1 = 5.
      * Note that buying on day 2 and selling on day 1 is not allowed because you must buy before you sell.
      * Example 2:
-     *
+     * <p>
      * Input: prices = [7,6,4,3,1]
      * Output: 0
      * Explanation: In this case, no transactions are done and the max profit = 0.
@@ -1474,27 +1469,27 @@ public class Note18_DP {
 
     /**
      * You are given an integer array prices where prices[i] is the price of a given stock on the ith day.
-     *
+     * <p>
      * On each day, you may decide to buy and/or sell the stock. You can only hold at most one share of the stock at
      * any time. However, you can buy it then immediately sell it on the same day.
-     *
+     * <p>
      * Find and return the maximum profit you can achieve.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: prices = [7,1,5,3,6,4]
      * Output: 7
      * Explanation: Buy on day 2 (price = 1) and sell on day 3 (price = 5), profit = 5-1 = 4.
      * Then buy on day 4 (price = 3) and sell on day 5 (price = 6), profit = 6-3 = 3.
      * Total profit is 4 + 3 = 7.
      * Example 2:
-     *
+     * <p>
      * Input: prices = [1,2,3,4,5]
      * Output: 4
      * Explanation: Buy on day 1 (price = 1) and sell on day 5 (price = 5), profit = 5-1 = 4.
      * Total profit is 4.
      * Example 3:
-     *
+     * <p>
      * Input: prices = [7,6,4,3,1]
      * Output: 0
      * Explanation: There is no way to make a positive profit, so we never buy the stock to achieve the maximum profit of 0.
@@ -1504,7 +1499,7 @@ public class Note18_DP {
             if (prices == null || prices.length < 2) return 0;
             int profit = 0;
             for (int i = 1; i < prices.length; i++) {
-                if (prices[i] > prices[ i - 1]) profit += prices[i] - prices[i - 1];  // 最后的差值都是恒定不变的
+                if (prices[i] > prices[i - 1]) profit += prices[i] - prices[i - 1];  // 最后的差值都是恒定不变的
             }
             return profit;
         }
@@ -1514,19 +1509,19 @@ public class Note18_DP {
 
     /**
      * You are given an array prices where prices[i] is the price of a given stock on the ith day.
-     *
+     * <p>
      * Find the maximum profit you can achieve. You may complete at most two transactions.
-     *
+     * <p>
      * Note: You may not engage in multiple transactions simultaneously (i.e., you must sell the stock before you buy again).
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: prices = [3,3,5,0,0,3,1,4]
      * Output: 6
      * Explanation: Buy on day 4 (price = 0) and sell on day 6 (price = 3), profit = 3-0 = 3.
      * Then buy on day 7 (price = 1) and sell on day 8 (price = 4), profit = 4-1 = 3.
      * Example 2:
-     *
+     * <p>
      * Input: prices = [1,2,3,4,5]
      * Output: 4
      * Explanation: Buy on day 1 (price = 1) and sell on day 5 (price = 5), profit = 5-1 = 4.
@@ -1537,11 +1532,11 @@ public class Note18_DP {
         public int maxProfit(int[] prices) {
             int buy1 = Integer.MIN_VALUE, buy2 = Integer.MIN_VALUE;  // 第一次买和第二次买
             int sell1 = 0, sell2 = 0;  // 第一次卖和第二次卖
-            for (int price: prices){
+            for (int price : prices) {
                 sell2 = Math.max(sell2, buy2 + price);  // 第二次卖，算最大利润
                 buy2 = Math.max(buy2, sell1 - price);  // 第二次买是第一次的利润减去price
                 sell1 = Math.max(sell1, buy1 + price);  // 卖第一次，算最大利润
-                buy1 = Math.max(buy1, - price);  // 第一次买，是负数，花钱
+                buy1 = Math.max(buy1, -price);  // 第一次买，是负数，花钱
             }
             return sell2;
         }
@@ -1552,20 +1547,20 @@ public class Note18_DP {
 
     /**
      * You are given an integer array prices where prices[i] is the price of a given stock on the ith day, and an integer k.
-     *
+     * <p>
      * Find the maximum profit you can achieve. You may complete at most k transactions.
-     *
+     * <p>
      * Note: You may not engage in multiple transactions simultaneously (i.e., you must sell the stock before you buy again).
-     *
-     *
-     *
+     * <p>
+     * <p>
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: k = 2, prices = [2,4,1]
      * Output: 2
      * Explanation: Buy on day 1 (price = 2) and sell on day 2 (price = 4), profit = 4-2 = 2.
      * Example 2:
-     *
+     * <p>
      * Input: k = 2, prices = [3,2,6,5,0,3]
      * Output: 7
      * Explanation: Buy on day 2 (price = 2) and sell on day 3 (price = 6), profit = 6-2 = 4. Then buy on day 5 (price = 0)
@@ -1574,8 +1569,8 @@ public class Note18_DP {
     class Solution188 {
 
         /**
-         *
          * dp[i][j]: 当前第j天可以最多进行i次交易，最大的利润是多少
+         *
          * @param k
          * @param prices
          * @return
@@ -1588,7 +1583,7 @@ public class Note18_DP {
                 int tempMax = -prices[0];  // 第一步是买，买的话是负数
                 for (int j = 1; j < len; j++) {
                     dp[i][j] = Math.max(dp[i][j - 1], prices[j] + tempMax);  // j-1是前一天的
-                    tempMax = Math.max(tempMax, dp[i - 1][j - 1]- prices[j]);  // 前一天的状态中进行买的操作
+                    tempMax = Math.max(tempMax, dp[i - 1][j - 1] - prices[j]);  // 前一天的状态中进行买的操作
                 }
             }
             return dp[k][len - 1];
@@ -1613,18 +1608,18 @@ public class Note18_DP {
      * You are a professional robber planning to rob houses along a street. Each house has a certain amount of money
      * stashed, the only constraint stopping you from robbing each of them is that adjacent houses have security systems
      * connected and it will automatically contact the police if two adjacent houses were broken into on the same night.
-     *
+     * <p>
      * Given an integer array nums representing the amount of money of each house, return the maximum amount of money
      * you can rob tonight without alerting the police.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: nums = [1,2,3,1]
      * Output: 4
      * Explanation: Rob house 1 (money = 1) and then rob house 3 (money = 3).
      * Total amount you can rob = 1 + 3 = 4.
      * Example 2:
-     *
+     * <p>
      * Input: nums = [2,7,9,3,1]
      * Output: 12
      * Explanation: Rob house 1 (money = 2), rob house 3 (money = 9) and rob house 5 (money = 1).
@@ -1637,7 +1632,7 @@ public class Note18_DP {
         /**
          * dp[i][0]=max(dp[i-1][0],dp[i-1][1])
          * 他表示如果第i+1个没有接，那么第i个有没有接都是可以的，我们取最大值即可。
-         *
+         * <p>
          * dp[i][1]=dp[i-1][0]+nums[i]
          * 他表示的是如果第i+1个接了，那么第i个必须要没接，这里nums[i]表示的是第i+1个预约的时间。
          */
@@ -1649,7 +1644,7 @@ public class Note18_DP {
             int[][] dp = new int[len][2];
             dp[0][0] = 0;  // 第一个没有偷
             dp[0][1] = nums[0];  // 第一个偷了
-            for(int i = 1; i < len; i ++) {
+            for (int i = 1; i < len; i++) {
                 dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1]);  // 这个没有偷，可以获得的最大值是上一次么有偷和偷了的之间的最大值
                 dp[i][1] = dp[i - 1][0] + nums[i];  // 这个偷了，上一个只能没有偷，最大是上一个的值加上这个的值
             }
@@ -1658,7 +1653,7 @@ public class Note18_DP {
 
         public int rob(int[] nums) {
             int preNo = 0, preYes = 0;  // 之前的房子没被偷和偷了
-            for (int num: nums) {
+            for (int num : nums) {
                 int temp = preNo;  // 暂存没被偷的结果
                 preNo = Math.max(preNo, preYes);  // 更新当前没有偷的结果为之前没有偷和偷了的最大值
                 preYes = num + temp;
@@ -1674,22 +1669,21 @@ public class Note18_DP {
      * stashed. All houses at this place are arranged in a circle. That means the first house is the neighbor of the
      * last one. Meanwhile, adjacent houses have a security system connected, and it will automatically contact the
      * police if two adjacent houses were broken into on the same night.
-     *
+     * <p>
      * Given an integer array nums representing the amount of money of each house, return the maximum amount of money
      * you can rob tonight without alerting the police.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: nums = [2,3,2]
      * Output: 3
      * Explanation: You cannot rob house 1 (money = 2) and then rob house 3 (money = 2), because they are adjacent houses.
      * Example 2:
-     *
+     * <p>
      * Input: nums = [1,2,3,1]
      * Output: 4
      * Explanation: Rob house 1 (money = 1) and then rob house 3 (money = 3).
      * Total amount you can rob = 1 + 3 = 4.
-     *
      */
 
     class Solution213 {
@@ -1714,21 +1708,21 @@ public class Note18_DP {
 
     /**
      * 假如有一排房子，共 n 个，每个房子可以被粉刷成红色、蓝色或者绿色这三种颜色中的一种，你需要粉刷所有的房子并且使其相邻的两个房子颜色不能相同。
-     *
+     * <p>
      * 当然，因为市场上不同颜色油漆的价格不同，所以房子粉刷成不同颜色的花费成本也是不同的。每个房子粉刷成不同颜色的花费是以一个 n x 3 的矩阵来表示的。
-     *
+     * <p>
      * 注意：
-     *
+     * <p>
      * 所有花费均为正整数。
-     *
+     * <p>
      * 示例：
-     *
+     * <p>
      * 输入: [[17,2,17],[16,16,5],[14,3,19]]
      * 输出: 10
      * 解释: 将 0 号房子粉刷成蓝色，1 号房子粉刷成绿色，2 号房子粉刷成蓝色。
-     *      最少花费: 2 + 5 + 3 = 10。
+     * 最少花费: 2 + 5 + 3 = 10。
      */
-    class paintHouse{
+    class paintHouse {
 
         // cost[i][j]
         // i: house
@@ -1749,17 +1743,17 @@ public class Note18_DP {
 
     /**
      * You are given an integer array nums. Two players are playing a game with this array: player 1 and player 2.
-     *
+     * <p>
      * Player 1 and player 2 take turns, with player 1 starting first. Both players start the game with a score of 0.
      * At each turn, the player takes one of the numbers from either end of the array (i.e., nums[0] or nums[nums.length - 1])
      * which reduces the size of the array by 1. The player adds the chosen number to their score. The game ends when
      * there are no more elements in the array.
-     *
+     * <p>
      * Return true if Player 1 can win the game. If the scores of both players are equal, then player 1 is still the
      * winner, and you should also return true. You may assume that both players are playing optimally.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: nums = [1,5,2]
      * Output: false
      * Explanation: Initially, player 1 can choose between 1 and 2.
@@ -1768,7 +1762,7 @@ public class Note18_DP {
      * So, final score of player 1 is 1 + 2 = 3, and player 2 is 5.
      * Hence, player 1 will never be the winner and you need to return false.
      * Example 2:
-     *
+     * <p>
      * Input: nums = [1,5,233,7]
      * Output: true
      * Explanation: Player 1 first chooses 1. Then player 2 has to choose between 5 and 7. No matter which number player
@@ -1781,7 +1775,7 @@ public class Note18_DP {
         }
 
         private int helper(int[] nums, int start, int end) {
-            if (start == end ) return nums[start];
+            if (start == end) return nums[start];
             // 返回第一个人的和第二个人的差值，如果大于0，第一个人可以赢
             return Math.max(nums[start] - helper(nums, start + 1, end), nums[end] - helper(nums, start, end - 1));
         }
@@ -1791,9 +1785,9 @@ public class Note18_DP {
             return helper(nums, 0, nums.length - 1, new Integer[nums.length][nums.length]) >= 0;
         }
 
-        public int helper(int[] nums, int start, int end ,Integer[][] dp) {
+        public int helper(int[] nums, int start, int end, Integer[][] dp) {
             if (dp[start][end] == null) {
-                if (start == end ) return nums[start];
+                if (start == end) return nums[start];
                 return dp[start][end] = Math.max(nums[start] - helper(nums, start + 1, end), nums[end] - helper(nums, start, end - 1));
             }
             return dp[start][end];
@@ -1809,17 +1803,17 @@ public class Note18_DP {
     /**
      * In the "100 game" two players take turns adding, to a running total, any integer from 1 to 10. The player who
      * first causes the running total to reach or exceed 100 wins.
-     *
+     * <p>
      * What if we change the game so that players cannot re-use integers?
-     *
+     * <p>
      * For example, two players might take turns drawing from a common pool of numbers from 1 to 15 without replacement
      * until they reach a total >= 100.
-     *
+     * <p>
      * Given two integers maxChoosableInteger and desiredTotal, return true if the first player to move can force a win,
      * otherwise, return false. Assume both players play optimally.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: maxChoosableInteger = 10, desiredTotal = 11
      * Output: false
      * Explanation:
@@ -1829,18 +1823,18 @@ public class Note18_DP {
      * The second player will win by choosing 10 and get a total = 11, which is >= desiredTotal.
      * Same with other integers chosen by the first player, the second player will always win.
      * Example 2:
-     *
+     * <p>
      * Input: maxChoosableInteger = 10, desiredTotal = 0
      * Output: true
      * Example 3:
-     *
+     * <p>
      * Input: maxChoosableInteger = 10, desiredTotal = 1
      * Output: true
      */
     class Solution464 {
         public boolean canIWin(int maxChoosableInteger, int desiredTotal) {
             if (desiredTotal <= 0) return true;
-            if (maxChoosableInteger * (1 +maxChoosableInteger) / 2 < desiredTotal) return false;
+            if (maxChoosableInteger * (1 + maxChoosableInteger) / 2 < desiredTotal) return false;
             return true;
         }
     }
@@ -1849,23 +1843,23 @@ public class Note18_DP {
 
     /**
      * Given an input string (s) and a pattern (p), implement wildcard pattern matching with support for '?' and '*' where:
-     *
+     * <p>
      * '?' Matches any single character.
      * '*' Matches any sequence of characters (including the empty sequence).
      * The matching should cover the entire input string (not partial).
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: s = "aa", p = "a"
      * Output: false
      * Explanation: "a" does not match the entire string "aa".
      * Example 2:
-     *
+     * <p>
      * Input: s = "aa", p = "*"
      * Output: true
      * Explanation: '*' matches any sequence.
      * Example 3:
-     *
+     * <p>
      * Input: s = "cb", p = "?a"
      * Output: false
      * Explanation: '?' matches 'c', but the second letter is 'a', which does not match 'b'.
@@ -1884,7 +1878,7 @@ public class Note18_DP {
             int star = -1;  // * 出现的位置
             while (sp < s.length()) {
                 // 如果都匹配或者？可以代表任何一个字母可以进行匹配
-                if ( pp < p.length() && (s.charAt(sp) == p.charAt(pp) || p.charAt(pp) == '?')) {
+                if (pp < p.length() && (s.charAt(sp) == p.charAt(pp) || p.charAt(pp) == '?')) {
                     sp++;
                     pp++;
                 } else if (pp < p.length() && p.charAt(pp) == '*') {
@@ -1979,18 +1973,18 @@ public class Note18_DP {
 
     /**
      * Given an array of strings words (without duplicates), return all the concatenated words in the given list of words.
-     *
+     * <p>
      * A concatenated word is defined as a string that is comprised entirely of at least two shorter words in the given array.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: words = ["cat","cats","catsdogcats","dog","dogcatsdog","hippopotamuses","rat","ratcatdogcat"]
      * Output: ["catsdogcats","dogcatsdog","ratcatdogcat"]
      * Explanation: "catsdogcats" can be concatenated by "cats", "dog" and "cats";
      * "dogcatsdog" can be concatenated by "dog", "cats" and "dog";
      * "ratcatdogcat" can be concatenated by "rat", "cat", "dog" and "cat".
      * Example 2:
-     *
+     * <p>
      * Input: words = ["cat","dog","catdog"]
      * Output: ["catdog"]
      */
@@ -2001,6 +1995,7 @@ public class Note18_DP {
         class TrieNode {
             boolean isWord;
             TrieNode[] children;
+
             public TrieNode() {
                 isWord = false;
                 children = new TrieNode[26];
@@ -2021,7 +2016,7 @@ public class Note18_DP {
             for (String word : dict) {  // 每个单词都遍历
                 if (word == null || word.length() == 0) continue;
                 TrieNode cur = root;  // 从根节点开始
-                for (int i = 0; i < word.length(); i ++) {  // 一个字母一个字母的走
+                for (int i = 0; i < word.length(); i++) {  // 一个字母一个字母的走
                     char c = word.charAt(i);
                     // 如果当前字母的节点是空，新建一个节点
                     if (cur.children[c - 'a'] == null) cur.children[c - 'a'] = new TrieNode();
@@ -2051,14 +2046,14 @@ public class Note18_DP {
     /**
      * Given a non-empty array nums containing only positive integers, find if the array can be partitioned into two
      * subsets such that the sum of elements in both subsets is equal.
-
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: nums = [1,5,11,5]
      * Output: true
      * Explanation: The array can be partitioned as [1, 5, 5] and [11].
      * Example 2:
-     *
+     * <p>
      * Input: nums = [1,2,3,5]
      * Output: false
      * Explanation: The array cannot be partitioned into equal sum subsets.
@@ -2104,9 +2099,9 @@ public class Note18_DP {
             sum /= 2;
             boolean dp[] = new boolean[nums.length + 1];
             dp[0] = true;
-            for (int i = 1; i < nums.length + 1; i ++) {
-                for (int j = sum; j >=nums[i-1]; j--) {
-                    dp[j] = dp[j] || dp[j - nums[i-1]];
+            for (int i = 1; i < nums.length + 1; i++) {
+                for (int j = sum; j >= nums[i - 1]; j--) {
+                    dp[j] = dp[j] || dp[j - nums[i - 1]];
                 }
             }
             return dp[nums.length];
@@ -2117,42 +2112,42 @@ public class Note18_DP {
 
     /**
      * ou have n dice and each die has k faces numbered from 1 to k.
-     *
+     * <p>
      * Given three integers n, k, and target, return the number of possible ways (out of the kn total ways) to roll the
      * dice so the sum of the face-up numbers equals target. Since the answer may be too large, return it modulo 109 + 7.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: n = 1, k = 6, target = 3
      * Output: 1
      * Explanation: You throw one die with 6 faces.
      * There is only one way to get a sum of 3.
      * Example 2:
-     *
+     * <p>
      * Input: n = 2, k = 6, target = 7
      * Output: 6
      * Explanation: You throw two dice, each with 6 faces.
      * There are 6 ways to get a sum of 7: 1+6, 2+5, 3+4, 4+3, 5+2, 6+1.
      * Example 3:
-     *
+     * <p>
      * Input: n = 30, k = 30, target = 500
      * Output: 222616187
      * Explanation: The answer must be returned modulo 109 + 7
      */
     class Solution1155 {
         public int numRollsToTarget(int n, int k, int target) {
-                int[][] dp = new int[n + 1][target + 1];
-                int mod = (int)Math.pow(10,9) + 7;
-                dp[0][0] = 1;
-                for(int i = 1;i <= n;i++){
-                    for(int j = 1;j <= target;j++){
-                        for(int q = 1;q <= k;q++){
-                            if(j >= q)
-                                dp[i][j] = (dp[i][j] + dp[i - 1][j - q]) % mod;
-                        }
+            int[][] dp = new int[n + 1][target + 1];
+            int mod = (int) Math.pow(10, 9) + 7;
+            dp[0][0] = 1;
+            for (int i = 1; i <= n; i++) {
+                for (int j = 1; j <= target; j++) {
+                    for (int q = 1; q <= k; q++) {
+                        if (j >= q)
+                            dp[i][j] = (dp[i][j] + dp[i - 1][j - q]) % mod;
                     }
                 }
-                return dp[n][target];
+            }
+            return dp[n][target];
         }
     }
 
@@ -2186,17 +2181,17 @@ public class Note18_DP {
 
     /**
      * Given an integer n, return the least number of perfect square numbers that sum to n.
-     *
+     * <p>
      * A perfect square is an integer that is the square of an integer; in other words, it is the product of some
      * integer with itself. For example, 1, 4, 9, and 16 are perfect squares while 3 and 11 are not.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: n = 12
      * Output: 3
      * Explanation: 12 = 4 + 4 + 4.
      * Example 2:
-     *
+     * <p>
      * Input: n = 13
      * Output: 2
      * Explanation: 13 = 4 + 9.
@@ -2219,22 +2214,22 @@ public class Note18_DP {
 
     /**
      * You are given an array prices where prices[i] is the price of a given stock on the ith day.
-     *
+     * <p>
      * Find the maximum profit you can achieve. You may complete as many transactions as you like (i.e.,
      * buy one and sell one share of the stock multiple times) with the following restrictions:
-     *
+     * <p>
      * After you sell your stock, you cannot buy stock on the next day (i.e., cooldown one day).
      * Note: You may not engage in multiple transactions simultaneously (i.e., you must sell the stock before you buy again).
-     *
-     *
-     *
+     * <p>
+     * <p>
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: prices = [1,2,3,0,2]
      * Output: 3
      * Explanation: transactions = [buy, sell, cooldown, buy, sell]
      * Example 2:
-     *
+     * <p>
      * Input: prices = [1]
      * Output: 0
      */
@@ -2264,10 +2259,11 @@ public class Note18_DP {
     }
 
     // binary game:
+
     /**
-    zero_group: 连续0的个数为多少个
-    one_group：连续1 的个数为多少个
-    要求zero_group和one_group只能一组一组的出现，求当给字符串长度为n时有多少种STRIng可以组成这样要求的string
+     * zero_group: 连续0的个数为多少个
+     * one_group：连续1 的个数为多少个
+     * 要求zero_group和one_group只能一组一组的出现，求当给字符串长度为n时有多少种STRIng可以组成这样要求的string
      */
     /*
     比如我们想求当string的长度是i时, 此时有多少个good string. 我们可以让前zero_group个位置都是0, 此时剩下i - zero_group个位置需要填,
@@ -2279,9 +2275,7 @@ public class Note18_DP {
     我们会需要dp[0]的值, 那么dp[0]这个base case的值应该是多少? 其实当zero_group或者one_group等于j时, 我们很容易就知道此时的good string就一种: 当zero_group等于j时,
     那string全部填0; 当one_group等于j时,  那string全部填1, 当二者都等于j时, string要么全填0, 要么全填1. 于是为了让这种情况满足我们上面得出的dp状态转移方程, dp[0]需要等于1.
      */
-
     public void goodPair(int min_len, int max_len, int zero_group, int one_group) {
-
 
 
     }
@@ -2289,26 +2283,26 @@ public class Note18_DP {
     /**
      * 1969: Jump game 6
      * You are given a 0-indexed integer array nums and an integer k.
-     *
+     * <p>
      * You are initially standing at index 0. In one move, you can jump at most k steps forward without going outside
      * the boundaries of the array. That is, you can jump from index i to any index in the range [i + 1, min(n - 1, i + k)] inclusive.
-     *
+     * <p>
      * You want to reach the last index of the array (index n - 1). Your score is the sum of all nums[j] for each index j you visited in the array.
-     *
+     * <p>
      * Return the maximum score you can get.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: nums = [1,-1,-2,4,-7,3], k = 2
      * Output: 7
      * Explanation: You can choose your jumps forming the subsequence [1,-1,4,3] (underlined above). The sum is 7.
      * Example 2:
-     *
+     * <p>
      * Input: nums = [10,-5,-2,4,0,3], k = 3
      * Output: 17
      * Explanation: You can choose your jumps forming the subsequence [10,4,3] (underlined above). The sum is 17.
      * Example 3:
-     *
+     * <p>
      * Input: nums = [1,-5,-20,4,-1,3,-6,-3], k = 2
      * Output: 0
      */
@@ -2339,15 +2333,15 @@ public class Note18_DP {
 
         /**
          * In Approach 1, we got the following transition equation for Dynamic Programming:
-         *
+         * <p>
          * score[i] = max(score[i-k], ..., score[i-1]) + nums[i]
-         *
+         * <p>
          * Step 1: Initialize a dp array score, where score[i] represents the max score starting at nums[0] and ending at nums[i].
-         *
+         * <p>
          * Step 2: Initialize a max-heap priority_queue.
-         *
+         * <p>
          * Step 3: Iterate over nums. For each element nums[i]:
-         *
+         * <p>
          * If the index of top of priority_queue is less than i-k, pop the top. Repeat.
          * Update score[i] to the sum of corresponding score of the index of top of priority_queue and nums[i]
          * (i.e., score[priorityQueue.peek()[1]] + nums[i]).
@@ -2355,14 +2349,14 @@ public class Note18_DP {
          * Step 4: Return the last element of score.
          */
         public int maxResult2(int[] nums, int k) {
-            PriorityQueue<int[]> pq = new PriorityQueue<>((a,b)->b[0]-a[0]);  // 小顶堆，从大到小排列
+            PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> b[0] - a[0]);  // 小顶堆，从大到小排列
             int[] dp = new int[nums.length];
             Arrays.fill(dp, Integer.MIN_VALUE);
             dp[0] = nums[0];  // dp数组, 每个位置为当前位置可以达到的最大值
             pq.offer(new int[]{nums[0], 0});  // 第一个位置的最大值就是nums[0]
 
             for (int i = 1; i < nums.length; i++) {
-                while(!pq.isEmpty() && i - pq.peek()[1] > k) {
+                while (!pq.isEmpty() && i - pq.peek()[1] > k) {
                     pq.poll();  // i减去pq里的最大值的元素（堆顶元素）的位置大于k的话就pop出去
                 }
                 dp[i] = nums[i] + pq.peek()[0];  // 当前位置的最大值等于pq的顶部元素（最大元素）加上当前的值
@@ -2376,26 +2370,26 @@ public class Note18_DP {
 
     /**
      * Given an array of integers nums, find the maximum length of a subarray where the product of all its elements is positive.
-     *
+     * <p>
      * A subarray of an array is a consecutive sequence of zero or more values taken out of that array.
-     *
+     * <p>
      * Return the maximum length of a subarray with positive product.
-     *
-     *
-     *
+     * <p>
+     * <p>
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: nums = [1,-2,-3,4]
      * Output: 4
      * Explanation: The array nums already has a positive product of 24.
      * Example 2:
-     *
+     * <p>
      * Input: nums = [0,1,-2,-3,-4]
      * Output: 3
      * Explanation: The longest subarray with positive product is [1,-2,-3] which has a product of 6.
      * Notice that we cannot include 0 in the subarray since that'll make the product 0 which is not positive.
      * Example 3:
-     *
+     * <p>
      * Input: nums = [-1,-2,-3,0,1]
      * Output: 2
      * Explanation: The longest subarray with positive product is [-1,-2] or [-2,-3].
@@ -2419,19 +2413,17 @@ public class Note18_DP {
         public int getMaxLen(int[] nums) {
             int positive = 0, negative = 0;    // length of positive and negative results
             int ans = 0;
-            for(int x : nums) {
-                if(x == 0)  {
+            for (int x : nums) {
+                if (x == 0) {
                     positive = 0;
                     negative = 0;
-                }
-                else if(x > 0) {
+                } else if (x > 0) {
                     positive++;
-                    negative = negative == 0 ? 0  : negative+1;
-                }
-                else {
+                    negative = negative == 0 ? 0 : negative + 1;
+                } else {
                     int temp = positive;
-                    positive = negative == 0 ? 0  : negative+1;
-                    negative = temp+1;
+                    positive = negative == 0 ? 0 : negative + 1;
+                    negative = temp + 1;
                 }
                 ans = Math.max(ans, positive);
             }
@@ -2444,15 +2436,15 @@ public class Note18_DP {
     /**
      * Given an m x n matrix grid where each cell is either a wall 'W', an enemy 'E' or empty '0', return the maximum
      * enemies you can kill using one bomb. You can only place the bomb in an empty cell.
-     *
+     * <p>
      * The bomb kills all the enemies in the same row and column from the planted point until it hits the wall since
      * it is too strong to be destroyed.
-     *
+     * <p>
      * Input: grid = [["0","E","0","0"],["E","0","W","E"],["0","E","0","0"]]
      * Output: 3
      */
 
-    class solution361{
+    class solution361 {
 
         public int maxKillEnemies(char[][] grid) {
             if (grid == null || grid.length == 0 || grid[0].length == 0) return 0;
@@ -2460,7 +2452,7 @@ public class Note18_DP {
             int m = grid.length, n = grid[0].length;
             int rowCount = 0;
             int[] colCount = new int[n];
-            for (int i = 0;i < m; i++) {
+            for (int i = 0; i < m; i++) {
                 for (int j = 0; j < n; j++) {
                     // 如果碰到起始位置或者左边一个位置是W重新开始计数
                     if (j == 0 || grid[i][j - 1] == 'W') {
@@ -2472,7 +2464,7 @@ public class Note18_DP {
                     // 如果碰到起始位置或者上面一个位置是W就重新开始计数
                     if (i == 0 || grid[i - 1][j] == 'W') {
                         colCount[j] = 0;
-                        for (int k = i;k < m && grid[k][j] != 'W'; k++) {
+                        for (int k = i; k < m && grid[k][j] != 'W'; k++) {
                             colCount[j] += grid[k][j] == 'E' ? 1 : 0;
                         }
                     }
@@ -2490,22 +2482,22 @@ public class Note18_DP {
     /**
      * Given a string s, return the number of distinct non-empty subsequences of s. Since the answer may be very large,
      * return it modulo 109 + 7.
-     *
+     * <p>
      * A subsequence of a string is a new string that is formed from the original string by deleting some (can be none)
      * of the characters without disturbing the relative positions of the remaining characters. (i.e., "ace" is a subsequence of "abcde" while "aec" is not.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: s = "abc"
      * Output: 7
      * Explanation: The 7 distinct subsequences are "a", "b", "c", "ab", "ac", "bc", and "abc".
      * Example 2:
-     *
+     * <p>
      * Input: s = "aba"
      * Output: 6
      * Explanation: The 6 distinct subsequences are "a", "b", "ab", "aa", "ba", and "aba".
      */
-    class solution940{
+    class solution940 {
 
         /*
         s = "abc"
@@ -2526,7 +2518,7 @@ public class Note18_DP {
         public int distinctsubsequenceII(String S) {
             int MOD = 1_000_000_007;
             int N = S.length();
-            int[] dp = new int[N+1];
+            int[] dp = new int[N + 1];
             dp[0] = 1;
 
             int[] last = new int[26];  // record the number of occur of the last char
@@ -2534,9 +2526,9 @@ public class Note18_DP {
 
             for (int i = 0; i < N; ++i) {
                 int x = S.charAt(i) - 'a';
-                dp[i+1] = dp[i] * 2 % MOD;
-                if (last[x] >= 0) dp[i+1] -= dp[last[x]];
-                dp[i+1] %= MOD;
+                dp[i + 1] = dp[i] * 2 % MOD;
+                if (last[x] >= 0) dp[i + 1] -= dp[last[x]];
+                dp[i + 1] %= MOD;
                 last[x] = i;
             }
 
@@ -2550,7 +2542,7 @@ public class Note18_DP {
 
     /**
      * Given an integer n, your task is to count how many strings of length n can be formed under the following rules:
-     *
+     * <p>
      * Each character is a lower case vowel ('a', 'e', 'i', 'o', 'u')
      * Each vowel 'a' may only be followed by an 'e'.
      * Each vowel 'e' may only be followed by an 'a' or an 'i'.
@@ -2558,23 +2550,23 @@ public class Note18_DP {
      * Each vowel 'o' may only be followed by an 'i' or a 'u'.
      * Each vowel 'u' may only be followed by an 'a'.
      * Since the answer may be too large, return it modulo 10^9 + 7.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: n = 1
      * Output: 5
      * Explanation: All possible strings are: "a", "e", "i" , "o" and "u".
      * Example 2:
-     *
+     * <p>
      * Input: n = 2
      * Output: 10
      * Explanation: All possible strings are: "ae", "ea", "ei", "ia", "ie", "io", "iu", "oi", "ou" and "ua".
      * Example 3:
-     *
+     * <p>
      * Input: n = 5
      * Output: 68
      */
-    class Solution1220{
+    class Solution1220 {
         /*
         hat said, if we are given the number of strings of length i that end in each vowel, like aCount, eCount, iCount, oCount, and uCount, we can compute the number of strings of length i + 1 that end in each vowel by simple addition:
 
@@ -2602,17 +2594,17 @@ public class Note18_DP {
                 ocount = newOcount;
                 ucount = newUcount;
             }
-            return (int)(acount + ecount + icount + ocount + ucount) % 1000000007;
+            return (int) (acount + ecount + icount + ocount + ucount) % 1000000007;
         }
     }
 
     // leetcode 1027:
 
     /**
-     *      * 给定一个整数数组 A，返回 A 中最长等差子序列的长度。
+     * * 给定一个整数数组 A，返回 A 中最长等差子序列的长度。
      */
-    class Solution1027{
-        public int longestArithmeticSubsequence(int[] A){
+    class Solution1027 {
+        public int longestArithmeticSubsequence(int[] A) {
             if (A.length <= 1) return A.length;
 
             int longest = 0;
@@ -2655,19 +2647,19 @@ public class Note18_DP {
     /**
      * An integer array is called arithmetic if it consists of at least three elements and if
      * the difference between any two consecutive elements is the same.
-     *
+     * <p>
      * For example, [1,3,5,7,9], [7,7,7,7], and [3,-1,-5,-9] are arithmetic sequences.
      * Given an integer array nums, return the number of arithmetic subarrays of nums.
-     *
+     * <p>
      * A subarray is a contiguous subsequence of the array.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: nums = [1,2,3,4]
      * Output: 3
      * Explanation: We have 3 arithmetic slices in nums: [1, 2, 3], [2, 3, 4] and [1,2,3,4] itself.
      * Example 2:
-     *
+     * <p>
      * Input: nums = [1]
      * Output: 0
      */
@@ -2676,7 +2668,7 @@ public class Note18_DP {
             if (nums.length < 3) return 0;
             int[] dp = new int[nums.length];
             int sum = 0;
-            for (int i = 2; i< nums.length; i++) {
+            for (int i = 2; i < nums.length; i++) {
                 if (nums[i] - nums[i - 1] == nums[i - 1] - nums[i - 2]) {
                     dp[i] = dp[i - 1] + 1;
                     sum += dp[i];
@@ -2691,13 +2683,13 @@ public class Note18_DP {
     /**
      * You are given a rows x cols matrix grid representing a field of cherries where grid[i][j] represents the
      * number of cherries that you can collect from the (i, j) cell.
-     *
+     * <p>
      * You have two robots that can collect cherries for you:
-     *
+     * <p>
      * Robot #1 is located at the top-left corner (0, 0), and
      * Robot #2 is located at the top-right corner (0, cols - 1).
      * Return the maximum number of cherries collection using both robots by following the rules below:
-     *
+     * <p>
      * From a cell (i, j), robots can move to cell (i + 1, j - 1), (i + 1, j), or (i + 1, j + 1).
      * When any robot passes through a cell, It picks up all cherries, and the cell becomes an empty cell.
      * When both robots stay in the same cell, only one takes the cherries.
@@ -2754,8 +2746,8 @@ public class Note18_DP {
             int m = grid.length, n = grid[0].length;
             int[][][] dp = new int[m][n][n];
             for (int i = m - 1; m >= 0; i--) {
-                for (int col1 = 0; col1 < n; col1 ++) {
-                    for (int col2 = 0; col2 < n ;col2++) {
+                for (int col1 = 0; col1 < n; col1++) {
+                    for (int col2 = 0; col2 < n; col2++) {
                         int res = grid[i][col1];
                         res += col1 != col2 ? grid[i][col2] : 0;
                         if (i != m - 1) {
@@ -2780,14 +2772,14 @@ public class Note18_DP {
 
     /**
      * You are given an array of words where each word consists of lowercase English letters.
-     *
+     * <p>
      * wordA is a predecessor of wordB if and only if we can insert exactly one letter anywhere in wordA without
      * changing the order of the other characters to make it equal to wordB.
-     *
+     * <p>
      * For example, "abc" is a predecessor of "abac", while "cba" is not a predecessor of "bcad".
      * A word chain is a sequence of words [word1, word2, ..., wordk] with k >= 1, where word1 is a predecessor
      * of word2, word2 is a predecessor of word3, and so on. A single word is trivially a word chain with k == 1.
-     *
+     * <p>
      * Return the length of the longest possible word chain with words chosen from the given list of words.
      */
     class Solution1048 {
@@ -2821,14 +2813,14 @@ public class Note18_DP {
     /**
      * The variance of a string is defined as the largest difference between the number of occurrences of any 2
      * characters present in the string. Note the two characters may or may not be the same.
-     *
+     * <p>
      * Given a string s consisting of lowercase English letters only, return the largest variance possible among
      * all substrings of s.
-     *
+     * <p>
      * A substring is a contiguous sequence of characters within a string.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: s = "aababbb"
      * Output: 3
      * Explanation:
@@ -2840,7 +2832,7 @@ public class Note18_DP {
      * Since the largest possible variance is 3, we return it.
      */
 
-    class Solution2272{
+    class Solution2272 {
         /*
         设出现次数最多的字母为 a，视为 1，出现最少的字母为 b，视为 -1，把其余字母视为 0。这里我们需要几个变量，diff 维护 a 和 b 的出现次数之差，
         diffWithB 维护包含了 b 的 a 和 b 的出现次数之差，初始化为 -s.length()，因为还没有出现 b。
@@ -2858,7 +2850,7 @@ public class Note18_DP {
             for (var a = 'a'; a <= 'z'; a++) {
                 for (var b = 'a'; b <= 'z'; b++) {
                     if (a == b) continue;
-                    var diff=  0;
+                    var diff = 0;
                     var diffWithB = -s.length();
                     for (int i = 0; i < s.length(); i++) {
                         if (s.charAt(i) == a) {
@@ -2876,8 +2868,79 @@ public class Note18_DP {
             return res;
         }
     }
-    public static void main(String[] args) {
-        System.out.println(Arrays.toString(new int[5]));
-    }
 
+    //1626: Best Team with no conflicts
+
+    /**
+     * You are the manager of a basketball team. For the upcoming tournament, you want to choose the team with the
+     * highest overall score. The score of the team is the sum of scores of all the players in the team.
+     * <p>
+     * However, the basketball team is not allowed to have conflicts. A conflict exists if a younger player has a
+     * strictly higher score than an older player. A conflict does not occur between players of the same age.
+     * <p>
+     * Given two lists, scores and ages, where each scores[i] and ages[i] represents the score and age of the ith
+     * player, respectively, return the highest overall score of all possible basketball teams.
+     * <p>
+     * Example 1:
+     * <p>
+     * Input: scores = [1,3,5,10,15], ages = [1,2,3,4,5]
+     * Output: 34
+     * Explanation: You can choose all the players.
+     * Example 2:
+     * <p>
+     * Input: scores = [4,5,6,5], ages = [2,1,2,1]
+     * Output: 16
+     * Explanation: It is best to choose the last 3 players. Notice that you are allowed to choose multiple people of the same age.
+     * Example 3:
+     * <p>
+     * Input: scores = [1,2,3,5], ages = [8,9,10,1]
+     * Output: 6
+     * Explanation: It is best to choose the first 3 players.
+     */
+
+    class Solution1626 {
+        /**
+         * If we observe closely, after sorting the list of pairs (age, score) by age, we need to find the highest sum
+         * of a non-decreasing subsequence of scores in the list. This is because after sorting, the list has the ages
+         * in ascending order, and in order to be non-conflicting, the score also has to be in non-decreasing order.
+         * Therefore we need to find the largest sum of scores in any non-decreasing subsequence of scores in the list
+         * of pairs. This is a typical dynamic programming problem very similar to [309] Longest Increasing Subsequence.
+         */
+        public int bestTeamScore(int[] scores, int[] ages) {
+            int len = scores.length;
+            int[][] pairs = new int[len][2];
+            for (int i = 0; i < len; i++) {
+                pairs[i][0] = ages[i];
+                pairs[i][1] = scores[i];
+            }
+            Arrays.sort(pairs, (a, b) -> a[0] == b[0] ? a[1] - b[1] : a[0] - b[0]);
+            return findMax(pairs);
+        }
+
+        public int findMax(int[][] pairs) {
+            int[] dp = new int[pairs.length];
+            int res = 0;
+            for (int i = 0; i < dp.length; i++) {
+                // Initially, the maximum score for each player will be equal to the individual scores.
+                dp[i] = pairs[i][1];
+                res = Math.max(res, pairs[i][1]);
+            }
+            for (int i = 0; i < pairs.length; i++) {
+                for (int j = i - 1; j >= 0; j--) {
+                    // If the players j and i could be in the same team.
+                    if (pairs[i][1] >= pairs[j][1]) {
+                        // Update the maximum score for the ith player.
+                        dp[i] = Math.max(dp[i], pairs[i][1] + dp[j]);
+                    }
+                    res = Math.max(dp[i], res);
+                }
+            }
+            return res;
+        }
+
+        public static void main(String[] args) {
+            System.out.println(Arrays.toString(new int[5]));
+        }
+
+    }
 }

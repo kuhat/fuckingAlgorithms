@@ -2205,6 +2205,116 @@ public class Note13_Tree {
         }
     }
 
+    // 117： Populating Next right Pointer in each Node II
+
+    /**
+     * Populate each next pointer to point to its next right node. If there is no next right node, the next pointer should be set to NULL.
+     *
+     * Initially, all next pointers are set to NULL.
+     *
+     * Input: root = [1,2,3,4,5,null,7]
+     * Output: [1,#,2,3,#,4,5,7,#]
+     * Explanation: Given the above binary tree (Figure A), your function should populate each next pointer to point to
+     * its next right node, just like in Figure B. The serialized output is in level order as connected by the next pointers,
+     * with '#' signifying the end of each level.
+     */
+    class Solution117 {
+        class Node {
+            public int val;
+            public Node left;
+            public Node right;
+            public Node next;
+
+            public Node() {}
+
+            public Node(int _val) {
+                val = _val;
+            }
+
+            public Node(int _val, Node _left, Node _right, Node _next) {
+                val = _val;
+                left = _left;
+                right = _right;
+                next = _next;
+            }
+        };
+        public Node connect(Node root) {
+
+            if (root == null) {
+                return root;
+            }
+            Queue<Node> Q = new LinkedList<Node>();
+            Q.add(root);
+            while (!Q.isEmpty()) {
+                int size = Q.size();
+                for(int i = 0; i < size; i++) {
+                    Node node = Q.poll();
+                    if (i < size - 1) {
+                        node.next = Q.peek();
+                    }
+                    if (node.left != null) {
+                        Q.add(node.left);
+                    }
+                    if (node.right != null) {
+                        Q.add(node.right);
+                    }
+                }
+            }
+
+            // Since the tree has now been modified, return the root node
+            return root;
+        }
+    }
+
+    // 105: construct Binary Tree from postorder and inorder
+
+    /**
+     * Given two integer arrays preorder and inorder where preorder is the preorder traversal of a binary tree and inorder
+     * is the inorder traversal of the same tree, construct and return the binary tree.
+     *
+     * Input: preorder = [3,9,20,15,7], inorder = [9,3,15,20,7]
+     * Output: [3,9,20,null,null,15,7]
+     */
+    class Solution105 {
+        /*
+        We will start with the preorder list since we know that the first node of preorder list forms the root of the tree.
+        Then, we will locate that node in inorder list. Once found, now we know that left subarray forms the left subtree and right subarray forms the right subtree.
+        Now, we need to take care of a few cases:
+a. Case #1:
+If there is no element to the left of a node then node does not have left subtree. Same is true for right subtree.
+b. Case #2:
+If there is only one element to the left of a node then the left node is the root node. Same is true for right subtree.
+c. Case #3:
+    If there are many nodes to the left of a node then we process the nodes as discussed in above steps.
+    The next node in preorder list will be the root of the left subtree, if exists(determined from the inorder list using
+    above cases) to track this we will use the "current" index in preorder list.
+    To implement this algorithm we will use two pointers, "start" and "end" which will point to the search space in
+    inorder list and we will maintain a "current" index for preorder list.
+         */
+        Map<Integer, Integer> map = new HashMap<>();
+        int cur = 0;
+
+        public TreeNode buildTree(int[] preorder, int[] inorder) {
+            for (int i = 0; i < preorder.length; i++) {
+                map.put(inorder[i], i);
+            }
+            return build(preorder, inorder, 0, preorder.length - 1);
+        }
+
+        public TreeNode build(int[] preorder, int[] inorder, int start, int end) {
+            if (cur >= preorder.length) return null;
+            int headVal = preorder[cur++];
+            TreeNode head = new TreeNode(headVal);
+            int targetVal = map.get(headVal);
+            if (targetVal - start > 0) {
+                head.left = build(preorder, inorder, start, targetVal - 1);
+            }
+            if (end - targetVal > 0) {
+                head.right = build(preorder, inorder, targetVal + 1, end);
+            }
+            return head;
+        }
+    }
     public static void main(String[] args) {
         System.out.println(5 >> 1);
     }
