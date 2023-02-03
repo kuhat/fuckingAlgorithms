@@ -2358,4 +2358,46 @@ public class Note12_Graph {
             parent[pa] = pb;  // 将a的根的根设为b的根，合并两个集合
         }
     }
+
+    // Number of provinces
+    /**
+     * There are n cities. Some of them are connected, while some are not. If city a is connected directly with city b,
+     * and city b is connected directly with city c, then city a is connected indirectly with city c.
+     *
+     * A province is a group of directly or indirectly connected cities and no other cities outside of the group.
+     *
+     * You are given an n x n matrix isConnected where isConnected[i][j] = 1 if the ith city and the jth city are
+     * directly connected, and isConnected[i][j] = 0 otherwise.
+     *
+     * Return the total number of provinces.
+     * 
+     * Input: isConnected = [[1,0,0],[0,1,0],[0,0,1]]
+     * Output: 3
+     * 
+     * Input: isConnected = [[1,1,0],[1,1,0],[0,0,1]]
+     * Output: 2
+     */
+    class Solution547 {
+        public int findCircleNum(int[][] isConnected) {
+            boolean[] isVisited = new boolean[isConnected.length];
+            Arrays.fill(isVisited, false);
+            int res = 0;
+            for (int i = 0; i < isConnected.length; i++) {
+                if (!isVisited[i]) {
+                    res ++;
+                    dfs(isConnected, isVisited, i);
+                }
+            }
+            return res;
+        }
+
+        public void dfs(int[][] map, boolean[] visited, int idx) {
+            for (int j = 0; j < map.length; j++) {
+                if (map[idx][j]== 1 && !visited[j]) {
+                    visited[j] = true;
+                    dfs(map, visited, j);
+                }
+            }
+        }
+    }
 }

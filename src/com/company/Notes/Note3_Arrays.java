@@ -3090,10 +3090,7 @@ public class Note3_Arrays {
      * Sort the elements of arr1 such that the relative ordering of items in arr1 are the same as in arr2. Elements
      * that do not appear in arr2 should be placed at the end of arr1 in ascending order.
      *
-     *
-     *
      * Example 1:
-     *
      * Input: arr1 = [2,3,1,3,2,4,6,7,9,2,19], arr2 = [2,1,4,3,9,6]
      * Output: [2,2,2,1,4,3,3,9,6,7,19]
      * Example 2:
@@ -3182,9 +3179,7 @@ public class Note3_Arrays {
                     alower++;  // 是否是下界
                 } else if (alower < num){
                     if (alower + 1 == num) res.add(String.valueOf(alower));
-                    else {
-                        res.add(alower + "->" + (num - 1));
-                    }
+                    else res.add(alower + "->" + (num - 1));
                     alower = (long)num + 1;
                 }
             }
@@ -4464,6 +4459,50 @@ public class Note3_Arrays {
                 }
                 return res;
             }
+        }
+    }
+
+    // 1272: remove intervals
+
+    /**
+     * A set of real numbers can be represented as the union of several disjoint intervals, where each interval is in
+     * the form [a, b). A real number x is in the set if one of its intervals [a, b) contains x (i.e. a <= x < b).
+     *
+     * You are given a sorted list of disjoint intervals intervals representing a set of real numbers as described above,
+     * where intervals[i] = [ai, bi] represents the interval [ai, bi). You are also given another interval toBeRemoved.
+     *
+     * Return the set of real numbers with the interval toBeRemoved removed from intervals. In other words, return the
+     * set of real numbers such that every x in the set is in intervals but not in toBeRemoved. Your answer should be
+     * a sorted list of disjoint intervals as described above.
+     *
+     * Input: intervals = [[0,2],[3,4],[5,7]], toBeRemoved = [1,6]
+     * Output: [[0,1],[6,7]]
+     *
+     * Input: intervals = [[0,5]], toBeRemoved = [2,3]
+     * Output: [[0,2],[3,5]]
+     * Example 3:
+     *
+     * Input: intervals = [[-5,-4],[-3,-2],[1,2],[3,5],[8,9]], toBeRemoved = [-1,4]
+     * Output: [[-5,-4],[-3,-2],[4,5],[8,9]]
+     */
+    class Solution1272 {
+        public List<List<Integer>> removeInterval(int[][] intervals, int[] toBeRemoved) {
+            List<List<Integer>> res = new ArrayList<>();
+            for (int i =0; i < intervals.length; i++) {
+                if (intervals[i][1] < toBeRemoved[0] || intervals[i][0] > toBeRemoved[1]) {
+                    res.add(Arrays.asList(intervals[i][0], intervals[i][1]));
+                } else {
+                    // Is there a left interval we need to keep?
+                    if (intervals[i][0] < toBeRemoved[0]) {
+                        res.add(Arrays.asList(intervals[i][0], toBeRemoved[0]));
+                    }
+                    // Is there a right interval we need to keep?
+                    if (intervals[i][1] > toBeRemoved[1]) {
+                        res.add(Arrays.asList(toBeRemoved[1], intervals[i][1]));
+                    }
+                }
+            }
+            return res;
         }
     }
 

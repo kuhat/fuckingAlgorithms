@@ -3446,6 +3446,45 @@ public class Note8_Strings {
 
     }
 
+    // 1153： String Transforms to another String
+
+    /**
+     * Given two strings str1 and str2 of the same length, determine whether you can transform str1 into str2 by doing zero or more conversions.
+     *
+     * In one conversion you can convert all occurrences of one character in str1 to any other lowercase English character.
+     *
+     * Return true if and only if you can transform str1 into str2.
+     *
+     * Example 1:
+     *
+     * Input: str1 = "aabcc", str2 = "ccdee"
+     * Output: true
+     * Explanation: Convert 'c' to 'e' then 'b' to 'd' then 'a' to 'c'. Note that the order of conversions matter.
+     * Example 2:
+     *
+     * Input: str1 = "leetcode", str2 = "codeleet"
+     * Output: false
+     * Explanation: There is no way to transform str1 to str2.
+     */
+    class Solution1153 {
+        public boolean canConvert(String str1, String str2) {
+            if (str1.equals(str2)) return true;
+            int[] from  = new int[26], to = new int[26];
+            Arrays.fill(from, -1);
+            Arrays.fill(to, -1);
+            for (int i = 0; i < str1.length(); i++) {
+                int a = str1.charAt(i) - 'a', b = str2.charAt(i) - 'a';
+                if (from[a] >= 0 && from[a] != b) return false;
+                from[a] = b;
+                to[b] = a;
+            }
+            for (int i : to) {
+                if (i < 0) return true;
+            }
+            return false;
+        }
+    }
+
     public static void main(String[] args) {
         String[] words = new String[]{"lc","cl","gg"};
         ArrayList sdf = new ArrayList();
