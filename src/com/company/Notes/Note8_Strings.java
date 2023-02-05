@@ -1,8 +1,5 @@
 package com.company.Notes;
 
-import com.sun.nio.sctp.AbstractNotificationHandler;
-
-import javax.lang.model.type.ArrayType;
 import java.util.*;
 
 public class Note8_Strings {
@@ -3484,6 +3481,92 @@ public class Note8_Strings {
             return false;
         }
     }
+
+    // 271: Encode and decode Strings
+
+    /**
+     * Design an algorithm to encode a list of strings to a string. The encoded string is then sent over the network
+     * and is decoded back to the original list of strings.
+     *
+     * Machine 1 (sender) has the function:
+     *
+     * string encode(vector<string> strs) {
+     *   // ... your code
+     *   return encoded_string;
+     * }
+     * Machine 2 (receiver) has the function:
+     * vector<string> decode(string s) {
+     *   //... your code
+     *   return strs;
+     * }
+     * So Machine 1 does:
+     *
+     * string encoded_string = encode(strs);
+     * and Machine 2 does:
+     *
+     * vector<string> strs2 = decode(encoded_string);
+     * strs2 in Machine 2 should be the same as strs in Machine 1.
+     *
+     * Implement the encode and decode methods.
+     *
+     * You are not allowed to solve the problem using any serialize methods (such as eval).
+     *
+     * Example 1:
+     *
+     * Input: dummy_input = ["Hello","World"]
+     * Output: ["Hello","World"]
+     * Explanation:
+     * Machine 1:
+     * Codec encoder = new Codec();
+     * String msg = encoder.encode(strs);
+     * Machine 1 ---msg---> Machine 2
+     *
+     * Machine 2:
+     * Codec decoder = new Codec();
+     * String[] strs = decoder.decode(msg);
+     * Example 2:
+     *
+     * Input: dummy_input = [""]
+     * Output: [""]
+     */
+    public class Codc {
+
+        // Encodes a list of strings to a single string.
+
+        /**
+         * 这道题让我们给字符加码再解码，先有码再无码，然后题目中并没有限制加码的方法，那么只要能成功的把有码变成无码就行了，具体变换方法自己可以设计。
+         * 由于需要把一个字符串集变成一个字符串，然后把这个字符串再还原成原来的字符串集，最开始博主想能不能在每一个字符串中间加个空格把它们连起来，
+         * 然后再按空格来隔开，但是这种方法的问题是原来的一个字符串中如果含有空格，那么还原的时候就会被分隔成两个字符串，所以必须还要加上长度的信息，
+         * 加码方法是长度 + "/" + 字符串，比如对于 "a","ab","abc"，就变成 "1/a2/ab3/abc"，那么解码的时候就有规律可寻，先寻找 "/"，
+         * 然后之前的就是要取出的字符个数，从 "/" 后取出相应个数即可，以此类推直至没有 "/"了，这样就得到高清无码的字符串集了，参见代码如下：
+         */
+        public String encode(List<String> strs) {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < strs.size(); i++) {
+                sb.append(strs.get(i).length() + "$" + strs.get(i));
+            }
+            System.out.println(sb.toString());
+            return sb.toString();
+        }
+
+        // Decodes a single string to a list of strings.
+        public List<String> decode(String s) {
+            List<String> res = new ArrayList<>();
+            int i = 0;
+            while (i < s.length()) {
+                int idx = s.indexOf("$", i);
+                System.out.println(idx);
+                int len = Integer.valueOf(s.substring(i, idx));
+                res.add(s.substring(idx + 1, idx + len + 1));
+                i = idx + len + 1;
+            }
+            return res;
+        }
+    }
+
+// Your Codec object will be instantiated and called as such:
+// Codec codec = new Codec();
+// codec.decode(codec.encode(strs));
 
     public static void main(String[] args) {
         String[] words = new String[]{"lc","cl","gg"};
