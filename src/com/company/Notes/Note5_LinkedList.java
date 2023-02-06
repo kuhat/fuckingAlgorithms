@@ -1160,6 +1160,194 @@ public class Note5_LinkedList {
         }
     }
 
+    // 432： All O one data structure
+
+    /**
+     * Design a data structure to store the strings' count with the ability to return the strings with minimum and maximum counts.
+     *
+     * Implement the AllOne class:
+     *
+     * AllOne() Initializes the object of the data structure.
+     * inc(String key) Increments the count of the string key by 1. If key does not exist in the data structure, insert
+     * it with count 1.
+     * dec(String key) Decrements the count of the string key by 1. If the count of key is 0 after the decrement, remove
+     * it from the data structure. It is guaranteed that key exists in the data structure before the decrement.
+     * getMaxKey() Returns one of the keys with the maximal count. If no element exists, return an empty string "".
+     * getMinKey() Returns one of the keys with the minimum count. If no element exists, return an empty string "".
+     * Note that each function must run in O(1) average time complexity.
+     */
+    class AllOne {
+
+        // 我们把frequency相同的key放在同一个node里面
+
+        class Node {
+            int freq;
+            Node prev;
+            Node next;
+            Set<String> keys;  // keys to preserve the keys with the same frequency
+
+            public Node(int freq) {
+                this.freq = freq;
+                keys = new HashSet<>();
+            }
+        }
+
+
+        private Node head;
+        private Node tail;
+        Map<String, Node> map;  // 用一个hashmap来装key和node的对应关系
+
+        /** Initialize your data structure here. */
+        public AllOne() {
+            head = null;
+            tail = null;
+            map = new HashMap<>();
+        }
+
+        /** Inserts a new key <Key> with value 1. Or increments an existing key by 1. */
+        public void inc(String key) {
+            // 如果当前的key已经存在了
+            if (map.containsKey(key)) {
+                Node node = map.get(key);  // 获取node节点
+                int freq = node.freq;
+                node.keys.remove(key);  // 将key从set里面移除
+                if (node.next == null) {  // 如果下一个frequent是空的，直接新建一个节点
+                    Node newNode = new Node(freq + 1);
+                    node.next = newNode;  // 更新新建的节点为当前节点的下一个节点
+                    newNode.prev = node;
+                    newNode.keys.add(key);
+                    map.put(key, newNode);
+                    tail = newNode;  // 更新尾部节点
+                } else {
+                    // 如果下一个节点不为空，说明下一个frequency存在
+                    Node next = node.next;
+                    if (next.freq - freq > 1) {  // 如果下一个节点的frequency比当前节点的大了1
+                        Node newNode = new Node(freq + 1);  // 新建一个节点，这个节点的frequency是上一个节点的frequency + 1
+                        newNode.keys.add(key);
+                        node.next = newNode;
+                        newNode.prev = node;
+                        newNode.next = next;
+                        next.prev = newNode;
+                        map.put(key, newNode);
+                    } else {  // 否则如果下一个节点的frequency只比当前的节点大一了，说明两个frequency挨在一起了，直接将这个key加到下一个node里
+                        next.keys.add(key);
+                        map.put(key, next);
+                    }
+                }
+                // 如果当前节点的keys的大小为0了，就要移除这个节点
+                if (node.keys.size() == 0) {
+                    removeNode(node);
+                }
+
+            } else { // map does not contains the key
+                if (head == null) {
+                    head = new Node(1);
+                    head.keys.add(key);
+                    tail = head;
+                } else {
+                    if (head.freq == 1) {
+                        head.keys.add(key);
+                    } else {
+                        Node newNode = new Node(1);
+                        newNode.keys.add(key);
+                        newNode.next = head;
+                        head.prev = newNode;
+                        head = newNode;
+                    }
+                }
+                map.put(key, head);
+            }
+        }
+
+        /** Decrements an existing key by 1. If Key's value is 1, remove it from the data structure. */
+        public void dec(String key) {
+            if (!map.containsKey(key)) {
+                return;
+            }
+            Node node = map.get(key);
+            node.keys.remove(key);
+            int freq = node.freq;
+            if (freq == 1) {
+                map.remove(key);
+
+            } else if (node == head) {
+                Node newNode = new Node(freq - 1);
+                newNode.keys.add(key);
+                newNode.next = head;
+                head.prev = newNode;
+                head = newNode;
+                map.put(key, head);
+            } else {
+                Node prev = node.prev;
+                if (freq - prev.freq == 1) {
+                    prev.keys.add(key);
+                    map.put(key, prev);
+                } else {
+                    Node newNode = new Node(freq - 1);
+                    prev.next = newNode;
+                    newNode.prev = prev;
+                    newNode.next = node;
+                    node.prev = newNode;
+                    newNode.keys.add(key);
+                    map.put(key, newNode);
+                }
+            }
+
+            if (node.keys.size() == 0) {
+                removeNode(node);
+            }
+        }
+
+
+        /** Returns one of the keys with maximal value. */
+        public String getMaxKey() {
+            if (head == null) {
+                return "";
+            }
+            return tail.keys.iterator().next();
+        }
+
+        /** Returns one of the keys with Minimal value. */
+        public String getMinKey() {
+            if (head == null) {
+                return "";
+            }
+            return head.keys.iterator().next();
+        }
+
+
+        private void removeNode(Node node) {
+            if (node == head) {
+                head = head.next;
+                node.next = null;
+                if (head != null) {
+                    head.prev = null;
+                }
+            } else if (node == tail) {
+                tail = tail.prev;
+                node.prev = null;
+                if (tail != null) {
+                    tail.next = null;
+                }
+            } else {
+                node.prev.next = node.next;
+                node.next.prev = node.prev;
+                node.prev = null;
+                node.next = null;
+            }
+        }
+
+        /**
+         * Your AllOne object will be instantiated and called as such:
+         * AllOne obj = new AllOne();
+         * obj.inc(key);
+         * obj.dec(key);
+         * String param_3 = obj.getMaxKey();
+         * String param_4 = obj.getMinKey();
+         */
+    }
+
+
     public static void main(String[] args) {
         String s = "aaa";
 

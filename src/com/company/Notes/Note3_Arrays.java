@@ -1253,9 +1253,12 @@ public class Note3_Arrays {
     // 80： Remove Duplicates from sorted Array II
 
     /**
-     * Given an integer array nums sorted in non-decreasing order, remove some duplicates in-place such that each unique element appears at most twice. The relative order of the elements should be kept the same.
+     * Given an integer array nums sorted in non-decreasing order, remove some duplicates in-place such that each unique
+     * element appears at most twice. The relative order of the elements should be kept the same.
      *
-     * Since it is impossible to change the length of the array in some languages, you must instead have the result be placed in the first part of the array nums. More formally, if there are k elements after removing the duplicates, then the first k elements of nums should hold the final result. It does not matter what you leave beyond the first k elements.
+     * Since it is impossible to change the length of the array in some languages, you must instead have the result be
+     * placed in the first part of the array nums. More formally, if there are k elements after removing the duplicates,
+     * then the first k elements of nums should hold the final result. It does not matter what you leave beyond the first k elements.
      *
      * Return k after placing the final result in the first k slots of nums.
      *
@@ -1470,7 +1473,8 @@ public class Note3_Arrays {
         }
     }
 
-    // 325 Data Stream as Disjoint Intervals
+    // 352 Data Stream as Disjoint Intervals
+    // TreeMap
 
     /**
      * Given a data stream input of non-negative integers a1, a2, ..., an, summarize the numbers seen
@@ -1797,6 +1801,7 @@ public class Note3_Arrays {
             int res = 0;
             int sum = 0;
             HashMap<Integer, Integer> map = new HashMap<>();
+            map.put(0, 1);
             for (int i = 0; i < nums.length; i++) {
                 sum += nums[i];
                 if (map.containsKey(sum - k)) {
