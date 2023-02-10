@@ -1185,14 +1185,11 @@ public class Note5_LinkedList {
             Node prev;
             Node next;
             Set<String> keys;  // keys to preserve the keys with the same frequency
-
             public Node(int freq) {
                 this.freq = freq;
                 keys = new HashSet<>();
             }
         }
-
-
         private Node head;
         private Node tail;
         Map<String, Node> map;  // 用一个hashmap来装key和node的对应关系
@@ -1239,15 +1236,18 @@ public class Note5_LinkedList {
                     removeNode(node);
                 }
 
-            } else { // map does not contains the key
-                if (head == null) {
+            } else { // map does not contain the key
+                if (head == null) {  // 如果头节点为空，直接新建一个头节点
                     head = new Node(1);
                     head.keys.add(key);
                     tail = head;
                 } else {
+                    // 否则头节点不为空的话
                     if (head.freq == 1) {
+                        // 如果头节点的frequency为1，直接加到头节点里
                         head.keys.add(key);
                     } else {
+                        // 如果头系欸但的frequency不为1，新建一个frequency为1的节点，然后更新头节点为新建的节点
                         Node newNode = new Node(1);
                         newNode.keys.add(key);
                         newNode.next = head;
@@ -1255,6 +1255,7 @@ public class Note5_LinkedList {
                         head = newNode;
                     }
                 }
+                // 最后将key和head结点对应
                 map.put(key, head);
             }
         }
