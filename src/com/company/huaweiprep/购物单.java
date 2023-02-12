@@ -127,8 +127,8 @@ public class 购物单 {
 
 
     static class Goods {
-        int v;
-        int p;
+        int v;  // 价格
+        int p;  // weight
         boolean main = false;
 
         int a1 = -1;  //定义附件1的编号
