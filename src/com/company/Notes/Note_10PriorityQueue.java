@@ -721,6 +721,64 @@ public class Note_10PriorityQueue {
         }
     }
 
+    // 632： Smallest Range Covering Elements from K Lists
+
+    /**
+     * You have k lists of sorted integers in non-decreasing order. Find the smallest range that includes at least
+     * one number from each of the k lists.
+     *
+     * We define the range [a, b] is smaller than range [c, d] if b - a < d - c or a < c if b - a == d - c.
+     *
+     * Example 1:
+     *
+     * Input: nums = [[4,10,15,24,26],[0,9,12,20],[5,18,22,30]]
+     * Output: [20,24]
+     * Explanation:
+     * List 1: [4, 10, 15, 24,26], 24 is in range [20,24].
+     * List 2: [0, 9, 12, 20], 20 is in range [20,24].
+     * List 3: [5, 18, 22, 30], 22 is in range [20,24].
+     */
+    class Solution632 {
+        /*
+        这道题我们可以转化为从k个列表中取出一个数，这些数中的最大值和最小值的差值最小
+        我们可以维护一个pq，来记录当前的最小值，维护一个max，记录当前的最大值。
+         */
+        public int[] smallestRange(List<List<Integer>> nums) {
+            // 用一个max来记录当前指针指向的最大值
+            int max = Integer.MIN_VALUE;
+            int size = nums.size();
+            // next里装的是每个list的指针
+            int[] next = new int[size];
+            // pq里装的是每个list当前元素的下表，头元素是最小值
+            PriorityQueue<Integer> pq = new PriorityQueue<>((a,b)->
+                    nums.get(a).get(next[a]) - nums.get(b).get(next[b]));
+            // 初始化k个list，max和pq
+            for (int i = 0; i < size; i++) {
+                pq.offer(i);
+                max = Math.max(max, nums.get(i).get(0));
+            }
+            // 维护一个左range和右range
+            int rangeLeft = 0, rangeRight = Integer.MAX_VALUE;
+            int minRange = rangeRight - rangeLeft;
+            while (true) {
+                // 获取当前的最小index
+                int minIdx = pq.poll();
+                int curRange = max - nums.get(minIdx).get(next[minIdx]);
+                if (curRange < minRange) {
+                    minRange = curRange;
+                    rangeLeft = nums.get(minIdx).get(next[minIdx]);
+                    rangeRight = max;
+                }
+                next[minIdx]++;
+                if (next[minIdx] == nums.get(minIdx).size()) break;
+                pq.offer(minIdx);
+                max = Math.max(max, nums.get(minIdx).get(next[minIdx]));
+            }
+            return new int[]{rangeLeft, rangeRight};
+        }
+    }
+
+
 
     public static void main(String[] args) {
         int[] res = findInt(4, 2, new int[]{4, 2, 1, 3});

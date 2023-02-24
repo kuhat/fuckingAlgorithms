@@ -129,9 +129,46 @@ public class MinimumCostToConnect {
         System.out.println(ans);
     }
 
-    public static void main(String[] args) {
+    public static long multi(int input) {
+        long res = 0;
+        for (int i = 0; i < input; i++) {
+            if (i % 4 == 0 || i % 6 ==0) {
+                res += i;
+            }
+        }
+        return res;
+    }
 
+    public static int largestPalin(int n) {
+        int upper = (int)Math.pow(10, n) - 1;
+        int lower = (int)Math.pow(10, n - 1);
+        int max = 0;
+
+        for (int i = upper; i >= lower; i--)
+        {
+            for (int j = i; j >= lower; j--)
+            {
+                int product = i * j;
+                if (product < max) break;
+                int number = product;
+                int reverse = 0;
+                while (number != 0) {
+                    reverse = reverse * 10 + number % 10;
+                    number /= 10;
+                }
+                if (product == reverse && product > max)
+                    max = product;
+            }
+        }
+        return max;
+    }
+    public static void main(String[] args) {
+        long befor3 = System.currentTimeMillis();
+        System.out.println(largestPalin(7));
+        long after = System.currentTimeMillis();
+        System.out.println(after - befor3);
     }
 
 
 }
+
