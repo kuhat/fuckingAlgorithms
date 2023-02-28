@@ -2315,6 +2315,44 @@ c. Case #3:
             return head;
         }
     }
+
+    // 652
+
+    /**
+     * 给你一棵二叉树的根节点 root ，返回所有 重复的子树 。
+     *
+     * 对于同一类的重复子树，你只需要返回其中任意 一棵 的根结点即可。
+     *
+     * 如果两棵树具有 相同的结构 和 相同的结点值 ，则认为二者是 重复 的。
+     */
+    class Solution652 {
+        List<TreeNode> list = new ArrayList<>();
+        Map<String, Integer> treeMap = new HashMap<>();
+
+        public List<TreeNode> findDuplicateSubtrees(TreeNode root) {
+            //时间复杂度:O(N^2)，遍历过程复杂度为O(N)，对于每个子树需要构造出与子树同等规模的字符串，复杂度为O(N)，所以整体复杂度为O(N^2)
+            //空间复杂度:O(N)
+            //如何判断一个节点为根的子树存在重复？
+            //1.知道自己为根节点的子树长啥样 2.知道其他节点为根节点的子树长啥样
+            //定义递归函数将二叉树序列化并通过map保存，判断是否存在重复子树
+            traverse(root);
+            return list;
+        }
+
+        private String traverse(TreeNode root) {
+            if (root == null) {
+                return "#";
+            }
+            StringBuilder sb = new StringBuilder();
+            sb.append(root.val).append("_").append(traverse(root.left)).append(traverse(root.right));
+            String key = sb.toString();
+            treeMap.put(key, treeMap.getOrDefault(key, 0) + 1);
+            if (treeMap.get(key) == 2) {
+                list.add(root);
+            }
+            return key;
+        }
+    }
     public static void main(String[] args) {
         System.out.println(5 >> 1);
     }

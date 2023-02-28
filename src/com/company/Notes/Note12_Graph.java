@@ -2400,4 +2400,44 @@ public class Note12_Graph {
             }
         }
     }
+
+    // 302： Smallest Rectangle Enclosing Black Pixels
+    /**
+     * You are given an m x n binary matrix image where 0 represents a white pixel and 1 represents a black pixel.
+     *
+     * The black pixels are connected (i.e., there is only one black region). Pixels are connected horizontally and vertically.
+     *
+     * Given two integers x and y that represents the location of one of the black pixels, return the area of the
+     * smallest (axis-aligned) rectangle that encloses all black pixels.
+     *
+     * You must write an algorithm with less than O(mn) runtime complexity
+     */
+    class Solution302 {
+        // 全局变量，在dfs时更新
+        int l, r, u, d;
+        public int minArea(char[][] image, int x, int y) {
+            if (image.length == 0 || image[0].length == 0) return 0;
+            l = y;
+            r = y;
+            u = x;
+            d = x;
+            dfs(image, x, y);
+            // 包含黑色的区域就是这个矩形的面积
+            return (r - l) * (d - u);
+        }
+
+        public void dfs(char[][] image, int x, int y) {
+            if (x >= image.length || y >= image[0].length || x < 0 || y < 0) return;
+            if (image[x][y] == '0') return;
+            image[x][y] = '0';
+            l = Math.min(l, y);
+            r = Math.max(r, y + 1);
+            u = Math.min(u, x);
+            d = Math.max(x + 1, d);
+            dfs(image, x + 1, y);
+            dfs(image, x - 1, y);
+            dfs(image, x, y + 1);
+            dfs(image, x, y - 1);
+        }
+    }
 }
