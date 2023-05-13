@@ -515,7 +515,6 @@ public class Note12_Graph {
             dfs(board, i ,j - 1);
             dfs(board, i + 1 ,j);
             dfs(board, i - 1 ,j);
-
         }
     }
 
@@ -571,7 +570,6 @@ public class Note12_Graph {
             }
             return false;
         }
-
         private boolean isValid(int[][] maze, int x, int y) {
             return x>= 0 && y >=0 && x<maze.length && y <maze[0].length && maze[x][y] == 0;
         }
@@ -579,7 +577,6 @@ public class Note12_Graph {
         class Point {
             int x;
             int y;
-
             public Point(int x, int y) {
                 this.x = x;
                 this.y = y;

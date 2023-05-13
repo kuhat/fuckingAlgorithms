@@ -1439,7 +1439,114 @@ public class Note7_Stack {
             }
         }
 
-        public static void main(String[] args) {
+        // 907： Sum of Subarray Minimums
+
+        /**
+         * Given an array of integers arr, find the sum of min(b), where b ranges over every (contiguous) subarray of arr.
+         * Since the answer may be large, return the answer modulo 109 + 7.
+         *
+         * Example 1:
+         *
+         * Input: arr = [3,1,2,4]
+         * Output: 17
+         * Explanation:
+         * Subarrays are [3], [1], [2], [4], [3,1], [1,2], [2,4], [3,1,2], [1,2,4], [3,1,2,4].
+         * Minimums are 3, 1, 2, 4, 1, 1, 2, 1, 1, 1.
+         * Sum is 17.
+         * @param args
+         */
+
+        /*
+
+        As for case 73, 76, 72, 69,71, 75, 74, 73
+        for the middle one 69, the minimum of subArrays that contains 69 will be 69, which are:
+
+        73 76 72 69
+        73 76 72 69 71
+        73 76 72 69 71 75
+        73 76 72 69 71 75 74
+        73 76 72 69 71 75 74 73
+        ......
+        总共有20个子数组，怎么算的呢？左边取得的最大长度是3，右边取得的最大长度是4，结果就是(3+1)*(4+1)。那么现在的问题就是怎么计算左边的最大
+        长度和右边的最大长度？可以通过单调栈。使用什么样的单调栈呢？不难想到我们需要求左边第一个小于当前元素的位置和右边第一个小于当前元素的位置，
+        这就需要维护一个严格单调递增的栈。
+         */
+        class Solution {
+            public int sumSubarrayMins(int[] arr) {
+                int n = arr.length;
+                //每个元素辐射范围的左边界
+                int[] left = new int[n];
+                //每个元素辐射范围的右边界
+                int[] right = new int[n];
+                Stack<Integer> stack = new Stack<>();
+                //第一次循环先找到所有元素的左边界
+                for (int i = 0; i < n; i++) {
+                    //向左找第一个小于等于E的元素
+                    while (!stack.isEmpty() && arr[stack.peek()] > arr[i]) {
+                        stack.pop();
+                    }
+                    if (stack.isEmpty()) {
+                        left[i] = -1;
+                    } else {
+                        left[i] = stack.peek();
+                    }
+                    stack.push(i);
+                }
+                stack.clear();
+                //第二次循环找到所有元素的右边界
+                for (int i = n - 1; i >= 0; i--) {
+                    //找到第一个小于E的元素
+                    while (!stack.isEmpty() && arr[stack.peek()] >= arr[i]) {
+                        stack.pop();
+                    }
+                    if (stack.isEmpty()) {
+                        right[i] = n;
+                    } else {
+                        right[i] = stack.peek();
+                    }
+                    stack.push(i);
+                }
+                //按照贡献度计算即可
+                //注意次数left[i]和right[i]实际上记录的是左边界-1和右边界+1，和思路中提到的有一点差别，不用单独+1了
+                long res = 0;
+                for (int i = 0; i < n; i++) {
+                    res = (res + ((long) (i - left[i]) * (right[i] - i) * arr[i])) % 1000000007;
+                }
+                return (int) res;
+            }
+
+            private int getCount(int[] arr, int n, int i) {
+                if (i == -1 || i == n) {
+                    return Integer.MIN_VALUE;
+                }
+                return arr[i];
+            }
+
+            public int sumSubarrayMins1(int[] arr) {
+
+                int n = arr.length;
+
+                Stack<Integer> stack = new Stack<>();
+
+                long res = 0;
+
+                for (int i = -1; i <= n; i++) {
+
+                    while (!stack.isEmpty() && getCount(arr, n, stack.peek()) > getCount(arr, n, i)) {
+                        //对于弹出来的这个cur，i相当于cur的右边界
+                        int cur = stack.pop();
+
+                        res = (res + (long) (cur - stack.peek()) * (i - cur) * arr[cur]) % 1000000007;
+
+                    }
+                    stack.push(i);
+                }
+                return (int) res;
+            }
+        }
+
+
+       public static void main(String[] args) {
             System.out.println(String.valueOf("asd"));
             System.out.println(String.valueOf("3"));
         }

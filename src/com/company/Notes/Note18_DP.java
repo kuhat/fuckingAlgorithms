@@ -2937,7 +2937,200 @@ public class Note18_DP {
             }
             return res;
         }
+        // 1524： Number of sub-arrays with odd sum
+        /**
+         * 1524
+         * Given an array of integers arr, return the number of subarrays with an odd sum.
+         *
+         * Since the answer can be very large, return it modulo 109 + 7.
+         *
+         *
+         *
+         * Example 1:
+         *
+         * Input: arr = [1,3,5]
+         * Output: 4
+         * Explanation: All subarrays are [[1],[1,3],[1,3,5],[3],[3,5],[5]]
+         * All sub-arrays sum are [1,4,9,3,8,5].
+         * Odd sums are [1,9,3,5] so the answer is 4.
+         */
+        class Solution1524 {
+            /*
+            odd: the number of odd subarrays ending with current element.
+            even: the number of even subarrays ending with current element.
 
+            if current element is odd:
+            adding it will change the parity of previous sum, so we swap previous odd and even, then odd increases 1 (the current element itself).
+
+            if curr element is even:
+            adding it will not change the parity of previous sum, so odd and even keep unchanged, then even increases 1 (the current element iteslf).
+
+            In the process of iteration, we simply add up all the numbers of odd subarrays and get the answer.
+             */
+            public int numOfSubarrays(int[] arr) {
+                long res = 0, even = 0, odd = 0, mod = 1000000007;
+                for (int i = 0; i < arr.length; i++) {
+                    int cur = arr[i];
+                    if (cur % 2 == 1) {
+                        long tmp = even;
+                        even = odd;
+                        odd = tmp;
+                        odd++;
+                    } else {
+                        even++;
+                    }
+                    res += odd;
+                }
+                return (int)(res % mod);
+            }
+        }
+
+        // 1531: String Compression 2
+
+        /**
+         * Run-length encoding is a string compression method that works by replacing consecutive identical characters
+         * (repeated 2 or more times) with the concatenation of the character and the number marking the count of the
+         * characters (length of the run). For example, to compress the string "aabccc" we replace "aa" by "a2" and
+         * replace "ccc" by "c3". Thus the compressed string becomes "a2bc3".
+         *
+         * Notice that in this problem, we are not adding '1' after single characters.
+         *
+         * Given a string s and an integer k. You need to delete at most k characters from s such that the run-length encoded version of s has minimum length.
+         *
+         * Find the minimum length of the run-length encoded version of s after deleting at most k characters.
+         *
+         *
+         *
+         * Example 1:
+         *
+         * Input: s = "aaabcccd", k = 2
+         * Output: 4
+         * Explanation: Compressing s without deleting anything will give us "a3bc3d" of length 6. Deleting any of the characters 'a' or 'c' would at most decrease the length of the compressed string to 5, for instance delete 2 'a' then we will have s = "abcccd" which compressed is abc3d. Therefore, the optimal way is to delete 'b' and 'd', then the compressed version of s will be "a3c3" of length 4.
+         */
+        class Solution1531 {
+            public int getLengthOfOptimalCompression(String s, int k) {
+                int l = s.length();
+                int[][] dp = new int[l+1][k+1];
+                //初始化dp数组
+                for(int[] i : dp) {//初始化为最大值
+                    Arrays.fill(i, l);
+                }
+                //初始化第一列，当删除0个字符时的行程长度编码长度
+                dp[0][0] = 0;
+                int t1 = 1;
+                int t2 = 0;
+                for(int i = 1; i <= l; i++) {
+                    dp[i][0] = t2 + len(t1);
+                    if(i < l && s.charAt(i-1) == s.charAt(i)) {
+                        t1++;
+                    } else {
+                        t2 += len(t1);
+                        t1 = 1;
+                    }
+                }
+                //DP
+                for(int i = 1; i <= l; i++) {
+                    for(int j = 1; j <= i && j <= k; j++) {
+                        dp[i][j] = dp[i-1][j-1]; //删除第i个字符
+
+                        //不删除第i个字符
+                        int del = 0;
+                        int cnt = 0;
+                        for(int m = i; m > 0; m--) { //枚举最后一对字符数字组合的所有可能
+                            if(s.charAt(m-1) == s.charAt(i-1)) {
+                                cnt++;
+                                dp[i][j] = Math.min(dp[i][j], dp[m-1][j-del] + len(cnt));
+                            } else {
+                                del++;
+                                if(del > j) {
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                return dp[l][k];
+            }
+            private int len(int x) {
+                return x == 1 ? 1 : (x < 10 ? 2 : x < 100 ? 3 : 4);
+            }
+        }
+
+        // 741： pick up cherry
+
+        /**
+         *You are given an n x n grid representing a field of cherries, each cell is one of three possible integers.
+         *
+         * 0 means the cell is empty, so you can pass through,
+         * 1 means the cell contains a cherry that you can pick up and pass through, or
+         * -1 means the cell contains a thorn that blocks your way.
+         * Return the maximum number of cherries you can collect by following the rules below:
+         *
+         * Starting at the position (0, 0) and reaching (n - 1, n - 1) by moving right or down through valid path cells (cells with value 0 or 1).
+         * After reaching (n - 1, n - 1), returning to (0, 0) by moving left or up through valid path cells.
+         * When passing through a path cell containing a cherry, you pick it up, and the cell becomes an empty cell 0.
+         * If there is no valid path between (0, 0) and (n - 1, n - 1), then no cherries can be collected.
+         *
+         * Input: grid = [[0,1,-1],[1,0,-1],[1,1,1]]
+         * Output: 5
+         * Explanation: The player started at (0, 0) and went down, down, right right to reach (2, 2).
+         * 4 cherries were picked up during this single trip, and the matrix becomes [[0,1,-1],[0,0,-1],[0,0,0]].
+         * Then, the player went left, up, up, left to return home, picking up one more cherry.
+         * The total number of cherries picked up is 5, and this is the maximum possible.
+         * @param args
+         */
+        /*
+        Instead of walking from end to beginning, let's reverse the second leg of the path, so we are only considering two paths from the beginning to the end.
+
+        Notice after t steps, each position (r, c) we could be, is on the line r + c = t. So if we have two people at
+        positions (r1, c1) and (r2, c2), then r2 = r1 + c1 - c2. That means the variables r1, c1, c2 uniquely determine
+        2 people who have walked the same r1 + c1 number of steps. This sets us up for dynamic programming quite nicely. Algorithm
+
+        Let dp[r1][c1][c2] be the most number of cherries obtained by two people starting at (r1, c1) and (r2, c2) and walking
+        towards (N-1, N-1) picking up cherries, where r2 = r1+c1-c2.
+
+        If grid[r1][c1] and grid[r2][c2] are not thorns, then the value of dp[r1][c1][c2] is (grid[r1][c1] + grid[r2][c2]),
+        plus the maximum of dp[r1+1][c1][c2], dp[r1][c1+1][c2], dp[r1+1][c1][c2+1], dp[r1][c1+1][c2+1] as appropriate. We
+        should also be careful to not double count in case (r1, c1) == (r2, c2).
+
+        Why did we say it was the maximum of dp[r+1][c1][c2] etc.? It corresponds to the 4 possibilities for person 1 and 2 moving down and right:
+
+        Person 1 down and person 2 down: dp[r1+1][c1][c2];
+        Person 1 right and person 2 down: dp[r1][c1+1][c2];
+        Person 1 down and person 2 right: dp[r1+1][c1][c2+1];
+        Person 1 right and person 2 right: dp[r1][c1+1][c2+1];
+         */
+        class solve741{
+            int[][][] dp;
+            int[][] Grid;
+            int n;
+            public int cherryPickup(int[][] grid) {
+                n = grid.length;
+                Grid = grid;
+                dp = new int[n][n][n];
+                for (int[][] layer: dp) {
+                    for (int[] dpList: layer) {
+                        Arrays.fill(dpList, Integer.MIN_VALUE);
+                    }
+                }
+                return Math.max(0, solve(0, 0, 0));
+            }
+
+            public int solve(int r1, int c1, int c2) {
+                int r2 = c1 + r1 - c2;  // c1 + r1 == c2 + r2
+                if (r1 == n || r2 == n || c1 == n || c2 == n || Grid[r1][c1] == -1 || Grid[r2][c2] == -1) return Integer.MIN_VALUE;  // 边界情况
+                else if (r1 == n - 1 && c1 == n - 1) return Grid[r1][c1];  // 走到尽头
+                else if (dp[r1][c1][c2] != Integer.MIN_VALUE) return dp[r1][c1][c2];
+                else {
+                    int ans = Grid[r1][c2];
+                    ans +=Math.max(Math.max(solve(r1, c1 + 1, c2 + 1), solve(r1 + 1, c1, c2 + 1)),
+                            Math.max(solve(r1, c1 + 1, c2), solve(r1 + 1, c1, c2)));
+                    dp[r1][c1][c2] = ans;
+                    return ans;
+                }
+            }
+
+        }
         public static void main(String[] args) {
             System.out.println(Arrays.toString(new int[5]));
         }

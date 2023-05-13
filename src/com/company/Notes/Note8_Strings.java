@@ -136,25 +136,25 @@ public class Note8_Strings {
         return "";
     }
 
-    public String solu76(String s, String t){
+    public String solu76(String s, String t) {
         int[] map = new int[256];
         int left = 0, right = 0, strStart = 0;
         int minLen = Integer.MAX_VALUE, count = t.length();
         for (char ch : t.toCharArray()) {
-            map[ch] ++;
+            map[ch]++;
         }
 
-        while(right < s.length()) {
-            if(map[s.charAt(right++)]-- > 0) count--;
-            while(count == 0) {
-                if(right - left < minLen) {
+        while (right < s.length()) {
+            if (map[s.charAt(right++)]-- > 0) count--;
+            while (count == 0) {
+                if (right - left < minLen) {
                     minLen = right - left;
                     strStart = left;
                 }
-                if (map[s.charAt(left++)]++ == 0) count ++;
+                if (map[s.charAt(left++)]++ == 0) count++;
             }
         }
-        return minLen != Integer.MAX_VALUE ? s.substring(strStart, strStart +minLen) : "";
+        return minLen != Integer.MAX_VALUE ? s.substring(strStart, strStart + minLen) : "";
     }
 
     /*
@@ -179,7 +179,6 @@ public class Note8_Strings {
      * Output: 4
      * Explanation: Replace the one 'A' in the middle with 'B' and form "AABBBBA".
      * The substring "BBBB" has the longest repeating letters, which is 4.
-     *
      */
 
     public int CharacterReplacement(String s, int k) {
@@ -447,25 +446,24 @@ public class Note8_Strings {
     // 567: permutation string
 
     /**
-     *
      * Given two strings s1 and s2, return true if s2 contains a permutation of s1,
      * or false otherwise.
-     *
+     * <p>
      * In other words, return true if one of s1's permutations is the substring of s2.
-     *
-     *Input: s1 = "ab", s2 = "eidbaooo"
+     * <p>
+     * Input: s1 = "ab", s2 = "eidbaooo"
      * Output: true
      * Explanation: s2 contains one permutation of s1 ("ba").
      */
-    class Solution567{
+    class Solution567 {
         public boolean checkInclusion(String s1, String s2) {
-            int [] count = new int[128];
+            int[] count = new int[128];
             for (char c : s1.toCharArray()) {
                 count[c]++;  // 记录s1中每个字母出现的次数
             }
             //  左右指针，i为右
             for (int i = 0, j = 0; i < s2.length(); i++) {
-                if (-- count[s2.charAt(i)] < 0) {
+                if (--count[s2.charAt(i)] < 0) {
                     while (count[s2.charAt(i)] != 0) {
                         count[s2.charAt(j++)]++;  // 左指针向右走
                     }
@@ -544,6 +542,7 @@ public class Note8_Strings {
             }
             return res;
         }
+
         /**
          * s = "aabbcc", k = 3
          * <p>
@@ -593,8 +592,6 @@ public class Note8_Strings {
             return res.length() == s.length() ? res.toString() : "";
         }
     }
-
-
 
 
     // 205. Isomorphic Strings
@@ -1756,13 +1753,14 @@ public class Note8_Strings {
     }
 
     // 316: remove duplicate letters
+
     /**
      * Given a string s, remove duplicate letters so that every letter appears once and only once.
      * You must make sure your result is the smallest in lexicographical order among all possible results.
-     *
+     * <p>
      * Input: s = "bcabc"
      * Output: "abc"
-     *
+     * <p>
      * Input: s = "cbacdcbc"
      * Output: "acdb"
      */
@@ -1778,7 +1776,7 @@ public class Note8_Strings {
 
             for (int i = 0; i < res.length; i++) {  // 放字母
                 char minChar = 'z' + 1;  // 相当于integer.max_value,一个上限
-                for(int k = start; k <= end; k ++) {  // 找字母，按照字母排序最小的
+                for (int k = start; k <= end; k++) {  // 找字母，按照字母排序最小的
                     if (map.containsKey(s.charAt(k)) && s.charAt(k) < minChar) {
                         minChar = s.charAt(k);
                         start = k + 1;  // 下一次找的位置
@@ -1802,24 +1800,25 @@ public class Note8_Strings {
     }
 
     //535：
+
     /**
      * Note: This is a companion problem to the System Design problem: Design TinyURL.
      * TinyURL is a URL shortening service where you enter a URL such as https://leetcode.com/problems/design-tinyurl
      * and it returns a short URL such as http://tinyurl.com/4e9iAk. Design a class to encode a URL and decode a tiny URL.
-     *
+     * <p>
      * There is no restriction on how your encode/decode algorithm should work. You just need to ensure that a URL can
      * be encoded to a tiny URL and the tiny URL can be decoded to the original URL.
-     *
+     * <p>
      * Implement the Solution class:
-     *
+     * <p>
      * Solution() Initializes the object of the system.
      * String encode(String longUrl) Returns a tiny URL for the given longUrl.
      * String decode(String shortUrl) Returns the original long URL for the given shortUrl. It is guaranteed that the
      * given shortUrl was encoded by the same object.
-     *
+     * <p>
      * Input: url = "https://leetcode.com/problems/design-tinyurl"
      * Output: "https://leetcode.com/problems/design-tinyurl"
-     *
+     * <p>
      * Explanation:
      * Solution obj = new Solution();
      * string tiny = obj.encode(url); // returns the encoded tiny url.
@@ -1829,6 +1828,7 @@ public class Note8_Strings {
 
         HashMap<String, String> map = new HashMap<>();
         String mapping = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
         // Encodes a URL to a shortened URL.
         public String encode(String longUrl) {
             Random random = new Random();
@@ -1849,27 +1849,28 @@ public class Note8_Strings {
     }
 
     //228: Summary Ranges
+
     /**
      * You are given a sorted unique integer array nums.
-     *
+     * <p>
      * A range [a,b] is the set of all integers from a to b (inclusive).
-     *
+     * <p>
      * Return the smallest sorted list of ranges that cover all the numbers in the array exactly.
      * That is, each element of nums is covered by exactly one of the ranges, and there is no
      * integer x such that x is in one of the ranges but not in nums.
-     *
+     * <p>
      * Each range [a,b] in the list should be output as:
-     *
+     * <p>
      * "a->b" if a != b
      * "a" if a == b
-     *
+     * <p>
      * Input: nums = [0,1,2,4,5,7]
      * Output: ["0->2","4->5","7"]
      * Explanation: The ranges are:
      * [0,2] --> "0->2"
      * [4,5] --> "4->5"
      * [7,7] --> "7"
-     *
+     * <p>
      * Input: nums = [0,2,3,4,6,8,9]
      * Output: ["0","2->4","6","8->9"]
      * Explanation: The ranges are:
@@ -1883,7 +1884,7 @@ public class Note8_Strings {
         public List<String> summaryRanges(int[] nums) {
             List<String> res = new ArrayList<>();
             if (nums == null || nums.length == 0) return res;
-            for (int i = 0; i < nums.length; i ++) {
+            for (int i = 0; i < nums.length; i++) {
                 int num = nums[i];
                 while (i < nums.length - 1 && nums[i] + 1 == nums[i + 1]) i++;
                 if (num != nums[i]) res.add(num + "->" + nums[i]);
@@ -1895,23 +1896,23 @@ public class Note8_Strings {
 
 
     // 475： Heaters
+
     /**
-     *
      * Winter is coming! During the contest, your first job is to design a standard heater with a fixed warm radius to
      * warm all the houses.
-     *
+     * <p>
      * Every house can be warmed, as long as the house is within the heater's warm radius range.
-     *
+     * <p>
      * Given the positions of houses and heaters on a horizontal line, return the minimum radius standard of heaters
      * so that those heaters could cover all houses.
-     *
+     * <p>
      * Notice that all the heaters follow your radius standard, and the warm radius will the same.
-     *
+     * <p>
      * Input: houses = [1,2,3], heaters = [2]
      * Output: 1
      * Explanation: The only heater was placed in the position 2, and if we use the radius 1 standard, then all the
      * houses can be warmed.
-     *
+     * <p>
      * Input: houses = [1,2,3,4], heaters = [1,4]
      * Output: 1
      * Explanation: The two heater was placed in the position 1 and 4. We need to use radius 1 standard, then all the
@@ -1926,7 +1927,7 @@ public class Note8_Strings {
                 while (i < heaters.length - 1
                         && Math.abs(heaters[i + 1] - house) <= Math.abs(heaters[i] - house)) {
                     // 如果下一个heater到目前房子的距离小于这个heater到目前房子的距离
-                    i ++;  // 找下一个heater
+                    i++;  // 找下一个heater
                 }
                 res = Math.max(res, Math.abs(heaters[i] - house));
             }
@@ -1940,23 +1941,23 @@ public class Note8_Strings {
     /**
      * Given a string s which consists of lowercase or uppercase letters, return the length of the
      * longest palindrome that can be built with those letters.
-     *
+     * <p>
      * Letters are case sensitive, for example, "Aa" is not considered a palindrome here.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: s = "abccccdd"
      * Output: 7
      * Explanation: One longest palindrome that can be built is "dccaccd", whose length is 7.
      */
-    class Solution409{
+    class Solution409 {
         /*
         因为这题让求的是可以构造的最长回文串，我们只需要把所有字符截取最大的偶数个，统计他们的和，如果还有剩下的字符，最后再加1，如果没有，最后不用再加了。
          */
         public int longestPalindrome(String s) {
             int[] map = new int[256];
             for (char c : s.toCharArray()) {
-                map[c] ++;
+                map[c]++;
             }
             int res = 0;
             int mask = -2;
@@ -1965,7 +1966,7 @@ public class Note8_Strings {
             因为mask是-2，count&-2的意思就是如果count是偶数，计算的结果还是count，如果count是奇数，计算的结果是count-1。直接看可能不直观，把-2转化为二进制就明白了。
             11111111 11111111 11111111 11111110
              */
-            return res < s.length() ? res + 1: res;  // //如果相加的和小于字符串的长度，最后还要加1
+            return res < s.length() ? res + 1 : res;  // //如果相加的和小于字符串的长度，最后还要加1
         }
     }
 
@@ -1973,18 +1974,18 @@ public class Note8_Strings {
 
     /**
      * you are given an integer array nums of length n where nums is a permutation of the numbers in the range [0, n - 1].
-     *
+     * <p>
      * You should build a set s[k] = {nums[k], nums[nums[k]], nums[nums[nums[k]]], ... } subjected to the following rule:
-     *
+     * <p>
      * The first element in s[k] starts with the selection of the element nums[k] of index = k.
      * The next element in s[k] should be nums[nums[k]], and then nums[nums[nums[k]]], and so on.
      * We stop adding right before a duplicate element occurs in s[k].
      * Return the longest length of a set s[k].
-     *
-     *
-     *
+     * <p>
+     * <p>
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: nums = [5,4,0,3,1,6,2]
      * Output: 4
      * Explanation:
@@ -1992,18 +1993,18 @@ public class Note8_Strings {
      * One of the longest sets s[k]:
      * s[0] = {nums[0], nums[5], nums[6], nums[2]} = {5, 6, 2, 0}
      * Example 2:
-     *
+     * <p>
      * Input: nums = [0,1,2]
      * Output: 1
      */
-    class Solution565{
+    class Solution565 {
         public int arrayNesting(int[] nums) {
             int res = 0;
             for (int i = 0; i < nums.length; i++) {
                 int next = i;
                 int count = 0;
                 while (nums[next] != -1) {
-                    count ++;
+                    count++;
                     int temp = next;
                     next = nums[next];
                     nums[temp] = -1;
@@ -2015,27 +2016,28 @@ public class Note8_Strings {
     }
 
     //30 SubString with Concatenation All Words  sliding window
+
     /**
      * You are given a string s and an array of strings words of the same length. Return all starting indices of
      * substring(s) in s that is a concatenation of each word in words exactly once, in any order, and without any intervening characters.
-     *
+     * <p>
      * You can return the answer in any order.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: s = "barfoothefoobarman", words = ["foo","bar"]
      * Output: [0,9]
      * Explanation: Substrings starting at index 0 and 9 are "barfoo" and "foobar" respectively.
      * The output order does not matter, returning [9,0] is fine too.
      * Example 2:
-     *
+     * <p>
      * Input: s = "wordgoodgoodgoodbestword", words = ["word","good","best","word"]
      * Output: []
      * Example 3:
-     *
+     * <p>
      * Input: s = "barfoofoobarthefoobarman", words = ["bar","foo","the"]
      * Output: [6,9,12]
-     *
+     * <p>
      * O（n^2）
      * space: O(N)
      */
@@ -2056,7 +2058,7 @@ public class Note8_Strings {
                     String str = s.substring(j, j + m);  // 判断当前单词是否属于words里面的单词
                     if (!copy.containsKey(str) || copy.get(str) < 1) break;  // 如果没有包含，或者出现的次数过多，直接跳过
                     copy.put(str, copy.get(str) - 1);  // 如果包含了，把当前单词的数量减一
-                    k --;  // 要找的总单词数量减一
+                    k--;  // 要找的总单词数量减一
                     j += m;  // 越过当前找到的单词
                 }
                 if (k == 0) res.add(i);
@@ -2072,18 +2074,18 @@ public class Note8_Strings {
 
     /**
      * 给定一个字符串s,找出至多包含k个不同字符的最长子串T  sliding window
-     *
+     * <p>
      * example1:
      * input: s = "eceba", k = 2
      * output: 3
      * explaination: T is "ece", the length is 3
      */
-    class solution340{
+    class solution340 {
         public int lengthOfLongestSubstringKDistinct(String s, int k) {
             if (s == null || s.length() == 0 || k == 0) return 0;
             int left = 0, right = 0, nums = 0/*记录重复的字母*/, res = 0;
             int[] count = new int[256];
-            while(right < s.length()) {
+            while (right < s.length()) {
                 if (count[s.charAt(right++)]++ == 0) nums++;
                 if (nums > k) {  // 当重复的字母大于了k时，将左指针向右移，减去相同的字母数nums
                     while (--count[s.charAt(left)] > 0) left++;
@@ -2096,25 +2098,25 @@ public class Note8_Strings {
     }
 
     // 49： Group Anagrams
+
     /**
      * Given an array of strings strs, group the anagrams together. You can return the answer in any order.
-     *
+     * <p>
      * An Anagram is a word or phrase formed by rearranging the letters of a different word or phrase,
      * typically using all the original letters exactly once.
-
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: strs = ["eat","tea","tan","ate","nat","bat"]
      * Output: [["bat"],["nat","tan"],["ate","eat","tea"]]
      * Example 2:
-     *
+     * <p>
      * Input: strs = [""]
      * Output: [[""]]
      * Example 3:
-     *
+     * <p>
      * Input: strs = ["a"]
      * Output: [["a"]]
-     *
      */
 
     class Solution49 {
@@ -2124,10 +2126,10 @@ public class Note8_Strings {
             for (String str : strs) {
                 int[] count = new int[26];
                 for (Character ch : str.toCharArray()) {
-                    count[ch - 'a'] ++;  // 统计每个字母出现的次数
+                    count[ch - 'a']++;  // 统计每个字母出现的次数
                 }
                 String s = "";
-                for (int i = 0; i < count.length; i ++) {
+                for (int i = 0; i < count.length; i++) {
                     // 去数出现过的字母比如说 ababc将被转化成2a2b1c
                     if (count[i] != 0) s += String.valueOf(count[i]) + String.valueOf((char) (i + 'a'));
                 }
@@ -2145,22 +2147,23 @@ public class Note8_Strings {
     }
 
     // 438 find all Anagrams in a StringAnagram
+
     /**
      * Given two strings s and p, return an array of all the start indices of p's anagrams in s. You may return the answer in any order.
-     *
+     * <p>
      * An Anagram is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once.
-     *
-     *
-     *
+     * <p>
+     * <p>
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: s = "cbaebabacd", p = "abc"
      * Output: [0,6]
      * Explanation:
      * The substring with start index = 0 is "cba", which is an anagram of "abc".
      * The substring with start index = 6 is "bac", which is an anagram of "abc".
      * Example 2:
-     *
+     * <p>
      * Input: s = "abab", p = "ab"
      * Output: [0,1,2]
      * Explanation:
@@ -2174,13 +2177,13 @@ public class Note8_Strings {
             if (s == null || s.length() == 0 || p.length() == 0) return res;
             int[] chars = new int[26];
             for (Character ch : p.toCharArray()) {
-                chars[ch - 'a'] ++;
+                chars[ch - 'a']++;
             }
             int start = 0, end = 0;
             int count = p.length();  // 用count来记录是否该添加进res里，当count==0时代表找到了
             while (end < s.length()) {
                 // 当end-start等于p的长 和 当前start位置的字母的数量大于0时（代表是p里面出现的字符），start位置的数字的数量加一，start向右走，count++(相当于restore一下)
-                if (end - start == p.length() && chars[s.charAt(start ++) - 'a']++ >= 0) count++;
+                if (end - start == p.length() && chars[s.charAt(start++) - 'a']++ >= 0) count++;
                 // 如果当前end位置的字母减一还大于等于0，说明找到了p中的字母，count--
                 if (--chars[s.charAt(end++) - 'a'] >= 0) count--;
                 if (count == 0) res.add(start);
@@ -2190,34 +2193,34 @@ public class Note8_Strings {
     }
 
     // 9: Palindrome Number
+
     /**
      * Given an integer x, return true if x is palindrome integer.
-
-     An integer is a palindrome when it reads the same backward as forward.
-
-     For example, 121 is a palindrome while 123 is not.
-
-
-     Example 1:
-
-     Input: x = 121
-     Output: true
-     Explanation: 121 reads as 121 from left to right and from right to left.
-     Example 2:
-
-     Input: x = -121
-     Output: false
-     Explanation: From left to right, it reads -121. From right to left, it becomes 121-. Therefore it is not a palindrome.
-     *
+     * <p>
+     * An integer is a palindrome when it reads the same backward as forward.
+     * <p>
+     * For example, 121 is a palindrome while 123 is not.
+     * <p>
+     * <p>
+     * Example 1:
+     * <p>
+     * Input: x = 121
+     * Output: true
+     * Explanation: 121 reads as 121 from left to right and from right to left.
+     * Example 2:
+     * <p>
+     * Input: x = -121
+     * Output: false
+     * Explanation: From left to right, it reads -121. From right to left, it becomes 121-. Therefore it is not a palindrome.
      */
     class Solution9 {
         public boolean isPalindrome(int x) {
-            if(x < 0 || (x % 10 == 0 && x != 0)) return false;
-            if(x > 0 && x <= 9) return true;
+            if (x < 0 || (x % 10 == 0 && x != 0)) return false;
+            if (x > 0 && x <= 9) return true;
             int palind = x;
             int rev = 0;
 
-            while(x > 0) {
+            while (x > 0) {
                 rev = rev * 10 + x % 10;
                 x /= 10;
             }
@@ -2230,22 +2233,22 @@ public class Note8_Strings {
     /**
      * Given a string s which consists of lowercase or uppercase letters, return the length of the longest palindrome
      * that can be built with those letters.
-     *
+     * <p>
      * Letters are case sensitive, for example, "Aa" is not considered a palindrome here.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: s = "abccccdd"
      * Output: 7
      * Explanation: One longest palindrome that can be built is "dccaccd", whose length is 7.
      * Example 2:
-     *
+     * <p>
      * Input: s = "a"
      * Output: 1
      * Explanation: The longest palindrome that can be built is "a", whose length is 1.
      */
-    class Solution4091{
-        public int longestPalindrome (String s) {
+    class Solution4091 {
+        public int longestPalindrome(String s) {
             if (s == null || s.length() == 0) return 0;
             HashSet<Character> set = new HashSet<>();  // 用一个set来记录相同字母出现的奇偶数
             int count = 0;
@@ -2265,11 +2268,11 @@ public class Note8_Strings {
             int[] count = new int[256];
             int res = 0;
             for (char ch : s.toCharArray()) {
-                count[ch] ++;
+                count[ch]++;
             }
             for (int i : count) {
                 res += i / 2 * 2;
-                if (res % 2 == 0 && i % 2 == 1) res ++;
+                if (res % 2 == 0 && i % 2 == 1) res++;
 
             }
             return res;
@@ -2283,7 +2286,7 @@ public class Note8_Strings {
      * 出现一次的字母有一个，其他的都是两个
      * 或者都是偶数个
      */
-    class Solution266{
+    class Solution266 {
         // HashSet:space: o(n)
         public boolean canPermutePalindrome(String s) {
             HashSet<Character> set = new HashSet<>();
@@ -2301,31 +2304,32 @@ public class Note8_Strings {
             for (char c : s.toCharArray()) {
                 if (count[c] > 0) {
                     // 如果出现这个字符，就--
-                    count[c] --;
+                    count[c]--;
                 } else {
-                    count[c] ++;
+                    count[c]++;
                 }
             }
             // 正常如果可以有回文出现，那只能有1个或者0个位置不是0（最多只能出现一个奇数个的字母）
             for (int i = 0; i < count.length; i++) {
-                if (count[i] != 0) res ++;
+                if (count[i] != 0) res++;
             }
             return res <= 1;
         }
     }
 
     // 214：shortest palindrome
+
     /**
      * You are given a string s. You can convert s to a palindrome by adding characters in front of it.
-     *
+     * <p>
      * Return the shortest palindrome you can find by performing this transformation.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: s = "aacecaaa"
      * Output: "aaacecaaa"
      * Example 2:
-     *
+     * <p>
      * Input: s = "abcd"
      * Output: "dcbabcd"
      */
@@ -2338,11 +2342,11 @@ public class Note8_Strings {
             while (i < j) {
                 // 如果i和j对应的字符相等，这两个地方可以构成一个回文字符，直接向中间走
                 if (chars[i] == chars[j]) {
-                    j --;
-                    i ++;
+                    j--;
+                    i++;
                 } else {
                     i = 0;
-                    end --;
+                    end--;
                     j = end;
                 }
             }
@@ -2351,18 +2355,19 @@ public class Note8_Strings {
     }
 
     // 5: longest palindrome subString
+
     /**
      * Given a string s, return the longest palindromic substring in s.
-     *
-     *
-     *
+     * <p>
+     * <p>
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: s = "babad"
      * Output: "bab"
      * Explanation: "aba" is also a valid answer.
      * Example 2:
-     *
+     * <p>
      * Input: s = "cbbd"
      * Output: "bb"
      */
@@ -2372,14 +2377,14 @@ public class Note8_Strings {
             String res = "";
             int max = 0;
             boolean[][] dp = new boolean[s.length()][s.length()];  // 起点到中点是否为palindrome，是否为最大的palindrome
-            for (int j = 0; j < s.length(); j ++) {
+            for (int j = 0; j < s.length(); j++) {
                 for (int i = 0; i <= j; i++) {
                     dp[i][j] = s.charAt(i) == s.charAt(j) && ((j - i <= 2) || dp[i + 1][j - 1]);
                     //         两端的字母相同                   只剩下三个字母      中间剩下的字母，i向右走一个和j向左走一个相同
-                    if(dp[i][j]) {
+                    if (dp[i][j]) {
                         if (j - i + 1 > max) {  // 更新max值
                             max = j - i + 1;
-                            res = s.substring(i , j + 1);
+                            res = s.substring(i, j + 1);
                         }
                     }
                 }
@@ -2389,9 +2394,10 @@ public class Note8_Strings {
 
         // 中心扩散法
         String res = "";
+
         public String longestPalindrome1(String s) {
             if (s == null || s.length() == 0) return s;
-            for (int i = 0; i < s.length(); i ++) {
+            for (int i = 0; i < s.length(); i++) {
                 // 回文的长度是奇数
                 helper(s, i, i);
                 // 回文的长度是偶数
@@ -2401,28 +2407,29 @@ public class Note8_Strings {
         }
 
         // 以left和right为中心，求回文字符串的数量
-        public void helper(String s, int left, int right)  {
-            while(left >= 0 && right < s.length() && s.charAt(left) == s.charAt(right)) {
-                left --;
-                right ++;
+        public void helper(String s, int left, int right) {
+            while (left >= 0 && right < s.length() && s.charAt(left) == s.charAt(right)) {
+                left--;
+                right++;
             }
             String cur = s.substring(left + 1, right);
-            if (cur.length() > res.length()) res =cur;
+            if (cur.length() > res.length()) res = cur;
         }
     }
 
     // 336: palindrome pairs
+
     /**
      * Given a list of unique words, return all the pairs of the distinct indices (i, j) in the given list,
      * so that the concatenation of the two words words[i] + words[j] is a palindrome.
-
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: words = ["abcd","dcba","lls","s","sssll"]
      * Output: [[0,1],[1,0],[3,2],[2,4]]
      * Explanation: The palindromes are ["dcbaabcd","abcddcba","slls","llssssll"]
      * Example 2:
-     *
+     * <p>
      * Input: words = ["bat","tab","cat"]
      * Output: [[0,1],[1,0]]
      * Explanation: The palindromes are ["battab","tabbat"]
@@ -2432,8 +2439,8 @@ public class Note8_Strings {
             List<List<Integer>> res = new ArrayList<>();
             if (words == null || words.length < 2) return res;
             // 用map 把index和单词存进去
-            HashMap<String, Integer>map = new HashMap<>();
-            for (int i = 0 ; i < words.length; i++) {
+            HashMap<String, Integer> map = new HashMap<>();
+            for (int i = 0; i < words.length; i++) {
                 map.put(words[i], i);
             }
             // 遍历每个单词
@@ -2441,10 +2448,10 @@ public class Note8_Strings {
                 // 遍历单词的每个字母
                 for (int j = 0; j <= words[i].length(); j++) {
                     // 拆分单词，看看有没有回文
-                    String str1 = words[i].substring(0 , j);
+                    String str1 = words[i].substring(0, j);
                     String str2 = words[i].substring(j);
                     // 判断前半段是不是回文
-                    if (isPalindrome(str1)){
+                    if (isPalindrome(str1)) {
                         // 将str2倒置，
                         String str2rvs = new StringBuilder(str2).reverse().toString();
                         // 如果map里面有str2的反向，而且不等于str1的话
@@ -2466,33 +2473,34 @@ public class Note8_Strings {
         public boolean isPalindrome(String s) {
             int left = 0;
             int right = s.length() - 1;
-            while(left <= right) {
+            while (left <= right) {
                 if (s.charAt(left) != s.charAt(right)) return false;
                 left++;
-                right --;
+                right--;
             }
             return true;
         }
     }
 
     // 131： Palindrome partition
+
     /**
      * Given a string s, partition s such that every substring of the partition is a palindrome. Return all possible
      * palindrome partitioning of s.
-     *
+     * <p>
      * A palindrome string is a string that reads the same backward as forward.
-     *
-     *
-     *
+     * <p>
+     * <p>
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: s = "aab"
      * Output: [["a","a","b"],["aa","b"]]
      * Example 2:
-     *
+     * <p>
      * Input: s = "a"
      * Output: [["a"]]
-     *
+     * <p>
      * time: O(2^n)
      */
     class Solution131 {
@@ -2511,15 +2519,15 @@ public class Note8_Strings {
 
             for (int i = index; i < s.length(); i++) {
                 if (!isPalindrome(s.substring(index, i + 1))) continue;
-                temp.add(s.substring(index, i +1));
+                temp.add(s.substring(index, i + 1));
                 helper(s, res, temp, i + 1);
-                temp.remove(temp.size() -1);
+                temp.remove(temp.size() - 1);
             }
         }
 
         private boolean isPalindrome(String s) {
             int left = 0, right = s.length() - 1;
-            while(left < right) {
+            while (left < right) {
                 if (s.charAt(left++) != s.charAt(right--)) return false;
             }
             return true;
@@ -2528,25 +2536,26 @@ public class Note8_Strings {
 
 
     // 132: Palindrome partition II
+
     /**
      * Given a string s, partition s such that every substring of the partition is a palindrome.
-     *
+     * <p>
      * Return the minimum cuts needed for a palindrome partitioning of s.
      * Example 1:
-     *
+     * <p>
      * Input: s = "aab"
      * Output: 1
      * Explanation: The palindrome partitioning ["aa","b"] could be produced using 1 cut.
      * Example 2:
-     *
+     * <p>
      * Input: s = "a"
      * Output: 0
      * Example 3:
-     *
+     * <p>
      * Input: s = "ab"
      * Output: 1
      */
-    class Solution132{
+    class Solution132 {
 
         /**
          * 判断回文用dp
@@ -2554,11 +2563,10 @@ public class Note8_Strings {
          * 判断字符串前i个字符构成的子串能分割的最少次数，只需返回cuts[len - 1]
          * [] cuts
          * 如果子串从[0..i]是回文，就不同分隔，即cuts[i] = 0
-         *
+         * <p>
          * i   j
          * abcba
          * s.charAt(i) == s.charAt(j) && isPalindrome[i + 1][j - 1]
-         *
          */
         public int minCut(String s) {
             if (s == null || s.length() == 0) return 0;
@@ -2582,16 +2590,16 @@ public class Note8_Strings {
     }
 
     // 267: Palindrome Permutation II (Backtracking)
+
     /**
      * Given a string s, return all the palindrome permutations (without duplicates) of it, return an empty list if no
      * palindromes are found
-     *
+     * <p>
      * given s= "aabb", return ["abba", "baab"]
      */
-    class Solution267{
+    class Solution267 {
         /**
          * 如果奇数个的字母出现次数多于1的话肯定构成不了回文
-         *
          */
         public List<String> generatePalindrome(String s) {
             int odd = 0;
@@ -2602,13 +2610,13 @@ public class Note8_Strings {
             List<Character> list = new ArrayList<>();
             // 用map统计字母出现的次数
             HashMap<Character, Integer> map = new HashMap<>();
-            for (int i = 0; i < s.length(); i ++) {
+            for (int i = 0; i < s.length(); i++) {
                 char c = s.charAt(i);
-                map.put(c, map.getOrDefault(c, 0)  + 1);
+                map.put(c, map.getOrDefault(c, 0) + 1);
                 odd += map.get(c) % 2 != 0 ? 1 : -1;  // 统计这个字母出现的是奇数次还是偶数次
             }
             // 如果奇数个字母的数量大于1，不能构成回文
-            if(odd > 1) return res;
+            if (odd > 1) return res;
 
             for (Map.Entry<Character, Integer> entry : map.entrySet()) {
                 char key = entry.getKey();
@@ -2616,7 +2624,7 @@ public class Note8_Strings {
                 // 如果出现次数是奇数，中间的字母就是这个
                 if (val % 2 != 0) mid += key;
                 // 即使出现了偶数次，只放入list中一半的数量，另一半直接翻转就可以了
-                for (int i = 0; i < val / 2; i ++) {
+                for (int i = 0; i < val / 2; i++) {
                     list.add(key);
                 }
             }
@@ -2647,34 +2655,35 @@ public class Note8_Strings {
 
 
     // 443：String Compression
+
     /**
      * Given an array of characters chars, compress it using the following algorithm:
-     *
+     * <p>
      * Begin with an empty string s. For each group of consecutive repeating characters in chars:
-     *
+     * <p>
      * If the group's length is 1, append the character to s.
      * Otherwise, append the character followed by the group's length.
      * The compressed string s should not be returned separately, but instead, be stored in the input character array
      * chars. Note that group lengths that are 10 or longer will be split into multiple characters in chars.
-     *
+     * <p>
      * After you are done modifying the input array, return the new length of the array.
-     *
+     * <p>
      * You must write an algorithm that uses only constant extra space.
-     *
-     *
-     *
+     * <p>
+     * <p>
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: chars = ["a","a","b","b","c","c","c"]
      * Output: Return 6, and the first 6 characters of the input array should be: ["a","2","b","2","c","3"]
      * Explanation: The groups are "aa", "bb", and "ccc". This compresses to "a2b2c3".
      * Example 2:
-     *
+     * <p>
      * Input: chars = ["a"]
      * Output: Return 1, and the first character of the input array should be: ["a"]
      * Explanation: The only group is "a", which remains uncompressed since it's a single character.
      * Example 3:
-     *
+     * <p>
      * Input: chars = ["a","b","b","b","b","b","b","b","b","b","b","b","b"]
      * Output: Return 4, and the first 4 characters of the input array should be: ["a","b","1","2"].
      * Explanation: The groups are "a" and "bbbbbbbbbbbb". This compresses to "ab12".
@@ -2685,14 +2694,14 @@ public class Note8_Strings {
             while (index < chars.length) {
                 char cur = chars[index];
                 int count = 0;
-                while(index < chars.length && chars[index] == cur) {
-                    index ++;  // 是重复的数一下有多少个
+                while (index < chars.length && chars[index] == cur) {
+                    index++;  // 是重复的数一下有多少个
                     count++;
                 }
-                chars[res ++] = cur;  // 替换
+                chars[res++] = cur;  // 替换
                 if (count != 1) {
                     for (char c : String.valueOf(count).toCharArray()) {
-                        chars[res ++] = c;  // 数字的替换
+                        chars[res++] = c;  // 数字的替换
                     }
                 }
             }
@@ -2701,28 +2710,29 @@ public class Note8_Strings {
     }
 
     // 273: Integer To English Words  考的次数不占少数
+
     /**
      * Convert a non-negative integer num to its English words representation.
-     *
-     *
-     *
+     * <p>
+     * <p>
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: num = 123
      * Output: "One Hundred Twenty Three"
      * Example 2:
-     *
+     * <p>
      * Input: num = 12345
      * Output: "Twelve Thousand Three Hundred Forty Five"
      * Example 3:
-     *
+     * <p>
      * Input: num = 1234567
      * Output: "One Million Two Hundred Thirty Four Thousand Five Hundred Sixty Seven"
      */
     class Solution273 {
 
-        String[] less20 = new String[]{"", "One","Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven","Twelve","Thirteen", "Fourteen", "Fifteen", "Sixteen",
-        "Seventeen", "Eighteen", "Nineteen"};
+        String[] less20 = new String[]{"", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen",
+                "Seventeen", "Eighteen", "Nineteen"};
         String[] tens = new String[]{"", "Ten", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"};
         String[] thousands = new String[]{"", "Thousand", "Million", "Billion"};
 
@@ -2733,9 +2743,9 @@ public class Note8_Strings {
             if (num == 0) return "Zero";
             String res = "";
             int i = 0;
-            while(num > 0) {
+            while (num > 0) {
                 if (num % 1000 != 0) {
-                    res = helper(num % 1000) + thousands[i] + " " +res;  // helper(345)
+                    res = helper(num % 1000) + thousands[i] + " " + res;  // helper(345)
                 }
                 num /= 1000;
                 i++;
@@ -2743,7 +2753,7 @@ public class Note8_Strings {
             return res.trim();
         }
 
-        private String helper(int num ) {
+        private String helper(int num) {
             if (num == 0) return "";
             if (num < 20) {
                 return less20[num % 20] + " ";
@@ -2756,17 +2766,18 @@ public class Note8_Strings {
     }
 
     // 395： longest Substring with at least k repeating characters
+
     /**
      * Given a string s and an integer k, return the length of the longest substring of s such that the frequency of
      * each character in this substring is greater than or equal to k.
-     *
+     * <p>
      * Example 1:http://localhost:8000
-     *
+     * <p>
      * Input: s = "aaabb", k = 3
      * Output: 3
      * Explanation: The longest substring is "aaa", as 'a' is repeated 3 times.
      * Example 2:
-     *
+     * <p>
      * Input: s = "ababbc", k = 2
      * Output: 5
      * Explanation: The longest substring is "ababb", as 'a' is repeated 2 times and 'b' is repeated 3 times.
@@ -2781,13 +2792,13 @@ public class Note8_Strings {
         }
 
         public int helper(String s, int k, int numUniqueTarget) {
-            int [] count = new int[128];  // 记录出现字母的个数
+            int[] count = new int[128];  // 记录出现字母的个数
             int start = 0, end = 0;  // 头指针和尾指针
             int numUnique = 0, res = 0, numNoLessThanK = 0;  // 出现不同字母的种类，结果，出现次数比K大的数
 
             while (end < s.length()) {
                 if (count[s.charAt(end)]++ == 0) numUnique++;  // 如果尾指针的字母出现次数为0，出现的字母种类加一
-                if (count[s.charAt(end++)] == k) numNoLessThanK ++;  // 如果尾指针出现的字母个数等于k了，尾指针向后移（都会执行），numNoLessThanK加一
+                if (count[s.charAt(end++)] == k) numNoLessThanK++;  // 如果尾指针出现的字母个数等于k了，尾指针向后移（都会执行），numNoLessThanK加一
                 while (numUnique > numUniqueTarget) {  // 当出现不同字母的种类大于允许出现的字母种类时，要尝试start向后走
                     if (count[s.charAt(start)]-- == k) numNoLessThanK--;  // 如果start指针出现的数量等于k，减小numNoLessThanK的个数
                     if (count[s.charAt(start++)] == 0) numUnique--;  // 如果start指针的字母出现的数量等于0，出现的字母种类减一
@@ -2801,45 +2812,45 @@ public class Note8_Strings {
     }
 
     // 1143 Longest Common Subsequence
+
     /**
      * Given two strings text1 and text2, return the length of their longest common subsequence. If there is no
      * common subsequence, return 0.
-     *
+     * <p>
      * A subsequence of a string is a new string generated from the original string with some characters (can be none)
      * deleted without changing the relative order of the remaining characters.
-     *
+     * <p>
      * For example, "ace" is a subsequence of "abcde".
      * A common subsequence of two strings is a subsequence that is common to both strings.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: text1 = "abcde", text2 = "ace"
      * Output: 3
      * Explanation: The longest common subsequence is "ace" and its length is 3.
      * Example 2:
-     *
+     * <p>
      * Input: text1 = "abc", text2 = "abc"
      * Output: 3
      * Explanation: The longest common subsequence is "abc" and its length is 3.
      * Example 3:
-     *
+     * <p>
      * Input: text1 = "abc", text2 = "def"
      * Output: 0
      * Explanation: There is no such common subsequence, so the result is 0.
-     *
      */
     class Solution1143 {
         public int longestCommonSubsequence(String text1, String text2) {
-            int m=text1.length();
-            int n=text2.length();
-            int[][] dp=new int[m+1][n+1];
+            int m = text1.length();
+            int n = text2.length();
+            int[][] dp = new int[m + 1][n + 1];
 
-            for(int i=1;i<=m;i++){
-                for(int j=1;j<=n;j++){
-                    if(text1.charAt(i-1)==text2.charAt(j-1))
-                        dp[i][j]=dp[i-1][j-1]+1;
+            for (int i = 1; i <= m; i++) {
+                for (int j = 1; j <= n; j++) {
+                    if (text1.charAt(i - 1) == text2.charAt(j - 1))
+                        dp[i][j] = dp[i - 1][j - 1] + 1;
                     else
-                        dp[i][j]=Math.max(dp[i-1][j],dp[i][j-1]);
+                        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
                 }
             }
             return dp[m][n];
@@ -2851,17 +2862,17 @@ public class Note8_Strings {
         HashMap<String, Integer> dif = new HashMap<>();
         int res = 0;
 
-        for (int i = 0; i < words.length; i ++) {
+        for (int i = 0; i < words.length; i++) {
             String s = words[i];
             if (s.equals("#?")) continue;
             if (s.charAt(0) == s.charAt(1)) {
-                same.put(s, same.getOrDefault(s, 0)+1);
+                same.put(s, same.getOrDefault(s, 0) + 1);
                 continue;
             }
-            for (int j = i + 1; j < words.length; j ++) {
+            for (int j = i + 1; j < words.length; j++) {
                 String t = words[j];
                 if (s.charAt(0) == t.charAt(1) && s.charAt(1) == t.charAt(0)) {
-                    dif.put(s, dif.getOrDefault(s, 0)+1);
+                    dif.put(s, dif.getOrDefault(s, 0) + 1);
                     words[j] = "#?";
                     break;
                 }
@@ -2886,16 +2897,16 @@ public class Note8_Strings {
 
     /**
      * Given a string s, return the length of the longest substring that contains at most two distinct characters.
-     *
-     *
-     *
+     * <p>
+     * <p>
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: s = "eceba"
      * Output: 3
      * Explanation: The substring is "ece" which its length is 3.
      * Example 2:
-     *
+     * <p>
      * Input: s = "ccaabbb"
      * Output: 5
      * Explanation: The substring is "aabbb" which its length is 5.
@@ -2929,11 +2940,11 @@ public class Note8_Strings {
     /**
      * Given an array of strings wordsDict and two different strings that already exist in the array word1 and word2,
      * return the shortest distance between these two words in the list.
-     *
-     *Input: wordsDict = ["practice", "makes", "perfect", "coding", "makes"], word1 = "coding", word2 = "practice"
+     * <p>
+     * Input: wordsDict = ["practice", "makes", "perfect", "coding", "makes"], word1 = "coding", word2 = "practice"
      * Output: 3
      * Example 2:
-     *
+     * <p>
      * Input: wordsDict = ["practice", "makes", "perfect", "coding", "makes"], word1 = "makes", word2 = "coding"
      * Output: 1
      */
@@ -2955,19 +2966,19 @@ public class Note8_Strings {
 
     /**
      * Given a string num which represents an integer, return true if num is a strobogrammatic number.
-     *
+     * <p>
      * A strobogrammatic number is a number that looks the same when rotated 180 degrees (looked at upside down).
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: num = "69"
      * Output: true
      * Example 2:
-     *
+     * <p>
      * Input: num = "88"
      * Output: true
      * Example 3:
-     *
+     * <p>
      * Input: num = "962"
      * Output: false
      */
@@ -2997,25 +3008,24 @@ public class Note8_Strings {
 
     /**
      * Given an integer n, return all the strobogrammatic numbers that are of length n. You may return the answer in any order.
-     *
+     * <p>
      * A strobogrammatic number is a number that looks the same when rotated 180 degrees (looked at upside down).
-     *
-     *
-     *
+     * <p>
+     * <p>
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: n = 2
      * Output: ["11","69","88","96"]
      * Example 2:
-     *
+     * <p>
      * Input: n = 1
      * Output: ["0","1","8"]
-     *
+     * <p>
      * 00 010 0110 不合法
      * %010%可以
-     *
      */
-    class solution248{
+    class solution248 {
         public List<String> findStroboggrammatic(int n) {
             return helper(n, n);
         }
@@ -3024,11 +3034,11 @@ public class Note8_Strings {
             if (n == 0) return new ArrayList<>(Arrays.asList(""));
             if (n == 1) return new ArrayList<>(Arrays.asList("0", "1", "8"));
 
-            List<String> list = helper(n -2, m);  // n: 当前backtracking进行到了哪里
+            List<String> list = helper(n - 2, m);  // n: 当前backtracking进行到了哪里
             List<String> res = new ArrayList<>();
 
             for (int i = 0; i < list.size(); i++) {
-                String s= list.get(i);
+                String s = list.get(i);
                 if (n != m) {
                     res.add("0" + s + "0");
                 }
@@ -3046,20 +3056,20 @@ public class Note8_Strings {
 
     /**
      * We can shift a string by shifting each of its letters to its successive letter.
-     *
+     * <p>
      * For example, "abc" can be shifted to be "bcd".
      * We can keep shifting the string to form a sequence.
-     *
+     * <p>
      * For example, we can keep shifting "abc" to form the sequence: "abc" -> "bcd" -> ... -> "xyz".
      * Given an array of strings strings, group all strings[i] that belong to the same shifting sequence. You may
      * return the answer in any order.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: strings = ["abc","bcd","acef","xyz","az","ba","a","z"]
      * Output: [["acef"],["a","z"],["abc","bcd","xyz"],["az","ba"]]
      * Example 2:
-     *
+     * <p>
      * Input: strings = ["a"]
      * Output: [["a"]]
      */
@@ -3093,24 +3103,23 @@ public class Note8_Strings {
 
     /**
      * Given a list of non-negative integers nums, arrange them such that they form the largest number and return it.
-     *
+     * <p>
      * Since the result may be very large, so you need to return a string instead of an integer.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: nums = [10,2]
      * Output: "210"
      * Example 2:
-     *
+     * <p>
      * Input: nums = [3,30,34,5,9]
      * Output: "9534330"
-     *
      */
     class Solution179 {
         public String largestNumber(int[] nums) {
-            if (nums ==null || nums.length == 0) return "";
+            if (nums == null || nums.length == 0) return "";
             String[] res = new String[nums.length];
-            for (int i = 0; i< nums.length; i ++) {
+            for (int i = 0; i < nums.length; i++) {
                 res[i] = String.valueOf(nums[i]);
             }
             Arrays.sort(res, new Comparator<String>() {
@@ -3125,7 +3134,7 @@ public class Note8_Strings {
                 return "0";
             }
             StringBuilder sb = new StringBuilder();
-            for (String s: res) {
+            for (String s : res) {
                 sb.append(s);
             }
             return sb.toString();
@@ -3138,22 +3147,22 @@ public class Note8_Strings {
     /**
      * You are given a 0-indexed string s that you must perform k replacement operations on. The replacement operations
      * are given as three 0-indexed parallel arrays, indices, sources, and targets, all of length k.
-     *
+     * <p>
      * To complete the ith replacement operation:
-     *
+     * <p>
      * Check if the substring sources[i] occurs at index indices[i] in the original string s.
      * If it does not occur, do nothing.
      * Otherwise if it does occur, replace that substring with targets[i].
      * For example, if s = "abcd", indices[i] = 0, sources[i] = "ab", and targets[i] = "eee", then the result of this
      * replacement will be "eeecd".
-     *
+     * <p>
      * All replacement operations must occur simultaneously, meaning the replacement operations should not affect the
      * indexing of each other. The testcases will be generated such that the replacements will not overlap.
-     *
+     * <p>
      * For example, a testcase with s = "abc", indices = [0, 1], and sources = ["ab","bc"] will not be generated because
      * the "ab" and "bc" replacements overlap.
      * Return the resulting string after performing all replacement operations on s.
-     *
+     * <p>
      * A substring is a contiguous sequence of characters in a string.
      */
     class Solution833 {
@@ -3181,10 +3190,10 @@ public class Note8_Strings {
 
     /**
      * Missing words from subsequentString
-     *
+     * <p>
      * s = "I love programming"
      * t = "love"
-     *
+     * <p>
      * return a ArrayList: I programming
      */
     public List<String> missingSubsequence(String s, String t) {
@@ -3192,10 +3201,10 @@ public class Note8_Strings {
         String[] parts = s.split(" ");
         String[] otherParts = t.split(" ");
         List<String> missing = new ArrayList<>();
-        for (int i = 0, j =0; i < parts.length; i++) {
+        for (int i = 0, j = 0; i < parts.length; i++) {
             if (j < otherParts.length && parts[i].equals(otherParts[j])) {
                 j++;
-            }else{
+            } else {
                 missing.add(parts[i]);
             }
         }
@@ -3206,14 +3215,14 @@ public class Note8_Strings {
 
     /**
      * Given two strings s and part, perform the following operation on s until all occurrences of the substring part are removed:
-     *
+     * <p>
      * Find the leftmost occurrence of the substring part and remove it from s.
      * Return s after removing all occurrences of part.
-     *
+     * <p>
      * A substring is a contiguous sequence of characters in a string.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: s = "daabcbaabcbc", part = "abc"
      * Output: "dab"
      * Explanation: The following operations are done:
@@ -3222,7 +3231,7 @@ public class Note8_Strings {
      * - s = "dababc", remove "abc" starting at index 3, so s = "dab".
      * Now s has no occurrences of "abc".
      * Example 2:
-     *
+     * <p>
      * Input: s = "axxxxyyyyb", part = "xy"
      * Output: "ab"
      * Explanation: The following operations are done:
@@ -3248,33 +3257,33 @@ public class Note8_Strings {
 
     /**
      * Let's define a function countUniqueChars(s) that returns the number of unique characters on s.
-     *
+     * <p>
      * For example, calling countUniqueChars(s) if s = "LEETCODE" then "L", "T", "C", "O", "D" are the unique characters
      * since they appear only once in s, therefore countUniqueChars(s) = 5.
      * Given a string s, return the sum of countUniqueChars(t) where t is a substring of s. The test cases are generated
      * such that the answer fits in a 32-bit integer.
-     *
+     * <p>
      * Notice that some substrings can be repeated so in this case you have to count the repeated ones too.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: s = "ABC"
      * Output: 10
      * Explanation: All possible substrings are: "A","B","C","AB","BC" and "ABC".
      * Every substring is composed with only unique letters.
      * Sum of lengths of all substring is 1 + 1 + 1 + 2 + 2 + 3 = 10
      * Example 2:
-     *
+     * <p>
      * Input: s = "ABA"
      * Output: 8
      * Explanation: The same as example 1, except countUniqueChars("ABA") = 1.
      * Example 3:
-     *
+     * <p>
      * Input: s = "LEETCODE"
      * Output: 92
      */
     // https://www.jianshu.com/p/fce7dccd0199
-    class Solution828{
+    class Solution828 {
         public int uniqueLetterString(String s) {
             Map<Character, List<Integer>> map = new HashMap();
             char[] sc = s.toCharArray();
@@ -3284,7 +3293,7 @@ public class Note8_Strings {
             }
 
             int result = 0;
-            for(Map.Entry<Character, List<Integer>> entry : map.entrySet()) {
+            for (Map.Entry<Character, List<Integer>> entry : map.entrySet()) {
                 int head = -1, tail = -1;
                 List<Integer> item = entry.getValue();
                 for (int i = 0; i < item.size(); i++) {
@@ -3300,10 +3309,11 @@ public class Note8_Strings {
     // 2023. Number of Pairs of Strings With Concatenation Equal to Target
 
     /**
-     * Given an array of digit strings nums and a digit string target, return the number of pairs of indices (i, j) (where i != j) such that the concatenation of nums[i] + nums[j] equals target.
-     *
+     * Given an array of digit strings nums and a digit string target, return the number of pairs of indices (i, j)
+     * (where i != j) such that the concatenation of nums[i] + nums[j] equals target.
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: nums = ["777","7","77","77"], target = "7777"
      * Output: 4
      * Explanation: Valid pairs are:
@@ -3312,14 +3322,14 @@ public class Note8_Strings {
      * - (2, 3): "77" + "77"
      * - (3, 2): "77" + "77"
      * Example 2:
-     *
+     * <p>
      * Input: nums = ["123","4","12","34"], target = "1234"
      * Output: 2
      * Explanation: Valid pairs are:
      * - (0, 1): "123" + "4"
      * - (2, 3): "12" + "34"
      * Example 3:
-     *
+     * <p>
      * Input: nums = ["1","1","1"], target = "11"
      * Output: 6
      * Explanation: Valid pairs are:
@@ -3334,11 +3344,11 @@ public class Note8_Strings {
         public int numOfPairs(String[] nums, String target) {
             HashMap<String, Integer> map = new HashMap<>();
             int count = 0;
-            for (String s: nums) {
+            for (String s : nums) {
                 if (s.length() > target.length()) continue;
                 String right = target.substring(s.length());  // 右边剩下的string
                 String left = target.substring(0, target.length() - s.length());  // 左边剩下的string
-                if ((s + right).equals(target)) count += map.getOrDefault(right, 0 );  // 看看s加上右边剩下的可不可以等于target
+                if ((s + right).equals(target)) count += map.getOrDefault(right, 0);  // 看看s加上右边剩下的可不可以等于target
                 if ((left + s).equals(target)) count += map.getOrDefault(left, 0);
                 map.put(s, map.getOrDefault(s, 0) + 1);
             }
@@ -3351,13 +3361,13 @@ public class Note8_Strings {
     /**
      * You are given a string s. We want to partition the string into as many parts as possible so
      * that each letter appears in at most one part.
-     *
+     * <p>
      * Note that the partition is done so that after concatenating all the parts in order, the resultant string should be s.
-     *
+     * <p>
      * Return a list of integers representing the size of these parts.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: s = "ababcbacadefegdehijhklij"
      * Output: [9,7,8]
      * Explanation:
@@ -3365,33 +3375,34 @@ public class Note8_Strings {
      * This is a partition so that each letter appears in at most one part.
      * A partition like "ababcbacadefegde", "hijhklij" is incorrect, because it splits s into less parts.
      * Example 2:
-     *
+     * <p>
      * Input: s = "eccbbbbdec"
      * Output: [10]
      */
     class Solution763 {
         /**
          * 这是一道求最优解的算法题，可以尝试使用贪心算法来解题。
-         *
+         * <p>
          * 本题中没有提供任何数组，只提供了一个字符串，可以将字符串中字符的位置、数量等信息统计成数组形式，以作为解题的数据。
+         * <p>
+         * 将字符在字符串中最后一次出现的位置进行统计，得到每个字符c最后一次出现的位置end c；
+         * 初始化第一个片段的开始索引start = 0，结束索引end = 0；
+         * 对该字符串中的字符进行从左往右的遍历，对于每个字符c，若其最后一次出现的位置为end c ，则其片段的结束索引end一定大于等于end c，因此令end = max(end, end c)；
+         * 当遍历到索引end后，当前片段结束，其长度为end - start + 1；
+         * 令start = end + 1，开始下一片段的访问；
+         * 重复上述步骤，直至遍历完字符。
          *
-         *     将字符在字符串中最后一次出现的位置进行统计，得到每个字符c最后一次出现的位置end c；
-         *     初始化第一个片段的开始索引start = 0，结束索引end = 0；
-         *     对该字符串中的字符进行从左往右的遍历，对于每个字符c，若其最后一次出现的位置为end c ，则其片段的结束索引end一定大于等于end c，因此令end = max(end, end c)；
-         *     当遍历到索引end后，当前片段结束，其长度为end - start + 1；
-         *     令start = end + 1，开始下一片段的访问；
-         *     重复上述步骤，直至遍历完字符。
          * @param s
          * @return
          */
         public List<Integer> partitionLabels(String s) {
             int[] pos = new int[26];
-            for (int i = 0; i < s.length(); i ++) {
+            for (int i = 0; i < s.length(); i++) {
                 pos[s.charAt(i) - 'a'] = i;
             }
             int start = 0, end = 0;
             List<Integer> res = new ArrayList<>();
-            for (int i = 0; i < s.length(); i ++) {
+            for (int i = 0; i < s.length(); i++) {
                 end = Math.max(end, pos[s.charAt(i) - 'a']);
                 if (i == end) {
                     res.add(end - start + 1);
@@ -3406,21 +3417,21 @@ public class Note8_Strings {
 
     /**
      * Given two strings s and t, return true if they are both one edit distance apart, otherwise return false.
-     *
+     * <p>
      * A string s is said to be one distance apart from a string t if you can:
-     *
+     * <p>
      * Insert exactly one character into s to get t.
      * Delete exactly one character from s to get t.
      * Replace exactly one character of s with a different character to get t.
-     *
-     *
+     * <p>
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: s = "ab", t = "acb"
      * Output: true
      * Explanation: We can insert 'c' into s to get t.
      * Example 2:
-     *
+     * <p>
      * Input: s = "", t = ""
      * Output: false
      * Explanation: We cannot get t from s by only one step.
@@ -3447,18 +3458,18 @@ public class Note8_Strings {
 
     /**
      * Given two strings str1 and str2 of the same length, determine whether you can transform str1 into str2 by doing zero or more conversions.
-     *
+     * <p>
      * In one conversion you can convert all occurrences of one character in str1 to any other lowercase English character.
-     *
+     * <p>
      * Return true if and only if you can transform str1 into str2.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: str1 = "aabcc", str2 = "ccdee"
      * Output: true
      * Explanation: Convert 'c' to 'e' then 'b' to 'd' then 'a' to 'c'. Note that the order of conversions matter.
      * Example 2:
-     *
+     * <p>
      * Input: str1 = "leetcode", str2 = "codeleet"
      * Output: false
      * Explanation: There is no way to transform str1 to str2.
@@ -3466,7 +3477,7 @@ public class Note8_Strings {
     class Solution1153 {
         public boolean canConvert(String str1, String str2) {
             if (str1.equals(str2)) return true;
-            int[] from  = new int[26], to = new int[26];
+            int[] from = new int[26], to = new int[26];
             Arrays.fill(from, -1);
             Arrays.fill(to, -1);
             for (int i = 0; i < str1.length(); i++) {
@@ -3487,32 +3498,32 @@ public class Note8_Strings {
     /**
      * Design an algorithm to encode a list of strings to a string. The encoded string is then sent over the network
      * and is decoded back to the original list of strings.
-     *
+     * <p>
      * Machine 1 (sender) has the function:
-     *
+     * <p>
      * string encode(vector<string> strs) {
-     *   // ... your code
-     *   return encoded_string;
+     * // ... your code
+     * return encoded_string;
      * }
      * Machine 2 (receiver) has the function:
      * vector<string> decode(string s) {
-     *   //... your code
-     *   return strs;
+     * //... your code
+     * return strs;
      * }
      * So Machine 1 does:
-     *
+     * <p>
      * string encoded_string = encode(strs);
      * and Machine 2 does:
-     *
+     * <p>
      * vector<string> strs2 = decode(encoded_string);
      * strs2 in Machine 2 should be the same as strs in Machine 1.
-     *
+     * <p>
      * Implement the encode and decode methods.
-     *
+     * <p>
      * You are not allowed to solve the problem using any serialize methods (such as eval).
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: dummy_input = ["Hello","World"]
      * Output: ["Hello","World"]
      * Explanation:
@@ -3520,12 +3531,12 @@ public class Note8_Strings {
      * Codec encoder = new Codec();
      * String msg = encoder.encode(strs);
      * Machine 1 ---msg---> Machine 2
-     *
+     * <p>
      * Machine 2:
      * Codec decoder = new Codec();
      * String[] strs = decoder.decode(msg);
      * Example 2:
-     *
+     * <p>
      * Input: dummy_input = [""]
      * Output: [""]
      */
@@ -3569,7 +3580,7 @@ public class Note8_Strings {
 // codec.decode(codec.encode(strs));
 
     public static void main(String[] args) {
-        String[] words = new String[]{"lc","cl","gg"};
+        String[] words = new String[]{"lc", "cl", "gg"};
         ArrayList sdf = new ArrayList();
         sdf.add("asd");
         sdf.add(2);
