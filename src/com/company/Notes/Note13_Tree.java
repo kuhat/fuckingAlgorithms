@@ -2353,6 +2353,41 @@ c. Case #3:
             return key;
         }
     }
+
+    // 1676： lowest common Ancestor of a binary tree
+
+    /**
+     * Given the root of a binary tree and an array of TreeNode objects nodes, return the lowest common ancestor (LCA)
+     * of all the nodes in nodes. All the nodes will exist in the tree, and all values of the tree's nodes are unique.
+     *
+     * Extending the definition of LCA on Wikipedia: "The lowest common ancestor of n nodes p1, p2, ..., pn in a binary
+     * tree T is the lowest node that has every pi as a descendant (where we allow a node to be a descendant of itself) for every valid i". A descendant of a node x is a node y that is on the path from node x to some leaf node.
+     *
+     * Example 1:
+     *
+     *
+     * Input: root = [3,5,1,6,2,0,8,null,null,7,4], nodes = [4,7]
+     * Output: 2
+     * Explanation: The lowest common ancestor of nodes 4 and 7 is node 2.
+     * @param args
+     */
+    class Solution1676 {
+        public TreeNode lowestCommonAncestor(TreeNode root, TreeNode[] nodes) {
+            Set<Integer> set = new HashSet<>();
+            for (TreeNode node: nodes) {
+                set.add(node.val);
+            }
+            return helper(root, set);
+        }
+        public TreeNode helper(TreeNode root, Set<Integer> set) {
+            if (root == null) return null;
+            if (set.contains(root.val)) return root;
+            TreeNode left = helper(root.left, set);
+            TreeNode right = helper(root.right, set);
+            if (left != null && right != null) return root;
+            else return (left != null) ? left : right;
+        }
+    }
     public static void main(String[] args) {
         System.out.println(5 >> 1);
     }

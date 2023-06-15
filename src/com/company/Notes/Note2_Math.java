@@ -1,9 +1,6 @@
 package com.company.Notes;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class Note2_Math {
 
@@ -750,6 +747,39 @@ public class Note2_Math {
                 else tx %= ty;
             if(sx == tx && sy <= ty && (ty - sy) % sx == 0) return true;
             return sy == ty && sx <= tx && (tx - sx) % sy == 0;
+        }
+    }
+
+    // leetcode 1492 The kth factor of n
+    /**
+     You are given two positive integers n and k. A factor of an integer n is defined as an integer i where n % i == 0.
+
+     Consider a list of all factors of n sorted in ascending order, return the kth factor in this list or return -1 if n has less than k factors.
+
+     Example 1:
+
+     Input: n = 12, k = 3
+     Output: 3
+     Explanation: Factors list is [1, 2, 3, 4, 6, 12], the 3rd factor is 3.
+     Example 2:
+
+     Input: n = 7, k = 2
+     Output: 7
+     Explanation: Factors list is [1, 7], the 2nd factor is 7.
+     */
+    class Solution1492 {
+        public int kthFactor(int n, int k) {
+            PriorityQueue<Integer> pq = new PriorityQueue<>((o1, o2) -> o2 - o1);
+            int l = (int)Math.sqrt(n);
+            for (int i = 1; i < l + 1; i++) {
+                if (n % i == 0) {
+                    pq.add(i);
+                    if (pq.size() > k) pq.poll();
+                    if (i != n / i) pq.add(n / i);
+                    if (pq.size() > k) pq.poll();
+                }
+            }
+            return k == pq.size() ? pq.poll() : -1;
         }
     }
 

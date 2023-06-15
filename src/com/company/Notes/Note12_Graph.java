@@ -3,6 +3,9 @@ package com.company.Notes;
 import com.company.leetCode.NestedInteger;
 import org.junit.Test;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.*;
 
 public class Note12_Graph {
@@ -127,17 +130,17 @@ public class Note12_Graph {
     public class mazeOfChessBoard {
 
         private boolean hasPath1(char[][] maze, int[] start, int[] end) {
-            int[][] dirs = new int[][]{{1, 0}, {-1, 0},{0, 1}, {0, -1}};
+            int[][] dirs = new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
             boolean[][] visited = new boolean[maze.length][maze[0].length];
 
             Queue<int[]> qu = new LinkedList<>();
             qu.offer(start);
             visited[start[0]][start[1]] = true;
 
-            while(!qu.isEmpty()) {
+            while (!qu.isEmpty()) {
                 int[] cur = qu.poll();
                 if (cur[0] == end[0] && cur[1] == end[1]) return true;
-                for (int[] dir: dirs) {
+                for (int[] dir : dirs) {
                     int newX = cur[0] + dir[0];
                     int newY = cur[1] + dir[1];
                     if (isValid(maze, newX, newY) && !visited[newX][newY]) {
@@ -220,9 +223,9 @@ public class Note12_Graph {
                 wordList.add(beginWord);
             }
 
-            for (String word: wordList){
+            for (String word : wordList) {
                 Node node = graph.getNode(word);
-                for (int i = 0; i < word.length(); i ++) {
+                for (int i = 0; i < word.length(); i++) {
                     char[] wordUnit = word.toCharArray();  // 每一个字母都变换
                     for (char j = 'a'; j <= 'z'; j++) {
                         wordUnit[i] = j;  // 一个字母进行一个替换
@@ -244,13 +247,13 @@ public class Note12_Graph {
 
             int res = 0;
             while (!queue.isEmpty()) {
-                res ++;
+                res++;
                 int size = queue.size();
                 for (int i = 0; i < size; i++) {
                     Node node = queue.poll();
                     if (node.word.equals(endWord)) return res;  // 如果碰到了endword就停止
-                    for (Node neighbor: node.neighbors) {  // 在node的neighbor里面找临结点
-                        if(!visited.contains(neighbor)) {  // 如果没有走过就加入queue
+                    for (Node neighbor : node.neighbors) {  // 在node的neighbor里面找临结点
+                        if (!visited.contains(neighbor)) {  // 如果没有走过就加入queue
                             queue.offer(neighbor);
                             visited.add(neighbor);
                         }
@@ -258,7 +261,7 @@ public class Note12_Graph {
                 }
 
             }
-        return 0;
+            return 0;
         }
 
         class Graph {  // 将整个word list转化成一个图
@@ -294,7 +297,7 @@ public class Note12_Graph {
         // BFS
         public int ladderlength1(String beginWord, String endWord, List<String> wordList) {
             HashSet<String> set = new HashSet<>(wordList);
-            if (set.contains( beginWord)) set.remove(beginWord);
+            if (set.contains(beginWord)) set.remove(beginWord);
             Queue<String> queue = new LinkedList<>();
             HashMap<String, Integer> map = new HashMap<>();
             map.put(beginWord, 1);  // map的 key值是当前的单词，value是level,也就是第几次遍历
@@ -302,14 +305,14 @@ public class Note12_Graph {
             while (!queue.isEmpty()) {
                 String word = queue.poll();
                 int curLevel = map.get(word);  // 当前的层数
-                for (int i =0; i < word.length(); i++) {  // word的每个位置进行替换
+                for (int i = 0; i < word.length(); i++) {  // word的每个位置进行替换
                     char[] wordUnit = word.toCharArray();
                     for (char j = 'a'; j <= 'z'; j++) {  // 将a到z一个一个去填充当前的位置
                         wordUnit[i] = j;
                         String temp = new String(wordUnit);  // 替换成新的string
-                        if (set.contains(temp)){
+                        if (set.contains(temp)) {
                             // 如果set里面有当前替换过的单词
-                            if(temp.equals(endWord)) return curLevel + 1;  // 如果当前遍历到最后一个单词，直接return level + 1
+                            if (temp.equals(endWord)) return curLevel + 1;  // 如果当前遍历到最后一个单词，直接return level + 1
                             map.put(temp, curLevel + 1);  // 否则进行下次
                             queue.offer(temp);
                             set.remove(temp);
@@ -322,25 +325,26 @@ public class Note12_Graph {
     }
 
     // 126: word ladder2
+
     /**
      * A transformation sequence from word beginWord to word endWord using a dictionary wordList is a sequence of words
      * beginWord -> s1 -> s2 -> ... -> sk such that:
-     *
+     * <p>
      * Every adjacent pair of words differs by a single letter.
      * Every si for 1 <= i <= k is in wordList. Note that beginWord does not need to be in wordList.
      * sk == endWord
      * Given two words, beginWord and endWord, and a dictionary wordList, return all the shortest transformation sequences
      * from beginWord to endWord, or an empty list if no such sequence exists. Each sequence should be returned as a list of the words [beginWord, s1, s2, ..., sk].
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: beginWord = "hit", endWord = "cog", wordList = ["hot","dot","dog","lot","log","cog"]
      * Output: [["hit","hot","dot","dog","cog"],["hit","hot","lot","log","cog"]]
      * Explanation: There are 2 shortest transformation sequences:
      * "hit" -> "hot" -> "dot" -> "dog" -> "cog"
      * "hit" -> "hot" -> "lot" -> "log" -> "cog"
      * Example 2:
-     *
+     * <p>
      * Input: beginWord = "hit", endWord = "cog", wordList = ["hot","dot","dog","lot","log"]
      * Output: []
      * Explanation: The endWord "cog" is not in wordList, therefore there is no valid transformation sequence.
@@ -364,18 +368,18 @@ public class Note12_Graph {
             queue.offer(beginWord);
             while (!queue.isEmpty()) {
                 String word = queue.poll();
-                curNum --;
+                curNum--;
                 for (int i = 0; i < word.length(); i++) {
                     StringBuilder builder = new StringBuilder(word);
                     for (char ch = 'a'; ch <= 'z'; ch++) {
                         builder.setCharAt(i, ch);
                         String newWord = builder.toString();  // 对单词的预处理，将每个位置替换成a到z的字母，
-                        if(unvisited.contains(newWord)) {
+                        if (unvisited.contains(newWord)) {
                             if (visited.add(newWord)) {  // 如果可以加入, 代表没有找过
                                 nextNum++;
                                 queue.offer(newWord);
                             }
-                            if (map.containsKey(newWord)){
+                            if (map.containsKey(newWord)) {
                                 map.get(newWord).add(word);
                             } else {
                                 List<String> list = new ArrayList<>();
@@ -409,7 +413,7 @@ public class Note12_Graph {
             }
             list.add(0, word);
             if (map.get(word) != null) {
-                for (String s: map.get(word)) {
+                for (String s : map.get(word)) {
                     dfs(res, list, map, s, start);
                 }
             }
@@ -424,7 +428,7 @@ public class Note12_Graph {
      * 有m个人，n个地方，每个人分配去一个地点（吗 >= n）.地方都占满，一个萝卜一个坑
      * 若干骰子，每面都有字母，拼指定单词
      */
-    class Hungry{
+    class Hungry {
         int[] person;
         int[] places;
 
@@ -435,10 +439,10 @@ public class Note12_Graph {
             Arrays.fill(places, -1);
 
             boolean[] visited;  // 判断让还是不让
-            int res= 0;
+            int res = 0;
             for (int i = 0; i < person.length; i++) {  // 遍历每个人去匹配places
                 visited = new boolean[places.length];
-                if (hungary(matrix, i , visited)) res++;
+                if (hungary(matrix, i, visited)) res++;
             }
         }
 
@@ -459,13 +463,14 @@ public class Note12_Graph {
     }
 
     // 130 surrounded region
+
     /**
      * Given an m x n matrix board containing 'X' and 'O', capture all regions that are 4-directionally surrounded by 'X'.
-     *
+     * <p>
      * A region is captured by flipping all 'O's into 'X's in that surrounded region.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: board = [["X","X","X","X"],["X","O","O","X"],["X","X","O","X"],["X","O","X","X"]]
      * Output: [["X","X","X","X"],["X","X","X","X"],["X","X","X","X"],["X","O","X","X"]]
      * Explanation: Notice that an 'O' should not be flipped if:
@@ -474,7 +479,7 @@ public class Note12_Graph {
      * The bottom 'O' is on the border, so it is not flipped.
      * The other three 'O' form a surrounded region, so they are flipped.
      * Example 2:
-     *
+     * <p>
      * Input: board = [["X"]]
      * Output: [["X"]]
      */
@@ -482,6 +487,7 @@ public class Note12_Graph {
     class Solution {
         /**
          * O 在边缘位置，第一行，第一列，最后一行，最后一列,不会被围住
+         *
          * @param board
          */
         public void solve(char[][] board) {
@@ -490,7 +496,7 @@ public class Note12_Graph {
             int n = board[0].length - 1; // 列数
             for (int i = 0; i <= m; i++) {
                 if (board[i][0] == 'O') dfs(board, i, 0); // 第一列
-                if (board[i][n] == 'O') dfs(board, i , n);  // 最后一列
+                if (board[i][n] == 'O') dfs(board, i, n);  // 最后一列
             }
             for (int i = 0; i <= n; i++) {
                 if (board[0][i] == 'O') dfs(board, 0, i);
@@ -511,43 +517,44 @@ public class Note12_Graph {
         private void dfs(char[][] board, int i, int j) {
             if (i < 0 || j < 0 || i >= board.length || j >= board[0].length || board[i][j] != 'O') return;
             board[i][j] = '1';  // 先把不该变的变成一个1
-            dfs(board, i ,j + 1);
-            dfs(board, i ,j - 1);
-            dfs(board, i + 1 ,j);
-            dfs(board, i - 1 ,j);
+            dfs(board, i, j + 1);
+            dfs(board, i, j - 1);
+            dfs(board, i + 1, j);
+            dfs(board, i - 1, j);
         }
     }
 
     // 490 The Maze
+
     /**
      * 在迷宫中有一个球，里面有空的空间和墙壁。球可以通过滚上，下，左或右移动，
      * 但它不会停止滚动直到撞到墙上。当球停止时，它可以选择下一个方向。
-     *
+     * <p>
      * 给定球的起始位置，目的地和迷宫，确定球是否可以停在终点。
-     *
+     * <p>
      * 迷宫由二维数组表示。1表示墙和0表示空的空间。你可以假设迷宫的边界都是墙。开始和目标坐标用行和列索引表示。
      * 样例
-     *
+     * <p>
      * 例1:
-     *
-     *     输入:
-     *     map =
-     *     [
-     *      [0,0,1,0,0],
-     *      [0,0,0,0,0],
-     *      [0,0,0,1,0],
-     *      [1,1,0,1,1],
-     *      [0,0,0,0,0]
-     *     ]
-     *     start = [0,4]
-     *     end = [3,2]
-     *     输出:
-     *     false
+     * <p>
+     * 输入:
+     * map =
+     * [
+     * [0,0,1,0,0],
+     * [0,0,0,0,0],
+     * [0,0,0,1,0],
+     * [1,1,0,1,1],
+     * [0,0,0,0,0]
+     * ]
+     * start = [0,4]
+     * end = [3,2]
+     * 输出:
+     * false
      */
-    class Solution490{
+    class Solution490 {
         public boolean hasPath(int[][] maze, int[] start, int[] destination) {
             boolean[][] visited = new boolean[maze.length][maze[0].length];  // 走过的点
-            int[][] directions = {{1,0}, {-1,0}, {0,1},{0, -1}};
+            int[][] directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 
             Queue<Point> queue = new LinkedList<>();
             queue.offer(new Point(start[0], start[1]));
@@ -557,11 +564,11 @@ public class Note12_Graph {
                 if (cur.x == destination[0] && cur.y == destination[1]) {  // 判断是否到终点
                     return true;
                 }
-                for (int[] direction: directions) {
+                for (int[] direction : directions) {
                     int newX = cur.x;
                     int newY = cur.y;
                     // 如果当前的方向是可以通过的
-                    while(isValid(maze, newX + direction[0], newY + direction[1])) {
+                    while (isValid(maze, newX + direction[0], newY + direction[1])) {
                         newX += direction[0];
                         newY += direction[1];
                     }
@@ -570,13 +577,15 @@ public class Note12_Graph {
             }
             return false;
         }
+
         private boolean isValid(int[][] maze, int x, int y) {
-            return x>= 0 && y >=0 && x<maze.length && y <maze[0].length && maze[x][y] == 0;
+            return x >= 0 && y >= 0 && x < maze.length && y < maze[0].length && maze[x][y] == 0;
         }
 
         class Point {
             int x;
             int y;
+
             public Point(int x, int y) {
                 this.x = x;
                 this.y = y;
@@ -585,30 +594,31 @@ public class Note12_Graph {
 
 
         public boolean isValis(int[][] maze, int x, int y) {
-            return x>= 0 && y >=0 && x<maze.length && y <maze[0].length && maze[x][y] == 0;
+            return x >= 0 && y >= 0 && x < maze.length && y < maze[0].length && maze[x][y] == 0;
         }
 
     }
 
     // 79: word search
+
     /**
      * Given an m x n grid of characters board and a string word, return true if word exists in the grid.
-     *
+     * <p>
      * The word can be constructed from letters of sequentially adjacent cells, where adjacent cells are horizontally
      * or vertically neighboring. The same letter cell may not be used more than once.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]], word = "ABCCED"
      * Output: true
      * Example 2:
-     *
-     *
+     * <p>
+     * <p>
      * Input: board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]], word = "SEE"
      * Output: true
      * Example 3:
-     *
-     *
+     * <p>
+     * <p>
      * Input: board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]], word = "ABCB"
      * Output: false
      */
@@ -625,14 +635,14 @@ public class Note12_Graph {
 
         private boolean exist(char[][] board, int i, int j, String word, int start) {
             if (start >= word.length()) return true;  // word里的字母都找完了
-            if (i <0 || i >= board.length || j < 0 || j >= board[0].length ) return false;  // 边界条件
-            if (board[i][j] == word.charAt(start ++)) {
+            if (i < 0 || i >= board.length || j < 0 || j >= board[0].length) return false;  // 边界条件
+            if (board[i][j] == word.charAt(start++)) {
                 char c = board[i][j];
                 board[i][j] = '#';  // 这个地方不能再用了
                 boolean res = exist(board, i + 1, j, word, start) ||
                         exist(board, i - 1, j, word, start) ||
                         exist(board, i, j + 1, word, start) ||
-                        exist(board, i , j - 1, word, start);
+                        exist(board, i, j - 1, word, start);
                 board[i][j] = c;
                 return res;
             }
@@ -644,26 +654,26 @@ public class Note12_Graph {
 
     /**
      * You are given an m x n grid where each cell can have one of three values:
-     *
+     * <p>
      * 0 representing an empty cell,
      * 1 representing a fresh orange, or
      * 2 representing a rotten orange.
      * Every minute, any fresh orange that is 4-directionally adjacent to a rotten orange becomes rotten.
-     *
+     * <p>
      * Return the minimum number of minutes that must elapse until no cell has a fresh orange. If this is impossible, return -1.
-     *
+     * <p>
      * Example 1:
-     *
-     *
+     * <p>
+     * <p>
      * Input: grid = [[2,1,1],[1,1,0],[0,1,1]]
      * Output: 4
      * Example 2:
-     *
+     * <p>
      * Input: grid = [[2,1,1],[0,1,1],[1,0,1]]
      * Output: -1
      * Explanation: The orange in the bottom left corner (row 2, column 0) is never rotten, because rotting only happens 4-directionally.
      * Example 3:
-     *
+     * <p>
      * Input: grid = [[0,2]]
      * Output: 0
      * Explanation: Since there are already no fresh oranges at minute 0, the answer is just 0.
@@ -671,15 +681,15 @@ public class Note12_Graph {
 
     class Solution994 {
 
-        private int rotedCnt   = 0;
-        private int orangeCnt  = 0;
+        private int rotedCnt = 0;
+        private int orangeCnt = 0;
 
         public int orangesRotting(int[][] grid) {
 
             // 统计共有多少橘子
-            for(int i=0; i<grid.length; ++i){
-                for(int j=0; j<grid[i].length; ++j){
-                    if(grid[i][j] > 0){
+            for (int i = 0; i < grid.length; ++i) {
+                for (int j = 0; j < grid[i].length; ++j) {
+                    if (grid[i][j] > 0) {
                         orangeCnt += 1;
                     }
                 }
@@ -687,43 +697,44 @@ public class Note12_Graph {
             //System.out.println("oranges " + orangeCnt);
             // rotting(grid) 返回这一分钟有多少橘子会腐败
             int minutes = 0;
-            while(rotting(grid) > 0){
-                minutes ++;
+            while (rotting(grid) > 0) {
+                minutes++;
             }
             //System.out.println("minutes " + minutes);
             //System.out.println("rotedCnt " + rotedCnt);
 
             // 腐败过程结束，查看结果
-            if(rotedCnt == orangeCnt){
+            if (rotedCnt == orangeCnt) {
                 return minutes;
-            }else{
+            } else {
                 return -1;
             }
         }
-        public int rotting(int[][] grid){
+
+        public int rotting(int[][] grid) {
 
             int rottingCnt = 0;
-            rotedCnt       = 0;
+            rotedCnt = 0;
             // 这一秒钟腐败的
-            int[][] directions = {{1,0},{-1,0},{0,1},{0,-1}};
-            for(int i=0; i<grid.length; ++i){
-                for(int j=0; j<grid[i].length; ++j){
-                    if(grid[i][j] == 2){
+            int[][] directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+            for (int i = 0; i < grid.length; ++i) {
+                for (int j = 0; j < grid[i].length; ++j) {
+                    if (grid[i][j] == 2) {
                         rotedCnt += 1;
-                        for(int[] direction : directions){
+                        for (int[] direction : directions) {
                             int xx = i + direction[0];
                             int yy = j + direction[1];
-                            if(xx >=0 && xx < grid.length && yy >= 0 && yy < grid[i].length && grid[xx][yy] == 1){
+                            if (xx >= 0 && xx < grid.length && yy >= 0 && yy < grid[i].length && grid[xx][yy] == 1) {
                                 grid[xx][yy] = 3;  // 把这一分钟要腐败的先标记为 3 防止与之前已经腐败的混淆
-                                rottingCnt ++;
+                                rottingCnt++;
                             }
                         }
                     }
                 }
             }
-            for(int i=0; i<grid.length; ++i){
-                for(int j=0; j<grid[i].length; ++j){
-                    if(grid[i][j] == 3){
+            for (int i = 0; i < grid.length; ++i) {
+                for (int j = 0; j < grid[i].length; ++j) {
+                    if (grid[i][j] == 3) {
                         grid[i][j] = 2;
                     }
                 }
@@ -734,49 +745,50 @@ public class Note12_Graph {
     }
 
     // 417 Pacific Atlantic Water Flow
+
     /**
      * There is an m x n rectangular island that borders both the Pacific Ocean and Atlantic Ocean. The Pacific Ocean
      * touches the island's left and top edges, and the Atlantic Ocean touches the island's right and bottom edges.
-     *
+     * <p>
      * The island is partitioned into a grid of square cells. You are given an m x n integer matrix heights where
      * heights[r][c] represents the height above sea level of the cell at coordinate (r, c).
-     *
+     * <p>
      * The island receives a lot of rain, and the rain water can flow to neighboring cells directly north, south,
      * east, and west if the neighboring cell's height is less than or equal to the current cell's height. Water
      * can flow from any cell adjacent to an ocean into the ocean.
-     *
+     * <p>
      * Return a 2D list of grid coordinates result where result[i] = [ri, ci] denotes that rain water can flow
      * from cell (ri, ci) to both the Pacific and Atlantic oceans.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: heights = [[1,2,2,3,5],[3,2,3,4,4],[2,4,5,3,1],[6,7,1,4,5],[5,1,1,2,4]]
      * Output: [[0,4],[1,3],[1,4],[2,2],[3,0],[3,1],[4,0]]
      * Explanation: The following cells can flow to the Pacific and Atlantic oceans, as shown below:
      * [0,4]: [0,4] -> Pacific Ocean
-     *        [0,4] -> Atlantic Ocean
+     * [0,4] -> Atlantic Ocean
      * [1,3]: [1,3] -> [0,3] -> Pacific Ocean
-     *        [1,3] -> [1,4] -> Atlantic Ocean
+     * [1,3] -> [1,4] -> Atlantic Ocean
      * [1,4]: [1,4] -> [1,3] -> [0,3] -> Pacific Ocean
-     *        [1,4] -> Atlantic Ocean
+     * [1,4] -> Atlantic Ocean
      * [2,2]: [2,2] -> [1,2] -> [0,2] -> Pacific Ocean
-     *        [2,2] -> [2,3] -> [2,4] -> Atlantic Ocean
+     * [2,2] -> [2,3] -> [2,4] -> Atlantic Ocean
      * [3,0]: [3,0] -> Pacific Ocean
-     *        [3,0] -> [4,0] -> Atlantic Ocean
+     * [3,0] -> [4,0] -> Atlantic Ocean
      * [3,1]: [3,1] -> [3,0] -> Pacific Ocean
-     *        [3,1] -> [4,1] -> Atlantic Ocean
+     * [3,1] -> [4,1] -> Atlantic Ocean
      * [4,0]: [4,0] -> Pacific Ocean
-     *        [4,0] -> Atlantic Ocean
+     * [4,0] -> Atlantic Ocean
      * Note that there are other possible paths for these cells to flow to the Pacific and Atlantic oceans.
      * Example 2:
-     *
+     * <p>
      * Input: heights = [[1]]
      * Output: [[0,0]]
      * Explanation: The water can flow from the only cell to the Pacific and Atlantic oceans.
      */
     class Solution417 {
 
-        int m , n;
+        int m, n;
         int dir[][] = new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 
         public List<List<Integer>> pacificAtlantic(int[][] heights) {
@@ -788,11 +800,11 @@ public class Note12_Graph {
             boolean[][] pac = new boolean[m][n];
             boolean[][] atl = new boolean[m][n];
 
-            for (int i= 0 ; i < m; i ++) {  // 从第一行开始遍历
+            for (int i = 0; i < m; i++) {  // 从第一行开始遍历
                 helper(heights, pac, i, 0);  // 太平洋是第一行
-                helper(heights, atl, i, n -1);  // 大西洋是最后一行
+                helper(heights, atl, i, n - 1);  // 大西洋是最后一行
             }
-            for (int i = 0; i < n; i ++) {  // 从第一列开始遍历
+            for (int i = 0; i < n; i++) {  // 从第一列开始遍历
                 helper(heights, pac, 0, i);
                 helper(heights, atl, m - 1, i);
             }
@@ -817,21 +829,22 @@ public class Note12_Graph {
     }
 
     // 207： course schedule
+
     /**
      * There are a total of numCourses courses you have to take, labeled from 0 to numCourses - 1. You are given an
      * array prerequisites where prerequisites[i] = [ai, bi] indicates that you must take course bi first if you want to take course ai.
-     *
+     * <p>
      * For example, the pair [0, 1], indicates that to take course 0 you have to first take course 1.
      * Return true if you can finish all courses. Otherwise, return false.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: numCourses = 2, prerequisites = [[1,0]]
      * Output: true
      * Explanation: There are a total of 2 courses to take.
      * To take course 1 you should have finished course 0. So it is possible.
      * Example 2:
-     *
+     * <p>
      * Input: numCourses = 2, prerequisites = [[1,0],[0,1]]
      * Output: false
      * Explanation: There are a total of 2 courses to take.
@@ -848,17 +861,17 @@ public class Note12_Graph {
         public boolean canFinish(int numCourses, int[][] prerequisites) {
             int[] indegree = new int[numCourses];
             int res = numCourses;
-            for (int[] pair: prerequisites) {
-                indegree[pair[0]] ++;  // 找出每个点的入度
+            for (int[] pair : prerequisites) {
+                indegree[pair[0]]++;  // 找出每个点的入度
             }
             Queue<Integer> queue = new LinkedList<>();
             for (int i = 0; i < indegree.length; i++) {
                 if (indegree[i] == 0) queue.offer(i);  // 将入度为0的元素加入queue
             }
-            while(!queue.isEmpty()) {
+            while (!queue.isEmpty()) {
                 int pre = queue.poll();  // 删除入度为0的元素
                 res--;  // 有一个课程已经用过了
-                for (int[] pair: prerequisites) {  // 找出当前入度为0的先修课
+                for (int[] pair : prerequisites) {  // 找出当前入度为0的先修课
                     if (pair[1] == pre) {
                         indegree[pair[0]]--;
                         if (indegree[pair[0]] == 0) queue.offer(pair[0]);
@@ -870,30 +883,31 @@ public class Note12_Graph {
     }
 
     //133 ：clone graph
+
     /**
      * Given a reference of a node in a connected undirected graph.
-     *
+     * <p>
      * Return a deep copy (clone) of the graph.
-     *
+     * <p>
      * Each node in the graph contains a value (int) and a list (List[Node]) of its neighbors.
-     *
+     * <p>
      * class Node {
-     *     public int val;
-     *     public List<Node> neighbors;
+     * public int val;
+     * public List<Node> neighbors;
      * }
-     *
+     * <p>
      * Test case format:
-     *
+     * <p>
      * For simplicity, each node's value is the same as the node's index (1-indexed). For example, the first node with
      * val == 1, the second node with val == 2, and so on. The graph is represented in the test case using an adjacency list.
-     *
+     * <p>
      * An adjacency list is a collection of unordered lists used to represent a finite graph. Each list describes the
      * set of neighbors of a node in the graph.
-     *
+     * <p>
      * The given node will always be the first node with val = 1. You must return the copy of the given node as a reference to the cloned graph.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: adjList = [[2,4],[1,3],[2,4],[1,3]]
      * Output: [[2,4],[1,3],[2,4],[1,3]]
      * Explanation: There are 4 nodes in the graph.
@@ -905,19 +919,23 @@ public class Note12_Graph {
     class Node {
         public int val;
         public List<Node> neighbors;
+
         public Node() {
             val = 0;
             neighbors = new ArrayList<Node>();
         }
+
         public Node(int _val) {
             val = _val;
             neighbors = new ArrayList<Node>();
         }
+
         public Node(int _val, ArrayList<Node> _neighbors) {
             val = _val;
             neighbors = _neighbors;
         }
     }
+
     class Solution133 {
         public Node cloneGraph(Node node) {
             if (node == null) return node;
@@ -955,19 +973,20 @@ public class Note12_Graph {
     }
 
     // 399 : Evaluate Division
+
     /**
      * You are given an array of variable pairs equations and an array of real numbers values, where equations[i] = [Ai, Bi]
      * and values[i] represent the equation Ai / Bi = values[i]. Each Ai or Bi is a string that represents a single variable.
-     *
+     * <p>
      * You are also given some queries, where queries[j] = [Cj, Dj] represents the jth query where you must find the answer for Cj / Dj = ?.
-     *
+     * <p>
      * Return the answers to all queries. If a single answer cannot be determined, return -1.0.
-     *
+     * <p>
      * Note: The input is always valid. You may assume that evaluating the queries will not result in division by
      * zero and that there is no contradiction.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: equations = [["a","b"],["b","c"]], values = [2.0,3.0], queries = [["a","c"],["b","a"],["a","e"],["a","a"],["x","x"]]
      * Output: [6.00000,0.50000,-1.00000,1.00000,-1.00000]
      * Explanation:
@@ -975,11 +994,11 @@ public class Note12_Graph {
      * queries are: a / c = ?, b / a = ?, a / e = ?, a / a = ?, x / x = ?
      * return: [6.0, 0.5, -1.0, 1.0, -1.0 ]
      * Example 2:
-     *
+     * <p>
      * Input: equations = [["a","b"],["b","c"],["bc","cd"]], values = [1.5,2.5,5.0], queries = [["a","c"],["c","b"],["bc","cd"],["cd","bc"]]
      * Output: [3.75000,0.40000,5.00000,0.20000]
      * Example 3:
-     *
+     * <p>
      * Input: equations = [["a","b"]], values = [0.5], queries = [["a","b"],["b","a"],["a","c"],["x","y"]]
      * Output: [0.50000,2.00000,-1.00000,-1.00000]
      */
@@ -988,6 +1007,7 @@ public class Note12_Graph {
         class GraphNode {
             String den;
             double val;
+
             public GraphNode(String den, double val) {
                 this.den = den;
                 this.val = val;
@@ -1018,7 +1038,7 @@ public class Note12_Graph {
             }
 
             double[] res = new double[queries.size()];
-            for (int i =0; i < res.length; i++) {
+            for (int i = 0; i < res.length; i++) {
                 res[i] = find(queries.get(i).get(0), queries.get(i).get(1), 1, new HashSet<>());
             }
             return res;
@@ -1036,9 +1056,9 @@ public class Note12_Graph {
             if (visited.contains(start)) return -1;  // 如果之前找过了，返回-1
             if (!map.containsKey(start)) return -1;  // 如果map里没有这个值，返回-1
 
-            if(start.equals(end)) return value;   // 如果start和end 相等了，返回value
+            if (start.equals(end)) return value;   // 如果start和end 相等了，返回value
             visited.add(start);  // visited加入这个数
-            for (GraphNode next: map.get(start)) {
+            for (GraphNode next : map.get(start)) {
                 // 计算除数
                 double sub = find(next.den, end, value * next.val, visited);  //  遍历下一个相连的元素
                 if (sub != -1.0) return sub;  // 如果碰到之前按访问过的返回-1
@@ -1049,28 +1069,28 @@ public class Note12_Graph {
     }
 
     // 332： Reconstruct Itinerary
+
     /**
      * you are given a list of airline tickets where tickets[i] = [fromi, toi] represent the departure and the arrival
      * airports of one flight. Reconstruct the itinerary in order and return it.
-     *
+     * <p>
      * All of the tickets belong to a man who departs from "JFK", thus, the itinerary must begin with "JFK". If there
      * are multiple valid itineraries, you should return the itinerary that has the smallest lexical order when read
      * as a single string.
-     *
+     * <p>
      * For example, the itinerary ["JFK", "LGA"] has a smaller lexical order than ["JFK", "LGB"].
      * You may assume all tickets form at least one valid itinerary. You must use all the tickets once and only once.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: tickets = [["MUC","LHR"],["JFK","MUC"],["SFO","SJC"],["LHR","SFO"]]
      * Output: ["JFK","MUC","LHR","SFO","SJC"]
      * Example 2:
-     *
-     *                    // JFK 可以到SFO和ATL, 优先选择ATL
+     * <p>
+     * // JFK 可以到SFO和ATL, 优先选择ATL
      * Input: tickets = [["JFK","SFO"],["JFK","ATL"],["SFO","ATL"],["ATL","JFK"],["ATL","SFO"]]
      * Output: ["JFK","ATL","JFK","SFO","ATL","SFO"]
      * Explanation: Another possible reconstruction is ["JFK","SFO","ATL","JFK","ATL","SFO"] but it is larger in lexical
-     *
      */
     class Solution332 {
         /*
@@ -1090,7 +1110,7 @@ public class Note12_Graph {
             return res;
         }
 
-        public void helper(String airport){
+        public void helper(String airport) {
             // 起点或者中点不为空
             while (map.containsKey(airport) && !map.get(airport).isEmpty()) {
                 helper(map.get(airport).poll());  // 按照字母排序出来最小的
@@ -1105,17 +1125,17 @@ public class Note12_Graph {
     /**
      * You are given an empty 2D binary grid grid of size m x n. The grid represents a map where 0's represent water
      * and 1's represent land. Initially, all the cells of grid are water cells (i.e., all the cells are 0's).
-     *
+     * <p>
      * We may perform an add land operation which turns the water at position into a land. You are given an array
      * positions where positions[i] = [ri, ci] is the position (ri, ci) at which we should operate the ith operation.
-     *
+     * <p>
      * Return an array of integers answer where answer[i] is the number of islands after turning the cell (ri, ci) into a land.
-     *
+     * <p>
      * An island is surrounded by water and is formed by connecting adjacent lands horizontally or vertically. You
      * may assume all four edges of the grid are all surrounded by water.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: m = 3, n = 3, positions = [[0,0],[0,1],[1,2],[2,1]]
      * Output: [1,1,2,3]
      * Explanation:
@@ -1125,14 +1145,15 @@ public class Note12_Graph {
      * - Operation #3: addLand(1, 2) turns the water at grid[1][2] into a land. We have 2 islands.
      * - Operation #4: addLand(2, 1) turns the water at grid[2][1] into a land. We have 3 islands.
      * Example 2:
-     *
+     * <p>
      * Input: m = 1, n = 1, positions = [[0,0]]
      * Output: [1]
      */
 
     class Solution305 {
         // union find 261 323
-        int[][] dirs = {{0, 1}, {1, 0},{-1, 0}, {0, -1}};
+        int[][] dirs = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
+
         public List<Integer> numIslands2(int m, int n, int[][] positions) {
             List<Integer> res = new ArrayList<>();
             if (m <= 0 || n <= 0) return res;
@@ -1140,16 +1161,16 @@ public class Note12_Graph {
             int[] root = new int[m * n];  //  union find root，二维化为一维
             Arrays.fill(root, -1);
 
-            for (int[] pair: positions) {
+            for (int[] pair : positions) {
                 int position = n * pair[0] + pair[1];  //  二维化一维的position
-                if(root[position] != -1) {
+                if (root[position] != -1) {
                     res.add(count);
                     continue;
                 }
                 root[position] = position;
                 count++;  //  有几个连着的
 
-                for (int[] dir: dirs) {  // 遍历上下左右的位置
+                for (int[] dir : dirs) {  // 遍历上下左右的位置
                     int x = pair[0] + dir[0];
                     int y = pair[1] + dir[1];
                     int curPos = n * x + y;  // 一维对应的位置
@@ -1160,13 +1181,14 @@ public class Note12_Graph {
                     if (position != anoIsland) {
                         root[position] = anoIsland;
                         position = anoIsland;
-                        count --;
+                        count--;
                     }
                 }
                 res.add(count);
             }
-        return res;
+            return res;
         }
+
         public int find(int[] roots, int i) {
             while (i != roots[i]) i = roots[i];
             return i;
@@ -1178,22 +1200,22 @@ public class Note12_Graph {
     /**
      * You have a graph of n nodes labeled from 0 to n - 1. You are given an integer n and a list of edges where
      * edges[i] = [ai, bi] indicates that there is an undirected edge between nodes ai and bi in the graph.
-     *
+     * <p>
      * Return true if the edges of the given graph make up a valid tree, and false otherwise.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * 2 - 0 - 1 - 4
-     *     |
-     *     3
+     * |
+     * 3
      * Input: n = 5, edges = [[0,1],[0,2],[0,3],[1,4]]
      * Output: true
      * Example 2:
-     *     4
-     *     |
+     * 4
+     * |
      * 0 - 1 - 2
-     *     \  /
-     *      3
+     * \  /
+     * 3
      * Input: n = 5, edges = [[0,1],[1,2],[2,3],[1,3],[1,4]]
      * Output: false
      */
@@ -1204,7 +1226,7 @@ public class Note12_Graph {
          */
         public boolean validTree(int n, int[][] edges) {
             List<List<Integer>> graph = new ArrayList<>();
-            for (int i = 0; i < n; i ++) {
+            for (int i = 0; i < n; i++) {
                 graph.add(new ArrayList<>());  // 初始化list
             }
             // 比如说例二，将图转化为：0: 1
@@ -1227,7 +1249,7 @@ public class Note12_Graph {
         private boolean helper(List<List<Integer>> graph, HashSet<Integer> visited, int node, int parent) {
             List<Integer> sub = graph.get(node);
             for (int v : sub) {
-                if (v == parent ) continue;
+                if (v == parent) continue;
                 if (visited.contains(v)) return false;
                 visited.add(v);
                 boolean res = helper(graph, visited, v, node);
@@ -1238,12 +1260,12 @@ public class Note12_Graph {
 
         // union find
         /*
-        *             4
-                *     |
-                * 0 - 1 - 2
-                *     \  /
-                *      3
-                *
+         *             4
+         *     |
+         * 0 - 1 - 2
+         *     \  /
+         *      3
+         *
          */
         public boolean validTree2(int n, int[][] edges) {
             if (n == 1 && edges.length == 0) return true;
@@ -1266,12 +1288,13 @@ public class Note12_Graph {
         }
     }
 
-    class countPythagoreanTriples{
+    class countPythagoreanTriples {
         static int res = 0;
+
         public static int countPythagoreanTriples(int tree_nodes, int[] tree_from, int[] tree_to, int x, int y, int z) {
 
             List<List<Integer>> graph = new ArrayList<>();
-            for (int i = 0; i < tree_nodes; i ++) graph.add(new ArrayList<>());  // 初始化list
+            for (int i = 0; i < tree_nodes; i++) graph.add(new ArrayList<>());  // 初始化list
             for (int i = 0; i < tree_from.length; i++) {
                 graph.get(tree_from[i]).add(tree_to[i]);
                 graph.get(tree_to[i]).add(tree_from[i]);
@@ -1292,7 +1315,7 @@ public class Note12_Graph {
             int num = 0;
             System.out.println(i + ": ");
             Set<Integer> visited = new HashSet<>();
-            while(!qu.isEmpty()) {
+            while (!qu.isEmpty()) {
                 int cur = qu.poll();
                 if (visited.contains(cur)) continue;
                 System.out.print(cur + " ");
@@ -1305,7 +1328,7 @@ public class Note12_Graph {
                         num++;
                         dis = 0;
                         if (num == 3) {
-                            if (isValidTriple(triple)) res ++;
+                            if (isValidTriple(triple)) res++;
                             System.out.println(Arrays.toString(triple));
                             num = 0;
                             break;
@@ -1318,16 +1341,17 @@ public class Note12_Graph {
         }
 
         private static boolean isValidTriple(int[] triple) {
-            if ((triple[0] ^ 2) + (triple[1] ^ 2)  == (triple[2] ^ 2)) return true;
-            if ((triple[0] ^ 2) + (triple[2] ^ 2)  == (triple[1] ^ 2)) return true;
-            if ((triple[1] ^ 2) + (triple[2] ^ 2)  == (triple[0] ^ 2)) return true;
+            if ((triple[0] ^ 2) + (triple[1] ^ 2) == (triple[2] ^ 2)) return true;
+            if ((triple[0] ^ 2) + (triple[2] ^ 2) == (triple[1] ^ 2)) return true;
+            if ((triple[1] ^ 2) + (triple[2] ^ 2) == (triple[0] ^ 2)) return true;
             return false;
         }
     }
+
     @Test
     public void test_1() {
-        int[] from = new int[]{0,0,1,1,3,3,5,7,8};
-        int[] to = new int[]{4,1,2,3,5,7,6,8,9};
+        int[] from = new int[]{0, 0, 1, 1, 3, 3, 5, 7, 8};
+        int[] to = new int[]{4, 1, 2, 3, 5, 7, 6, 8, 9};
         int num = countPythagoreanTriples.countPythagoreanTriples(10, from, to, 4, 6, 9);
         System.out.println(num);
     }
@@ -1338,26 +1362,26 @@ public class Note12_Graph {
     /**
      * You are given a nested list of integers nestedList. Each element is either an integer or a list whose elements
      * may also be integers or other lists.
-     *
+     * <p>
      * The depth of an integer is the number of lists that it is inside of. For example, the nested list [1,[2,2],[[3],2],1]
      * has each integer's value set to its depth.
-     *
+     * <p>
      * Return the sum of each integer in nestedList multiplied by its depth.
-     *
+     * <p>
      * Example 1:
-     *
-     *
+     * <p>
+     * <p>
      * Input: nestedList = [[1,1],2,[1,1]]
      * Output: 10
      * Explanation: Four 1's at depth 2, one 2 at depth 1. 1*2 + 1*2 + 2*1 + 1*2 + 1*2 = 10.
      * Example 2:
-     *
-     *
+     * <p>
+     * <p>
      * Input: nestedList = [1,[4,[6]]]
      * Output: 27
      * Explanation: One 1 at depth 1, one 4 at depth 2, and one 6 at depth 3. 1*1 + 4*2 + 6*3 = 27.
      */
-    class Solution339{
+    class Solution339 {
 
         // dfs
         public int depthSum(List<NestedInteger> nestedList) {
@@ -1367,7 +1391,7 @@ public class Note12_Graph {
 
         public int helper(List<NestedInteger> nestedList, int depth) {
             int res = 0;
-            for (NestedInteger nest: nestedList) {
+            for (NestedInteger nest : nestedList) {
                 if (nest.isInteger()) {  // 如果当前遍历的是个数字
                     res += nest.getInteger() * depth;  //res+
                 } else {  // 如果是一个list就继续往下走
@@ -1385,7 +1409,7 @@ public class Note12_Graph {
             Queue<NestedInteger> queue = new LinkedList<>(nestedList);
             while (!queue.isEmpty()) {
                 int size = queue.size();
-                for (int i =0 ; i < size; i++) {
+                for (int i = 0; i < size; i++) {
                     NestedInteger nest = queue.poll();
                     if (nest.isInteger()) {
                         res += nest.getInteger() * depth;
@@ -1403,24 +1427,24 @@ public class Note12_Graph {
     /**
      * You are given a nested list of integers nestedList. Each element is either an integer or a list whose elements
      * may also be integers or other lists.
-     *
+     * <p>
      * The depth of an integer is the number of lists that it is inside of. For example, the nested list [1,[2,2],[[3],2],1]
      * has each integer's value set to its depth. Let maxDepth be the maximum depth of any integer.
-     *
+     * <p>
      * The weight of an integer is maxDepth - (the depth of the integer) + 1.
-     *
+     * <p>
      * Return the sum of each integer in nestedList multiplied by its weight.
-     *
+     * <p>
      * Example 1:
-     *
-     *
+     * <p>
+     * <p>
      * Input: nestedList = [[1,1],2,[1,1]]
      * Output: 8
      * Explanation: Four 1's with a weight of 1, one 2 with a weight of 2.
      * 1*1 + 1*1 + 2*2 + 1*1 + 1*1 = 8
      * Example 2:
-     *
-     *
+     * <p>
+     * <p>
      * Input: nestedList = [1,[4,[6]]]
      * Output: 17
      * Explanation: One 1 at depth 3, one 4 at depth 2, and one 6 at depth 1.
@@ -1452,17 +1476,17 @@ public class Note12_Graph {
     /**
      * You have a graph of n nodes. You are given an integer n and an array edges where edges[i] = [ai, bi] indicates
      * that there is an edge between ai and bi in the graph.
-     *
+     * <p>
      * Return the number of connected components in the graph.
-     *
+     * <p>
      * Example 1:
-     *
-     *
+     * <p>
+     * <p>
      * Input: n = 5, edges = [[0,1],[1,2],[3,4]]
      * Output: 2
      * Example 2:
-     *
-     *
+     * <p>
+     * <p>
      * Input: n = 5, edges = [[0,1],[1,2],[2,3],[3,4]]
      * Output: 1
      */
@@ -1514,40 +1538,40 @@ public class Note12_Graph {
     /**
      * You are controlling a robot that is located somewhere in a room. The room is modeled as an m x n binary grid where
      * 0 represents a wall and 1 represents an empty slot.
-     *
+     * <p>
      * The robot starts at an unknown location in the room that is guaranteed to be empty, and you do not have access
      * to the grid, but you can move the robot using the given API Robot.
-     *
+     * <p>
      * You are tasked to use the robot to clean the entire room (i.e., clean every empty cell in the room). The robot
      * with the four given APIs can move forward, turn left, or turn right. Each turn is 90 degrees.
-     *
+     * <p>
      * When the robot tries to move into a wall cell, its bumper sensor detects the obstacle, and it stays on the current cell.
-     *
+     * <p>
      * Design an algorithm to clean the entire room using the following APIs:
-     *
+     * <p>
      * interface Robot {
-     *   // returns true if next cell is open and robot moves into the cell.
-     *   // returns false if next cell is obstacle and robot stays on the current cell.
-     *   boolean move();
-     *
-     *   // Robot will stay on the same cell after calling turnLeft/turnRight.
-     *   // Each turn will be 90 degrees.
-     *   void turnLeft();
-     *   void turnRight();
-     *
-     *   // Clean the current cell.
-     *   void clean();
+     * // returns true if next cell is open and robot moves into the cell.
+     * // returns false if next cell is obstacle and robot stays on the current cell.
+     * boolean move();
+     * <p>
+     * // Robot will stay on the same cell after calling turnLeft/turnRight.
+     * // Each turn will be 90 degrees.
+     * void turnLeft();
+     * void turnRight();
+     * <p>
+     * // Clean the current cell.
+     * void clean();
      * }
      * Note that the initial direction of the robot will be facing up. You can assume all four edges of the grid are all
      * surrounded by a wall.
-     *
+     * <p>
      * Custom testing:
-     *
+     * <p>
      * The input is only given to initialize the room and the robot's position internally. You must solve this problem
      * "blindfolded". In other words, you must control the robot using only the four mentioned APIs without knowing the room layout and the initial robot's position.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: room = [[1,1,1,1,1,0,1,1],[1,1,1,1,1,0,1,1],[1,0,1,1,1,1,1,1],[0,0,0,1,0,0,0,0],[1,1,1,1,1,1,1,1]], row = 1, col = 3
      * Output: Robot cleaned all rooms.
      * Explanation: All grids in the room are marked by either 0 or 1.
@@ -1555,13 +1579,14 @@ public class Note12_Graph {
      * The robot initially starts at the position of row=1, col=3.
      * From the top left corner, its position is one row below and three columns right.
      * Example 2:
-     *
+     * <p>
      * Input: room = [[1]], row = 0, col = 0
      * Output: Robot cleaned all rooms.
      */
     class Solution489 {
 
         int[][] dirs = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+
         public void cleanRoom(Robot robot) {
             backtracking(robot, 0, 0, 0, new HashSet<>());
         }
@@ -1569,7 +1594,7 @@ public class Note12_Graph {
         public void backtracking(Robot robot, int x, int y, int curDir, HashSet<String> visited) {
             visited.add(x + "-" + y);
             robot.clean();
-            for(int i = 0; i < 4; i++) {
+            for (int i = 0; i < 4; i++) {
                 int nextDir = (curDir + i) % 4;
                 int newX = x + dirs[nextDir][0];
                 int newY = y + dirs[nextDir][1];
@@ -1586,17 +1611,18 @@ public class Note12_Graph {
         }
 
         interface Robot {
-        // Returns true if the cell in front is open and robot moves into the cell.
-              // Returns false if the cell in front is blocked and robot stays in the current cell.
-              public boolean move();
+            // Returns true if the cell in front is open and robot moves into the cell.
+            // Returns false if the cell in front is blocked and robot stays in the current cell.
+            public boolean move();
 
-              // Robot will stay in the same cell after calling turnLeft/turnRight.
-              // Each turn will be 90 degrees.
-              public void turnLeft();
-              public void turnRight();
+            // Robot will stay in the same cell after calling turnLeft/turnRight.
+            // Each turn will be 90 degrees.
+            public void turnLeft();
 
-              // Clean the current cell.
-              public void clean();
+            public void turnRight();
+
+            // Clean the current cell.
+            public void clean();
         }
     }
 
@@ -1604,9 +1630,9 @@ public class Note12_Graph {
 
     /**
      * Let's play the minesweeper game (Wikipedia, online game)!
-     *
+     * <p>
      * You are given an m x n char matrix board representing the game board where:
-     *
+     * <p>
      * 'M' represents an unrevealed mine,
      * 'E' represents an unrevealed empty square,
      * 'B' represents a revealed blank square that has no adjacent mines (i.e., above, below, left, right, and all 4 diagonals),
@@ -1614,38 +1640,38 @@ public class Note12_Graph {
      * 'X' represents a revealed mine.
      * You are also given an integer array click where click = [clickr, clickc] represents the next click position among
      * all the unrevealed squares ('M' or 'E').
-     *
+     * <p>
      * Return the board after revealing this position according to the following rules:
-     *
+     * <p>
      * If a mine 'M' is revealed, then the game is over. You should change it to 'X'.
      * If an empty square 'E' with no adjacent mines is revealed, then change it to a revealed blank 'B' and all of its
      * adjacent unrevealed squares should be revealed recursively.
      * If an empty square 'E' with at least one adjacent mine is revealed, then change it to a digit ('1' to '8')
      * representing the number of adjacent mines.
      * Return the board when no more squares will be revealed.
-     *
+     * <p>
      * Example 1:
-     *
-     *
+     * <p>
+     * <p>
      * Input: board = [["E","E","E","E","E"],
-     *                 ["E","E","M","E","E"],
-     *                 ["E","E","E","E","E"],
-     *                 ["E","E","E","E","E"]], click = [3,0]
+     * ["E","E","M","E","E"],
+     * ["E","E","E","E","E"],
+     * ["E","E","E","E","E"]], click = [3,0]
      * Output: [["B","1","E","1","B"],
-     *          ["B","1","M","1","B"],
-     *          ["B","1","1","1","B"],
-     *          ["B","B","B","B","B"]]
+     * ["B","1","M","1","B"],
+     * ["B","1","1","1","B"],
+     * ["B","B","B","B","B"]]
      * Example 2:
-     *
-     *
+     * <p>
+     * <p>
      * Input: board = [["B","1","E","1","B"],
-     *                 ["B","1","M","1","B"],
-     *                 ["B","1","1","1","B"],
-     *                 w["B","B","B","B","B"]], click = [1,2]
+     * ["B","1","M","1","B"],
+     * ["B","1","1","1","B"],
+     * w["B","B","B","B","B"]], click = [1,2]
      * Output: [["B","1","E","1","B"],
-     *          ["B","1","X","1","B"],
-     *          ["B","1","1","1","B"],
-     *          ["B","B","B","B","B"]]
+     * ["B","1","X","1","B"],
+     * ["B","1","1","1","B"],
+     * ["B","B","B","B","B"]]
      */
     class Solution529 {
         public char[][] updateBoard(char[][] board, int[] click) {
@@ -1678,7 +1704,7 @@ public class Note12_Graph {
         }
 
         // 找地雷
-        public int findMines(char[][] board, int x,int y) {
+        public int findMines(char[][] board, int x, int y) {
             int count = 0;
             for (int i = -1; i <= 1; i++) {
                 for (int j = -1; j <= 1; j++) {
@@ -1696,90 +1722,89 @@ public class Note12_Graph {
 
     // 505 the maze 2
 
-        /**
-         *There is a ball in a maze with empty spaces (represented as 0) and walls (represented as 1). The ball can go
-         * through the empty spaces by rolling up, down, left or right, but it won't stop rolling until hitting a wall.
-         * When the ball stops, it could choose the next direction.
-         *
-         * Given the m x n maze, the ball's start position and the destination, where start = [startrow, startcol] and
-         * destination = [destinationrow, destinationcol], return the shortest distance for the ball to stop at the destination. If the ball cannot stop at destination, return -1.
-         *
-         * The distance is the number of empty spaces traveled by the ball from the start position (excluded) to the
-         * destination (included).
-         *
-         * You may assume that the borders of the maze are all walls (see examples).
-         *
-         *
-         *
-         * Example 1:
-         *
-         *
-         * Input: maze = [[0,0,1,0,0],[0,0,0,0,0],[0,0,0,1,0],[1,1,0,1,1],[0,0,0,0,0]], start = [0,4], destination = [4,4]
-         * Output: 12
-         * Explanation: One possible way is : left -> down -> left -> down -> right -> down -> right.
-         * The length of the path is 1 + 1 + 3 + 1 + 2 + 2 + 2 = 12.
-         * Example 2:
-         *
-         *
-         * Input: maze = [[0,0,1,0,0],[0,0,0,0,0],[0,0,0,1,0],[1,1,0,1,1],[0,0,0,0,0]], start = [0,4], destination = [3,2]
-         * Output: -1
-         * Explanation: There is no way for the ball to stop at the destination. Notice that you can pass through the
-         * destination but you cannot stop there.
-         * Example 3:
-         *
-         * Input: maze = [[0,0,0,0,0],[1,1,0,0,1],[0,0,0,0,0],[0,1,0,0,1],[0,1,0,0,0]], start = [4,3], destination = [0,1]
-         * Output: -1
-         *
-         */
-        class Solution505 {
-            public int shortestDistance(int[][] maze, int[] start, int[] destination) {
-                // 用一个dists数组来表示到每个点的距离
-                int[][] dists = new int[maze.length][maze[0].length];
-                int[][] directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+    /**
+     * There is a ball in a maze with empty spaces (represented as 0) and walls (represented as 1). The ball can go
+     * through the empty spaces by rolling up, down, left or right, but it won't stop rolling until hitting a wall.
+     * When the ball stops, it could choose the next direction.
+     * <p>
+     * Given the m x n maze, the ball's start position and the destination, where start = [startrow, startcol] and
+     * destination = [destinationrow, destinationcol], return the shortest distance for the ball to stop at the destination. If the ball cannot stop at destination, return -1.
+     * <p>
+     * The distance is the number of empty spaces traveled by the ball from the start position (excluded) to the
+     * destination (included).
+     * <p>
+     * You may assume that the borders of the maze are all walls (see examples).
+     * <p>
+     * <p>
+     * <p>
+     * Example 1:
+     * <p>
+     * <p>
+     * Input: maze = [[0,0,1,0,0],[0,0,0,0,0],[0,0,0,1,0],[1,1,0,1,1],[0,0,0,0,0]], start = [0,4], destination = [4,4]
+     * Output: 12
+     * Explanation: One possible way is : left -> down -> left -> down -> right -> down -> right.
+     * The length of the path is 1 + 1 + 3 + 1 + 2 + 2 + 2 = 12.
+     * Example 2:
+     * <p>
+     * <p>
+     * Input: maze = [[0,0,1,0,0],[0,0,0,0,0],[0,0,0,1,0],[1,1,0,1,1],[0,0,0,0,0]], start = [0,4], destination = [3,2]
+     * Output: -1
+     * Explanation: There is no way for the ball to stop at the destination. Notice that you can pass through the
+     * destination but you cannot stop there.
+     * Example 3:
+     * <p>
+     * Input: maze = [[0,0,0,0,0],[1,1,0,0,1],[0,0,0,0,0],[0,1,0,0,1],[0,1,0,0,0]], start = [4,3], destination = [0,1]
+     * Output: -1
+     */
+    class Solution505 {
+        public int shortestDistance(int[][] maze, int[] start, int[] destination) {
+            // 用一个dists数组来表示到每个点的距离
+            int[][] dists = new int[maze.length][maze[0].length];
+            int[][] directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 
-                for (int[] dist: dists) {
-                    Arrays.fill(dist, -1);  // 每个位置都初始化为-1
-                }
-                dists[start[0]][start[1]] = 0;  // start点距离为0
+            for (int[] dist : dists) {
+                Arrays.fill(dist, -1);  // 每个位置都初始化为-1
+            }
+            dists[start[0]][start[1]] = 0;  // start点距离为0
 
-                Queue<Point> queue = new LinkedList<>();
-                queue.offer(new Point(start[0], start[1]));
-                while (!queue.isEmpty()) {  // BFS
-                    Point cur = queue.poll();
-                    for (int[] direction : directions) {  // 四个方向都去走
-                        int newX = cur.x;
-                        int newY = cur.y;
-                        int dist = dists[newX][newY];
-                        // 如果当前的方向是可以通过的, 相应位置的dist+1
-                        while (isValid(maze, newX + direction[0], newY + direction[1])) {
-                            newX += direction[0];
-                            newY += direction[1];
-                            dist ++;
-                        }
-                        // 如果dist大于了新的点的dist值，不执行（不倒回去）
-                        if (dists[newX][newY] == -1 || dist < dists[newX][newY]) {
-                            queue.offer(new Point(newX, newY));
-                            dists[newX][newY] = dist;
-                        }
+            Queue<Point> queue = new LinkedList<>();
+            queue.offer(new Point(start[0], start[1]));
+            while (!queue.isEmpty()) {  // BFS
+                Point cur = queue.poll();
+                for (int[] direction : directions) {  // 四个方向都去走
+                    int newX = cur.x;
+                    int newY = cur.y;
+                    int dist = dists[newX][newY];
+                    // 如果当前的方向是可以通过的, 相应位置的dist+1
+                    while (isValid(maze, newX + direction[0], newY + direction[1])) {
+                        newX += direction[0];
+                        newY += direction[1];
+                        dist++;
+                    }
+                    // 如果dist大于了新的点的dist值，不执行（不倒回去）
+                    if (dists[newX][newY] == -1 || dist < dists[newX][newY]) {
+                        queue.offer(new Point(newX, newY));
+                        dists[newX][newY] = dist;
                     }
                 }
-                return dists[destination[0]][destination[1]];
             }
+            return dists[destination[0]][destination[1]];
+        }
 
-            private boolean isValid(int[][] maze, int x, int y) {
-                return x >= 0 && y >= 0 && x < maze.length && y < maze[0].length && maze[x][y] == 0;
-            }
+        private boolean isValid(int[][] maze, int x, int y) {
+            return x >= 0 && y >= 0 && x < maze.length && y < maze[0].length && maze[x][y] == 0;
+        }
 
-            class Point {
-                int x;
-                int y;
+        class Point {
+            int x;
+            int y;
 
-                public Point(int x, int y) {
-                    this.x = x;
-                    this.y = y;
-                }
+            public Point(int x, int y) {
+                this.x = x;
+                this.y = y;
             }
         }
+    }
 
     // 499：
 
@@ -1788,23 +1813,23 @@ public class Note12_Graph {
      * through the empty spaces by rolling up, down, left or right, but it won't stop rolling until hitting a wall.
      * When the ball stops, it could choose the next direction. There is also a hole in this maze. The ball will drop
      * into the hole if it rolls onto the hole.
-     *
+     * <p>
      * Given the m x n maze, the ball's position ball and the hole's position hole, where ball = [ballrow, ballcol]
      * and hole = [holerow, holecol], return a string instructions of all the instructions that the ball should follow
      * to drop in the hole with the shortest distance possible. If there are multiple valid instructions, return the
      * lexicographically minimum one. If the ball can't drop in the hole, return "impossible".
-     *
+     * <p>
      * If there is a way for the ball to drop in the hole, the answer instructions should contain the characters 'u'
      * (i.e., up), 'd' (i.e., down), 'l' (i.e., left), and 'r' (i.e., right).
-     *
+     * <p>
      * The distance is the number of empty spaces traveled by the ball from the start position (excluded) to the
      * destination (included).
-     *
+     * <p>
      * You may assume that the borders of the maze are all walls (see examples).
-     *
+     * <p>
      * Example 1:
-     *
-     *
+     * <p>
+     * <p>
      * Input: maze = [[0,0,0,0,0],[1,1,0,0,1],[0,0,0,0,0],[0,1,0,0,1],[0,1,0,0,0]], ball = [4,3], hole = [0,1]
      * Output: "lul"
      * Explanation: There are two shortest ways for the ball to drop into the hole.
@@ -1812,13 +1837,13 @@ public class Note12_Graph {
      * The second way is up -> left, represented by 'ul'.
      * Both ways have shortest distance 6, but the first way is lexicographically smaller because 'l' < 'u'. So the output is "lul".
      * Example 2:
-     *
-     *
+     * <p>
+     * <p>
      * Input: maze = [[0,0,0,0,0],[1,1,0,0,1],[0,0,0,0,0],[0,1,0,0,1],[0,1,0,0,0]], ball = [4,3], hole = [3,0]
      * Output: "impossible"
      * Explanation: The ball cannot reach the hole.
      * Example 3:
-     *
+     * <p>
      * Input: maze = [[0,0,0,0,0,0,0],[0,0,1,0,0,1,0],[0,0,0,0,1,0,0],[0,0,0,0,0,0,1]], ball = [0,4], hole = [3,5]
      * Output: "dldr"
      */
@@ -1829,12 +1854,12 @@ public class Note12_Graph {
             int[][] directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
             String[] ori = new String[]{"d", "u", "r", "L"};  // 四个方向
 
-            for (int[] dist: dists) {
+            for (int[] dist : dists) {
                 Arrays.fill(dist, Integer.MAX_VALUE);  // 每个位置都初始化为MAX_VALUE
             }
             dists[ball[0]][ball[1]] = 0;  // start点距离为0
             String[][] res = new String[maze.length][maze[0].length];
-            for (String[] s: res) {
+            for (String[] s : res) {
                 Arrays.fill(s, "impossible");  // 每个点都初始化为不可能
             }
             res[ball[0]][ball[1]] = "";
@@ -1852,11 +1877,11 @@ public class Note12_Graph {
                     // 如果当前的方向是可以通过的, 相应位置的dist+1
                     while (isValid(maze, newX + directions[i][0], newY + directions[i][1])) {
                         if (newX == hole[0] && newY == hole[1]) {
-                           break;
+                            break;
                         }
                         newX += directions[i][0];
                         newY += directions[i][1];
-                        dist ++;
+                        dist++;
                     }
                     if (dist <= dists[newX][newY]) {
                         if (dist < dists[newX][newY]) {
@@ -1867,8 +1892,8 @@ public class Note12_Graph {
                         }
                         queue.offer(new Point(newX, newY));
                     }
-                    }
                 }
+            }
             return res[hole[0]][hole[1]];
         }
 
@@ -1893,35 +1918,35 @@ public class Note12_Graph {
     /**
      * 329. Longest Increasing Path in a Matrix
      * Hard
-     *
+     * <p>
      * 7247
-     *
+     * <p>
      * 111
-     *
+     * <p>
      * Add to List
-     *
+     * <p>
      * Share
      * Given an m x n integers matrix, return the length of the longest increasing path in matrix.
-     *
+     * <p>
      * From each cell, you can either move in four directions: left, right, up, or down. You may not move
      * diagonally or move outside the boundary (i.e., wrap-around is not allowed).
-     *
-     *
-     *
+     * <p>
+     * <p>
+     * <p>
      * Example 1:
-     *
-     *
+     * <p>
+     * <p>
      * Input: matrix = [[9,9,4],[6,6,8],[2,1,1]]
      * Output: 4
      * Explanation: The longest increasing path is [1, 2, 6, 9].
      * Example 2:
-     *
-     *
+     * <p>
+     * <p>
      * Input: matrix = [[3,4,5],[3,2,6],[2,2,1]]
      * Output: 4
      * Explanation: The longest increasing path is [3, 4, 5, 6]. Moving diagonally is not allowed.
      * Example 3:
-     *
+     * <p>
      * Input: matrix = [[1]]
      * Output: 1
      */
@@ -1933,14 +1958,14 @@ public class Note12_Graph {
             int[][] cache = new int[m][n];  // 使用cache来存储当前位置的最小值，避免重复计算
             int res = 0;
             for (int i = 0; i < m; i++) {
-                for (int j = 0;j < m; j++) {
+                for (int j = 0; j < m; j++) {
                     res = Math.max(res, dfs(matrix, Integer.MIN_VALUE, cache, m, n, i, j));
                 }
             }
             return res;
         }
 
-        public int dfs(int[][] matrix,int min, int[][] cache, int m, int n, int i,int j) {
+        public int dfs(int[][] matrix, int min, int[][] cache, int m, int n, int i, int j) {
             if (i < 0 || i >= m || j < 0 || j >= n || matrix[i][j] <= min) return 0;
             if (cache[i][j] != 0) return cache[i][j];  // 如果当前位置值之前计算过直接返回cache
             min = matrix[i][j];  // 更新最小值
@@ -1956,43 +1981,44 @@ public class Note12_Graph {
 
     public static void main(String[] args) {
         String s = "hit";
-        for (int i = 0 ; i < s.length(); i++) {
+        for (int i = 0; i < s.length(); i++) {
             StringBuilder sb;
-            for (int j =0; j < 26; j++) {
-                char c = (char)(j + 'a');
+            for (int j = 0; j < 26; j++) {
+                char c = (char) (j + 'a');
                 sb = new StringBuilder(s);
-                sb.replace(i , i + 1, c +"");
+                sb.replace(i, i + 1, c + "");
                 System.out.println(sb.toString());
             }
         }
     }
 
     // 407 rain water 2:
+
     /**
      * Given an m x n integer matrix heightMap representing the height of each unit cell in a 2D elevation map, return
      * the volume of water it can trap after raining.
      * Example 1:
-     *
+     * <p>
      * Input: heightMap = [[1,4,3,1,3,2],[3,2,1,3,2,4],[2,3,3,2,3,1]]
      * Output: 4
      * Explanation: After the rain, water is trapped between the blocks.
      * We have two small ponds 1 and 3 units trapped.
      * The total volume of water trapped is 4.
      * Example 2:
-     *
-     *
+     * <p>
+     * <p>
      * Input: heightMap = [[3,3,3,3,3],[3,2,2,2,3],[3,2,1,2,3],[3,2,2,2,3],[3,3,3,3,3]]
      * Output: 10
      */
     class Solution407 {
         // 相比之前的trapping rain water 变成了三维的数组
         public int trapRainWater(int[][] heightMap) {
-            if(heightMap == null || heightMap.length <= 1 || heightMap[0].length <= 1) return 0;
+            if (heightMap == null || heightMap.length <= 1 || heightMap[0].length <= 1) return 0;
             int m = heightMap.length;
             int n = heightMap[0].length;
             boolean[][] visited = new boolean[m][n];
             // pq里存的是每个位置的index: i, j, 和高度height
-            PriorityQueue<int[]> pq = new PriorityQueue<>((a,b)->a[2] - b[2]);
+            PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[2] - b[2]);
             // 把四周加入priorityQueue, 因为四周永远装不了水
             for (int i = 0; i < m; i++) {
                 for (int j = 0; j < n; j++) {
@@ -2008,7 +2034,7 @@ public class Note12_Graph {
                 // 将当前最短的柱子拿出来
                 int[] cell = pq.poll();
                 // 上下左右进行遍历
-                for (int[] dir: dirs) {
+                for (int[] dir : dirs) {
                     int x = cell[0] + dir[0];
                     int y = cell[1] + dir[1];
                     // 如果没有越界或者之前没有遍历过
@@ -2016,7 +2042,7 @@ public class Note12_Graph {
                         visited[x][y] = true;
                         // cell[2] - heightMap[x][y] 指当前最短的柱子和新柱子的高度差
                         // 如果小于0就不加，大于0就加
-                        res += Math.max(0 , cell[2] - heightMap[x][y]);
+                        res += Math.max(0, cell[2] - heightMap[x][y]);
                         // 将当前高的柱子的高度加入pq, 因为当前位置已经装了水，之后的高度和装了水的高度一样高了
                         pq.offer(new int[]{x, y, Math.max(cell[2], heightMap[x][y])});
                     }
@@ -2027,18 +2053,19 @@ public class Note12_Graph {
     }
 
     // 841： Keys and rooms
+
     /**
      * There are n rooms labeled from 0 to n - 1 and all the rooms are locked except for room 0. Your goal is to visit
      * all the rooms. However, you cannot enter a locked room without having its key.
-     *
+     * <p>
      * When you visit a room, you may find a set of distinct keys in it. Each key has a number on it, denoting which
      * room it unlocks, and you can take all of them with you to unlock the other rooms.
-     *
+     * <p>
      * Given an array rooms where rooms[i] is the set of keys that you can obtain if you visited room i, return true
      * if you can visit all the rooms, or false otherwise.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: rooms = [[1],[2],[3],[]]
      * Output: true
      * Explanation:
@@ -2048,7 +2075,7 @@ public class Note12_Graph {
      * We then visit room 3.
      * Since we were able to visit every room, we return true.
      * Example 2:
-     *
+     * <p>
      * Input: rooms = [[1,3],[3,0,1],[2],[0]]
      * Output: false
      * Explanation: We can not enter room number 2 since the only key that unlocks it is in that room.
@@ -2070,7 +2097,7 @@ public class Note12_Graph {
                     }
                 }
             }
-            for (boolean v: visited) {
+            for (boolean v : visited) {
                 if (v == false) return false;
             }
             return true;
@@ -2078,31 +2105,32 @@ public class Note12_Graph {
     }
 
     // 886 Possible Partition
+
     /**
      * We want to split a group of n people (labeled from 1 to n) into two groups of any size. Each person may dislike
      * some other people, and they should not go into the same group.
-     *
+     * <p>
      * Given the integer n and the array dislikes where dislikes[i] = [ai, bi] indicates that the person labeled ai
      * does not like the person labeled bi, return true if it is possible to split everyone into two groups in this way.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: n = 4, dislikes = [[1,2],[1,3],[2,4]]
      * Output: true
      * Explanation: group1 [1,4] and group2 [2,3].
      * Example 2:
-     *
+     * <p>
      * Input: n = 3, dislikes = [[1,2],[1,3],[2,3]]
      * Output: false
      * Example 3:
-     *
+     * <p>
      * Input: n = 5, dislikes = [[1,2],[2,3],[3,4],[4,5],[1,5]]
      * Output: false
      */
     class Solution886 {
         public boolean possibleBipartition(int n, int[][] dislikes) {
             Map<Integer, ArrayList<Integer>> graph = new HashMap<>();
-            for (int[] like: dislikes) {
+            for (int[] like : dislikes) {
                 if (!graph.containsKey(like[0])) {
                     graph.put(like[0], new ArrayList<>());
                 }
@@ -2140,28 +2168,29 @@ public class Note12_Graph {
     }
 
     // 997: find the town judge
+
     /**
      * In a town, there are n people labeled from 1 to n. There is a rumor that one of these people is secretly the town judge.
-     *
+     * <p>
      * If the town judge exists, then:
-     *
+     * <p>
      * The town judge trusts nobody.
      * Everybody (except for the town judge) trusts the town judge.
      * There is exactly one person that satisfies properties 1 and 2.
      * You are given an array trust where trust[i] = [ai, bi] representing that the person labeled ai trusts the person labeled bi.
-     *
+     * <p>
      * Return the label of the town judge if the town judge exists and can be identified, or return -1 otherwise.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: n = 2, trust = [[1,2]]
      * Output: 2
      * Example 2:
-     *
+     * <p>
      * Input: n = 3, trust = [[1,3],[2,3]]
      * Output: 3
      * Example 3:
-     *
+     * <p>
      * Input: n = 3, trust = [[1,3],[2,3],[3,1]]
      * Output: -1
      */
@@ -2189,6 +2218,7 @@ public class Note12_Graph {
     }
 
     // dfs 求解最短城市距离问题
+
     /**
      * intput:
      * graph: [[1, 3, 5], [1, 4, 6], [2, 4, 5], [6, 1, 3], [3, 1, 2], [2, 4, 1], [6, 1, 2]], 二维数组，其中第一个参数为起点，第二个为
@@ -2197,14 +2227,15 @@ public class Note12_Graph {
      * int n: 共有多少个城市
      * int source: 起点
      */
-    class dfs{
+    class dfs {
         int min = Integer.MAX_VALUE;
+
         public int solution(int[][] map, int n, int source, int dist) {
             int[][] graph = new int[n][n];
             for (int i = 0; i < graph.length; i++) {
                 Arrays.fill(graph[i], Integer.MAX_VALUE);
             }
-            for (int i = 0;i < map.length; i++) {
+            for (int i = 0; i < map.length; i++) {
                 graph[map[i][0]][map[i][1]] = map[i][2];
             }
             dfs(graph, source, dist, 0, new int[n]);
@@ -2228,26 +2259,27 @@ public class Note12_Graph {
     }
 
     // leetcode 2359 Find closest Node at given two nodes
+
     /**
      * You are given a directed graph of n nodes numbered from 0 to n - 1, where each node has at most one outgoing edge.
-     *
+     * <p>
      * The graph is represented with a given 0-indexed array edges of size n, indicating that there is a directed edge
      * from node i to node edges[i]. If there is no outgoing edge from i, then edges[i] == -1.
-     *
+     * <p>
      * You are also given two integers node1 and node2.
-     *
+     * <p>
      * Return the index of the node that can be reached from both node1 and node2, such that the maximum between the
      * distance from node1 to that node, and from node2 to that node is minimized. If there are multiple answers,
      * return the node with the smallest index, and if no possible answer exists, return -1.
-     *
+     * <p>
      * Note that edges may contain cycles.
-     *
-     *Input: edges = [2,2,3,-1], node1 = 0, node2 = 1
+     * <p>
+     * Input: edges = [2,2,3,-1], node1 = 0, node2 = 1
      * Output: 2
      * Explanation: The distance from node 0 to node 2 is 1, and the distance from node 1 to node 2 is 1.
      * The maximum of those two distances is 1. It can be proven that we cannot get a node with a smaller
      * maximum distance than 1, so we return node 2.
-     *
+     * <p>
      * Input: edges = [1,2,-1], node1 = 0, node2 = 2
      * Output: 2
      * Explanation: The distance from node 0 to node 2 is 2, and the distance from node 2 to itself is 0.
@@ -2310,14 +2342,15 @@ public class Note12_Graph {
     }
 
     // 684: redundant connections
+
     /**
      * In this problem, a tree is an undirected graph that is connected and has no cycles.
-     *
+     * <p>
      * You are given a graph that started as a tree with n nodes labeled from 1 to n, with one additional edge added.
      * The added edge has two different vertices chosen from 1 to n, and was not an edge that already existed. The graph
      * is represented as an array edges of length n where edges[i] = [ai, bi] indicates that there is an edge between nodes
      * ai and bi in the graph.
-     *
+     * <p>
      * Return an edge that can be removed so that the resulting graph is a tree of n nodes. If there are multiple answers,
      * return the answer that occurs last in the input.
      */
@@ -2326,6 +2359,7 @@ public class Note12_Graph {
 
         // 查并集
         int[] parent;
+
         public int[] findRedundantConnection(int[][] edges) {
             int len = edges.length;
             // 初始化父节点们 （每个节点的父节点为他自己）
@@ -2338,14 +2372,15 @@ public class Note12_Graph {
                 int a = cur[0];
                 int b = cur[1];
                 // if the parents of a and b are not the same, combine them to the same set
-                if(find(a) != find(b)) union(a, b);
-                // 如果两个当前节点的根相同了代表找到环了，返回这个边
+                if (find(a) != find(b)) union(a, b);
+                    // 如果两个当前节点的根相同了代表找到环了，返回这个边
                 else return cur;
             }
             return new int[2];
         }
+
         public int find(int k) {
-            if(parent[k] != k) parent[k] = find(parent[k]);
+            if (parent[k] != k) parent[k] = find(parent[k]);
             return parent[k];
         }
 
@@ -2357,20 +2392,21 @@ public class Note12_Graph {
     }
 
     // Number of provinces
+
     /**
      * There are n cities. Some of them are connected, while some are not. If city a is connected directly with city b,
      * and city b is connected directly with city c, then city a is connected indirectly with city c.
-     *
+     * <p>
      * A province is a group of directly or indirectly connected cities and no other cities outside of the group.
-     *
+     * <p>
      * You are given an n x n matrix isConnected where isConnected[i][j] = 1 if the ith city and the jth city are
      * directly connected, and isConnected[i][j] = 0 otherwise.
-     *
+     * <p>
      * Return the total number of provinces.
-     * 
+     * <p>
      * Input: isConnected = [[1,0,0],[0,1,0],[0,0,1]]
      * Output: 3
-     * 
+     * <p>
      * Input: isConnected = [[1,1,0],[1,1,0],[0,0,1]]
      * Output: 2
      */
@@ -2381,7 +2417,7 @@ public class Note12_Graph {
             int res = 0;
             for (int i = 0; i < isConnected.length; i++) {
                 if (!isVisited[i]) {
-                    res ++;
+                    res++;
                     dfs(isConnected, isVisited, i);
                 }
             }
@@ -2390,7 +2426,7 @@ public class Note12_Graph {
 
         public void dfs(int[][] map, boolean[] visited, int idx) {
             for (int j = 0; j < map.length; j++) {
-                if (map[idx][j]== 1 && !visited[j]) {
+                if (map[idx][j] == 1 && !visited[j]) {
                     visited[j] = true;
                     dfs(map, visited, j);
                 }
@@ -2399,19 +2435,21 @@ public class Note12_Graph {
     }
 
     // 302： Smallest Rectangle Enclosing Black Pixels
+
     /**
      * You are given an m x n binary matrix image where 0 represents a white pixel and 1 represents a black pixel.
-     *
+     * <p>
      * The black pixels are connected (i.e., there is only one black region). Pixels are connected horizontally and vertically.
-     *
+     * <p>
      * Given two integers x and y that represents the location of one of the black pixels, return the area of the
      * smallest (axis-aligned) rectangle that encloses all black pixels.
-     *
+     * <p>
      * You must write an algorithm with less than O(mn) runtime complexity
      */
     class Solution302 {
         // 全局变量，在dfs时更新
         int l, r, u, d;
+
         public int minArea(char[][] image, int x, int y) {
             if (image.length == 0 || image[0].length == 0) return 0;
             l = y;
@@ -2436,5 +2474,124 @@ public class Note12_Graph {
             dfs(image, x, y + 1);
             dfs(image, x, y - 1);
         }
+    }
+
+    /**
+     * Currency Exchange
+     * <p>
+     * Programming challenge description:
+     * <p>
+     * Given
+     * <p>
+     * - A list of foreign exchange rates
+     * <p>
+     * - A selected curreny
+     * <p>
+     * - A target currency
+     * <p>
+     * Your goal is to calculate the max amount of the target currency to 1 unit of the selected currency through the FX transactions. Assume all transactions are free and done immediately. If you cannot finish the exchange, return -1.0.
+     * <p>
+     * e.g.
+     * <p>
+     * Input:
+     * <p>
+     * You will be provided a list of fx rates, a selected currency, and a target currency.
+     * <p>
+     * For example:
+     * <p>
+     * FX rates list:
+     * <p>
+     * USD to JPY 1 to 109
+     * <p>
+     * USD to GBP 1 to 0.71
+     * <p>
+     * GBP to JPY 1 to 155
+     * <p>
+     * Original currency: USD
+     * <p>
+     * Target currency : JPY
+     * <p>
+     * Output:
+     * <p>
+     * Calculated the max target currency will can get.
+     * <p>
+     * For example:
+     * <p>
+     * USD to JPY -> 109
+     * <p>
+     * USD to GBP to JPY = 0.71 * 155 = 110.05
+     * <p>
+     * > 109,
+     * <p>
+     * so the max value will be 110.05
+     * <p>
+     * USD,JPY,109;USD,GBP,0.71;GBP,JPY,166
+     * USD
+     * JPY
+     */
+    public void maxExchange() throws IOException {
+        InputStreamReader r = new InputStreamReader(System.in);
+        BufferedReader in = new BufferedReader(r);
+        String conversion_rate = in.readLine(); //read first line
+        String conversion[] = conversion_rate.split(";"); //Separate string into array of string by ";"
+        // one e.g. {"USD,JPY,109" , "USD,GBP,0.71"}
+        String currency1 = in.readLine();// read first currency
+        String currency2 = in.readLine();// read target currency
+        if (currency2.equals(currency1)) { //if both currencies are same return 0;
+            System.out.println(0);
+            return;
+        }
+        Queue<String> queue = new LinkedList<>(); //to store graph and search on breadth first search
+        ArrayList<String> visited = new ArrayList<>();//to keep check of visited currencies
+        for (String temp : conversion) {
+            String conversion_one[] = temp.split(",");// seperate currencies and conversion rate
+            // e.g. {"USD" , "JPY", 109}
+            if (conversion_one[0].equals(currency1)) {
+                queue.add(conversion_one[1]); //add currency not visited yet
+                queue.add(conversion_one[2]); //add rate
+            } else if (conversion_one[1].equals(currency1)) {
+                double d = Double.parseDouble(conversion_one[2]);
+                d = 1 / d; // invert the conversion because conversion is given from 1st to 2nd
+                //but we want 2nd to 1st.
+                d = Math.round(d * 100.0) / 100.0; //round upto two decimal
+                queue.add(conversion_one[0]); //add currency not visited
+                queue.add(d + "");// add its rate
+            }
+        }
+        visited.add(currency1); // currency1 already visited add in visited list
+        double max = -1.0; // to calculate maximum conversion rate
+        while (!queue.isEmpty()) { //iterate until queue is empty
+
+            String currency = queue.poll(); // pop first element of queue i.e. currency
+            double rate = Double.parseDouble(queue.poll()); //pop first element of queue i.e. rate
+
+            if (currency.equals(currency2)) { //check whether it is target currency
+                if (rate > max) { //update max
+                    max = rate;
+                }
+            } else { // if not target currency
+                for (String temp : conversion) {
+                    String conversion_one[] = temp.split(",");
+                    if (conversion_one[0].equals(currency) && !visited.contains(currency)) {
+                        //check new currency which is not visited earlier
+
+                        double d = Double.parseDouble(conversion_one[2]);
+                        d = d * rate; //multiply the rate of multiple currencies to achieve result
+                        d = Math.round(d * 100.0) / 100.0; //round upto two decimal
+                        queue.add(conversion_one[1]);//add currency
+                        queue.add(d + ""); //add to queue
+                    } else if (conversion_one[1].equals("currency") && !visited.contains(currency)) {
+                        double d = Double.parseDouble(conversion_one[2]);
+                        d = 1 / d;// invert the rate
+                        d = d * rate;//multiply the rate of multiple currencies to achieve result
+                        d = Math.round(d * 100.0) / 100.0;//round upto two decimal
+                        queue.add(conversion_one[0]);// add currency
+                        queue.add(d + "");//add its rate
+                    }
+                }
+                visited.add(currency); // update visited list all the nodes of currency had been visited
+            }
+        }
+        System.out.println(max);//print maximum currency conversion
     }
 }

@@ -4511,6 +4511,100 @@ public class Note3_Arrays {
         }
     }
 
+    // 1151. Minimum Swaps to Group All 1's Together
+
+    /**
+     * Given a binary array data, return the minimum number of swaps required to group all 1’s present in the array
+     * together in any place in the array.
+     *
+     * Example 1:
+     *
+     * Input: data = [1,0,1,0,1]
+     * Output: 1
+     * Explanation: There are 3 ways to group all 1's together:
+     * [1,1,1,0,0] using 1 swap.
+     * [0,1,1,1,0] using 2 swaps.
+     * [0,0,1,1,1] using 1 swap.
+     * The minimum is 1.
+     * Example 2:
+     *
+     * Input: data = [0,0,0,1,0]
+     * Output: 0
+     * Explanation: Since there is only one 1 in the array, no swaps are needed.
+     * Example 3:
+     *
+     * Input: data = [1,0,1,0,1,0,0,1,1,0,1]
+     * Output: 3
+     * Explanation: One possible solution that uses 3 swaps is [0,0,0,0,0,1,1,1,1,1,1].
+     */
+    class Solution1151 {
+        public int minSwaps(int[] data) {
+            int ones = Arrays.stream(data).sum();
+            int left = 0, right = 0, max_ones = 0, count = 0;
+            while (right < data.length) {
+                count += data[right++];
+                if (right - left > ones) {
+                    count -= data[left++];
+                }
+                max_ones = Math.max(count, max_ones);
+            }
+            return ones - max_ones;
+        }
+    }
+
+    // 2422. Merge Operations to Turn Array Into a Palindrome
+
+    /**
+     * You are given an array nums consisting of positive integers.
+     *
+     * You can perform the following operation on the array any number of times:
+     *
+     * Choose any two adjacent elements and replace them with their sum.
+     * For example, if nums = [1,2,3,1], you can apply one operation to make it [1,5,1].
+     * Return the minimum number of operations needed to turn the array into a palindrome.
+     *
+     *
+     *
+     * Example 1:
+     *
+     * Input: nums = [4,3,2,1,2,3,1]
+     * Output: 2
+     * Explanation: We can turn the array into a palindrome in 2 operations as follows:
+     * - Apply the operation on the fourth and fifth element of the array, nums becomes equal to [4,3,2,3,3,1].
+     * - Apply the operation on the fifth and sixth element of the array, nums becomes equal to [4,3,2,3,4].
+     * The array [4,3,2,3,4] is a palindrome.
+     * It can be shown that 2 is the minimum number of operations needed.
+     * Example 2:
+     *
+     * Input: nums = [1,2,3,4]
+     * Output: 3
+     * Explanation: We do the operation 3 times in any position, we obtain the array [10] at the end which is a palindrome.
+     */
+    class Solution2422 {
+        // /1. palindrome -> use two pointers
+        ////2. Since only sum operation is permitted, if nums[lo] < nums[hi] -> must sum two adjacent nums[lo] + nums[lo+1] and vice versa
+        public int minimumOperations(int[] nums) {
+            int lo = 0, hi = nums.length - 1, count = 0;
+            while (lo < hi) {
+                if (nums[lo] == nums[hi]) {
+                    lo++;
+                    hi--;
+                } else {
+                    count++;
+                    if (nums[lo] > nums[hi]) {
+                        --hi;
+                        nums[hi] += nums[hi + 1];
+                    } else {
+                        lo++;
+                        nums[lo] += nums[lo - 1];
+                    }
+                }
+            }
+            return count;
+        }
+    }
+
+
     public static void main(String[] args) {
         int[] candies = new int[]{7, 3, 20, 5, 15, 1, 11, 8, 10};
         int res = maxCandies(candies);
