@@ -501,7 +501,6 @@ public class Note3_Arrays {
      * <p>
      * 输入：n u m s = [-1 , 0 , 1 , 2 ,-1 ,-4 ] 输出：[ [-1 ,-1 , 2 ] , [-1 , 0 , 1 ] ]
      *
-     * @param args
      */
 
     // 双指针：
@@ -4604,6 +4603,99 @@ public class Note3_Arrays {
         }
     }
 
+    // compare: 937 Reorder Data in log files
+
+    /**
+     * You are given an array of logs. Each log is a space-delimited string of words, where the first word is the identifier.
+     *
+     * There are two types of logs:
+     *
+     * Letter-logs: All words (except the identifier) consist of lowercase English letters.
+     * Digit-logs: All words (except the identifier) consist of digits.
+     * Reorder these logs so that:
+     *
+     * The letter-logs come before all digit-logs.
+     * The letter-logs are sorted lexicographically by their contents. If their contents are the same, then sort them
+     * lexicographically by their identifiers.
+     * The digit-logs maintain their relative ordering.
+     * Return the final order of the logs.
+     *
+     * Example 1:
+     *
+     * Input: logs = ["dig1 8 1 5 1","let1 art can","dig2 3 6","let2 own kit dig","let3 art zero"]
+     * Output: ["let1 art can","let3 art zero","let2 own kit dig","dig1 8 1 5 1","dig2 3 6"]
+     * Explanation:
+     * The letter-log contents are all different, so their ordering is "art can", "art zero", "own kit dig".
+     * The digit-logs have a relative order of "dig1 8 1 5 1", "dig2 3 6".
+     * Example 2:
+     *
+     * Input: logs = ["a1 9 2 3 1","g1 act car","zo4 4 7","ab1 off key dog","a8 act zoo"]
+     * Output: ["g1 act car","a8 act zoo","ab1 off key dog","a1 9 2 3 1","zo4 4 7"]
+     * @param args
+     */
+    class Solution937 {
+        public String[] reorderLogFiles(String[] logs) {
+            Arrays.sort(logs, (log1, log2) -> {
+                String[] log1Array = log1.split(" ", 2);
+                String[] log2Array = log2.split(" ", 2);
+                boolean isDigit1 = Character.isDigit(log1Array[1].charAt(0));
+                boolean isDigit2 = Character.isDigit(log2Array[1].charAt(0));
+
+                if(isDigit1 && isDigit2) { // both are digits
+                    return 0;
+                } else if(isDigit1 && !isDigit2) { // string2 in front of digit1
+                    return 1;
+                } else if(!isDigit1 && isDigit2) { // string1 in front of digit2
+                    return -1;
+                }
+                // else both are strings
+                int compare = log1Array[1].compareTo(log2Array[1]);
+
+                // if string1 == string2, return identifier comparator
+                return compare == 0 ? log1Array[0].compareTo(log2Array[0]) : compare;
+            });
+            return logs;
+        }
+    }
+
+    // 2486: append Characters to string to make subsequence
+
+    /**
+     * You are given two strings s and t consisting of only lowercase English letters.
+     *
+     * Return the minimum number of characters that need to be appended to the end of s so that t becomes a subsequence of s.
+     *
+     * A subsequence is a string that can be derived from another string by deleting some or no characters without changing
+     * the order of the remaining characters.
+     *
+     * Example 1:
+     *
+     * Input: s = "coaching", t = "coding"
+     * Output: 4
+     * Explanation: Append the characters "ding" to the end of s so that s = "coachingding".
+     * Now, t is a subsequence of s ("coachingding").
+     * It can be shown that appending any 3 characters to the end of s will never make t a subsequence.
+     * Example 2:
+     *
+     * Input: s = "abcde", t = "a"
+     * Output: 0
+     * Explanation: t is already a subsequence of s ("abcde").
+     * @param args
+     */
+    class Solution2486 {
+        public int appendCharacters(String s, String t) {
+            int sp = 0, tp = 0, res = 0;
+            while (sp < s.length() && tp < t.length()) {
+                if (s.charAt(sp) == t.charAt(tp)) {
+                    sp++;
+                    tp++;
+                } else {
+                    sp++;
+                }
+            }
+            return t.length() - tp;
+        }
+    }
 
     public static void main(String[] args) {
         int[] candies = new int[]{7, 3, 20, 5, 15, 1, 11, 8, 10};
