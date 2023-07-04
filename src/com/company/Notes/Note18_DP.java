@@ -2938,16 +2938,17 @@ public class Note18_DP {
             return res;
         }
         // 1524： Number of sub-arrays with odd sum
+
         /**
          * 1524
          * Given an array of integers arr, return the number of subarrays with an odd sum.
-         *
+         * <p>
          * Since the answer can be very large, return it modulo 109 + 7.
-         *
-         *
-         *
+         * <p>
+         * <p>
+         * <p>
          * Example 1:
-         *
+         * <p>
          * Input: arr = [1,3,5]
          * Output: 4
          * Explanation: All subarrays are [[1],[1,3],[1,3,5],[3],[3,5],[5]]
@@ -2981,7 +2982,7 @@ public class Note18_DP {
                     }
                     res += odd;
                 }
-                return (int)(res % mod);
+                return (int) (res % mod);
             }
         }
 
@@ -2992,17 +2993,17 @@ public class Note18_DP {
          * (repeated 2 or more times) with the concatenation of the character and the number marking the count of the
          * characters (length of the run). For example, to compress the string "aabccc" we replace "aa" by "a2" and
          * replace "ccc" by "c3". Thus the compressed string becomes "a2bc3".
-         *
+         * <p>
          * Notice that in this problem, we are not adding '1' after single characters.
-         *
+         * <p>
          * Given a string s and an integer k. You need to delete at most k characters from s such that the run-length encoded version of s has minimum length.
-         *
+         * <p>
          * Find the minimum length of the run-length encoded version of s after deleting at most k characters.
-         *
-         *
-         *
+         * <p>
+         * <p>
+         * <p>
          * Example 1:
-         *
+         * <p>
          * Input: s = "aaabcccd", k = 2
          * Output: 4
          * Explanation: Compressing s without deleting anything will give us "a3bc3d" of length 6. Deleting any of the characters 'a' or 'c' would at most decrease the length of the compressed string to 5, for instance delete 2 'a' then we will have s = "abcccd" which compressed is abc3d. Therefore, the optimal way is to delete 'b' and 'd', then the compressed version of s will be "a3c3" of length 4.
@@ -3010,18 +3011,18 @@ public class Note18_DP {
         class Solution1531 {
             public int getLengthOfOptimalCompression(String s, int k) {
                 int l = s.length();
-                int[][] dp = new int[l+1][k+1];
+                int[][] dp = new int[l + 1][k + 1];
                 //初始化dp数组
-                for(int[] i : dp) {//初始化为最大值
+                for (int[] i : dp) {//初始化为最大值
                     Arrays.fill(i, l);
                 }
                 //初始化第一列，当删除0个字符时的行程长度编码长度
                 dp[0][0] = 0;
                 int t1 = 1;
                 int t2 = 0;
-                for(int i = 1; i <= l; i++) {
+                for (int i = 1; i <= l; i++) {
                     dp[i][0] = t2 + len(t1);
-                    if(i < l && s.charAt(i-1) == s.charAt(i)) {
+                    if (i < l && s.charAt(i - 1) == s.charAt(i)) {
                         t1++;
                     } else {
                         t2 += len(t1);
@@ -3029,20 +3030,20 @@ public class Note18_DP {
                     }
                 }
                 //DP
-                for(int i = 1; i <= l; i++) {
-                    for(int j = 1; j <= i && j <= k; j++) {
-                        dp[i][j] = dp[i-1][j-1]; //删除第i个字符
+                for (int i = 1; i <= l; i++) {
+                    for (int j = 1; j <= i && j <= k; j++) {
+                        dp[i][j] = dp[i - 1][j - 1]; //删除第i个字符
 
                         //不删除第i个字符
                         int del = 0;
                         int cnt = 0;
-                        for(int m = i; m > 0; m--) { //枚举最后一对字符数字组合的所有可能
-                            if(s.charAt(m-1) == s.charAt(i-1)) {
+                        for (int m = i; m > 0; m--) { //枚举最后一对字符数字组合的所有可能
+                            if (s.charAt(m - 1) == s.charAt(i - 1)) {
                                 cnt++;
-                                dp[i][j] = Math.min(dp[i][j], dp[m-1][j-del] + len(cnt));
+                                dp[i][j] = Math.min(dp[i][j], dp[m - 1][j - del] + len(cnt));
                             } else {
                                 del++;
-                                if(del > j) {
+                                if (del > j) {
                                     break;
                                 }
                             }
@@ -3051,6 +3052,7 @@ public class Note18_DP {
                 }
                 return dp[l][k];
             }
+
             private int len(int x) {
                 return x == 1 ? 1 : (x < 10 ? 2 : x < 100 ? 3 : 4);
             }
@@ -3059,24 +3061,25 @@ public class Note18_DP {
         // 741： pick up cherry
 
         /**
-         *You are given an n x n grid representing a field of cherries, each cell is one of three possible integers.
-         *
+         * You are given an n x n grid representing a field of cherries, each cell is one of three possible integers.
+         * <p>
          * 0 means the cell is empty, so you can pass through,
          * 1 means the cell contains a cherry that you can pick up and pass through, or
          * -1 means the cell contains a thorn that blocks your way.
          * Return the maximum number of cherries you can collect by following the rules below:
-         *
+         * <p>
          * Starting at the position (0, 0) and reaching (n - 1, n - 1) by moving right or down through valid path cells (cells with value 0 or 1).
          * After reaching (n - 1, n - 1), returning to (0, 0) by moving left or up through valid path cells.
          * When passing through a path cell containing a cherry, you pick it up, and the cell becomes an empty cell 0.
          * If there is no valid path between (0, 0) and (n - 1, n - 1), then no cherries can be collected.
-         *
+         * <p>
          * Input: grid = [[0,1,-1],[1,0,-1],[1,1,1]]
          * Output: 5
          * Explanation: The player started at (0, 0) and went down, down, right right to reach (2, 2).
          * 4 cherries were picked up during this single trip, and the matrix becomes [[0,1,-1],[0,0,-1],[0,0,0]].
          * Then, the player went left, up, up, left to return home, picking up one more cherry.
          * The total number of cherries picked up is 5, and this is the maximum possible.
+         *
          * @param args
          */
         /*
@@ -3100,16 +3103,17 @@ public class Note18_DP {
         Person 1 down and person 2 right: dp[r1+1][c1][c2+1];
         Person 1 right and person 2 right: dp[r1][c1+1][c2+1];
          */
-        class solve741{
+        class solve741 {
             int[][][] dp;
             int[][] Grid;
             int n;
+
             public int cherryPickup(int[][] grid) {
                 n = grid.length;
                 Grid = grid;
                 dp = new int[n][n][n];
-                for (int[][] layer: dp) {
-                    for (int[] dpList: layer) {
+                for (int[][] layer : dp) {
+                    for (int[] dpList : layer) {
                         Arrays.fill(dpList, Integer.MIN_VALUE);
                     }
                 }
@@ -3118,12 +3122,13 @@ public class Note18_DP {
 
             public int solve(int r1, int c1, int c2) {
                 int r2 = c1 + r1 - c2;  // c1 + r1 == c2 + r2
-                if (r1 == n || r2 == n || c1 == n || c2 == n || Grid[r1][c1] == -1 || Grid[r2][c2] == -1) return Integer.MIN_VALUE;  // 边界情况
+                if (r1 == n || r2 == n || c1 == n || c2 == n || Grid[r1][c1] == -1 || Grid[r2][c2] == -1)
+                    return Integer.MIN_VALUE;  // 边界情况
                 else if (r1 == n - 1 && c1 == n - 1) return Grid[r1][c1];  // 走到尽头
                 else if (dp[r1][c1][c2] != Integer.MIN_VALUE) return dp[r1][c1][c2];
                 else {
                     int ans = Grid[r1][c2];
-                    ans +=Math.max(Math.max(solve(r1, c1 + 1, c2 + 1), solve(r1 + 1, c1, c2 + 1)),
+                    ans += Math.max(Math.max(solve(r1, c1 + 1, c2 + 1), solve(r1 + 1, c1, c2 + 1)),
                             Math.max(solve(r1, c1 + 1, c2), solve(r1 + 1, c1, c2)));
                     dp[r1][c1][c2] = ans;
                     return ans;
@@ -3136,18 +3141,18 @@ public class Note18_DP {
 
         /**
          * You are given a 0-indexed binary string s which represents the types of buildings along a street where:
-         *
+         * <p>
          * s[i] = '0' denotes that the ith building is an office and
          * s[i] = '1' denotes that the ith building is a restaurant.
          * As a city official, you would like to select 3 buildings for random inspection. However, to ensure variety,
          * no two consecutive buildings out of the selected buildings can be of the same type.
-         *
+         * <p>
          * For example, given s = "001101", we cannot select the 1st, 3rd, and 5th buildings as that would form "011"
          * which is not allowed due to having two consecutive buildings of the same type.
          * Return the number of valid ways to select 3 buildings.
-         *
+         * <p>
          * Example 1:
-         *
+         * <p>
          * Input: s = "001101"
          * Output: 6
          * Explanation:
@@ -3159,31 +3164,102 @@ public class Note18_DP {
          * - [2,4,5] from "001101" forms "101"
          * - [3,4,5] from "001101" forms "101"
          * No other selection is valid. Thus, there are 6 total ways.
+         *
          * @param args
          */
-        public long numberOfWays(String s)
-        {
+        public long numberOfWays(String s) {
             int zero = 0; // Individual zeroes count
             long zeroOne = 0; // Number of combinations of 01s
             int one = 0; // Individual ones count
             long oneZero = 0; // Number of combinations of 10s
             long tot = 0; // Final answer
-            for(char ch : s.toCharArray())
-            {
-                if(ch == '0')
-                {
+            for (char ch : s.toCharArray()) {
+                if (ch == '0') {
                     zero++;
                     oneZero += one; // Each of the previously found 1s can pair up with the current 0 to form 10
                     tot += zeroOne; // Each of the previously formed 01 can form a triplet with the current 0 to form 010
-                }
-                else
-                {
+                } else {
                     one++;
                     zeroOne += zero; // Each of the previously found 0s can pair to form 01
                     tot += oneZero; // Each of the previously formed 10 can form 101
                 }
             }
             return tot;
+        }
+
+        class SumAsYouGo {
+            /**
+             * you have to return the max sum that can be achieved as one goes from left to right in the array. You start with
+             * index 0 and the value at the index becomes your initial sum. Each iteration you can increment the index between 1
+             * to MaxLength. After each iteration, the new sum becomes the previous sum plus the value at the new index.  You have to reach the end of the array (reaching the last element is mandatory) and return the max possible sum.  Example:
+             * <p>
+             * input: path = [3, -4, -3, -5, 0], maxLength = 2.
+             * Return: total = path[0] + path[2] + path[4] = 3 + -3 + 0 = 0.
+             */
+            public static int maxSUm(int[] path, int maxLength) {
+                int[] dp = new int[path.length];
+                dp[0] = 0;
+                for (int i = 1; i < path.length; i++) {
+                    int max_sum = path[i];
+                    for (int j = i - 1; i >= Math.max(i - maxLength, 0); j--) {
+                        max_sum = Math.max(max_sum, dp[j] + path[i]);
+                    }
+                    dp[i] = max_sum;
+                }
+                return dp[path.length - 1];
+
+            }
+        }
+
+        // 740: Delete and sum
+
+        /**
+         * You are given an integer array nums. You want to maximize the number of points you get by performing the following operation any number of times:
+         *
+         * Pick any nums[i] and delete it to earn nums[i] points. Afterwards, you must delete every element equal to nums[i] - 1 and every element equal to nums[i] + 1.
+         * Return the maximum number of points you can earn by applying the above operation some number of times.
+
+
+         * Example 1:
+         *
+         * Input: nums = [3,4,2]
+         * Output: 6
+         * Explanation: You can perform the following operations:
+         * - Delete 4 to earn 4 points. Consequently, 3 is also deleted. nums = [2].
+         * - Delete 2 to earn 2 points. nums = [].
+         * You earn a total of 6 points.
+         * Example 2:
+         *
+         * Input: nums = [2,2,3,3,3,4]
+         * Output: 9
+         * Explanation: You can perform the following operations:
+         * - Delete a 3 to earn 3 points. All 2's and 4's are also deleted. nums = [3,3].
+         * - Delete a 3 again to earn 3 points. nums = [3].
+         * - Delete a 3 once more to earn 3 points. nums = [].
+         * You earn a total of 9 points.
+
+         */
+        class Solution740 {
+            public int deleteAndEarn(int[] nums) {
+                var numToCount = new HashMap<Integer, Integer>();
+                var min = Integer.MAX_VALUE;
+                var max = Integer.MIN_VALUE;
+                for (var num : nums) {
+                    numToCount.compute(num, (k, v) -> v == null ? 1 : ++v);
+                    min = Math.min(min, num);
+                    max = Math.max(max, num);
+                }
+
+                var prevIncEarn = 0;
+                var prevExcEarn = 0;
+                for (var i = min; i <= max; i++) {
+                    var incEarn = prevExcEarn + i * numToCount.getOrDefault(i, 0);
+                    var excEarn = Math.max(prevIncEarn, prevExcEarn);
+                    prevIncEarn = incEarn;
+                    prevExcEarn = excEarn;
+                }
+                return Math.max(prevIncEarn, prevExcEarn);
+            }
         }
 
 
