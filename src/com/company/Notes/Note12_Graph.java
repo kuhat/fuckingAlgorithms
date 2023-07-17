@@ -2678,4 +2678,173 @@ public class Note12_Graph {
             return -1; //If final position can't be reached, return -1;
         }
     }
+
+    // 1197： minimum knight moves
+    /**
+     * In an infinite chess board with coordinates from -infinity to +infinity, you have a knight at square [0, 0].
+     * A knight has 8 possible moves it can make, as illustrated below. Each move is two squares in a cardinal direction, then one square in an orthogonal direction.
+     *
+     *
+     * Return the minimum number of steps needed to move the knight to the square [x, y]. It is guaranteed the answer exists.
+     *
+     * Example 1:
+     *
+     * Input: x = 2, y = 1
+     * Output: 1
+     * Explanation: [0, 0] → [2, 1]
+     * Example 2:
+     *
+     * Input: x = 5, y = 5
+     * Output: 4
+     * Explanation: [0, 0] → [2, 1] → [4, 2] → [3, 4] → [5, 5]
+     */
+
+    /**
+     * How to approach this in an interview
+     * Intuition:
+     * There are lots of great solutions on the discussion board as well as the premium solutions demonstrating different
+     * ways to solve the problem. In this post, I will go through the best way to tackle this question in an interview.
+     * Hope it helps!
+     *
+     * When you're first presented this question, you probably realised that the solution would probably involve some
+     * kind of traversal algorithm. Great, this is a good start. Many 2D grid traversal algorithms exist but you should
+     * first try and see whether breadth-first search (BFS) or depth-first search (DFS) would work. Chances are,
+     * there's probably a way to solve this question using either algorithm, but there's likely a more efficient choice
+     * between the two.
+     *
+     * Interview tip: If the question requires finding the shortest path or the minimum number of steps in a graph or grid,
+     * choose BFS.
+     *
+     * Why BFS?
+     * In a 2D grid, BFS can ALWAYS find the shortest path as long as at least one valid path exists. This is because
+     * BFS works by processing all nodes at the current level before processing the next level. In other words, we're
+     * working level-by-level. In this question, consider each level to be 1 knight move. What this means is that if
+     * you've landed on the target square, we can just return the current level (i.e. the number of moves so far) and
+     * that's guaranteed to be the shortest path since it's the first time we've seen our target.
+     *
+     * Ask Clarifying Questions
+     * Before continuing to code, it's extremely important to make sure you're aware of all the details of this question.
+     * In particular, ask:
+     *
+     * What is the range of x and y / can x or y be negative?
+     * How large is the chessboard?
+     * Is it strictly square or rectangular?
+     * In Leetcode, you're given all these details but in an interview, you likely won't be. So it's extremely important
+     * to ask these clarifying questions as they result in significant alterations to our code.
+     *
+     * Interview tip: If the interviewer says the board is infinite, first ask if it's okay to code a solution assuming
+     * there are max bounds to the board size and then later mention how you would change this for an infinite / really
+     * large board size.
+     *
+     * A Template for BFS:
+     * In BFS, we use a queue to process each step whereas in DFS, we use a stack. To find the shortest path, we need to
+     * process the entire level before moving to the next one (often called level-order traversal). To do this, we empty
+     * all values in the queue in the current level and add all their neighbours to fill in the next level. With the below
+     * template, we replace "cell" with whatever we're dealing with (e.g. coordinates, graph nodes, etc...).
+     *
+     * // create a queue and add the starting point to it.
+     * // create a data structure "visited" to keep track of visited cells
+     * //
+     * // int minSteps
+     * // while (queue is not empty):
+     * //     levelSize = queue.size
+     * //
+     * //     for (0 -> levelSize):
+     * //          currentCell = top of the queue
+     * //          if (currentCell == target): return minSteps
+     * //
+     * //          for (nextCell: neighbouringCells):
+     * //               if (nextCell is out of bounds or we've visited nextCell): skip
+     * //               mark nextCell as visited
+     * //               add nextCell to queue
+     * //
+     * // return minSteps
+     * Accommodate the Template for This Question
+     * The above template fortunately applies to pretty much all BFS level-order questions. However, you'll probably
+     * have to accommodate some changes to the template to suit the given problem statement. The first thing to do is
+     * identify what's different / what needs changing. In this question, we need to:
+     *
+     * Find out how to store our coordinates.
+     * Pick a data structure to keep track of visited coordinates.
+     * Find out how to get our neighbouring coordinates.
+     * For the first point, we need to keep track of both x and y. In a lot of grid questions, we can enumerate these
+     * values into a single integer. But for this question, storing them in an integer array of size 2 is sufficient.
+     *
+     * For the second point, both a set and a 2D boolean array have support for our chosen types. As mentioned in the
+     * premium solution, Java hash sets are slow so we'll use a boolean array since we have the option to.
+     *
+     * For the third point, our neighbours could be up to eight different coordinates. Each coordinate is some offset of
+     * 1 and 2 away from the current coordinate. Keeping this in mind, we can simply use a direction array (or an offset array)
+     * to store the values of all possible offsets. Then, we simply loop through our direction array and add each offset
+     * to our current coordinates.
+     *
+     * Awesome, now we're ready to code!
+     *
+     * Evaluating Trade-offs and Optimisations
+     * Chances are, the regular BFS / level-order traversal method is sufficient for an interview (at least for coding).
+     *
+     * Interview tip: If you really want to go above and beyond, it's important to recognise alternative ways of approaching
+     * the problem as well as their trade-offs.
+     *
+     * A good place to start is to recognise inefficiencies in our current approach. The main one is that regular BFS is
+     * quite slow for really large boards.
+     *
+     * Option 1: Use bi-directional BFS.
+     * Option 2: Use A*.
+     * I recommend familiarising yourself with both of the above approaches. One of the premium solutions discusses
+     * bi-directional
+     * BFS in-depth and some posts on the discussion board talk about the A* algorithm.
+     *
+     * There is an extremely small chance you'll actually be asked to code up either one of these in an interview. What's
+     * important here isn't necessarily knowing how to code them up but simply knowing how they work, why they're optimisations
+     * and understanding their trade-offs. If you understand them well enough, simply bringing them up in an interview will
+     * put you miles ahead of your competition.
+     */
+    class Solution1197 {
+        public int minKnightMoves(int x, int y) {
+            // We want to make x and y positive, since the chessboard is symmetrical  [2,1] == [-2,-1]
+            x = Math.abs(x);
+            y = Math.abs(y);
+            // Common set up for BFS, but we use a 1D integer --> {x-pos, y-pos}
+            Queue<int[]> q = new LinkedList<>();
+            // Add our starting point [0,0]
+            q.add(new int[]{0,0});
+            // Our legal moves --> Our knight can move all 8 ways
+            int[][] legalMoves = {{1, 2}, {2, 1}, {2, -1}, {1, -2}, {-1, -2}, {-2, -1}, {-2, 1}, {-1, 2}};
+            int counter = 0;
+            // 305?
+            // The contraints given to us is that "0 <= |x| + |y| <= 300"
+            // Keep in mind, in order to get position [1,1], the knight will have to go outside the positives and enter the negative values
+            // The highest a knight can enter the negative values is two. Meaning the positions a knight can be is -2 - 300.
+            // Keep in mind, the same logic applies for the positive side, meaning the knight can be "outside" this 300 range just for one turn. Making our range -2 - 302
+            // - 2 - 302 is --> 0 - 304 --> [305]
+            // We have to offset this by 2, since we can't index a negative value
+            boolean[][] seen = new boolean[305][305];
+            // Standard BFS procedure
+            while(!q.isEmpty()){
+                int size = q.size();
+                for(int i = 0; i < size; i++){
+                    int[] cur = q.poll();
+                    // Check if we already hit our target
+                    if(cur[0] == x && cur[1] == y) return counter;
+                    // Iterate the legalMoves array --> moves[0] gives us the {value, IGNORE} and moves[1] gives us {IGNORE, value}
+                    for(int[] moves: legalMoves){
+                        // Add the legal move set to our current position
+                        int moveX = moves[0] + cur[0];
+                        int moveY = moves[1] + cur[1];
+                        // Keep in mind, we don't want to go further into a negatives, so -2 is our max!
+                        // We also don't want to go too far into the positives, so keep the value below 305
+                        // Remember, we add +2 to offset the lowest value (-2) to equal 0. Since, we can't index -2
+                        if(moveX >= -2 && moveY >= -2 && moveX < 305 && moveY < 305 &&!seen[moveX + 2][moveY + 2]){
+                            // Change the seen array to true and add the position to our queue
+                            seen[moveX + 2][moveY + 2] = true;
+                            q.add(new int[]{moveX, moveY});
+                        }
+                    }
+                }
+                counter++;
+            }
+            return counter;
+        }
+    }
 }

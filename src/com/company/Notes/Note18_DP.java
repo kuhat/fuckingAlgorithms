@@ -2996,7 +2996,8 @@ public class Note18_DP {
          * <p>
          * Notice that in this problem, we are not adding '1' after single characters.
          * <p>
-         * Given a string s and an integer k. You need to delete at most k characters from s such that the run-length encoded version of s has minimum length.
+         * Given a string s and an integer k. You need to delete at most k characters from s such that the run-length
+         * encoded version of s has minimum length.
          * <p>
          * Find the minimum length of the run-length encoded version of s after deleting at most k characters.
          * <p>
@@ -3006,7 +3007,10 @@ public class Note18_DP {
          * <p>
          * Input: s = "aaabcccd", k = 2
          * Output: 4
-         * Explanation: Compressing s without deleting anything will give us "a3bc3d" of length 6. Deleting any of the characters 'a' or 'c' would at most decrease the length of the compressed string to 5, for instance delete 2 'a' then we will have s = "abcccd" which compressed is abc3d. Therefore, the optimal way is to delete 'b' and 'd', then the compressed version of s will be "a3c3" of length 4.
+         * Explanation: Compressing s without deleting anything will give us "a3bc3d" of length 6. Deleting any of the
+         * characters 'a' or 'c' would at most decrease the length of the compressed string to 5,
+         * for instance delete 2 'a' then we will have s = "abcccd" which compressed is abc3d. Therefore,
+         * the optimal way is to delete 'b' and 'd', then the compressed version of s will be "a3c3" of length 4.
          */
         class Solution1531 {
             public int getLengthOfOptimalCompression(String s, int k) {
@@ -3083,11 +3087,13 @@ public class Note18_DP {
          * @param args
          */
         /*
-        Instead of walking from end to beginning, let's reverse the second leg of the path, so we are only considering two paths from the beginning to the end.
+        Instead of walking from end to beginning, let's reverse the second leg of the path, so we are only considering
+         two paths from the beginning to the end.
 
         Notice after t steps, each position (r, c) we could be, is on the line r + c = t. So if we have two people at
         positions (r1, c1) and (r2, c2), then r2 = r1 + c1 - c2. That means the variables r1, c1, c2 uniquely determine
-        2 people who have walked the same r1 + c1 number of steps. This sets us up for dynamic programming quite nicely. Algorithm
+        2 people who have walked the same r1 + c1 number of steps. This sets us up for dynamic programming quite nicely.
+        Algorithm
 
         Let dp[r1][c1][c2] be the most number of cherries obtained by two people starting at (r1, c1) and (r2, c2) and walking
         towards (N-1, N-1) picking up cherries, where r2 = r1+c1-c2.
@@ -3218,8 +3224,7 @@ public class Note18_DP {
          *
          * Pick any nums[i] and delete it to earn nums[i] points. Afterwards, you must delete every element equal to nums[i] - 1 and every element equal to nums[i] + 1.
          * Return the maximum number of points you can earn by applying the above operation some number of times.
-
-
+         *
          * Example 1:
          *
          * Input: nums = [3,4,2]

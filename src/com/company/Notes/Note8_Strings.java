@@ -429,8 +429,6 @@ public class Note8_Strings {
         for (int i = 0; i < 26; i++) {
             if (letters[i] != 0) return false;
         }
-        HashSet<String> set = new HashSet<>();
-        set.contains(s1);
         for (int i = 1; i < len; i++) {
             if (isScramble(s1.substring(0, i), s2.substring(0, i))
                     && isScramble(s1.substring(i), s2.substring(i)))
@@ -841,7 +839,8 @@ public class Note8_Strings {
      * <p>
      * Version numbers consist of one or more revisions joined by a dot '.'. Each revision consists of digits and may
      * contain leading zeros. Every revision contains at least one character. Revisions are 0-indexed from left to right,
-     * with the leftmost revision being revision 0, the next revision being revision 1, and so on. For example 2.5.33 and 0.1 are valid version numbers.
+     * with the leftmost revision being revision 0, the next revision being revision 1, and so on. For example 2.5.33 and
+     * 0.1 are valid version numbers.
      * <p>
      * To compare version numbers, compare their revisions in left-to-right order. Revisions are compared using their
      * integer value ignoring any leading zeros. This means that revisions 1 and 001 are considered equal. If a version
