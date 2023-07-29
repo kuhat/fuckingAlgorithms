@@ -2389,7 +2389,47 @@ c. Case #3:
             else return (left != null) ? left : right;
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public static void sol(int n, int k) {
+        int sum = 0;
+        for (int i = 0; i < n; i ++) {
+            sum += k + i * k;
+        }
+        System.out.println(sum);
+    }
+
     public static void main(String[] args) {
-        System.out.println(5 >> 1);
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNext()) {
+            String[] input = sc.nextLine().split(" ");
+            int n = Integer.valueOf(input[0]);
+            int k = Integer.valueOf(input[1]);
+            sol(n, k);
+        }
+
     }
 }
