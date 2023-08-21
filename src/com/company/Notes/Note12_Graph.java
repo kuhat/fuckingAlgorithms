@@ -471,8 +471,14 @@ public class Note12_Graph {
      * <p>
      * Example 1:
      * <p>
-     * Input: board = [["X","X","X","X"],["X","O","O","X"],["X","X","O","X"],["X","O","X","X"]]
-     * Output: [["X","X","X","X"],["X","X","X","X"],["X","X","X","X"],["X","O","X","X"]]
+     * Input: board = [["X","X","X","X"],
+     *                 ["X","O","O","X"],
+     *                 ["X","X","O","X"],
+     *                 ["X","O","X","X"]]
+     * Output: [["X","X","X","X"],
+     *          ["X","X","X","X"],
+     *          ["X","X","X","X"],
+     *          ["X","O","X","X"]]
      * Explanation: Notice that an 'O' should not be flipped if:
      * - It is on the border, or
      * - It is adjacent to an 'O' that should not be flipped.
