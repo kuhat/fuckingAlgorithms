@@ -886,6 +886,32 @@ public class Note12_Graph {
             }
             return res == 0;
         }
+
+        public boolean canFinishDfs(int numCourses, int[][] prerequisites) {
+            List<List<Integer>> graph = new ArrayList<>();
+            for (int i = 0; i < numCourses; i ++) {
+                graph.add(new ArrayList<>());
+            }
+            for (int[] pair: prerequisites) {
+                graph.get(pair[0]).add(pair[1]);
+            }
+            int[] visited = new int[numCourses];  // 0: not visited, 1: visiting, 2: visited
+            for (int i = 0; i < numCourses; i ++) {
+                if (hasCycle(i, visited, graph)) return false;
+            }
+            return true;
+        }
+
+        public boolean hasCycle(int course, int[] visited, List<List<Integer>> graph) {
+            if (visited[course] == 1) return true;
+            if (visited[course] == 2) return false;
+            visited[course] = 1;
+            for (int pre: graph.get(course)) {
+                if (hasCycle(pre, visited, graph)) return true;
+            }
+            visited[course] = 2;
+            return false;
+        }
     }
 
     //133 ：clone graph
