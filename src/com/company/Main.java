@@ -3,32 +3,73 @@ package com.company;
 import java.util.*;
 
 public class Main {
-    //                       2
-    //           1
-    // {1, 3, 2, 1, 0, 3, 2}
 
-    public static int[] rearrange(int[] input) {
-        int cur1 = 0, cur2 = 0;
-        while (cur2 < input.length) {
-            if (input[cur2] != 0) {
-                input[cur1] = input[cur2];
-                cur1++;
-                cur2++;
+    public void treeHash() {
+        Scanner sc = new Scanner(System.in);
+        String[] inputStrArg = sc.nextLine().split(" ");
+        int[] inputArg = new int[4];
+        for (int i = 0; i < inputStrArg.length; i ++) {
+            inputArg[i] = Integer.valueOf(inputStrArg[i]);
+        }
+        int[] tree = new int[inputArg[0] - 1];
+
+
+    }
+
+
+
+    /**
+     * 5
+     * 1 1 3 3
+     * 1 1 1 1 1
+     *
+     *     1
+     *   2    3
+     *      4    5
+     */
+
+    public void tree() {
+        Scanner sc = new Scanner(System.in);
+        int num = Integer.valueOf(sc.nextLine());
+        String[] parentStr = sc.nextLine().split(" ");
+        int[] parent = new int[parentStr.length];
+        for (int i = 0; i < parentStr.length; i ++) {
+            parent[i] = Integer.valueOf(parentStr[i]);
+        }
+        String[] colorStr = sc.nextLine().split(" ");
+        int[] color = new int[parentStr.length];
+        for (int i = 0; i < parentStr.length; i ++) {
+            color[i] = Integer.valueOf(colorStr[i]);
+        }
+        int res = 0;
+        int[] tree = new int[num];
+        Arrays.fill(tree, 1);
+        for (int i = parent.length - 1; i > 0; i -= 2) {
+            int curParent = parent[i];
+            if (color[curParent] == 1) {
+                tree[curParent - 1] = tree[i] + tree[i + 1];
             } else {
-                cur2++;
+                tree[curParent - 1] = tree[i] * tree[i + 1];
             }
         }
-        while (cur1 < input.length) {
-            input[cur1++] = 0;
-        }
-        return input;
+        System.out.println(tree[0]);
     }
 
 
 
     public static void main(String[] args) {
-        int[] test = new int[]{0, 1, 2, 0, 0, 3};
-       System.out.println(Arrays.toString(rearrange(test)));
+        Scanner sc = new Scanner(System.in);
+        String[] input1 = sc.nextLine().split(" ");
+        int n = Integer.valueOf(input1[0]);
+        int k = Integer.valueOf(input1[1]);
+        String str = sc.nextLine();
+        int i = 0, res = 0;
+        while (k > 0) {
+            if (str.charAt(i++)== 'A') k--;
+            i = i % n;
+            res ++;
+        }
+        System.out.println(res);
     }
 
     static class Task {
