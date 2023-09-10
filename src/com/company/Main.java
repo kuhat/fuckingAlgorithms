@@ -4,19 +4,149 @@ import java.util.*;
 
 public class Main {
 
-    public void treeHash() {
-        Scanner sc = new Scanner(System.in);
-        String[] inputStrArg = sc.nextLine().split(" ");
-        int[] inputArg = new int[4];
-        for (int i = 0; i < inputStrArg.length; i ++) {
-            inputArg[i] = Integer.valueOf(inputStrArg[i]);
+//    static class Pair implements Comparable<Pair> {
+//        int value;
+//        int idx;
+//        Pair (int val, int idx) {
+//            this.value = val;
+//            this.idx = idx;
+//        }
+//        @Override
+//        public int compareTo(Pair o) {
+//            return Integer.compare(this.value, o.value);
+//        }
+//    }
+//
+//    public static long minimumSum(int[] arr, int k) {
+//        PriorityQueue<Pair> pq = new PriorityQueue<>(Collections.reverseOrder());
+//        for (int i = 0; i < arr.length; i ++) {
+//            int value = arr[i];
+//            int pos = 0;
+//            while (value > 0) {
+//                if ((value & 1) == 1) {
+//                    pq.add(new Pair(1 << pos, i));
+//                }
+//                value >>= 1;
+//                pos++;
+//            }
+//        }
+//        int ops = 0;
+//        while (ops < k && !pq.isEmpty()) {
+//            Pair p = pq.poll();
+//            arr[p.idx] -= p.value;
+//            ops ++;
+//        }
+//        long sum = 0;
+//        for (int num : arr) {
+//            sum += num;
+//        }
+//        return sum;
+//    }
+//
+//    public static void main(String[] args) {
+//        Scanner sc = new Scanner(System.in);
+//        String[] line1 = sc.nextLine().split(" ");
+//        int n = Integer.valueOf(line1[0]);
+//        int k = Integer.valueOf(line1[1]);
+//        int[] input = new int[n];
+//        for (int i = 0; i < n; i ++) {
+//            input[i] = sc.nextInt();
+//        }
+//        System.out.println(minimumSum(input, k));
+//    }
+    // 1 2 3 5 7
+
+    // 1 2 3 3 5 7
+    // 7 4 1
+    // 7 1 1 0 2
+    // 1 1 1 0 2 2
+//    public static void main(String[] args) {
+//        Scanner sc = new Scanner(System.in);
+//        int n = sc.nextInt();
+//        int[] input = new int[n];
+//        for (int i = 0; i < n; i ++) {
+//            input[i] = sc.nextInt();
+//        }
+//        Arrays.sort(input);
+//        int res = input[input.length - 1];
+//        for (int i = 0; i < (input.length - 1) / 2; i ++) {
+//            res += input[input.length - 2 - i] - input[i];
+//        }
+//        System.out.println(res);
+//    }
+
+    static class Median{
+        private PriorityQueue<Integer> max;
+        private PriorityQueue<Integer> min;
+        public Median() {
+            max = new PriorityQueue<>((a, b) -> b - a);
+            min = new PriorityQueue<>((a, b) -> a - b);
         }
-        int[] tree = new int[inputArg[0] - 1];
 
+        public void insert(int num) {
+            if (max.isEmpty() || num <= max.peek()) max.offer(num);
+            else min.offer(num);
+            balance();
+        }
 
+        public void erase(int num) {
+            if (num <= max.peek()) {
+                max.remove(num);
+            } else {
+                min.remove(num);
+            }
+            balance();
+        }
+
+        public double getMedian() {
+            if (max.size() < min.size()) return ((double) max.peek() + (double) min.peek());
+            else return (double) max.peek();
+        }
+
+        private void balance() {
+            while(max.size() < min.size()) max.offer(min.poll());
+            while (max.size() > min.size() + 1) min.offer(max.poll());
+        }
     }
 
+    public static void solve(int[] a, int[] b) {
+//        System.out.println("a: " + Arrays.toString(a));
+//        System.out.println("b: " + Arrays.toString(b));
+        Median median = new Median();
+        for (int num: a) median.insert(num);
+        List<Double> res = new ArrayList<>();
+        res.add(median.getMedian());
+        for (int idx: b) {
+            median.erase(a[idx - 1]);
+            res.add(median.getMedian());
+        }
+        for (double med: res) {
+            System.out.println(med);
+        }
+    }
 
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int t = Integer.valueOf(sc.nextLine());
+        System.out.println("t: " + t);
+        for (int i = 0; i < t; i ++) {
+            int n = Integer.valueOf(sc.nextLine());
+            System.out.println("n: " + n );
+            int[] a = new int[n];
+            int[] b = new int[n - 1];
+            String[] aStr = sc.nextLine().split(" ");
+            System.out.println("aStr: " + Arrays.toString(aStr));
+            String[] bStr = sc.nextLine().split(" ");
+            System.out.println("bStr: " + Arrays.toString(bStr));
+            for (int j = 0; j < n;j ++) {
+                a[j] = Integer.valueOf(aStr[i]);
+            }
+            for (int j = 0; j < n - 1; j ++) {
+                b[j] = Integer.valueOf(bStr[i]);
+            }
+            solve(a, b);
+        }
+    }
 
     /**
      * 5
@@ -57,20 +187,20 @@ public class Main {
 
 
 
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        String[] input1 = sc.nextLine().split(" ");
-        int n = Integer.valueOf(input1[0]);
-        int k = Integer.valueOf(input1[1]);
-        String str = sc.nextLine();
-        int i = 0, res = 0;
-        while (k > 0) {
-            if (str.charAt(i++)== 'A') k--;
-            i = i % n;
-            res ++;
-        }
-        System.out.println(res);
-    }
+//    public static void main(String[] args) {
+//        Scanner sc = new Scanner(System.in);
+//        String[] input1 = sc.nextLine().split(" ");
+//        int n = Integer.valueOf(input1[0]);
+//        int k = Integer.valueOf(input1[1]);
+//        String str = sc.nextLine();
+//        int i = 0, res = 0;
+//        while (k > 0) {
+//            if (str.charAt(i++)== 'A') k--;
+//            i = i % n;
+//            res ++;
+//        }
+//        System.out.println(res);
+//    }
 
     static class Task {
         int index;

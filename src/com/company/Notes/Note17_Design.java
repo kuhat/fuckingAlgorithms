@@ -437,8 +437,6 @@ public class Note17_Design {
                 content = new StringBuilder();
             }
         }
-
-
     }
 
 /**
