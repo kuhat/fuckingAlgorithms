@@ -360,7 +360,7 @@ public class Note12_Graph {
             int nextNum = 0;
             boolean found = false;
             Queue<String> queue = new LinkedList<>();
-            HashSet<String> unvisited = new HashSet<>();  // 访问过后就不能再访问了
+            HashSet<String> unvisited = new HashSet<>(wordList);  // 访问过后就不能再访问了
             HashSet<String> visited = new HashSet<>();  // 将访问的点和没有访问的区分
 
             HashMap<String, List<String>> map = new HashMap<>();
@@ -2929,5 +2929,61 @@ public class Note12_Graph {
         }
     }
 
-
+    // 815: Bus Routes
+    /**
+     * You are given an array routes representing bus routes where routes[i] is a bus route that the ith bus repeats forever.
+     *
+     * For example, if routes[0] = [1, 5, 7], this means that the 0th bus travels in the sequence 1 -> 5 -> 7 -> 1 -> 5 -> 7 -> 1 -> ... forever.
+     * You will start at the bus stop source (You are not on any bus initially), and you want to go to the bus stop target.
+     * You can travel between bus stops by buses only.
+     *
+     * Return the least number of buses you must take to travel from source to target. Return -1 if it is not possible.
+     * Example 1:
+     *
+     * Input: routes = [[1,2,7],[3,6,7]], source = 1, target = 6
+     * Output: 2
+     * Explanation: The best strategy is take the first bus to the bus stop 7, then take the second bus to the bus stop 6.
+     * Example 2:
+     *
+     * Input: routes = [[7,12],[4,5,15],[6],[15,19],[9,12,13]], source = 15, target = 12
+     * Output: -1
+     */
+    class Solution815 {
+        /*
+        Graph里面的key为stop， value为经过这个stop的bus值
+         */
+        public int numBusesToDestination(int[][] routes, int source, int target) {
+            if (source == target) return 0;
+            HashMap<Integer, List<Integer>> graph = new HashMap<>(); // map: KEY: Stop, VALUE: bus[]
+            for (int i = 0; i < routes.length; i ++) {
+                for(int j = 0; j < routes[i].length; j++) {
+                    if(!graph.containsKey(routes[i][j])) {
+                        graph.put(routes[i][j], new ArrayList<Integer>());
+                    }
+                    graph.get(routes[i][j]).add(i);
+                }
+            }
+            int ans = 0;
+            HashSet<Integer> visited = new HashSet<>();
+            Queue<Integer> q = new LinkedList<>();
+            q.offer(source);
+            while (!q.isEmpty()) {
+                ans++;
+                int len = q.size();
+                for (int i = 0; i < len; i++) {
+                    int cur = q.poll();
+                    List<Integer> buses = graph.get(cur);
+                    for (int bus: buses) {
+                        if (visited.contains(bus)) continue;
+                        visited.add(bus);
+                        for (int j = 0; j < routes[bus].length; j ++) {
+                            if (routes[bus][j] == target) return ans;
+                            q.offer(routes[bus][j]);
+                        }
+                    }
+                }
+            }
+            return -1;
+        }
+    }
 }
