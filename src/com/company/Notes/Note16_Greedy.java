@@ -1,5 +1,6 @@
 package com.company.Notes;
 
+import java.lang.reflect.Method;
 import java.util.*;
 
 public class Note16_Greedy {
@@ -531,7 +532,70 @@ public class Note16_Greedy {
         }
     }
 
+    // 1647 Minimum Deletion to make character frequencies unique
+
+    /**
+     * A string s is called good if there are no two different characters in s that have the same frequency.
+     *
+     * Given a string s, return the minimum number of characters you need to delete to make s good.
+     *
+     * The frequency of a character in a string is the number of times it appears in the string. For example,
+     * in the string "aab", the frequency of 'a' is 2, while the frequency of 'b' is 1.
+     *
+     *
+     *
+     * Example 1:
+     *
+     * Input: s = "aab"
+     * Output: 0
+     * Explanation: s is already good.
+     * Example 2:
+     *
+     * Input: s = "aaabbbcc"
+     * Output: 2
+     * Explanation: You can delete two 'b's resulting in the good string "aaabcc".
+     * Another way it to delete one 'b' and one 'c' resulting in the good string "aaabbc".
+     * Example 3:
+     *
+     * Input: s = "ceabaacb"
+     * Output: 2
+     * Explanation: You can delete both 'c's resulting in the good string "eabaab".
+     * Note that we only care about characters that are still in the string at the end (i.e. frequency of 0 is ignored).
+     * @param args
+     */
+    /**
+     * Store the frequency for each character in the given string s in a frequency array called frequency. We store the frequency for a character c at index c - 'a'. Thus, we will need 26 indices (from 0 to 25) to store the frequencies of the characters.
+     * Initialize the variable deleteCount to 0, which stores the count of characters that need to be deleted. Also, initialize a HashSet seenFrequencies that stores the frequencies that have been occupied.
+     * Iterate over the characters from a to z as 0 to 25, for each character:
+     * Keep decrementing its frequency until it becomes a number that is not present in set seenFrequencies or it becomes zero. Every time we decrement the frequency we increment the variable deleteCount to mark the deletion of the character.
+     * When the frequency becomes unique (or zero) insert it into the set seenFrequencies.
+     * Return deleteCount.
+     */
+
+    class Solution1647 {
+        public int minDel(String s) {
+            int res = 0;
+            int[] freq = new int[26];
+            for (char c: s.toCharArray()) freq[c -'a']++;
+
+            Set<Integer> set = new HashSet<>();
+            for (int i = 0; i < freq.length; i++) {
+                while (freq[i] > 0 && set.contains(freq[i])) {
+                    freq[i] --;
+                    res++;
+                }
+                set.add(freq[i]);
+            }
+            return res;
+        }
+    }
+
     public static void main(String[] args) {
         process(new int[][]{{1, 4, 2},{4, 6, 2},{8, 9, 2}, {3, 5, 2}});
+        Class<?> clazz = String.class;
+        Method[] method = clazz.getMethods();
+        for (Method methods : method) {
+            System.out.println(methods.getName());
+        }
     }
 }

@@ -115,7 +115,7 @@ public class Note13_Tree {
     class Solution124 {
         int res;
 
-        public int maxPathSum(TreeNode root) {
+        public int maxPathSumw(TreeNode root) {
             if (root == null) return 0;
             res = Integer.MIN_VALUE;
             helper(root);
