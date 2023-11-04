@@ -905,6 +905,53 @@ public class Note_10PriorityQueue {
      * obj.addBack(num);
      */
 
+    /**
+     * 767 Reorganize string
+     * Given a string s, rearrange the characters of s so that any two adjacent characters are not the same.
+     *
+     * Return any possible rearrangement of s or return "" if not possible.
+     *
+     *
+     *
+     * Example 1:
+     *
+     * Input: s = "aab"
+     * Output: "aba"
+     * Example 2:
+     *
+     * Input: s = "aaab"
+     * Output: ""
+     * @param args
+     */
+    class Solution767 {
+        public String reorganizeString(String s) {
+            if (s == null || s.length() == 0) return "";
+            int[] count = new int[26];
+            for (char c :s.toCharArray()) {
+                count[c - 'a'] ++;
+            }
+            var pq = new PriorityQueue<int[]>((a,b) -> b[1] - a[1]);
+            for (int i = 0; i <26; i++) {
+                if (count[i] > 0) pq.offer(new int[]{i+'a', count[i]});
+            }
+            StringBuilder sb = new StringBuilder();
+            while (!pq.isEmpty()) {
+                int[] cur = pq.poll();
+                if (sb.length() == 0 || cur[0] != sb.charAt(sb.length() - 1)) {
+                    sb.append((char) cur[0]);
+                    if (--cur[1] > 0) pq.offer(cur);
+                } else {
+                    if (pq.isEmpty()) return "";
+                    int[] sec = pq.poll();
+                    sb.append((char)sec[0]);
+                    if (--sec[1] > 0) pq.offer(sec);
+                    pq.offer(cur);
+                }
+            }
+
+            return sb.toString();
+        }
+    }
 
     public static void main(String[] args) {
         int[] res = findInt(4, 2, new int[]{4, 2, 1, 3});
