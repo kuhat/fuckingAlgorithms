@@ -1,5 +1,6 @@
 package com.company.Notes;
 
+import java.math.BigInteger;
 import java.util.*;
 
 public class Note8_Strings {
@@ -3675,6 +3676,57 @@ public class Note8_Strings {
             return true;
         }
     }
+
+
+    public class AdditiveSequenceChecker {
+
+        /**
+         * 给定一个字符串形式的数字序列，请问能否由这个字符串拆分成一个累加序列？累加序列：包括三个数，除了最开始的两个数外，
+         * 每个数都是前两个数只和。如果能则输出TRUE不能输出FALSE
+         */
+        public static boolean isAdditiveSequence(String numStr) {
+            int n = numStr.length();
+
+            for (int i = 1; i < n; i++) {
+                for (int j = i + 1; j < n; j++) {
+                    if (check(numStr, 0, i, j)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        private static boolean check(String numStr, int i, int j, int k) {
+            if (numStr.charAt(i) == '0' && j - i > 1 || numStr.charAt(j) == '0' && k - j > 1) {
+                return false;
+            }
+
+            BigInteger num1 = new BigInteger(numStr.substring(i, j));
+            BigInteger num2 = new BigInteger(numStr.substring(j, k));
+
+            while (k < numStr.length()) {
+                BigInteger num3 = num1.add(num2);
+                String num3Str = num3.toString();
+                int len3 = num3Str.length();
+
+                if (k + len3 > numStr.length() || !numStr.substring(k, k + len3).equals(num3Str)) {
+                    return false;
+                }
+
+                num1 = num2;
+                num2 = num3;
+                k += len3;
+            }
+            return true;
+        }
+
+        public static void main(String[] args) {
+            String numStr = "12358";
+            System.out.println(isAdditiveSequence(numStr) ? "TRUE" : "FALSE");
+        }
+    }
+
 
     public static void main(String[] args) {
         String[] words = new String[]{"lc", "cl", "gg"};
