@@ -477,7 +477,8 @@ public class Note16_Greedy {
 
     // 2268. Minimum Number of Keypresses
     /**
-     * You have a keypad with 9 buttons, numbered from 1 to 9, each mapped to lowercase English letters. You can choose which characters each button is matched to as long as:
+     * You have a keypad with 9 buttons, numbered from 1 to 9, each mapped to lowercase English letters. You can choose
+     * which characters each button is matched to as long as:
      *
      * All 26 lowercase English letters are mapped to.
      * Each character is mapped to by exactly 1 button.
